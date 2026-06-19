@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Sparkles, Shield, Cpu, ShieldAlert, CpuIcon, Check, Copy } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { BRAND_KIT } from '../utils/BrandKit';
 
@@ -137,6 +137,123 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'semantic-search', name: 'Semantic Search', category: 'ai', description: 'Search local indexes using similarity matching.', icon: 'Hammer', status: 'functional' }
 ];
 
+interface TechItem {
+  name: string;
+  desc: string;
+  color: string;
+  icon: string;
+}
+
+const TECH_STACK: TechItem[] = [
+  { name: 'React', desc: 'Frontend UI', color: '#61DAFB', icon: 'react' },
+  { name: 'TypeScript', desc: 'Type Safety', color: '#3178C6', icon: 'typescript' },
+  { name: 'Tailwind CSS', desc: 'Styling', color: '#06B6D4', icon: 'tailwind' },
+  { name: 'WebAssembly', desc: 'WASM Speed', color: '#654FF0', icon: 'wasm' },
+  { name: 'Hugging Face', desc: 'Model Hub', color: '#FFD21E', icon: 'huggingface' },
+  { name: 'Llama 3', desc: 'Local Inference', color: '#0064E0', icon: 'llama' },
+  { name: 'Vite', desc: 'Bundler', color: '#646CFF', icon: 'vite' },
+  { name: 'Transformers.js', desc: 'AI Pipelines', color: '#FF9D00', icon: 'transformers' },
+  { name: 'FFmpeg.wasm', desc: 'Video processing', color: '#00E676', icon: 'ffmpeg' },
+  { name: 'pdf-lib', desc: 'PDF Mutation', color: '#EC407A', icon: 'pdflib' }
+];
+
+const renderTechIcon = (icon: string) => {
+  switch (icon) {
+    case 'react':
+      return (
+        <svg className="w-6 h-6" viewBox="-11.5 -10.23 23 20.46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="0" cy="0" r="2.05" fill="#61DAFB"/>
+          <g stroke="#61DAFB" strokeWidth="1" fill="none">
+            <ellipse rx="11" ry="4.2"/>
+            <ellipse rx="11" ry="4.2" transform="rotate(60)"/>
+            <ellipse rx="11" ry="4.2" transform="rotate(120)"/>
+          </g>
+        </svg>
+      );
+    case 'typescript':
+      return (
+        <svg className="w-6 h-6 rounded overflow-hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="#3178C6"/>
+          <text x="50" y="75" fill="white" fontSize="55" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">TS</text>
+        </svg>
+      );
+    case 'tailwind':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 6.018C13.8 3.618 16.5 3 20.1 4.218c3.6 1.218 4.5 3.636 2.7 7.254-1.8 3.618-4.5 4.237-8.1 3.019C11.1 13.273 8.4 12.055 4.8 13.273 1.2 14.49 0 16.91 0 20.528c0-3.618 1.8-6.018 5.4-7.236 3.6-1.218 6.3-.6 9.9.618" fill="#06B6D4"/>
+        </svg>
+      );
+    case 'wasm':
+      return (
+        <svg className="w-6 h-6 rounded-md overflow-hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="#654FF0"/>
+          <text x="50" y="65" fill="white" fontSize="45" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">wa</text>
+        </svg>
+      );
+    case 'huggingface':
+      return (
+        <span className="text-xl leading-none select-none">🤗</span>
+      );
+    case 'llama':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#0064E0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18V8a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v10" />
+          <path d="M9 11H6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h3" />
+          <circle cx="11" cy="7" r="0.75" fill="#0064E0" />
+          <circle cx="15" cy="7" r="0.75" fill="#0064E0" />
+        </svg>
+      );
+    case 'vite':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 22h20L12 2z" fill="url(#viteGradient)"/>
+          <path d="M11 11l4-9-8 12h5l-1 8 8-11h-8z" fill="#FFD600"/>
+          <defs>
+            <linearGradient id="viteGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#4158D0"/>
+              <stop offset="0.5" stopColor="#C850C0"/>
+              <stop offset="1" stopColor="#FFCC70"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      );
+    case 'transformers':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#FF9D00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="11" width="18" height="10" rx="2" />
+          <circle cx="12" cy="5" r="2" />
+          <path d="M12 7v4" />
+          <line x1="8" y1="16" x2="8.01" y2="16" />
+          <line x1="16" y1="16" x2="16.01" y2="16" />
+        </svg>
+      );
+    case 'ffmpeg':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#00E676" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+          <line x1="7" y1="2" x2="7" y2="22" />
+          <line x1="17" y1="2" x2="17" y2="22" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <line x1="2" y1="7" x2="7" y2="7" />
+          <line x1="2" y1="17" x2="7" y2="17" />
+          <line x1="17" y1="17" x2="22" y2="17" />
+          <line x1="17" y1="7" x2="22" y2="7" />
+        </svg>
+      );
+    case 'pdflib':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#EC407A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
@@ -161,35 +278,41 @@ export const Dashboard = () => {
     <div className="flex flex-col gap-8">
       {/* Hero Welcome banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-[#151C2C] to-slate-900 border border-slate-800 p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-2xl">
-        <div className="flex flex-col gap-3 max-w-xl z-10 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 text-xs font-semibold w-fit">
-            <Sparkles size={12} />
-            <span>100% Client-side Processing</span>
+        <div className="flex flex-col gap-3 max-w-2xl z-10 text-left">
+          <div className="flex flex-wrap gap-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 text-xs font-semibold w-fit">
+              <Globe size={12} />
+              <span>Multi-Purpose Open-Source Web Tool Suite</span>
+            </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold w-fit">
+              <Code size={12} />
+              <span>100% Free & Open Source</span>
+            </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Your Local Processing <br />
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mt-1">
+            All-in-One <br />
             <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-[#4E8E5E] bg-clip-text text-transparent">
-              Super-App has arrived.
+              Web Utility Hub.
             </span>
           </h1>
           <p className="text-slate-400 text-sm md:text-base leading-relaxed">
-            DomoDomo compiles heavy utility processing directly in your browser. All filters, merging, and conversions execute offline on your device.
+            DomoDomo is an open-source hub of high-performance web utilities. Convert files, edit images, split/merge PDFs, and run local AI models directly in your browser. No servers, no signups, no limits.
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 w-full md:w-auto z-10">
           <div className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl flex items-center gap-3">
-            <Shield size={24} className="text-green-400" />
+            <Layers size={24} className="text-green-400" />
             <div className="flex flex-col text-left">
-              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Privacy</span>
-              <span className="text-slate-200 font-semibold text-sm">Secure</span>
+              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Features</span>
+              <span className="text-slate-200 font-semibold text-sm">80+ Web Tools</span>
             </div>
           </div>
           <div className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl flex items-center gap-3">
             <Cpu size={24} className="text-indigo-400" />
             <div className="flex flex-col text-left">
-              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Engine</span>
-              <span className="text-slate-200 font-semibold text-sm">WASM / WebAPI</span>
+              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Performance</span>
+              <span className="text-slate-200 font-semibold text-sm">GPU / WebAPI</span>
             </div>
           </div>
         </div>
@@ -197,6 +320,181 @@ export const Dashboard = () => {
         {/* Abstract background blobs */}
         <div className="absolute right-0 top-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute left-1/3 bottom-0 w-60 h-60 bg-green-500/5 rounded-full blur-[80px] pointer-events-none" />
+      </div>
+
+      {/* Infographic Stats Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-emerald-500/30 transition-all duration-300">
+          <div className="flex justify-between items-start">
+            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-105 transition-transform duration-300">
+              <Layers size={22} />
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+              Instant
+            </span>
+          </div>
+          <div className="mt-6">
+            <span className="text-4xl font-extrabold text-white tracking-tight">80+</span>
+            <h3 className="font-bold text-lg text-slate-200 mt-2">Web Utilities</h3>
+            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+              Every tool executes 100% locally on your machine with high-performance logic.
+            </p>
+          </div>
+          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors" />
+        </div>
+
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-indigo-500/30 transition-all duration-300">
+          <div className="flex justify-between items-start">
+            <div className="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 group-hover:scale-105 transition-transform duration-300">
+              <Globe size={22} />
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
+              Diverse
+            </span>
+          </div>
+          <div className="mt-6">
+            <span className="text-4xl font-extrabold text-white tracking-tight">10</span>
+            <h3 className="font-bold text-lg text-slate-200 mt-2">Categories</h3>
+            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+              Providing specialized modules for PDFs, Video WASM, Audio, Local AI, and Converters.
+            </p>
+          </div>
+          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors" />
+        </div>
+
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-emerald-500/30 transition-all duration-300">
+          <div className="flex justify-between items-start">
+            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-105 transition-transform duration-300">
+              <Cpu size={22} />
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+              Engine
+            </span>
+          </div>
+          <div className="mt-6">
+            <span className="text-4xl font-extrabold text-white tracking-tight">WASM</span>
+            <h3 className="font-bold text-lg text-slate-200 mt-2">Modern Stack</h3>
+            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+              Powered by WebAssembly core scripts and client Canvas/DOM WebAPIs for speed.
+            </p>
+          </div>
+          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors" />
+        </div>
+
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-indigo-500/30 transition-all duration-300">
+          <div className="flex justify-between items-start">
+            <div className="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 group-hover:scale-105 transition-transform duration-300">
+              <Code size={22} />
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
+              License
+            </span>
+          </div>
+          <div className="mt-6">
+            <span className="text-4xl font-extrabold text-white tracking-tight">100%</span>
+            <h3 className="font-bold text-lg text-slate-200 mt-2">Open Source</h3>
+            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+              Free to use, inspect, customize, and self-host under standard permissive licensing.
+            </p>
+          </div>
+          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors" />
+        </div>
+      </div>
+
+      {/* Tech Stack Marquee Carousel */}
+      <div className="relative w-full overflow-hidden py-6 border-y border-slate-800/40 bg-[#151C2C]/25 backdrop-blur-sm rounded-2xl">
+        <div className="text-center mb-4">
+          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
+            Powered by modern browser tech & frameworks
+          </span>
+        </div>
+        
+        {/* Shadow mask overlays for fade out edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#0B0F19] to-transparent pointer-events-none z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#0B0F19] to-transparent pointer-events-none z-10" />
+
+        <div className="flex overflow-hidden relative w-full">
+          <div className="animate-marquee flex gap-8 items-center py-2">
+            {/* First Set of Items */}
+            {TECH_STACK.map((tech, idx) => (
+              <div key={`tech-1-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-slate-900/60 border border-slate-850 rounded-xl hover:border-slate-700 transition-colors shrink-0">
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-950/60 border border-slate-800" style={{ color: tech.color }}>
+                  {renderTechIcon(tech.icon)}
+                </div>
+                <div className="flex flex-col text-left pr-2">
+                  <span className="text-xs font-bold text-slate-200">{tech.name}</span>
+                  <span className="text-[9px] text-slate-500 uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
+                </div>
+              </div>
+            ))}
+            {/* Duplicate Set for Infinite Scroll Loop */}
+            {TECH_STACK.map((tech, idx) => (
+              <div key={`tech-2-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-slate-900/60 border border-slate-850 rounded-xl hover:border-slate-700 transition-colors shrink-0">
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-950/60 border border-slate-800" style={{ color: tech.color }}>
+                  {renderTechIcon(tech.icon)}
+                </div>
+                <div className="flex flex-col text-left pr-2">
+                  <span className="text-xs font-bold text-slate-200">{tech.name}</span>
+                  <span className="text-[9px] text-slate-500 uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Purpose & Core Capabilities Section */}
+      <div className="glass-card p-8 border-slate-800/80 bg-gradient-to-br from-[#151C2C]/50 via-[#151C2C]/30 to-slate-950/40 text-left">
+        <div className="max-w-3xl mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold w-fit mb-3">
+            <Sparkles size={12} />
+            <span>Mission & Core Purpose</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            Designed for Developers, Creators, and Power Users
+          </h2>
+          <p className="text-slate-400 text-sm md:text-base mt-2.5 leading-relaxed">
+            DomoDomo solves the friction of traditional web utilities. Instead of uploading sensitive documents, private pictures, and huge videos to remote servers, DomoDomo compiles the processing logic directly inside your browser sandbox.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex gap-4">
+            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 h-fit shrink-0">
+              <Shield size={20} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-slate-200 text-base">Uncompromising Security</h4>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Zero data tracking, zero uploads, zero server databases. Your files never leave your computer, preserving absolute confidentiality.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 h-fit shrink-0">
+              <Cpu size={20} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-slate-200 text-base">Local AI & WebAssembly</h4>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Runs lightweight machine learning models (like ONNX and Transformers.js) and compiled C++ modules directly on your device.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 h-fit shrink-0">
+              <Zap size={20} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold text-slate-200 text-base">All-in-One Utility Hub</h4>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                No need to open multiple websites. Edit PDFs, compress videos, build resumes, scan QRs, and format codes inside a single cohesive system.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}

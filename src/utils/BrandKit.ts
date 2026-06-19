@@ -1,7 +1,7 @@
 export const BRAND_KIT = {
   name: 'DomoDomo',
-  tagline: 'All-in-One Local Toolbox',
-  philosophy: '100% Client-side, Offline-first, Zero server dependency. Inspired by the cute mascot who keeps your data private and local.',
+  tagline: 'Multi-Purpose Open-Source Web Tool Suite',
+  philosophy: 'A multi-purpose, open-source web utility suite. Run high-performance file conversions, image editing, and PDF manipulation directly in your browser. 100% client-side, secure, and privacy-respecting.',
   
   colors: {
     primary: {

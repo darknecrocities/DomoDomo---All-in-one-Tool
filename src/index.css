@@ -70,3 +70,18 @@
 .animate-pulse-slow {
   animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
