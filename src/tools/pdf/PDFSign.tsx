@@ -1,7 +1,26 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState, useRef, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { Upload, FileText, Check, ShieldAlert, PenTool, RefreshCw, Layers } from 'lucide-react';
+import { Upload, Check, ShieldAlert, PenTool, RefreshCw, Layers, Move } from 'lucide-react';
+
+// Dynamically load PDF.js script from a standard CDN
+const loadPdfJs = (): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    if ((window as any).pdfjsLib) {
+      resolve((window as any).pdfjsLib);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+    script.onload = () => {
+      const pdfjsLib = (window as any).pdfjsLib;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+      resolve(pdfjsLib);
+    };
+    script.onerror = () => reject(new Error('Failed to load PDF.js engine'));
+    document.body.appendChild(script);
+  });
+};
 
 export const PDFSignTool = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -17,11 +36,20 @@ export const PDFSignTool = () => {
 
   // Placement States
   const [targetPage, setTargetPage] = useState<number>(1);
-  const [posX, setPosX] = useState<number>(150);
-  const [posY, setPosY] = useState<number>(50);
   const [sigScale, setSigScale] = useState<number>(100);
 
+  // Dragging States
+  const [dragPos, setDragPos] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+
+  // PDF Page Rendering Preview Size
+  const [previewDim, setPreviewDim] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [pdfRealDim, setPdfRealDim] = useState<{ width: number; height: number }>({ width: 595, height: 842 }); // Default A4
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
   const isDrawingRef = useRef<boolean>(false);
 
   // Initialize/Clear Signature Canvas
@@ -31,7 +59,6 @@ export const PDFSignTool = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Draw white background
     ctx.fillStyle = 'transparent';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     setSignatureSaved(false);
@@ -41,6 +68,45 @@ export const PDFSignTool = () => {
   useEffect(() => {
     initCanvas();
   }, []);
+
+  // Render PDF Preview on Upload or Page Change
+  useEffect(() => {
+    if (!file) return;
+    const renderPreview = async () => {
+      try {
+        const pdfjsLib = await loadPdfJs();
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        
+        // Load target page
+        const page = await pdf.getPage(Math.min(targetPage, pageCount || 1));
+        const viewport = page.getViewport({ scale: 1.0 });
+
+        setPdfRealDim({ width: viewport.width, height: viewport.height });
+
+        // Fit page preview inside workspace width limits
+        const maxWidth = Math.min(window.innerWidth - 64, 500);
+        const scale = maxWidth / viewport.width;
+        const displayViewport = page.getViewport({ scale });
+
+        const canvas = previewCanvasRef.current;
+        if (canvas) {
+          const context = canvas.getContext('2d');
+          if (context) {
+            canvas.width = displayViewport.width;
+            canvas.height = displayViewport.height;
+            setPreviewDim({ width: displayViewport.width, height: displayViewport.height });
+
+            await page.render({ canvasContext: context, viewport: displayViewport }).promise;
+          }
+        }
+      } catch (err) {
+        console.error('Failed rendering PDF preview page:', err);
+      }
+    };
+    renderPreview();
+  }, [file, targetPage, pageCount]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -99,7 +165,6 @@ export const PDFSignTool = () => {
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     
-    // Check if touch event
     if ('touches' in e) {
       if (e.touches.length > 0) {
         return {
@@ -118,7 +183,6 @@ export const PDFSignTool = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    // Check if canvas is empty
     const blank = document.createElement('canvas');
     blank.width = canvas.width;
     blank.height = canvas.height;
@@ -132,6 +196,58 @@ export const PDFSignTool = () => {
     setSignatureSaved(true);
   };
 
+  // Drag Placement Handlers
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!signatureSaved) return;
+    setIsDragging(true);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    
+    dragOffset.current = {
+      x: clientX - dragPos.x,
+      y: clientY - dragPos.y
+    };
+    e.preventDefault();
+  };
+
+  const handleDragMove = (e: MouseEvent | TouchEvent) => {
+    if (!isDragging || !signatureSaved) return;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    
+    let x = clientX - dragOffset.current.x;
+    let y = clientY - dragOffset.current.y;
+
+    // Boundaries constraints
+    if (previewDim.width > 0 && previewDim.height > 0) {
+      const sigW = (200 * sigScale) / 200;
+      const sigH = (80 * sigScale) / 200;
+      x = Math.max(0, Math.min(x, previewDim.width - sigW));
+      y = Math.max(0, Math.min(y, previewDim.height - sigH));
+    }
+
+    setDragPos({ x, y });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
+      window.addEventListener('touchmove', handleDragMove);
+      window.addEventListener('touchend', handleDragEnd);
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+      window.removeEventListener('touchmove', handleDragMove);
+      window.removeEventListener('touchend', handleDragEnd);
+    };
+  }, [isDragging]);
+
   const handlePlaceSignature = async () => {
     if (!file || !signatureUrl || !pageCount) return;
     setLoading(true);
@@ -140,21 +256,28 @@ export const PDFSignTool = () => {
       const pdfBytes = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(pdfBytes);
       
-      // Load signature PNG image bytes
       const sigImgBytes = await fetch(signatureUrl).then((res) => res.arrayBuffer());
       const sigImage = await pdfDoc.embedPng(sigImgBytes);
 
-      // Fetch target page (1-indexed to 0-indexed)
       const pageIndex = Math.max(0, Math.min(targetPage - 1, pageCount - 1));
       const page = pdfDoc.getPages()[pageIndex];
 
       const scaledW = (sigImage.width * sigScale) / 200;
       const scaledH = (sigImage.height * sigScale) / 200;
 
-      // Draw onto target page
+      // Coordinate mapping from Preview container space to PDF Page space
+      // Note: PDF coordinate space origin (0,0) is BOTTOM-LEFT
+      const containerScaleX = pdfRealDim.width / previewDim.width;
+      const containerScaleY = pdfRealDim.height / previewDim.height;
+
+      const pdfX = dragPos.x * containerScaleX;
+      // Convert top-left browser Y to bottom-left PDF Y
+      const previewSigH = (80 * sigScale) / 200;
+      const pdfY = (previewDim.height - dragPos.y - previewSigH) * containerScaleY;
+
       page.drawImage(sigImage, {
-        x: posX,
-        y: posY,
+        x: pdfX,
+        y: pdfY,
         width: scaledW,
         height: scaledH
       });
@@ -178,6 +301,7 @@ export const PDFSignTool = () => {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Signature Pad Panel */}
       <div className="lg:col-span-8 flex flex-col gap-6 text-left">
+        {/* Draw panel */}
         <div className="glass-card p-6 flex flex-col gap-5">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -194,7 +318,6 @@ export const PDFSignTool = () => {
           </div>
 
           <div className="flex flex-col gap-3">
-            {/* Signature Draw Area */}
             <div className="relative border border-slate-800 rounded-2xl bg-slate-950/40 overflow-hidden flex items-center justify-center p-2">
               <canvas
                 ref={canvasRef}
@@ -211,10 +334,9 @@ export const PDFSignTool = () => {
               />
             </div>
 
-            {/* Brush Customization */}
             <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-900/30 rounded-xl border border-slate-850">
               <div className="flex items-center gap-3">
-                <span className="text-xs text-slate-400">Ink Color:</span>
+                <span className="text-xs text-slate-400">Ink:</span>
                 <div className="flex gap-2">
                   {['#000000', '#0f172a', '#1e40af', '#991b1b'].map((col) => (
                     <button
@@ -226,12 +348,6 @@ export const PDFSignTool = () => {
                       style={{ backgroundColor: col }}
                     />
                   ))}
-                  <input
-                    type="color"
-                    value={inkColor}
-                    onChange={(e) => setInkColor(e.target.value)}
-                    className="w-6 h-6 rounded-full bg-transparent border-0 cursor-pointer p-0 shrink-0"
-                  />
                 </div>
               </div>
 
@@ -245,7 +361,6 @@ export const PDFSignTool = () => {
                   onChange={(e) => setBrushWidth(parseInt(e.target.value))}
                   className="w-24 h-1 bg-slate-800 rounded appearance-none cursor-pointer accent-[#4E8E5E]"
                 />
-                <span className="text-[10px] text-teal-400 font-mono font-bold">{brushWidth}px</span>
               </div>
 
               <button
@@ -262,12 +377,12 @@ export const PDFSignTool = () => {
           </div>
         </div>
 
-        {/* PDF File Upload */}
+        {/* Drag Workspace panel */}
         <div className="glass-card p-6 flex flex-col gap-5">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <Layers className="text-[#4E8E5E]" size={22} />
-              <span>2. Upload Document to Sign</span>
+              <span>2. Drag Signature on Preview</span>
             </h2>
           </div>
 
@@ -285,25 +400,49 @@ export const PDFSignTool = () => {
                   className="hidden"
                 />
               </label>
-              <p className="text-slate-500 text-xs">Select PDF you wish to stamp your signature onto</p>
+              <p className="text-slate-500 text-xs">Upload document to load interactive drag workspace</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-4 bg-slate-900/30 p-4 rounded-xl border border-slate-850">
-              <div className="flex items-center gap-3">
-                <FileText className="text-[#4E8E5E]" size={24} />
-                <div className="flex flex-col">
-                  <span className="text-slate-200 text-xs font-bold">{file.name}</span>
-                  <span className="text-[10px] text-slate-400">
-                    {(file.size / 1024).toFixed(1)} KB — {pageCount} {pageCount === 1 ? 'page' : 'pages'} total
-                  </span>
-                </div>
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center justify-between w-full bg-slate-900/30 p-3 rounded-xl border border-slate-850 text-xs">
+                <span>{file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
+                <button
+                  onClick={() => { setFile(null); setPageCount(null); }}
+                  className="text-rose-450 font-bold"
+                >
+                  Change File
+                </button>
               </div>
-              <button
-                onClick={() => { setFile(null); setPageCount(null); }}
-                className="text-[10px] text-rose-400 hover:text-rose-350 font-bold self-start"
+
+              {/* Drag Positioning Container */}
+              <div
+                ref={previewContainerRef}
+                className="relative border border-slate-800 rounded-2xl bg-slate-950/30 overflow-hidden flex items-center justify-center p-2 select-none"
+                style={{ width: previewDim.width ? previewDim.width + 16 : 'auto' }}
               >
-                Change PDF File
-              </button>
+                <canvas ref={previewCanvasRef} className="rounded-lg shadow-xl" />
+
+                {/* Overlaid Draggable Signature */}
+                {signatureSaved && signatureUrl && (
+                  <div
+                    onMouseDown={handleDragStart}
+                    onTouchStart={handleDragStart}
+                    className="absolute cursor-move select-none border border-dashed border-teal-400 bg-teal-500/10 p-1 flex items-center justify-center group"
+                    style={{
+                      left: dragPos.x + 8,
+                      top: dragPos.y + 8,
+                      width: (200 * sigScale) / 200,
+                      height: (80 * sigScale) / 200,
+                    }}
+                  >
+                    <img src={signatureUrl} alt="sig" className="w-full h-full object-contain pointer-events-none" />
+                    <div className="absolute -top-6 bg-teal-500 text-white font-bold text-[9px] px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <Move size={8} />
+                      <span>Drag me</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -316,7 +455,7 @@ export const PDFSignTool = () => {
 
           {/* Target Page */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-slate-450 font-medium">Placement Page</label>
+            <label className="text-xs text-slate-455 font-medium">Placement Page</label>
             <input
               type="number"
               min="1"
@@ -326,52 +465,35 @@ export const PDFSignTool = () => {
               onChange={(e) => setTargetPage(Math.max(1, parseInt(e.target.value) || 1))}
               className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#4E8E5E] disabled:opacity-30"
             />
+            <span className="text-[10px] text-slate-500">Page {targetPage} of {pageCount || 1}</span>
           </div>
 
-          {/* X coordinate slider */}
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400 font-medium">Horizontal Offset (X)</span>
-              <span className="text-teal-400 font-semibold font-mono">{posX}px</span>
+          {/* Coordinate Displays */}
+          <div className="grid grid-cols-2 gap-3 bg-slate-900/40 p-3 rounded-xl border border-slate-850 text-xs">
+            <div className="flex flex-col">
+              <span className="text-slate-500 font-medium">Mapped PDF X:</span>
+              <span className="text-[#4E8E5E] font-bold font-mono">
+                {Math.round(dragPos.x * (pdfRealDim.width / (previewDim.width || 1)))} pt
+              </span>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="600"
-              value={posX}
-              disabled={!file}
-              onChange={(e) => setPosX(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E] disabled:opacity-30"
-            />
-          </div>
-
-          {/* Y coordinate slider */}
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400 font-medium">Vertical Offset (Y)</span>
-              <span className="text-teal-400 font-semibold font-mono">{posY}px</span>
+            <div className="flex flex-col">
+              <span className="text-slate-500 font-medium">Mapped PDF Y:</span>
+              <span className="text-[#4E8E5E] font-bold font-mono">
+                {Math.round((previewDim.height - dragPos.y - (80 * sigScale) / 200) * (pdfRealDim.height / (previewDim.height || 1)))} pt
+              </span>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="800"
-              value={posY}
-              disabled={!file}
-              onChange={(e) => setPosY(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E] disabled:opacity-30"
-            />
           </div>
 
-          {/* Signature Scale slider */}
+          {/* Scale slider */}
           <div className="flex flex-col gap-2">
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400 font-medium">Signature Size Scale</span>
+              <span className="text-slate-400 font-medium">Signature Scaling</span>
               <span className="text-teal-400 font-semibold font-mono">{sigScale}%</span>
             </div>
             <input
               type="range"
               min="30"
-              max="250"
+              max="200"
               value={sigScale}
               disabled={!file}
               onChange={(e) => setSigScale(parseInt(e.target.value))}
@@ -388,18 +510,15 @@ export const PDFSignTool = () => {
               {success ? <Check size={18} /> : <PenTool size={18} />}
               <span>{loading ? 'Embedding...' : success ? 'Signed & Saved!' : 'Stamp Signature'}</span>
             </button>
-            <p className="text-[10px] text-slate-500 text-center leading-relaxed">
-              Ensure you lock the signature canvas and upload a PDF document first.
-            </p>
           </div>
         </div>
 
         {/* Local Processing Banner */}
-        <div className="bg-[#151C2C]/50 border border-slate-800 rounded-2xl p-4 flex gap-3 text-slate-400 text-left">
+        <div className="bg-[#151C2C]/50 border border-slate-800 rounded-2xl p-4 flex gap-3 text-slate-400">
           <ShieldAlert size={20} className="text-[#4E8E5E] shrink-0 mt-0.5" />
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-semibold text-slate-300">100% Secure Client-Side Signature</span>
-            <span className="text-[10px] leading-relaxed">Your drawing and document buffers are composited entirely within local memory via array buffer mapping.</span>
+            <span className="text-xs font-semibold text-slate-300">Draggable Offline Placing</span>
+            <span className="text-[10px] leading-relaxed">Drag the watermark box directly inside the layout wrapper. Coordinates map perfectly to PDF points.</span>
           </div>
         </div>
       </div>
