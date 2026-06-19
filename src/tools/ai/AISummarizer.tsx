@@ -20,22 +20,17 @@ export const AISummarizerTool = () => {
 
     try {
       const typePrompt = summaryType === 'bullets' 
-        ? 'Generate a list of key bullet points summarizing the text.'
-        : 'Generate a single concise paragraph summarizing the text.';
+        ? 'bullet points'
+        : 'a single paragraph';
 
-      const runPrompt = `<|im_start|>system\nYou are a precise text summarizer. ${typePrompt} Keep it to-the-point.<|im_end|>\n<|im_start|>user\nSummarize this text: "${inputText}"\n<|im_end|>\n<|im_start|>assistant\n`;
+      const runPrompt = `summarize in ${typePrompt}: "${inputText}"`;
 
       const result = await aiService.generateText(runPrompt, 100, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      let cleanResult = result;
-      const lastAss = result.lastIndexOf('<|im_start|>assistant');
-      if (lastAss !== -1) {
-        cleanResult = result.substring(lastAss + 21);
-      }
-      cleanResult = cleanResult.replace(/<\|im_end\|>/g, '').replace(/<\|im_start\|>/g, '').trim();
+      const cleanResult = result.trim();
 
       setSummary(cleanResult || 'A detailed summary representing refined local semantic structures.');
     } catch (err: any) {
@@ -54,7 +49,7 @@ export const AISummarizerTool = () => {
           <span>Local AI Text Summarizer</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          Qwen LLM engine
+          LaMini-Flan-T5 Engine
         </span>
       </div>
 

@@ -90,22 +90,14 @@ export const AICaptionTool = () => {
     setStatusMsg('Initializing LLM...');
 
     try {
-      const prompt = `<|im_start|>system\nYou are an artistic visual describer. Write a single elegant, poetic sentence describing the image based on its properties. Keep it to one sentence.<|im_end|>\n<|im_start|>user\nWrite a caption for a file named "${file.name}" with the following characteristics:\n- Layout/Aspect Ratio: ${metrics.aspectRatio}\n- Lighting: ${metrics.brightness}\n- Dominant Tones: ${metrics.colors}\n<|im_end|>\n<|im_start|>assistant\n`;
+      const prompt = `Write a poetic caption for an image. File name: "${file.name}". Layout: ${metrics.aspectRatio}. Lighting: ${metrics.brightness}. Colors: ${metrics.colors}.`;
 
       const result = await aiService.generateText(prompt, 60, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      let cleanCaption = result;
-      const lastAss = result.lastIndexOf('<|im_start|>assistant');
-      if (lastAss !== -1) {
-        cleanCaption = result.substring(lastAss + 21);
-      }
-      cleanCaption = cleanCaption
-        .replace(/<\|im_end\|>/g, '')
-        .replace(/<\|im_start\|>/g, '')
-        .trim();
+      const cleanCaption = result.trim();
 
       setCaption(cleanCaption || 'A beautiful photography composition capturing refined local visual dimensions.');
     } catch (err: any) {
@@ -124,7 +116,7 @@ export const AICaptionTool = () => {
           <span>Local Image Caption Generator</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          Canvas Analyzer + Qwen LLM
+          Canvas Analyzer + LaMini T5
         </span>
       </div>
 

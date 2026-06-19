@@ -27,7 +27,7 @@ export const LocalAIChatTool = () => {
   const loadModel = async () => {
     setStatusMsg('Initializing model...');
     try {
-      await aiService.initLLM('Xenova/LaMini-GPT-124M', (status, prog) => {
+      await aiService.initLLM('Xenova/LaMini-Flan-T5-78M', (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
@@ -50,37 +50,15 @@ export const LocalAIChatTool = () => {
         await loadModel();
       }
 
-      // Format conversation prompt matching LaMini instruction format
-      const history = messages
-        .slice(-4)
-        .map(m => `${m.sender === 'user' ? 'User' : 'Assistant'}: ${m.text}`)
-        .join('\n');
-      
-      const prompt = `Below is an instruction that describes a task. Write a response that appropriately completes the request.
+      // Format direct instruction for Seq2Seq T5 model
+      const prompt = `You are Panda, a helpful offline AI Assistant. Respond briefly and friendly. User query: ${userText}`;
 
-### Instruction:
-You are Panda, a helpful local offline AI Assistant. Answer the user's latest query based on history if available. Keep your response brief, friendly, and concise.
-
-${history ? `History:\n${history}\n` : ''}User: ${userText}
-
-### Response:`;
-
-      const response = await aiService.generateText(prompt, 80, (status, prog) => {
+      const response = await aiService.generateText(prompt, 120, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      // Extract response content
-      let cleanResponse = response;
-      const responseIndex = response.lastIndexOf('### Response:');
-      if (responseIndex !== -1) {
-        cleanResponse = response.substring(responseIndex + 13);
-      }
-      cleanResponse = cleanResponse.trim();
-
-      if (!cleanResponse) {
-        cleanResponse = "I processed your request, but returned an empty response. Please try again.";
-      }
+      const cleanResponse = response.trim() || "I processed your request, but returned an empty response. Please try again.";
 
       setMessages(prev => [...prev, { sender: 'ai', text: cleanResponse }]);
     } catch (err: any) {
@@ -99,7 +77,7 @@ ${history ? `History:\n${history}\n` : ''}User: ${userText}
           <span>Local Panda Assistant</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          LaMini-GPT (124M parameters)
+          LaMini-Flan-T5 (78M parameters)
         </span>
       </div>
 

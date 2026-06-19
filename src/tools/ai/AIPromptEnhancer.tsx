@@ -26,19 +26,14 @@ export const AIPromptEnhancerTool = () => {
 
     try {
       const template = styleTemplates[style];
-      const runPrompt = `<|im_start|>system\nYou are an expert prompt engineer. Expand the user's short prompt into ${template} Keep it to a single coherent paragraph.<|im_end|>\n<|im_start|>user\nExpand: "${prompt}"\n<|im_end|>\n<|im_start|>assistant\n`;
+      const runPrompt = `Expand this prompt idea into a detailed ${template}: "${prompt}"`;
 
       const result = await aiService.generateText(runPrompt, 120, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      let cleanResult = result;
-      const lastAss = result.lastIndexOf('<|im_start|>assistant');
-      if (lastAss !== -1) {
-        cleanResult = result.substring(lastAss + 21);
-      }
-      cleanResult = cleanResult.replace(/<\|im_end\|>/g, '').replace(/<\|im_start\|>/g, '').trim();
+      const cleanResult = result.trim();
 
       setEnhanced(cleanResult || 'A beautiful, cinematic render representing refined prompt layout details.');
     } catch (err: any) {
@@ -57,7 +52,7 @@ export const AIPromptEnhancerTool = () => {
           <span>Local AI Prompt Enhancer</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          Qwen LLM engine
+          LaMini-Flan-T5 Engine
         </span>
       </div>
 

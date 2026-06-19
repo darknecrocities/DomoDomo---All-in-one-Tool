@@ -19,27 +19,14 @@ export const AITextRewriterTool = () => {
     setStatusMsg('Initializing LLM...');
 
     try {
-      const tonePrompt = tone === 'professional' 
-        ? 'Rewrite the text in a formal, professional, business-ready tone.'
-        : tone === 'casual'
-        ? 'Rewrite the text in a friendly, casual, conversational tone.'
-        : tone === 'funny'
-        ? 'Rewrite the text with a humorous, witty, and funny twist.'
-        : 'Rewrite the text in extremely simple, plain English that a child can understand.';
-
-      const runPrompt = `<|im_start|>system\nYou are a professional text rewriter. ${tonePrompt} Keep the core meaning the same but change the structure and vocabulary. Return ONLY the rewritten text.<|im_end|>\n<|im_start|>user\nRewrite: "${inputText}"\n<|im_end|>\n<|im_start|>assistant\n`;
+      const runPrompt = `Rewrite this in a ${tone} tone: "${inputText}"`;
 
       const result = await aiService.generateText(runPrompt, 120, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      let cleanResult = result;
-      const lastAss = result.lastIndexOf('<|im_start|>assistant');
-      if (lastAss !== -1) {
-        cleanResult = result.substring(lastAss + 21);
-      }
-      cleanResult = cleanResult.replace(/<\|im_end\|>/g, '').replace(/<\|im_start\|>/g, '').trim();
+      const cleanResult = result.trim();
 
       setRewrittenText(cleanResult || 'A beautiful, rephrased statement representing refined local semantics.');
     } catch (err: any) {
@@ -58,7 +45,7 @@ export const AITextRewriterTool = () => {
           <span>Local AI Text Paraphraser</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          Qwen LLM engine
+          LaMini-Flan-T5 Engine
         </span>
       </div>
 

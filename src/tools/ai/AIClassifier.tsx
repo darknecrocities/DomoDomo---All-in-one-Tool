@@ -27,22 +27,19 @@ export const AIClassifierTool = () => {
         setSentiment(sentimentResult[0]);
       }
 
-      // 2. Run Category and Spam zero-shot classification using Qwen LLM
+      // 2. Run Category and Spam zero-shot classification using LaMini T5
       setStatusMsg('Analyzing categories via LLM...');
-      const prompt = `<|im_start|>system\nYou are a precise text classifier. Answer in exactly this format:\nCategory: [single-word topic like Tech, Sports, Finance, Health, or Entertainment]\nSpam: [Yes or No]\n<|im_end|>\n<|im_start|>user\nClassify this text: "${inputText}"\n<|im_end|>\n<|im_start|>assistant\n`;
+      const prompt = `Classify this text. Answer in exactly this format:
+Category: [single-word topic like Tech, Sports, Finance, Health, or Entertainment]
+Spam: [Yes or No]
+Text to classify: "${inputText}"`;
 
       const llmResult = await aiService.generateText(prompt, 40, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      // Parse LLM response
-      let cleanLlm = llmResult;
-      const lastAss = llmResult.lastIndexOf('<|im_start|>assistant');
-      if (lastAss !== -1) {
-        cleanLlm = llmResult.substring(lastAss + 21);
-      }
-      cleanLlm = cleanLlm.replace(/<\|im_end\|>/g, '').replace(/<\|im_start\|>/g, '').trim();
+      const cleanLlm = llmResult.trim();
 
       const lines = cleanLlm.split('\n');
       lines.forEach(line => {
@@ -73,7 +70,7 @@ export const AIClassifierTool = () => {
           <span>Local AI Text Classifier</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          DistilBERT + Qwen LLM
+          DistilBERT + LaMini T5
         </span>
       </div>
 

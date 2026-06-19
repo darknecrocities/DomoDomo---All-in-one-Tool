@@ -42,8 +42,8 @@ const makeProgressCallback = (callback?: LoadingProgressCallback) => {
 };
 
 export const aiService = {
-  // 1. Text Generation (LLM) Pipeline - LaMini-GPT-124M
-  async initLLM(modelName: string = 'Xenova/LaMini-GPT-124M', onProgress?: LoadingProgressCallback) {
+  // 1. Text Generation (LLM) Pipeline - LaMini-Flan-T5-78M
+  async initLLM(modelName: string = 'Xenova/LaMini-Flan-T5-78M', onProgress?: LoadingProgressCallback) {
     if (textGenPipeline) {
       if (onProgress) onProgress('Ready', 100);
       return textGenPipeline;
@@ -52,21 +52,21 @@ export const aiService = {
     const { pipeline } = await getTransformers();
     onProgress?.('Loading LLM text generation pipeline...', 10);
     
-    textGenPipeline = await pipeline('text-generation', modelName, {
+    // Use text2text-generation for Seq2Seq models like T5
+    textGenPipeline = await pipeline('text2text-generation', modelName, {
       progress_callback: makeProgressCallback(onProgress)
     });
     
     return textGenPipeline;
   },
 
-  async generateText(prompt: string, maxTokens: number = 80, onProgress?: LoadingProgressCallback): Promise<string> {
-    const pipe = await this.initLLM('Xenova/LaMini-GPT-124M', onProgress);
+  async generateText(prompt: string, maxTokens: number = 120, onProgress?: LoadingProgressCallback): Promise<string> {
+    const pipe = await this.initLLM('Xenova/LaMini-Flan-T5-78M', onProgress);
     
     const output = await pipe(prompt, {
       max_new_tokens: maxTokens,
       temperature: 0.2,
-      repetition_penalty: 1.2,
-      do_sample: false
+      repetition_penalty: 1.2
     });
     
     if (Array.isArray(output) && output.length > 0) {

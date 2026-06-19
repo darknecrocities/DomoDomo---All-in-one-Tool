@@ -29,19 +29,14 @@ export const AITranslatorTool = () => {
     setStatusMsg('Initializing LLM...');
 
     try {
-      const runPrompt = `<|im_start|>system\nYou are a professional translator. Translate the user's text into ${targetLang}. Return ONLY the direct translation. Do not include notes or commentary.<|im_end|>\n<|im_start|>user\nTranslate: "${inputText}"\n<|im_end|>\n<|im_start|>assistant\n`;
+      const runPrompt = `translate to ${targetLang}: "${inputText}"`;
 
       const result = await aiService.generateText(runPrompt, 120, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      let cleanResult = result;
-      const lastAss = result.lastIndexOf('<|im_start|>assistant');
-      if (lastAss !== -1) {
-        cleanResult = result.substring(lastAss + 21);
-      }
-      cleanResult = cleanResult.replace(/<\|im_end\|>/g, '').replace(/<\|im_start\|>/g, '').trim();
+      const cleanResult = result.trim();
 
       setTranslatedText(cleanResult || 'A beautiful translation representing refined local translation properties.');
     } catch (err: any) {
@@ -60,7 +55,7 @@ export const AITranslatorTool = () => {
           <span>Local AI Language Translator</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          Qwen LLM engine
+          LaMini-Flan-T5 Engine
         </span>
       </div>
 
