@@ -42,8 +42,8 @@ const makeProgressCallback = (callback?: LoadingProgressCallback) => {
 };
 
 export const aiService = {
-  // 1. Text Generation (LLM) Pipeline - Qwen1.5-0.5B-Chat
-  async initLLM(modelName: string = 'Xenova/Qwen1.5-0.5B-Chat', onProgress?: LoadingProgressCallback) {
+  // 1. Text Generation (LLM) Pipeline - LaMini-GPT-124M
+  async initLLM(modelName: string = 'Xenova/LaMini-GPT-124M', onProgress?: LoadingProgressCallback) {
     if (textGenPipeline) {
       if (onProgress) onProgress('Ready', 100);
       return textGenPipeline;
@@ -59,14 +59,14 @@ export const aiService = {
     return textGenPipeline;
   },
 
-  async generateText(prompt: string, maxTokens: number = 100, onProgress?: LoadingProgressCallback): Promise<string> {
-    const pipe = await this.initLLM('Xenova/Qwen1.5-0.5B-Chat', onProgress);
+  async generateText(prompt: string, maxTokens: number = 80, onProgress?: LoadingProgressCallback): Promise<string> {
+    const pipe = await this.initLLM('Xenova/LaMini-GPT-124M', onProgress);
     
     const output = await pipe(prompt, {
       max_new_tokens: maxTokens,
-      temperature: 0.7,
-      do_sample: true,
-      top_k: 50,
+      temperature: 0.2,
+      repetition_penalty: 1.2,
+      do_sample: false
     });
     
     if (Array.isArray(output) && output.length > 0) {

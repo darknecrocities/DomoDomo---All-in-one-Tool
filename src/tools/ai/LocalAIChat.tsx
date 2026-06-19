@@ -27,7 +27,7 @@ export const LocalAIChatTool = () => {
   const loadModel = async () => {
     setStatusMsg('Initializing model...');
     try {
-      await aiService.initLLM('Xenova/Qwen1.5-0.5B-Chat', (status, prog) => {
+      await aiService.initLLM('Xenova/LaMini-GPT-124M', (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
@@ -50,30 +50,33 @@ export const LocalAIChatTool = () => {
         await loadModel();
       }
 
-      // Format conversation prompt matching Qwen 1.5 chat templates
-      const systemPrompt = `<|im_start|>system\nYou are Panda, a helpful local offline AI Assistant. Keep responses relatively brief and concise.<|im_end|>\n`;
-      const conversationPrompt = messages
-        .slice(-6) // Include last few turns for context
-        .map(m => `<|im_start|>${m.sender === 'user' ? 'user' : 'assistant'}\n${m.text}<|im_end|>`)
+      // Format conversation prompt matching LaMini instruction format
+      const history = messages
+        .slice(-4)
+        .map(m => `${m.sender === 'user' ? 'User' : 'Assistant'}: ${m.text}`)
         .join('\n');
       
-      const prompt = `${systemPrompt}${conversationPrompt}\n<|im_start|>user\n${userText}<|im_end|>\n<|im_start|>assistant\n`;
+      const prompt = `Below is an instruction that describes a task. Write a response that appropriately completes the request.
 
-      const response = await aiService.generateText(prompt, 120, (status, prog) => {
+### Instruction:
+You are Panda, a helpful local offline AI Assistant. Answer the user's latest query based on history if available. Keep your response brief, friendly, and concise.
+
+${history ? `History:\n${history}\n` : ''}User: ${userText}
+
+### Response:`;
+
+      const response = await aiService.generateText(prompt, 80, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
       });
 
-      // Extract only the assistant's new response
+      // Extract response content
       let cleanResponse = response;
-      const lastAssistantIndex = response.lastIndexOf('<|im_start|>assistant');
-      if (lastAssistantIndex !== -1) {
-        cleanResponse = response.substring(lastAssistantIndex + 21);
+      const responseIndex = response.lastIndexOf('### Response:');
+      if (responseIndex !== -1) {
+        cleanResponse = response.substring(responseIndex + 13);
       }
-      cleanResponse = cleanResponse
-        .replace(/<\|im_end\|>/g, '')
-        .replace(/<\|im_start\|>/g, '')
-        .trim();
+      cleanResponse = cleanResponse.trim();
 
       if (!cleanResponse) {
         cleanResponse = "I processed your request, but returned an empty response. Please try again.";
@@ -96,7 +99,7 @@ export const LocalAIChatTool = () => {
           <span>Local Panda Assistant</span>
         </h3>
         <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          Qwen 1.5 (350M parameters)
+          LaMini-GPT (124M parameters)
         </span>
       </div>
 
@@ -108,7 +111,7 @@ export const LocalAIChatTool = () => {
             <span>LLM Download & initialization required</span>
           </div>
           <p className="text-[11px] text-slate-400 text-center max-w-sm">
-            This will download the AI model directly to your browser's local cache (~350MB). Subsequent visits will load instantly without downloading.
+            This will download the AI model directly to your browser's local cache (~240MB). Subsequent visits will load instantly without downloading.
           </p>
           {statusMsg ? (
             <div className="w-full flex flex-col gap-2.5 items-center mt-1">
