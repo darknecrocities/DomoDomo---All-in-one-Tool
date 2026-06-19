@@ -94,27 +94,126 @@ export const extractPrintableStrings = (buffer: ArrayBuffer, minLength: number =
   return result || 'No readable text content found in binary streams.';
 };
 
-export const parseZipFiles = (buffer: ArrayBuffer): string[] => {
+export interface ZipEntry {
+  filename: string;
+  compressedSize: number;
+  uncompressedSize: number;
+  compressionMethod: number;
+  dataOffset: number;
+}
+
+export const parseZipEntries = (buffer: ArrayBuffer): ZipEntry[] => {
   const arr = new Uint8Array(buffer);
-  const files: string[] = [];
-  let i = 0;
-  while (i < arr.length - 30) {
-    if (arr[i] === 0x50 && arr[i+1] === 0x4B && arr[i+2] === 0x03 && arr[i+3] === 0x04) {
-      const filenameLen = arr[i + 26] + (arr[i + 27] << 8);
-      const extraLen = arr[i + 28] + (arr[i + 29] << 8);
-      const filenameStart = i + 30;
-      if (filenameStart + filenameLen <= arr.length) {
-        const filenameBytes = arr.slice(filenameStart, filenameStart + filenameLen);
-        const filename = new TextDecoder().decode(filenameBytes);
-        const uncompressedSize = arr[i + 22] + (arr[i + 23] << 8) + (arr[i + 24] << 16) + (arr[i + 25] << 24);
-        if (filename && !filename.endsWith('/')) {
-          files.push(`${filename} (${(uncompressedSize / 1024).toFixed(2)} KB)`);
-        }
-      }
-      i += 30 + filenameLen + extraLen;
-    } else {
-      i++;
+  const entries: ZipEntry[] = [];
+  
+  // Try Central Directory first
+  let eocdOffset = -1;
+  for (let i = arr.length - 22; i >= 0; i--) {
+    if (arr[i] === 0x50 && arr[i+1] === 0x4B && arr[i+2] === 0x05 && arr[i+3] === 0x06) {
+      eocdOffset = i;
+      break;
     }
   }
-  return files.length > 0 ? files : ['No entries found or zip format unrecognized.'];
+  
+  if (eocdOffset !== -1) {
+    const cdSize = arr[eocdOffset + 12] + (arr[eocdOffset + 13] << 8) + (arr[eocdOffset + 14] << 16) + (arr[eocdOffset + 15] << 24);
+    const cdOffset = arr[eocdOffset + 16] + (arr[eocdOffset + 17] << 8) + (arr[eocdOffset + 18] << 16) + (arr[eocdOffset + 19] << 24);
+    
+    let i = cdOffset;
+    const cdEnd = cdOffset + cdSize;
+    while (i < cdEnd - 46 && i < arr.length - 46) {
+      if (arr[i] === 0x50 && arr[i+1] === 0x4B && arr[i+2] === 0x01 && arr[i+3] === 0x02) {
+        const method = arr[i + 10] + (arr[i + 11] << 8);
+        const compSize = arr[i + 20] + (arr[i + 21] << 8) + (arr[i + 22] << 16) + (arr[i + 23] << 24);
+        const uncompSize = arr[i + 24] + (arr[i + 25] << 8) + (arr[i + 26] << 16) + (arr[i + 27] << 24);
+        const nameLen = arr[i + 28] + (arr[i + 29] << 8);
+        const extraLen = arr[i + 30] + (arr[i + 31] << 8);
+        const commentLen = arr[i + 32] + (arr[i + 33] << 8);
+        const localHeaderOffset = arr[i + 42] + (arr[i + 43] << 8) + (arr[i + 44] << 16) + (arr[i + 45] << 24);
+        
+        if (localHeaderOffset + 30 <= arr.length) {
+          const filenameBytes = arr.slice(i + 46, i + 46 + nameLen);
+          const filename = new TextDecoder().decode(filenameBytes);
+          
+          const lhFilenameLen = arr[localHeaderOffset + 26] + (arr[localHeaderOffset + 27] << 8);
+          const lhExtraLen = arr[localHeaderOffset + 28] + (arr[localHeaderOffset + 29] << 8);
+          const dataOffset = localHeaderOffset + 30 + lhFilenameLen + lhExtraLen;
+          
+          entries.push({
+            filename,
+            compressedSize: compSize,
+            uncompressedSize: uncompSize,
+            compressionMethod: method,
+            dataOffset
+          });
+        }
+        i += 46 + nameLen + extraLen + commentLen;
+      } else {
+        break;
+      }
+    }
+  }
+  
+  if (entries.length === 0) {
+    let i = 0;
+    while (i < arr.length - 30) {
+      if (arr[i] === 0x50 && arr[i+1] === 0x4B && arr[i+2] === 0x03 && arr[i+3] === 0x04) {
+        const method = arr[i + 8] + (arr[i + 9] << 8);
+        const compSize = arr[i + 18] + (arr[i + 19] << 8) + (arr[i + 20] << 16) + (arr[i + 21] << 24);
+        const uncompSize = arr[i + 22] + (arr[i + 23] << 8) + (arr[i + 24] << 16) + (arr[i + 25] << 24);
+        const filenameLen = arr[i + 26] + (arr[i + 27] << 8);
+        const extraLen = arr[i + 28] + (arr[i + 29] << 8);
+        
+        const filenameStart = i + 30;
+        if (filenameStart + filenameLen <= arr.length) {
+          const filenameBytes = arr.slice(filenameStart, filenameStart + filenameLen);
+          const filename = new TextDecoder().decode(filenameBytes);
+          const dataOffset = i + 30 + filenameLen + extraLen;
+          
+          entries.push({
+            filename,
+            compressedSize: compSize,
+            uncompressedSize: uncompSize,
+            compressionMethod: method,
+            dataOffset
+          });
+        }
+        i += 30 + filenameLen + extraLen + compSize;
+      } else {
+        i++;
+      }
+    }
+  }
+  
+  return entries;
+};
+
+export const decompressZipEntry = async (buffer: ArrayBuffer, entry: ZipEntry): Promise<Uint8Array> => {
+  const arr = new Uint8Array(buffer);
+  if (entry.dataOffset + entry.compressedSize > arr.length) {
+    throw new Error('Compressed data out of bounds');
+  }
+  const data = arr.slice(entry.dataOffset, entry.dataOffset + entry.compressedSize);
+  
+  if (entry.compressionMethod === 0) {
+    return data;
+  } else if (entry.compressionMethod === 8) {
+    const ds = new DecompressionStream('deflate-raw');
+    const writer = ds.writable.getWriter();
+    writer.write(data);
+    writer.close();
+    
+    const response = new Response(ds.readable);
+    const decompressed = await response.arrayBuffer();
+    return new Uint8Array(decompressed);
+  } else {
+    throw new Error(`Unsupported compression method: ${entry.compressionMethod}`);
+  }
+};
+
+export const parseZipFiles = (buffer: ArrayBuffer): string[] => {
+  const entries = parseZipEntries(buffer);
+  return entries
+    .filter(e => !e.filename.endsWith('/'))
+    .map(e => `${e.filename} (${(e.uncompressedSize / 1024).toFixed(2)} KB)`);
 };
