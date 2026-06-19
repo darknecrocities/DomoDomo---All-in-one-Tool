@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
-import { Layers, Download, Loader2, Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Layers, Download, Loader2, Plus, Trash2, ArrowUp, ArrowDown, Settings, FileText } from 'lucide-react';
 
 interface AudioItem {
   id: string;
@@ -20,7 +20,9 @@ const encodeWav = (buffer: AudioBuffer): ArrayBuffer => {
   const dataSize = numSamples * blockAlign;
   const ab = new ArrayBuffer(44 + dataSize);
   const view = new DataView(ab);
-  const write = (off: number, str: string) => { for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i)); };
+  const write = (off: number, str: string) => { 
+    for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i)); 
+  };
   write(0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); write(8, 'WAVE'); write(12, 'fmt ');
   view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, ch, true);
   view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * blockAlign, true);
@@ -41,7 +43,8 @@ export const AudioMergeTool = () => {
   const [tracks, setTracks] = useState<AudioItem[]>([]);
   const [mode, setMode] = useState<'sequential' | 'overlay'>('sequential');
   const [outputFormat, setOutputFormat] = useState<'wav' | 'ogg'>('wav');
-  const [crossfade, setCrossfade] = useState(0);
+  const [crossfade, setCrossfade] = useState(0.5);
+  const [customName, setCustomName] = useState('merged_output');
   const [merging, setMerging] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -49,7 +52,15 @@ export const AudioMergeTool = () => {
     if (!files) return;
     const items: AudioItem[] = Array.from(files).map(f => {
       const url = URL.createObjectURL(f);
-      const item: AudioItem = { id: `${Date.now()}-${Math.random()}`, file: f, url, duration: 0, volume: 1, trimStart: 0, trimEnd: null };
+      const item: AudioItem = { 
+        id: `${Date.now()}-${Math.random()}`, 
+        file: f, 
+        url, 
+        duration: 0, 
+        volume: 1.0, 
+        trimStart: 0, 
+        trimEnd: null 
+      };
       const audio = new Audio(url);
       audio.addEventListener('loadedmetadata', () => {
         setTracks(prev => prev.map(t => t.id === item.id ? { ...t, duration: audio.duration, trimEnd: audio.duration } : t));
@@ -97,7 +108,7 @@ export const AudioMergeTool = () => {
         const offCtx = new OfflineAudioContext(2, 1, sampleRate);
         const decoded = await offCtx.decodeAudioData(ab);
 
-        // Trim
+        // Trim segment
         const s = Math.floor(tracks[i].trimStart * decoded.sampleRate);
         const e = Math.floor((tracks[i].trimEnd ?? decoded.duration) * decoded.sampleRate);
         const len = e - s;
@@ -122,7 +133,6 @@ export const AudioMergeTool = () => {
       const channels = 2;
 
       if (mode === 'sequential') {
-        // Concatenate with optional crossfade
         const cfSamples = Math.floor(crossfade * sampleRate);
         let totalSamples = 0;
         buffers.forEach((b, i) => {
@@ -142,6 +152,7 @@ export const AudioMergeTool = () => {
           const g = renderCtx.createGain();
           src.connect(g);
           g.connect(renderCtx.destination);
+          
           const startSec = offset / sampleRate;
           if (crossfade > 0 && i > 0) {
             g.gain.setValueAtTime(0, startSec);
@@ -158,7 +169,7 @@ export const AudioMergeTool = () => {
         setProgress(75);
         finalBuffer = await renderCtx.startRendering();
       } else {
-        // Overlay / mix
+        // Overlay mix
         const maxLen = Math.max(...buffers.map(b => b.length));
         const renderCtx = new OfflineAudioContext(channels, maxLen, sampleRate);
         for (let i = 0; i < buffers.length; i++) {
@@ -180,9 +191,11 @@ export const AudioMergeTool = () => {
       }
 
       setProgress(90);
+      const targetFileName = customName.trim() ? customName.trim() : 'merged_composition';
+
       if (outputFormat === 'wav') {
         const wavBuf = encodeWav(finalBuffer);
-        triggerBlobDownload(new Blob([wavBuf], { type: 'audio/wav' }), 'merged_audio.wav');
+        triggerBlobDownload(new Blob([wavBuf], { type: 'audio/wav' }), `${targetFileName}.wav`);
       } else {
         const liveCtx = new AudioContext();
         const dest = liveCtx.createMediaStreamDestination();
@@ -194,7 +207,7 @@ export const AudioMergeTool = () => {
         const chunks: BlobPart[] = [];
         mr.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
         mr.onstop = () => {
-          triggerBlobDownload(new Blob(chunks, { type: 'audio/ogg' }), 'merged_audio.ogg');
+          triggerBlobDownload(new Blob(chunks, { type: 'audio/ogg' }), `${targetFileName}.ogg`);
           liveCtx.close();
           setMerging(false);
           setProgress(0);
@@ -212,32 +225,35 @@ export const AudioMergeTool = () => {
       console.error(err);
       setMerging(false);
     }
-  }, [tracks, mode, crossfade, outputFormat]);
+  }, [tracks, mode, crossfade, outputFormat, customName]);
 
   const fmtDur = (s: number) => s > 0 ? `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}` : '…';
 
   return (
-    <div className="max-w-2xl mx-auto glass-card p-6 flex flex-col gap-5 text-left">
+    <div className="max-w-3xl mx-auto glass-card p-6 flex flex-col gap-6 text-left">
       <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
         <Layers size={18} className="text-teal-400" />
-        <h3 className="font-bold text-teal-400 text-sm">Audio Merger / Mixer</h3>
-        <span className="ml-auto text-xs text-slate-500 bg-slate-900 px-2 py-0.5 rounded-full">OfflineAudioContext</span>
+        <div>
+          <h3 className="font-bold text-teal-400 text-sm">Audio Merger & Mixer</h3>
+          <p className="text-[10px] text-slate-500">Concatenate audios end-to-end or layer them simultaneously into a mix</p>
+        </div>
+        <span className="ml-auto text-[10px] text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">Timeline Builder</span>
       </div>
 
-      <label className="flex items-center gap-3 py-4 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer hover:border-teal-500/50 transition-colors justify-center">
+      <label className="flex items-center gap-3 py-6 border-2 border-dashed border-slate-700/60 rounded-xl cursor-pointer hover:border-teal-500/50 hover:bg-slate-950/20 transition-all justify-center">
         <Plus size={18} className="text-teal-400" />
-        <span className="text-slate-300 text-sm font-medium">Add Audio Files</span>
+        <span className="text-slate-300 text-sm font-semibold">Select Audio Tracks</span>
         <input type="file" multiple accept="audio/*" className="hidden" onChange={(e) => addFiles(e.target.files)} />
       </label>
 
-      {/* Mode toggle */}
+      {/* Mode selectors */}
       <div className="flex flex-col gap-2">
-        <label className="text-xs text-slate-400 font-medium">Merge Mode</label>
-        <div className="flex gap-2">
+        <label className="text-[10px] text-slate-500 uppercase font-semibold">Merge Operation Mode</label>
+        <div className="grid grid-cols-2 gap-2">
           {(['sequential', 'overlay'] as const).map(m => (
             <button key={m} onClick={() => setMode(m)}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg border capitalize transition-all ${
-                mode === m ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-slate-700 bg-slate-900 text-slate-400'
+              className={`py-2 text-xs font-bold rounded-lg border transition-all ${
+                mode === m ? 'border-teal-500 bg-teal-500/10 text-teal-400 font-bold' : 'border-slate-800 bg-slate-900 text-slate-400'
               }`}>
               {m === 'sequential' ? '▶ Sequential (End to End)' : '⊕ Overlay (Mix Tracks)'}
             </button>
@@ -245,87 +261,122 @@ export const AudioMergeTool = () => {
         </div>
       </div>
 
-      {/* Track list */}
+      {/* Visual Timeline Layout representation */}
       {tracks.length > 0 && (
-        <div className="flex flex-col gap-2">
-          {tracks.map((t, i) => (
-            <div key={t.id} className="bg-slate-900/80 rounded-lg p-3 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-teal-400 font-bold text-xs w-5">#{i + 1}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs text-slate-200 font-medium truncate">{t.file.name}</div>
-                  <div className="text-xs text-slate-500">{fmtDur(t.duration)}</div>
+        <div className="flex flex-col gap-2 bg-slate-950/45 p-3 rounded-xl border border-slate-850">
+          <span className="text-[10px] text-slate-500 uppercase font-semibold">Visual Arrangement Preview</span>
+          <div className={`flex ${mode === 'sequential' ? 'flex-row overflow-x-auto min-h-[50px] items-center' : 'flex-col gap-1.5'} p-2 rounded bg-slate-900/60`}>
+            {tracks.map((t, idx) => {
+              const weight = t.duration || 5;
+              const relativeWidth = mode === 'sequential' ? `${Math.max(10, Math.min(60, weight * 4))}%` : '100%';
+              return (
+                <div key={t.id} className="text-[10px] p-2 bg-teal-950/30 border border-teal-800/40 text-teal-400 rounded flex items-center justify-between truncate" style={{ width: relativeWidth }}>
+                  <span className="font-semibold truncate">#{idx + 1}: {t.file.name}</span>
+                  <span className="text-[9px] font-mono shrink-0 ml-2">({fmtDur(t.duration)})</span>
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <button onClick={() => moveTrack(t.id, -1)} disabled={i === 0} className="p-1 text-slate-400 hover:text-white disabled:opacity-30"><ArrowUp size={12} /></button>
-                  <button onClick={() => moveTrack(t.id, 1)} disabled={i === tracks.length - 1} className="p-1 text-slate-400 hover:text-white disabled:opacity-30"><ArrowDown size={12} /></button>
-                  <button onClick={() => removeTrack(t.id)} className="p-1 text-red-400 hover:text-red-300"><Trash2 size={12} /></button>
-                </div>
-              </div>
-              <div className="flex gap-3 text-xs">
-                <div className="flex flex-col gap-0.5 flex-1">
-                  <label className="text-slate-500">Volume: {Math.round(t.volume * 100)}%</label>
-                  <input type="range" min={0} max={2} step={0.05} value={t.volume}
-                    onChange={(e) => updateTrack(t.id, 'volume', parseFloat(e.target.value))}
-                    className="w-full accent-teal-500" />
-                </div>
-                {t.duration > 0 && (
-                  <>
-                    <div className="flex flex-col gap-0.5 flex-1">
-                      <label className="text-slate-500">Start: {t.trimStart.toFixed(1)}s</label>
-                      <input type="range" min={0} max={t.duration} step={0.1} value={t.trimStart}
-                        onChange={(e) => updateTrack(t.id, 'trimStart', parseFloat(e.target.value))}
-                        className="w-full accent-teal-500" />
-                    </div>
-                    <div className="flex flex-col gap-0.5 flex-1">
-                      <label className="text-slate-500">End: {(t.trimEnd ?? t.duration).toFixed(1)}s</label>
-                      <input type="range" min={0} max={t.duration} step={0.1} value={t.trimEnd ?? t.duration}
-                        onChange={(e) => updateTrack(t.id, 'trimEnd', parseFloat(e.target.value))}
-                        className="w-full accent-teal-500" />
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       )}
 
-      {/* Settings */}
-      <div className="grid grid-cols-2 gap-3 bg-slate-900/50 rounded-lg p-3">
-        {mode === 'sequential' && (
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-slate-400">Crossfade: {crossfade.toFixed(1)}s</label>
-            <input type="range" min={0} max={5} step={0.1} value={crossfade}
-              onChange={(e) => setCrossfade(parseFloat(e.target.value))} className="w-full accent-teal-500" />
+      {/* Track listing */}
+      {tracks.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <span className="text-[10px] text-slate-500 uppercase font-semibold">Track Deck settings</span>
+          <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1">
+            {tracks.map((t, i) => (
+              <div key={t.id} className="bg-slate-900/80 border border-slate-850 rounded-xl p-4 flex flex-col gap-3 relative">
+                <div className="flex items-center gap-2">
+                  <span className="text-teal-400 font-extrabold text-xs w-6 h-6 flex items-center justify-center bg-slate-950 rounded-full border border-slate-800">#{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-slate-200 font-semibold truncate">{t.file.name}</div>
+                    <div className="text-[10px] text-slate-500">Track length: {fmtDur(t.duration)}</div>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <button onClick={() => moveTrack(t.id, -1)} disabled={i === 0} className="p-1.5 text-slate-400 hover:text-white disabled:opacity-30"><ArrowUp size={13} /></button>
+                    <button onClick={() => moveTrack(t.id, 1)} disabled={i === tracks.length - 1} className="p-1.5 text-slate-400 hover:text-white disabled:opacity-30"><ArrowDown size={13} /></button>
+                    <button onClick={() => removeTrack(t.id)} className="p-1.5 text-rose-400 hover:text-rose-300"><Trash2 size={13} /></button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] bg-slate-950/40 p-2.5 rounded-lg">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-slate-500">Volume Balance: {Math.round(t.volume * 100)}%</label>
+                    <input type="range" min={0} max={2.0} step={0.05} value={t.volume}
+                      onChange={(e) => updateTrack(t.id, 'volume', parseFloat(e.target.value))}
+                      className="w-full accent-teal-500" />
+                  </div>
+                  {t.duration > 0 && (
+                    <>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-slate-500">Trim From: {t.trimStart.toFixed(1)}s</label>
+                        <input type="range" min={0} max={t.duration} step={0.1} value={t.trimStart}
+                          onChange={(e) => updateTrack(t.id, 'trimStart', parseFloat(e.target.value))}
+                          className="w-full accent-teal-500" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-slate-500">Trim To: {(t.trimEnd ?? t.duration).toFixed(1)}s</label>
+                        <input type="range" min={0} max={t.duration} step={0.1} value={t.trimEnd ?? t.duration}
+                          onChange={(e) => updateTrack(t.id, 'trimEnd', parseFloat(e.target.value))}
+                          className="w-full accent-teal-500" />
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
+      )}
+
+      {/* Global Config Settings */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/40 border border-slate-850 p-4 rounded-xl items-center">
+        {mode === 'sequential' ? (
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] text-slate-550 uppercase font-semibold flex items-center gap-1"><Settings size={11} /> Crossfade overlap</label>
+            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+              <span>0.0s</span>
+              <span className="text-teal-400 font-semibold">{crossfade.toFixed(1)}s</span>
+              <span>5.0s</span>
+            </div>
+            <input type="range" min={0} max={5} step={0.1} value={crossfade}
+              onChange={(e) => setCrossfade(parseFloat(e.target.value))} className="w-full accent-teal-500 mt-1" />
+          </div>
+        ) : (
+          <div className="text-[10px] text-slate-500 italic">No crossfade options available in Overlay mode</div>
         )}
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-slate-400">Output Format</label>
-          <div className="flex gap-2">
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[10px] text-slate-550 uppercase font-semibold">Save File Format</label>
+          <div className="grid grid-cols-2 gap-1.5">
             {(['wav', 'ogg'] as const).map(f => (
               <button key={f} onClick={() => setOutputFormat(f)}
-                className={`flex-1 py-1.5 text-xs font-bold rounded uppercase border transition-all ${
-                  outputFormat === f ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-slate-700 bg-slate-800 text-slate-400'
+                className={`py-1.5 text-[10px] font-bold rounded uppercase border transition-all ${
+                  outputFormat === f ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-slate-800 bg-slate-950 text-slate-400'
                 }`}>{f}</button>
             ))}
           </div>
         </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[10px] text-slate-550 uppercase font-semibold flex items-center gap-1"><FileText size={11} /> Target Filename</label>
+          <input type="text" value={customName} onChange={(e) => setCustomName(e.target.value)} placeholder="Target file name" className="bg-slate-950 border border-slate-850 rounded px-2.5 py-1.5 text-slate-300 text-xs font-mono" />
+        </div>
       </div>
 
       {merging && (
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-xs text-slate-400"><span>Merging…</span><span>{progress.toFixed(0)}%</span></div>
-          <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-            <div className="h-full bg-teal-500 transition-all" style={{ width: `${progress}%` }} />
+        <div className="flex flex-col gap-1 mt-1">
+          <div className="flex justify-between text-[10px] text-slate-500 font-semibold uppercase"><span>Blending audio matrices…</span><span>{progress.toFixed(0)}%</span></div>
+          <div className="h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-850">
+            <div className="h-full bg-teal-500 transition-all duration-300" style={{ width: `${progress}%` }} />
           </div>
         </div>
       )}
 
       <button onClick={handleMerge} disabled={merging || tracks.length < 1}
-        className="btn-primary flex items-center justify-center gap-2 py-2.5 text-xs font-bold disabled:opacity-50">
+        className="btn-primary flex items-center justify-center gap-2 py-2.5 text-xs font-bold disabled:opacity-50 mt-1">
         {merging ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-        {merging ? `Merging… ${progress.toFixed(0)}%` : `Merge ${tracks.length} Track${tracks.length !== 1 ? 's' : ''}`}
+        {merging ? `Processing merge (${progress.toFixed(0)}%)` : `Export Combined Track (${tracks.length})`}
       </button>
     </div>
   );

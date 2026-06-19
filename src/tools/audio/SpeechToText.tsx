@@ -1,8 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { triggerTextDownload, handleTextCopy } from '../../utils/sharedHelpers';
-import { Mic, Square, Download, Copy, Check, Globe, Upload, Loader2 } from 'lucide-react';
+import { Mic, Square, Download, Copy, Check, Globe, Upload, Loader2, Search, Edit3, Trash2 } from 'lucide-react';
 
-interface Transcript { text: string; timestamp: string; confidence: number; }
+interface Transcript { 
+  id: string;
+  text: string; 
+  timestamp: string; 
+  confidence: number; 
+}
 
 export const SpeechToTextTool = () => {
   const [mode, setMode] = useState<'live' | 'file'>('live');
@@ -15,9 +20,21 @@ export const SpeechToTextTool = () => {
   const [processing, setProcessing] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
+  // Search & Replace
+  const [searchWord, setSearchWord] = useState('');
+  const [replaceWord, setReplaceWord] = useState('');
+
+  // Audio meters
+  const [micLevel, setMicLevel] = useState(0);
+
+  // Refs
   const recRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const micAnalyserRef = useRef<AnalyserNode | null>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const micAnimRef = useRef<number>(0);
 
   const LANGUAGES = [
     { code: 'en-US', label: 'English (US)' },
@@ -42,14 +59,46 @@ export const SpeechToTextTool = () => {
     }
   }, [file]);
 
+  const monitorMic = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      micStreamRef.current = stream;
+      const ctx = new AudioContext();
+      audioCtxRef.current = ctx;
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 64;
+      micAnalyserRef.current = analyser;
+      const src = ctx.createMediaStreamSource(stream);
+      src.connect(analyser);
+
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      const update = () => {
+        if (!analyser) return;
+        analyser.getByteFrequencyData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) sum += data[i];
+        setMicLevel(Math.round((sum / data.length) / 2.55));
+        micAnimRef.current = requestAnimationFrame(update);
+      };
+      update();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const stopMicMonitoring = () => {
+    cancelAnimationFrame(micAnimRef.current);
+    micStreamRef.current?.getTracks().forEach(t => t.stop());
+    audioCtxRef.current?.close();
+    setMicLevel(0);
+  };
+
   const startLive = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Speech = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!Speech) {
       alert('Speech recognition is not supported in this browser. Use Chrome or Edge.');
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rec = new Speech() as any;
     recRef.current = rec;
     rec.lang = lang;
@@ -57,37 +106,43 @@ export const SpeechToTextTool = () => {
     rec.interimResults = true;
     rec.maxAlternatives = 1;
 
-    rec.onstart = () => setListening(true);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rec.oninterimresult = (e: any) => {
+    rec.onstart = () => {
+      setListening(true);
+      monitorMic();
+    };
+
+    rec.onresult = (e: any) => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (!e.results[i].isFinal) interim += e.results[i][0].transcript;
-      }
-      setInterimText(interim);
-    };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rec.onresult = (e: any) => {
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) {
+        if (!e.results[i].isFinal) {
+          interim += e.results[i][0].transcript;
+        } else {
           const result = e.results[i][0];
           const entry: Transcript = {
+            id: `${Date.now()}-${Math.random()}`,
             text: result.transcript,
             timestamp: new Date().toLocaleTimeString(),
             confidence: result.confidence,
           };
           setTranscripts(prev => [...prev, entry]);
-          setInterimText('');
+          interim = '';
         }
       }
+      setInterimText(interim);
     };
-    rec.onerror = () => { setListening(false); setInterimText(''); };
-    rec.onend = () => { setListening(false); setInterimText(''); };
+
+    rec.onerror = () => {
+      stopLive();
+    };
+    rec.onend = () => {
+      stopLive();
+    };
     rec.start();
   }, [lang, continuous]);
 
   const stopLive = () => {
     recRef.current?.stop();
+    stopMicMonitoring();
     setListening(false);
     setInterimText('');
   };
@@ -95,26 +150,24 @@ export const SpeechToTextTool = () => {
   const startFileTranscription = useCallback(() => {
     const audio = audioRef.current;
     if (!audio || !file) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Speech = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!Speech) { alert('Speech recognition not supported.'); return; }
 
     setProcessing(true);
     setTranscripts([]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rec = new Speech() as any;
     recRef.current = rec;
     rec.lang = lang;
     rec.continuous = true;
     rec.interimResults = false;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rec.onresult = (e: any) => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) {
           setTranscripts(prev => [...prev, {
+            id: `${Date.now()}-${Math.random()}`,
             text: e.results[i][0].transcript,
-            timestamp: `${audio.currentTime.toFixed(1)}s`,
+            timestamp: `${Math.floor(audio.currentTime / 60)}:${Math.floor(audio.currentTime % 60).toString().padStart(2, '0')}`,
             confidence: e.results[i][0].confidence,
           }]);
         }
@@ -123,13 +176,33 @@ export const SpeechToTextTool = () => {
     rec.onerror = () => { setProcessing(false); audio.pause(); };
     rec.onend = () => { setProcessing(false); };
 
-    // Route audio through speaker (recognition will pick up)
     audio.currentTime = 0;
     audio.play();
     rec.start();
   }, [file, lang]);
 
+  const handleEditSegment = (id: string, newText: string) => {
+    setTranscripts(prev => prev.map(t => t.id === id ? { ...t, text: newText } : t));
+  };
+
+  const handleDeleteSegment = (id: string) => {
+    setTranscripts(prev => prev.filter(t => t.id !== id));
+  };
+
+  const handleSearchReplace = () => {
+    if (!searchWord.trim()) return;
+    setTranscripts(prev => prev.map(t => ({
+      ...t,
+      text: t.text.replace(new RegExp(searchWord, 'gi'), replaceWord)
+    })));
+  };
+
   const allText = transcripts.map(t => t.text).join(' ');
+  const wordCount = allText.split(/\s+/).filter(Boolean).length;
+  const charCount = allText.length;
+  
+  // Calculate speech rate (approximate WPM assuming segments are recorded in real-time)
+  const wpm = transcripts.length > 1 ? Math.round(wordCount / (transcripts.length * 0.1)) : 0;
 
   const exportTranscript = () => {
     const content = transcripts.map(t =>
@@ -139,24 +212,58 @@ export const SpeechToTextTool = () => {
   };
 
   const exportSRT = () => {
-    const srt = transcripts.map((t, i) => `${i + 1}\n00:00:0${i * 3},000 --> 00:00:0${(i + 1) * 3},000\n${t.text}\n`).join('\n');
+    const srt = transcripts.map((t, i) => {
+      const idx = i + 1;
+      const sSec = i * 4;
+      const eSec = sSec + 3.5;
+      const formatTime = (seconds: number) => {
+        const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+        const ms = Math.floor((seconds % 1) * 1000).toString().padStart(3, '0');
+        return `${h}:${m}:${s},${ms}`;
+      };
+      return `${idx}\n${formatTime(sSec)} --> ${formatTime(eSec)}\n${t.text}\n`;
+    }).join('\n');
     triggerTextDownload(srt, 'transcript.srt');
   };
 
+  const exportVTT = () => {
+    const vtt = 'WEBVTT\n\n' + transcripts.map((t, i) => {
+      const sSec = i * 4;
+      const eSec = sSec + 3.5;
+      const formatTime = (seconds: number) => {
+        const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+        const ms = Math.floor((seconds % 1) * 1000).toString().padStart(3, '0');
+        return `${h}:${m}:${s}.${ms}`;
+      };
+      return `${formatTime(sSec)} --> ${formatTime(eSec)}\n${t.text}\n`;
+    }).join('\n');
+    triggerTextDownload(vtt, 'transcript.vtt');
+  };
+
+  const exportJSON = () => {
+    triggerTextDownload(JSON.stringify(transcripts, null, 2), 'transcript.json');
+  };
+
   return (
-    <div className="max-w-2xl mx-auto glass-card p-6 flex flex-col gap-5 text-left">
+    <div className="max-w-3xl mx-auto glass-card p-6 flex flex-col gap-6 text-left">
       <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
         <Mic size={18} className="text-teal-400" />
-        <h3 className="font-bold text-teal-400 text-sm">Speech to Text Transcriber</h3>
-        <span className="ml-auto text-xs text-slate-500 bg-slate-900 px-2 py-0.5 rounded-full">Web Speech API</span>
+        <div>
+          <h3 className="font-bold text-teal-400 text-sm">Speech to Text Transcriber</h3>
+          <p className="text-[10px] text-slate-500">Transcribe voice dictations or audio files locally with inline corrections</p>
+        </div>
+        <span className="ml-auto text-[10px] text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">Web Speech API</span>
       </div>
 
-      {/* Mode */}
       <div className="flex gap-2">
         {(['live', 'file'] as const).map(m => (
           <button key={m} onClick={() => { setMode(m); stopLive(); setTranscripts([]); }}
             className={`flex-1 py-2 text-xs font-bold rounded-lg border capitalize transition-all flex items-center justify-center gap-1.5 ${
-              mode === m ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-slate-700 bg-slate-900 text-slate-400'
+              mode === m ? 'border-teal-500 bg-teal-500/10 text-teal-400 font-bold' : 'border-slate-800 bg-slate-900 text-slate-400'
             }`}>
             {m === 'live' ? <Mic size={12} /> : <Upload size={12} />}
             {m === 'live' ? 'Live Microphone' : 'From Audio File'}
@@ -164,113 +271,171 @@ export const SpeechToTextTool = () => {
         ))}
       </div>
 
-      {/* Settings */}
-      <div className="grid grid-cols-2 gap-3 bg-slate-900/50 rounded-lg p-3">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-slate-400 flex items-center gap-1"><Globe size={10} /> Language</label>
-          <select value={lang} onChange={(e) => setLang(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-xs px-2 py-1.5 rounded text-slate-200">
-            {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
-          </select>
-        </div>
-        {mode === 'live' && (
-          <div className="flex items-center gap-2">
-            <input type="checkbox" id="continuous-mode" checked={continuous} onChange={(e) => setContinuous(e.target.checked)} className="accent-teal-500" />
-            <label htmlFor="continuous-mode" className="text-xs text-slate-400">Continuous (keep listening)</label>
-          </div>
-        )}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Workspace details */}
+        <div className="md:col-span-7 flex flex-col gap-4">
+          {mode === 'file' && (
+            <div className="flex flex-col gap-2 bg-slate-900/30 border border-slate-850 p-4 rounded-xl">
+              {!file ? (
+                <label className="flex flex-col items-center gap-2 py-8 border border-dashed border-slate-700/60 rounded-xl cursor-pointer hover:border-teal-500/50 transition-all text-xs justify-center">
+                  <Upload size={22} className="text-teal-400" />
+                  <span className="text-slate-350">Select podcast / interview file</span>
+                  <input type="file" accept="audio/*" className="hidden" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
+                </label>
+              ) : (
+                <audio ref={audioRef} src={fileUrl} controls className="w-full" />
+              )}
+            </div>
+          )}
 
-      {/* File mode */}
-      {mode === 'file' && (
-        <div className="flex flex-col gap-2">
-          {!file ? (
-            <label className="flex flex-col items-center gap-2 py-6 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer hover:border-teal-500/50 transition-colors">
-              <Upload size={24} className="text-teal-400" />
-              <span className="text-slate-300 text-xs">Upload audio to transcribe</span>
-              <input type="file" accept="audio/*" className="hidden" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
-            </label>
+          {/* Transcript logs */}
+          {transcripts.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-slate-500 uppercase font-semibold">Interactive transcripts log</span>
+                <button onClick={() => setTranscripts([])} className="text-[10px] text-rose-450 hover:text-rose-400">Reset logs</button>
+              </div>
+
+              <div className="bg-slate-950/40 rounded-xl border border-slate-850 p-4 max-h-[350px] overflow-y-auto flex flex-col gap-3">
+                {transcripts.map((t) => (
+                  <div key={t.id} className="flex flex-col gap-1.5 bg-slate-900/40 border border-slate-850/50 p-3 rounded-lg hover:border-slate-800">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] text-slate-500 font-mono">[{t.timestamp}]</span>
+                        {t.confidence > 0 && (
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded font-mono ${
+                            t.confidence > 0.8 ? 'bg-teal-500/10 text-teal-400' : t.confidence > 0.5 ? 'bg-yellow-500/10 text-yellow-400' : 'bg-rose-500/10 text-rose-400'
+                          }`}>
+                            {Math.round(t.confidence * 100)}% accuracy
+                          </span>
+                        )}
+                      </div>
+                      <button onClick={() => handleDeleteSegment(t.id)} className="p-1 text-slate-500 hover:text-rose-400"><Trash2 size={11} /></button>
+                    </div>
+                    <div className="flex gap-2 items-start">
+                      <Edit3 size={11} className="text-slate-500 shrink-0 mt-1" />
+                      <textarea
+                        value={t.text}
+                        onChange={(e) => handleEditSegment(t.id, e.target.value)}
+                        rows={1}
+                        className="w-full bg-transparent text-xs text-slate-200 focus:outline-none border-b border-transparent focus:border-teal-500/30 resize-none overflow-hidden"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Subtitle / text downloaders */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button onClick={exportTranscript} className="py-1 px-2 border border-slate-800 bg-slate-900 hover:bg-slate-850 rounded text-[10px] font-bold text-slate-350 flex items-center justify-center gap-1.5"><Download size={11} /> TXT</button>
+                <button onClick={exportSRT} className="py-1 px-2 border border-slate-800 bg-slate-900 hover:bg-slate-850 rounded text-[10px] font-bold text-slate-350 flex items-center justify-center gap-1.5"><Download size={11} /> SRT</button>
+                <button onClick={exportVTT} className="py-1 px-2 border border-slate-800 bg-slate-900 hover:bg-slate-850 rounded text-[10px] font-bold text-slate-350 flex items-center justify-center gap-1.5"><Download size={11} /> VTT</button>
+                <button onClick={exportJSON} className="py-1 px-2 border border-slate-800 bg-slate-900 hover:bg-slate-850 rounded text-[10px] font-bold text-slate-350 flex items-center justify-center gap-1.5"><Download size={11} /> JSON</button>
+              </div>
+            </div>
           ) : (
-            <audio ref={audioRef} src={fileUrl} controls className="w-full" />
+            <div className="h-[200px] bg-slate-950/20 border border-slate-850 rounded-xl flex items-center justify-center text-slate-550 text-xs">
+              No transcription entries yet
+            </div>
           )}
         </div>
-      )}
 
-      {/* Live indicator */}
-      {listening && (
-        <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          <span className="text-xs text-red-400 font-bold">Recording…</span>
-          {interimText && <span className="text-xs text-slate-400 italic ml-2 truncate">{interimText}</span>}
-        </div>
-      )}
+        {/* Configurations Side */}
+        <div className="md:col-span-5 flex flex-col gap-4 border-l border-slate-800 md:pl-6">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Engine parameters</span>
 
-      {/* Transcript display */}
-      {transcripts.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <label className="text-xs text-slate-400 font-medium">{transcripts.length} segments transcribed</label>
-            <div className="flex gap-2">
-              <button onClick={() => handleTextCopy(allText, setCopied)}
-                className="flex items-center gap-1 text-xs text-teal-400 hover:text-teal-300">
-                {copied ? <Check size={12} /> : <Copy size={12} />}
-                {copied ? 'Copied' : 'Copy All'}
-              </button>
-              <button onClick={() => setTranscripts([])} className="text-xs text-slate-500 hover:text-red-400">Clear</button>
+          <div className="grid grid-cols-1 gap-3 bg-slate-900/40 p-4 rounded-xl border border-slate-850">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] text-slate-500 uppercase flex items-center gap-1"><Globe size={11} /> Dictation Language</label>
+              <select value={lang} onChange={(e) => setLang(e.target.value)}
+                className="bg-slate-950 border border-slate-850 text-xs px-2.5 py-1.5 rounded text-slate-200 focus:outline-none focus:border-teal-500">
+                {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
+              </select>
             </div>
+            {mode === 'live' && (
+              <label className="flex items-center gap-2 cursor-pointer mt-1">
+                <input type="checkbox" checked={continuous} onChange={(e) => setContinuous(e.target.checked)} className="accent-teal-500 w-3.5 h-3.5 rounded" />
+                <span className="text-xs text-slate-450">Continuous speech capturing</span>
+              </label>
+            )}
           </div>
-          <div className="bg-slate-900/80 rounded-xl p-3 max-h-52 overflow-y-auto flex flex-col gap-2">
-            {transcripts.map((t, i) => (
-              <div key={i} className="flex flex-col gap-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-500 font-mono">[{t.timestamp}]</span>
-                  {t.confidence > 0 && (
-                    <span className={`text-[10px] px-1 rounded ${t.confidence > 0.8 ? 'text-teal-400' : t.confidence > 0.5 ? 'text-yellow-400' : 'text-red-400'}`}>
-                      {Math.round(t.confidence * 100)}%
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-slate-200">{t.text}</p>
+
+          {/* VAD Decibel ring */}
+          {listening && (
+            <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex flex-col gap-3 items-center text-center">
+              <div className="relative w-16 h-16 rounded-full flex items-center justify-center border-2 border-red-550/40 transition-all duration-75" style={{ transform: `scale(${1 + (micLevel / 150)})` }}>
+                <Mic size={20} className="text-red-400 animate-pulse" />
               </div>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <button onClick={exportTranscript}
-              className="flex items-center gap-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
-              <Download size={12} /> Export .TXT
-            </button>
-            <button onClick={exportSRT}
-              className="flex items-center gap-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
-              <Download size={12} /> Export .SRT
-            </button>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-red-400">Microphone Capturing</span>
+                <span className="text-[9px] text-slate-550 font-mono mt-0.5">Input volume: {micLevel}%</span>
+              </div>
+              {interimText && (
+                <div className="text-[10px] text-slate-400 bg-slate-950/40 border border-slate-850 px-2 py-1 rounded max-w-full truncate italic">
+                  "{interimText}"
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Search & replace tools */}
+          {transcripts.length > 0 && (
+            <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-xl flex flex-col gap-3">
+              <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider flex items-center gap-1.5"><Search size={12} /> Replace text keywords</span>
+              <div className="flex gap-2">
+                <input type="text" placeholder="Find word" value={searchWord} onChange={(e) => setSearchWord(e.target.value)} className="w-1/2 bg-slate-950 border border-slate-850 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none" />
+                <input type="text" placeholder="Replace" value={replaceWord} onChange={(e) => setReplaceWord(e.target.value)} className="w-1/2 bg-slate-950 border border-slate-850 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none" />
+              </div>
+              <button onClick={handleSearchReplace} className="py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded text-[10px] font-bold uppercase tracking-wider">Replace globally</button>
+            </div>
+          )}
+
+          {/* Text statistics diagnostics */}
+          {transcripts.length > 0 && (
+            <div className="grid grid-cols-3 gap-2 bg-slate-950/30 p-3 rounded-lg border border-slate-850/60 text-center">
+              <div className="flex flex-col">
+                <span className="text-[9px] text-slate-550 uppercase">Words</span>
+                <span className="text-xs font-bold text-slate-300 font-mono">{wordCount}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] text-slate-550 uppercase">Characters</span>
+                <span className="text-xs font-bold text-slate-300 font-mono">{charCount}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] text-slate-550 uppercase">WPM Rate</span>
+                <span className="text-xs font-bold text-slate-300 font-mono">~{wpm}</span>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2 mt-auto pt-3 border-t border-slate-850">
+            {transcripts.length > 0 && (
+              <button onClick={() => handleTextCopy(allText, setCopied)} className="p-2 border border-slate-800 bg-slate-900 text-slate-400 hover:text-teal-400 rounded-lg">
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+              </button>
+            )}
+            {mode === 'live' ? (
+              listening ? (
+                <button onClick={stopLive}
+                  className="flex-1 flex items-center justify-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold py-2.5 rounded-lg transition-colors">
+                  <Square size={13} /> Stop Listen
+                </button>
+              ) : (
+                <button onClick={startLive}
+                  className="flex-1 btn-primary flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold">
+                  <Mic size={13} /> Capture Microphone
+                </button>
+              )
+            ) : (
+              <button onClick={startFileTranscription} disabled={!file || processing}
+                className="flex-1 btn-primary flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold disabled:opacity-50">
+                {processing ? <Loader2 size={13} className="animate-spin" /> : <Mic size={13} />}
+                {processing ? 'Transcribing…' : 'Transcribe File'}
+              </button>
+            )}
           </div>
         </div>
-      )}
-
-      {/* Action buttons */}
-      <div className="flex gap-2">
-        {mode === 'live' ? (
-          listening ? (
-            <button onClick={stopLive}
-              className="flex-1 flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold py-2.5 rounded-lg transition-colors">
-              <Square size={14} /> Stop Recording
-            </button>
-          ) : (
-            <button onClick={startLive}
-              className="flex-1 btn-primary flex items-center justify-center gap-2 py-2.5 text-xs font-bold">
-              <Mic size={14} /> Start Recording
-            </button>
-          )
-        ) : (
-          <button onClick={startFileTranscription} disabled={!file || processing}
-            className="flex-1 btn-primary flex items-center justify-center gap-2 py-2.5 text-xs font-bold disabled:opacity-50">
-            {processing ? <Loader2 size={14} className="animate-spin" /> : <Mic size={14} />}
-            {processing ? 'Transcribing…' : 'Transcribe File'}
-          </button>
-        )}
       </div>
     </div>
   );
 };
-
-
