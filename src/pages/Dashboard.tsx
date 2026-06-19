@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { BRAND_KIT } from '../utils/BrandKit';
+import { Logo } from '../components/Logo';
 
 interface PlannedTool {
   id: string;
@@ -348,6 +349,56 @@ export const Dashboard = () => {
         {/* Abstract background blobs */}
         <div className="absolute right-0 top-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute left-1/3 bottom-0 w-60 h-60 bg-green-500/5 rounded-full blur-[80px] pointer-events-none" />
+      </div>
+
+      {/* Meet Panda: Your Local-First Privacy Companion */}
+      <div className="glass-card p-8 border-[#4E8E5E]/20 bg-gradient-to-br from-[#151C2C]/80 via-[#11241B]/40 to-slate-950/60 text-left relative overflow-hidden group shadow-2xl">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-green-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -left-12 -bottom-12 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
+        
+        <div className="flex flex-col lg:flex-row gap-8 items-center z-10 relative">
+          <div className="flex-shrink-0 p-4 bg-slate-900/60 border border-slate-800/80 rounded-2xl shadow-inner group-hover:scale-105 transition-transform duration-300">
+            <Logo size={100} showText={false} />
+          </div>
+          
+          <div className="flex-1 flex flex-col gap-4">
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold uppercase tracking-wider">
+                <Sparkles size={12} />
+                Meet Panda
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 text-[11px] font-bold uppercase tracking-wider">
+                Zero Cloud Tracking
+              </span>
+            </div>
+            
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              Panda: Your Local-First <br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent">
+                Privacy Guardian & AI Companion
+              </span>
+            </h2>
+            
+            <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+              Behind DomoDomo is Panda, our friendly offline mascot and locally running AI engine. Panda represents our ironclad commitment to user privacy. By running highly optimized transformer models, WebAssembly algorithms, and speech recognizers completely inside your browser, Panda ensures your credentials, document data, and image files are never sent to external servers or used for data training.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
+              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
+                <div className="text-emerald-400 font-bold text-sm mb-1">100% Offline AI</div>
+                <div className="text-[11px] text-slate-400">Local language translation, semantic searches, and OCR text extraction.</div>
+              </div>
+              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
+                <div className="text-emerald-400 font-bold text-sm mb-1">No Cloud Leakage</div>
+                <div className="text-[11px] text-slate-400">Zero data collection, logs, trackers, or cookie tracking. What is local stays local.</div>
+              </div>
+              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
+                <div className="text-emerald-400 font-bold text-sm mb-1">GPU Accelerated</div>
+                <div className="text-[11px] text-slate-400">Leverages native WebGPU/WASM to run tasks at near-native speeds in-browser.</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Infographic Stats Section */}
