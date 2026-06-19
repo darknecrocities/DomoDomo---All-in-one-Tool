@@ -1,6 +1,6 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
-import { Upload, Check, ShieldAlert, ImageIcon } from 'lucide-react';
+import { Upload, Check, ShieldAlert, ImageIcon, Settings } from 'lucide-react';
 
 interface ImageQueueItem {
   id: string;
@@ -14,6 +14,8 @@ interface ImageQueueItem {
 export const JpgPngTool = () => {
   const [queue, setQueue] = useState<ImageQueueItem[]>([]);
   const [targetType, setTargetType] = useState<'png' | 'jpeg'>('png');
+  const [quality, setQuality] = useState(0.92);
+  const [scale, setScale] = useState(100);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -54,8 +56,9 @@ export const JpgPngTool = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (ctx) {
-          canvas.width = img.width;
-          canvas.height = img.height;
+          const scaleFactor = scale / 100;
+          canvas.width = img.width * scaleFactor;
+          canvas.height = img.height * scaleFactor;
 
           if (targetType === 'jpeg') {
             // Fill white background for JPEGs
@@ -63,7 +66,7 @@ export const JpgPngTool = () => {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
           }
 
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           await new Promise<void>((resolve) => {
             canvas.toBlob((blob) => {
@@ -77,7 +80,7 @@ export const JpgPngTool = () => {
                 updatedQueue[i] = { ...item, status: 'error' };
               }
               resolve();
-            }, `image/${targetType}`, targetType === 'jpeg' ? 0.92 : undefined);
+            }, `image/${targetType}`, targetType === 'jpeg' ? quality : undefined);
           });
         }
         URL.revokeObjectURL(url);
@@ -95,7 +98,7 @@ export const JpgPngTool = () => {
     queue.forEach(item => {
       if (item.blob) {
         const cleanName = item.name.replace(/\.[^/.]+$/, "");
-        triggerBlobDownload(item.blob, `${cleanName}_converted.${targetType}`);
+        triggerBlobDownload(item.blob, `${cleanName}_converted.${targetType === 'jpeg' ? 'jpg' : 'png'}`);
       }
     });
   };
@@ -165,7 +168,10 @@ export const JpgPngTool = () => {
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
         <div className="glass-card p-6 flex flex-col gap-5">
-          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Format Target</h3>
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>Conversion Settings</span>
+          </h3>
 
           {/* Select Type */}
           <div className="flex flex-col gap-1.5">
@@ -179,6 +185,42 @@ export const JpgPngTool = () => {
               <option value="jpeg">JPG / JPEG (Solid Background)</option>
             </select>
           </div>
+
+          {/* Resize Scale Option */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between text-xs text-slate-500 font-semibold">
+              <span>Resize Scale</span>
+              <span className="text-slate-300">{scale}%</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="5"
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+            />
+          </div>
+
+          {/* Quality Slider (visible only for JPEG) */}
+          {targetType === 'jpeg' && (
+            <div className="flex flex-col gap-1.5">
+              <div className="flex justify-between text-xs text-slate-500 font-semibold">
+                <span>Image Quality</span>
+                <span className="text-slate-300">{Math.round(quality * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0.1"
+                max="1.0"
+                step="0.05"
+                value={quality}
+                onChange={(e) => setQuality(Number(e.target.value))}
+                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+              />
+            </div>
+          )}
 
           <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
             <button

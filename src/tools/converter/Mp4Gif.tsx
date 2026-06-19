@@ -1,6 +1,6 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState, useRef, useEffect } from 'react';
-import { Film, Upload, Check, ShieldAlert } from 'lucide-react';
+import { Film, Upload, Check, ShieldAlert, Settings } from 'lucide-react';
 
 export const Mp4GifTool = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -10,6 +10,10 @@ export const Mp4GifTool = () => {
   const [duration, setDuration] = useState<number>(0);
   const [frameRate, setFrameRate] = useState<number>(10);
   const [progress, setProgress] = useState(0);
+  const [startTime, setStartTime] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(0);
+  const [collageCols, setCollageCols] = useState<number>(5);
+  const [quality, setQuality] = useState<number>(0.9);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -18,6 +22,7 @@ export const Mp4GifTool = () => {
     if (file) {
       const url = URL.createObjectURL(file);
       setVideoUrl(url);
+      setStartTime(0);
       return () => {
         URL.revokeObjectURL(url);
       };
@@ -26,7 +31,9 @@ export const Mp4GifTool = () => {
 
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
-      setDuration(videoRef.current.duration);
+      const videoDuration = videoRef.current.duration;
+      setDuration(videoDuration);
+      setEndTime(videoDuration);
     }
   };
 
@@ -40,20 +47,21 @@ export const Mp4GifTool = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Capture frames from video
-    const totalFrames = Math.min(30, Math.floor(duration * frameRate));
-    const step = duration / totalFrames;
+    // Capture frames from video within range
+    const activeDuration = endTime - startTime;
+    const totalFrames = Math.min(60, Math.max(2, Math.floor(activeDuration * frameRate)));
+    const step = activeDuration / totalFrames;
     const frames: string[] = [];
 
     for (let i = 0; i < totalFrames; i++) {
-      const time = i * step;
+      const time = startTime + (i * step);
       video.currentTime = time;
       
       await new Promise<void>((resolve) => {
         const onSeeked = () => {
           video.removeEventListener('seeked', onSeeked);
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          frames.push(canvas.toDataURL('image/jpeg'));
+          frames.push(canvas.toDataURL('image/jpeg', quality));
           setProgress(Math.round(((i + 1) / totalFrames) * 100));
           resolve();
         };
@@ -61,16 +69,18 @@ export const Mp4GifTool = () => {
       });
     }
 
-    // Since un-indexed client-side GIF stitching requires external libraries,
-    // we package the extracted frames as a zip or compile them into a grid collage
+    // Compile into grid collage
     const collageCanvas = document.createElement('canvas');
     const cCtx = collageCanvas.getContext('2d');
     if (cCtx && frames.length > 0) {
-      const cols = Math.min(5, frames.length);
+      const cols = Math.min(collageCols, frames.length);
       const rows = Math.ceil(frames.length / cols);
       
       collageCanvas.width = cols * 160;
       collageCanvas.height = rows * 90;
+      
+      cCtx.fillStyle = '#151C2C';
+      cCtx.fillRect(0, 0, collageCanvas.width, collageCanvas.height);
 
       const imgLoadPromises = frames.map((src, index) => {
         return new Promise<void>((resolve) => {
@@ -90,7 +100,7 @@ export const Mp4GifTool = () => {
         if (blob) {
           triggerBlobDownload(blob, `${file!.name.replace(/\.[^/.]+$/, "")}_frames_collage.jpg`);
         }
-      }, 'image/jpeg');
+      }, 'image/jpeg', quality);
     }
 
     setLoading(false);
@@ -135,13 +145,13 @@ export const Mp4GifTool = () => {
               </div>
 
               {videoUrl && (
-                <div className="relative border border-slate-800 rounded-2xl bg-slate-950/40 p-2 overflow-hidden flex items-center justify-center max-w-[400px] mx-auto shadow-2xl">
+                <div className="relative border border-slate-800 rounded-2xl bg-slate-950/40 p-2 overflow-hidden flex flex-col items-center justify-center max-w-[420px] mx-auto shadow-2xl">
                   <video
                     ref={videoRef}
                     src={videoUrl}
                     onLoadedMetadata={handleLoadedMetadata}
                     controls
-                    className="w-full rounded-lg"
+                    className="w-full rounded-lg mb-2"
                   />
                   <canvas ref={canvasRef} width={320} height={180} className="hidden" />
                 </div>
@@ -154,19 +164,92 @@ export const Mp4GifTool = () => {
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
         <div className="glass-card p-6 flex flex-col gap-5">
-          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Extraction settings</h3>
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>Extraction Settings</span>
+          </h3>
           
-          <div className="flex flex-col gap-2">
+          {/* Frame Rate */}
+          <div className="flex flex-col gap-1.5">
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400 font-medium">Frames per second</span>
-              <span className="text-teal-400 font-semibold">{frameRate} FPS</span>
+              <span className="text-slate-500 font-semibold">Sampling Frequency</span>
+              <span className="text-slate-300 font-semibold">{frameRate} FPS</span>
             </div>
             <input
               type="range"
-              min="5"
+              min="1"
               max="20"
               value={frameRate}
               onChange={(e) => setFrameRate(parseInt(e.target.value))}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+            />
+          </div>
+
+          {/* Time Range Selectors */}
+          {duration > 0 && (
+            <div className="flex flex-col gap-3 pt-2 border-t border-slate-800">
+              <div className="flex flex-col gap-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-500 font-semibold">Start Time</span>
+                  <span className="text-slate-300 font-semibold">{startTime.toFixed(1)}s</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max={endTime}
+                  step="0.1"
+                  value={startTime}
+                  onChange={(e) => setStartTime(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-500 font-semibold">End Time</span>
+                  <span className="text-slate-300 font-semibold">{endTime.toFixed(1)}s</span>
+                </div>
+                <input
+                  type="range"
+                  min={startTime}
+                  max={duration}
+                  step="0.1"
+                  value={endTime}
+                  onChange={(e) => setEndTime(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Grid Layout Selection */}
+          <div className="flex flex-col gap-1.5 pt-2 border-t border-slate-800">
+            <label className="text-xs text-slate-500 font-semibold">Collage Layout Columns</label>
+            <select
+              value={collageCols}
+              onChange={(e) => setCollageCols(Number(e.target.value))}
+              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+            >
+              <option value="3">3 Columns</option>
+              <option value="4">4 Columns</option>
+              <option value="5">5 Columns</option>
+              <option value="6">6 Columns</option>
+            </select>
+          </div>
+
+          {/* Quality selection */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between text-xs">
+              <span className="text-slate-500 font-semibold">Output Quality</span>
+              <span className="text-slate-300 font-semibold">{Math.round(quality * 100)}%</span>
+            </div>
+            <input
+              type="range"
+              min="0.1"
+              max="1.0"
+              step="0.05"
+              value={quality}
+              onChange={(e) => setQuality(parseFloat(e.target.value))}
               className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
             />
           </div>
@@ -178,7 +261,7 @@ export const Mp4GifTool = () => {
               className="btn-primary w-full py-3"
             >
               {success ? <Check size={18} /> : <Film size={18} />}
-              <span>{loading ? `Extracting ${progress}%` : success ? 'Collage Saved!' : 'Extract Video Frames'}</span>
+              <span>{loading ? `Extracting ${progress}%` : success ? 'Collage Saved!' : 'Extract Video Collage'}</span>
             </button>
           </div>
         </div>
