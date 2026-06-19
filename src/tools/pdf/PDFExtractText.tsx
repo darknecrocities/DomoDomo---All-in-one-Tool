@@ -1,7 +1,26 @@
 import { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { extractPrintableStrings, triggerTextDownload, handleTextCopy } from '../../utils/sharedHelpers';
+import { triggerTextDownload, handleTextCopy } from '../../utils/sharedHelpers';
 import { Upload, FileText, Check, Copy, Download, ShieldAlert, FileSearch } from 'lucide-react';
+
+// Dynamically load PDF.js script from a standard CDN
+const loadPdfJs = (): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    if ((window as any).pdfjsLib) {
+      resolve((window as any).pdfjsLib);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+    script.onload = () => {
+      const pdfjsLib = (window as any).pdfjsLib;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+      resolve(pdfjsLib);
+    };
+    script.onerror = () => reject(new Error('Failed to load PDF.js engine'));
+    document.body.appendChild(script);
+  });
+};
 
 export const PDFExtractTextTool = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,21 +41,40 @@ export const PDFExtractTextTool = () => {
     if (!file) return;
     setLoading(true);
     try {
-      const bytes = await file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes);
+      const arrayBuffer = await file.arrayBuffer();
       
-      const title = pdf.getTitle() || 'None';
-      const author = pdf.getAuthor() || 'None';
-      const pages = pdf.getPageCount();
-
+      // Load standard metadata using pdf-lib
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const title = pdfDoc.getTitle() || 'None Specified';
+      const author = pdfDoc.getAuthor() || 'None Specified';
+      const pages = pdfDoc.getPageCount();
       setMetadata({ title, author, pages });
 
-      const extracted = extractPrintableStrings(bytes);
-      const textOutput = `--- DOCUMENT METADATA ---\nFilename: ${file.name}\nTitle: ${title}\nAuthor: ${author}\nTotal Pages: ${pages}\n\n--- EXTRACTED CONTENT STREAMS ---\n${extracted}`;
-      setText(textOutput);
+      // Load PDF.js to extract actual textual characters page-by-page
+      const pdfjsLib = await loadPdfJs();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+      
+      let parsedText = '';
+      for (let i = 1; i <= pages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        
+        // Map string segments with a space to form words
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ')
+          .replace(/\s+/g, ' ') // normalize whitespace
+          .trim();
+
+        parsedText += `--- PAGE ${i} ---\n${pageText || '[No readable text content on this page]'}\n\n`;
+      }
+
+      const textOutput = `--- DOCUMENT METADATA ---\nFilename: ${file.name}\nTitle: ${title}\nAuthor: ${author}\nTotal Pages: ${pages}\n\n${parsedText}`;
+      setText(textOutput.trim());
     } catch (e) {
       console.error(e);
-      setText('Failed to parse PDF text content streams.');
+      setText('Failed to parse actual text characters from PDF. Please check if the file is secure/scanned image only.');
     } finally {
       setLoading(false);
     }
@@ -85,7 +123,7 @@ export const PDFExtractTextTool = () => {
                 </div>
                 <button
                   onClick={() => { setFile(null); setText(''); setMetadata(null); }}
-                  className="text-[10px] text-rose-400 hover:text-rose-350 font-bold self-start"
+                  className="text-[10px] text-rose-450 hover:underline font-bold self-start"
                 >
                   Change PDF File
                 </button>
@@ -93,7 +131,7 @@ export const PDFExtractTextTool = () => {
 
               {text && (
                 <div className="flex flex-col gap-3 mt-2">
-                  <span className="text-xs text-slate-450 font-bold uppercase tracking-wider">Extracted Result</span>
+                  <span className="text-xs text-slate-455 font-bold uppercase tracking-wider">Extracted Result</span>
                   <textarea
                     readOnly
                     value={text}
@@ -149,7 +187,7 @@ export const PDFExtractTextTool = () => {
                 </button>
                 <button
                   onClick={() => triggerTextDownload(text, `${file!.name.replace(/\.[^/.]+$/, "")}_text.txt`)}
-                  className="btn-secondary w-full py-2.5 text-xs"
+                  className="btn-secondary w-full py-2.5 text-xs text-center"
                 >
                   <Download size={14} />
                   <span>Download plain text TXT</span>
