@@ -14,7 +14,7 @@ export const Shell = () => {
             {/* Status indicator */}
             <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/25 text-xs font-bold">
               <ShieldAlert size={14} className="shrink-0" />
-              <span>Offline / Local Only</span>
+              <span>Open Source / Local</span>
             </div>
 
             <div className="h-4 w-[1px] bg-slate-800 hidden sm:block" />
@@ -44,6 +44,9 @@ export const Shell = () => {
             <span className="text-slate-200 text-sm font-bold tracking-wide">DomoDomo Local Toolbox</span>
             <span className="text-slate-500 text-xs">
               All tools run fully inside your browser sandbox. No file chunks, keys, or uploads ever touch a server.
+            </span>
+            <span className="text-slate-500 text-xs mt-1">
+              Developed by Arron Kian Parejas, Ram Achilles Guinto and Rudy Miguel Calzita
             </span>
           </div>
 
