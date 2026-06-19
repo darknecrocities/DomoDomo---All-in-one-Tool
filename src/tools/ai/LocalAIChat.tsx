@@ -1,41 +1,180 @@
-import { useState } from 'react';
-import { Send, Cpu } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Send, Cpu, Loader2, Sparkles } from 'lucide-react';
+import { aiService } from '../../utils/aiService';
+
+interface Message {
+  sender: 'ai' | 'user';
+  text: string;
+}
 
 export const LocalAIChatTool = () => {
-  const [messages, setMessages] = useState<{ sender: 'ai' | 'user'; text: string }[]>([
-    { sender: 'ai', text: 'Hello! I am Panda, your offline AI Assistant. I run 100% locally on your browser. How can I help you today?' }
+  const [messages, setMessages] = useState<Message[]>([
+    { sender: 'ai', text: 'Hello! I am Panda, your offline AI Assistant. I run 100% locally on your browser. Once the model is loaded, I can answer your questions with zero cloud tracking!' }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [modelLoaded, setModelLoaded] = useState(false);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    const userMsg = { sender: 'user' as const, text: input };
-    setMessages(prev => [...prev, userMsg]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll chat window
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, loading]);
+
+  const loadModel = async () => {
+    setStatusMsg('Initializing model...');
+    try {
+      await aiService.initLLM('Xenova/Qwen1.5-0.5B-Chat', (status, prog) => {
+        setStatusMsg(status);
+        setProgress(prog);
+      });
+      setModelLoaded(true);
+    } catch (err: any) {
+      setStatusMsg(`Error loading model: ${err.message || err}`);
+    }
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
+    const userText = input.trim();
+    setMessages(prev => [...prev, { sender: 'user', text: userText }]);
     setInput('');
     setLoading(true);
-    setTimeout(() => {
-      setMessages(prev => [...prev, { sender: 'ai', text: 'That sounds great! As an offline assistant, I process your inquiries locally with zero latency or cloud tracking.' }]);
+
+    try {
+      // Lazy load model if not loaded yet
+      if (!modelLoaded) {
+        await loadModel();
+      }
+
+      // Format conversation prompt matching Qwen 1.5 chat templates
+      const systemPrompt = `<|im_start|>system\nYou are Panda, a helpful local offline AI Assistant. Keep responses relatively brief and concise.<|im_end|>\n`;
+      const conversationPrompt = messages
+        .slice(-6) // Include last few turns for context
+        .map(m => `<|im_start|>${m.sender === 'user' ? 'user' : 'assistant'}\n${m.text}<|im_end|>`)
+        .join('\n');
+      
+      const prompt = `${systemPrompt}${conversationPrompt}\n<|im_start|>user\n${userText}<|im_end|>\n<|im_start|>assistant\n`;
+
+      const response = await aiService.generateText(prompt, 120, (status, prog) => {
+        setStatusMsg(status);
+        setProgress(prog);
+      });
+
+      // Extract only the assistant's new response
+      let cleanResponse = response;
+      const lastAssistantIndex = response.lastIndexOf('<|im_start|>assistant');
+      if (lastAssistantIndex !== -1) {
+        cleanResponse = response.substring(lastAssistantIndex + 21);
+      }
+      cleanResponse = cleanResponse
+        .replace(/<\|im_end\|>/g, '')
+        .replace(/<\|im_start\|>/g, '')
+        .trim();
+
+      if (!cleanResponse) {
+        cleanResponse = "I processed your request, but returned an empty response. Please try again.";
+      }
+
+      setMessages(prev => [...prev, { sender: 'ai', text: cleanResponse }]);
+    } catch (err: any) {
+      setMessages(prev => [...prev, { sender: 'ai', text: `Sorry, I encountered an error: ${err.message || err}` }]);
+    } finally {
       setLoading(false);
-    }, 700);
+      setStatusMsg('');
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto glass-card p-6 flex flex-col h-[400px] text-left">
-      <h3 className="font-bold text-teal-400 border-b border-slate-800 pb-2 flex items-center gap-2">
-        <Cpu size={16} /> Local Panda Chat
-      </h3>
-      <div className="flex-1 overflow-y-auto my-3 flex flex-col gap-3 pr-1 text-xs">
+    <div className="max-w-xl mx-auto glass-card p-6 flex flex-col h-[520px] text-left">
+      <div className="flex justify-between items-center border-b border-slate-850 pb-3">
+        <h3 className="font-bold text-teal-400 flex items-center gap-2 text-base">
+          <Cpu size={18} className="animate-pulse" />
+          <span>Local Panda Assistant</span>
+        </h3>
+        <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
+          Qwen 1.5 (350M parameters)
+        </span>
+      </div>
+
+      {/* Model Loader Screen */}
+      {!modelLoaded && (
+        <div className="bg-slate-950/80 border border-slate-850/60 rounded-lg p-4 my-3 flex flex-col items-center justify-center gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
+            <Sparkles size={14} className="text-teal-400" />
+            <span>LLM Download & initialization required</span>
+          </div>
+          <p className="text-[11px] text-slate-400 text-center max-w-sm">
+            This will download the AI model directly to your browser's local cache (~350MB). Subsequent visits will load instantly without downloading.
+          </p>
+          {statusMsg ? (
+            <div className="w-full flex flex-col gap-2.5 items-center mt-1">
+              <div className="text-[10px] font-mono text-slate-400 text-center truncate max-w-full">
+                {statusMsg}
+              </div>
+              <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                <div 
+                  className="bg-gradient-to-r from-teal-500 to-indigo-600 h-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <span className="text-[10px] font-semibold text-slate-300">{progress}%</span>
+            </div>
+          ) : (
+            <button 
+              onClick={loadModel}
+              className="btn-primary py-1.5 px-4 text-xs mt-1 flex items-center gap-1.5"
+            >
+              Load Offline Model
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto my-3 flex flex-col gap-3.5 pr-1 text-xs">
         {messages.map((m, idx) => (
-          <div key={idx} className={`p-2.5 rounded-lg max-w-[85%] ${m.sender === 'user' ? 'bg-indigo-950/40 text-indigo-300 ml-auto border border-indigo-900/30' : 'bg-slate-900/60 text-slate-350 mr-auto border border-slate-850'}`}>
+          <div 
+            key={idx} 
+            className={`p-3 rounded-xl max-w-[85%] leading-relaxed border transition-all ${
+              m.sender === 'user' 
+                ? 'bg-teal-950/20 text-teal-300 ml-auto border-teal-900/30' 
+                : 'bg-slate-900/60 text-slate-300 mr-auto border-slate-850'
+            }`}
+          >
             {m.text}
           </div>
         ))}
-        {loading && <div className="text-slate-500 animate-pulse">Panda is thinking...</div>}
+        {loading && statusMsg && (
+          <div className="flex items-center gap-2 text-slate-400 font-mono text-[10px] bg-slate-950/60 p-2.5 rounded-lg border border-slate-900 self-start animate-pulse">
+            <Loader2 size={12} className="animate-spin text-teal-400" />
+            <span>{statusMsg} {progress > 0 ? `(${progress}%)` : ''}</span>
+          </div>
+        )}
+        <div ref={chatEndRef} />
       </div>
-      <div className="flex gap-2">
-        <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-900 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-200" placeholder="Type here..." />
-        <button onClick={handleSend} className="btn-primary py-1.5 px-3 text-xs"><Send size={12} /></button>
+
+      {/* Inputs */}
+      <div className="flex gap-2.5 mt-auto pt-3 border-t border-slate-850">
+        <input 
+          type="text" 
+          value={input} 
+          onChange={(e) => setInput(e.target.value)} 
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()} 
+          className="flex-1 bg-slate-900/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-200" 
+          placeholder="Ask Panda anything..."
+          disabled={loading}
+        />
+        <button 
+          onClick={handleSend} 
+          disabled={loading || !input.trim()}
+          className="btn-primary py-2 px-4 text-xs flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none"
+        >
+          {loading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+        </button>
       </div>
     </div>
   );
