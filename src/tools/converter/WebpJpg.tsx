@@ -1,6 +1,6 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
-import { Upload, Check, ShieldAlert, ImageIcon } from 'lucide-react';
+import { Upload, Check, ShieldAlert, ImageIcon, Settings } from 'lucide-react';
 
 interface ImageQueueItem {
   id: string;
@@ -14,6 +14,8 @@ interface ImageQueueItem {
 export const WebpJpgTool = () => {
   const [queue, setQueue] = useState<ImageQueueItem[]>([]);
   const [targetType, setTargetType] = useState<'webp' | 'jpeg'>('webp');
+  const [quality, setQuality] = useState(0.85);
+  const [scale, setScale] = useState(100);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -54,15 +56,16 @@ export const WebpJpgTool = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (ctx) {
-          canvas.width = img.width;
-          canvas.height = img.height;
+          const scaleFactor = scale / 100;
+          canvas.width = img.width * scaleFactor;
+          canvas.height = img.height * scaleFactor;
 
           if (targetType === 'jpeg') {
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
           }
 
-          ctx.drawImage(img, 0, 0);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           await new Promise<void>((resolve) => {
             canvas.toBlob((blob) => {
@@ -76,7 +79,7 @@ export const WebpJpgTool = () => {
                 updatedQueue[i] = { ...item, status: 'error' };
               }
               resolve();
-            }, `image/${targetType}`, 0.90);
+            }, `image/${targetType}`, quality);
           });
         }
         URL.revokeObjectURL(url);
@@ -164,7 +167,10 @@ export const WebpJpgTool = () => {
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
         <div className="glass-card p-6 flex flex-col gap-5">
-          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Format Target</h3>
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>Conversion Settings</span>
+          </h3>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-xs text-slate-500 font-semibold">Convert to Format</label>
@@ -176,6 +182,40 @@ export const WebpJpgTool = () => {
               <option value="webp">WebP (High Compression)</option>
               <option value="jpeg">JPG / JPEG (Solid Background)</option>
             </select>
+          </div>
+
+          {/* Resize Scale Option */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between text-xs text-slate-500 font-semibold">
+              <span>Resize Scale</span>
+              <span className="text-slate-300">{scale}%</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              step="5"
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+            />
+          </div>
+
+          {/* Quality Slider */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between text-xs text-slate-500 font-semibold">
+              <span>Image Quality</span>
+              <span className="text-slate-300">{Math.round(quality * 100)}%</span>
+            </div>
+            <input
+              type="range"
+              min="0.1"
+              max="1.0"
+              step="0.05"
+              value={quality}
+              onChange={(e) => setQuality(Number(e.target.value))}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+            />
           </div>
 
           <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">

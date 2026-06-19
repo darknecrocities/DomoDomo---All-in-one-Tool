@@ -1,13 +1,16 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import { FileText, Upload, Download, Check, ShieldAlert, BookOpen } from 'lucide-react';
+import { FileText, Upload, Download, Check, ShieldAlert, BookOpen, Settings } from 'lucide-react';
 
 export const EpubPdfTool = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [chaptersFound, setChaptersFound] = useState<number>(0);
+  const [fontSize, setFontSize] = useState<number>(11);
+  const [pageSize, setPageSize] = useState<'A4' | 'LETTER'>('A4');
+  const [maxChapters, setMaxChapters] = useState<number>(15);
 
   const handleConvert = async () => {
     if (!file) return;
@@ -18,8 +21,7 @@ export const EpubPdfTool = () => {
       const buffer = await file.arrayBuffer();
       const arr = new Uint8Array(buffer);
 
-      // EPUB files are ZIP containers. Let's scan for HTML/XHTML chapter files.
-      // We will look for PK file markers and scan for filenames ending in html/xhtml
+      // EPUB files are ZIP containers. Scan for HTML/XHTML chapter files.
       let chaptersText: string[] = [];
       let i = 0;
       while (i < arr.length - 30) {
@@ -76,7 +78,7 @@ export const EpubPdfTool = () => {
       setChaptersFound(chaptersText.length);
 
       if (chaptersText.length === 0) {
-        // Fallback: extract printable strings from raw buffer if zip index matches fail
+        // Fallback: extract printable strings
         const rawText = new TextDecoder('utf-8', { fatal: false }).decode(arr);
         const clean = rawText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
         chaptersText.push(clean.slice(0, 5000));
@@ -85,29 +87,34 @@ export const EpubPdfTool = () => {
       // Compile to PDF using pdf-lib
       const pdfDoc = await PDFDocument.create();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const dimensions: [number, number] = pageSize === 'A4' ? [595, 842] : [612, 792];
+      const pageLimit = Math.min(chaptersText.length, maxChapters);
 
-      for (let chIdx = 0; chIdx < Math.min(chaptersText.length, 10); chIdx++) {
+      for (let chIdx = 0; chIdx < pageLimit; chIdx++) {
         const textSegment = chaptersText[chIdx];
-        const page = pdfDoc.addPage([595, 842]); // A4
+        const page = pdfDoc.addPage(dimensions);
         const words = textSegment.split(' ');
         
         let currentLine = '';
-        let y = 800;
+        let y = dimensions[1] - 50; // Margin top
 
         for (let wIdx = 0; wIdx < words.length; wIdx++) {
           const testLine = currentLine + words[wIdx] + ' ';
-          const width = font.widthOfTextAtSize(testLine, 11);
-          if (width > 500) {
+          const width = font.widthOfTextAtSize(testLine, fontSize);
+          if (width > dimensions[0] - 100) { // Margins left/right
             page.drawText(currentLine.trim(), {
               x: 50,
               y,
-              size: 11,
+              size: fontSize,
               font,
               color: rgb(0.1, 0.1, 0.1)
             });
             currentLine = words[wIdx] + ' ';
-            y -= 18;
-            if (y < 50) break; // page full
+            y -= fontSize * 1.6;
+            if (y < 50) {
+              // Add a page if text overflows this chapter page
+              break;
+            }
           } else {
             currentLine = testLine;
           }
@@ -116,7 +123,7 @@ export const EpubPdfTool = () => {
           page.drawText(currentLine.trim(), {
             x: 50,
             y,
-            size: 11,
+            size: fontSize,
             font,
             color: rgb(0.1, 0.1, 0.1)
           });
@@ -189,13 +196,66 @@ export const EpubPdfTool = () => {
 
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
+        {/* Settings Panel */}
+        <div className="glass-card p-6 flex flex-col gap-4">
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>Layout Options</span>
+          </h3>
+
+          {/* Page size Selection */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-slate-500 font-semibold">Page Dimension Size</label>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(e.target.value as any)}
+              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+            >
+              <option value="A4">A4 Standard (595 x 842 pt)</option>
+              <option value="LETTER">US Letter Size (612 x 792 pt)</option>
+            </select>
+          </div>
+
+          {/* Font Size Selection */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-slate-500 font-semibold">Content Font Size</label>
+            <select
+              value={fontSize}
+              onChange={(e) => setFontSize(Number(e.target.value))}
+              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+            >
+              <option value="9">Small (9 pt)</option>
+              <option value="11">Standard (11 pt)</option>
+              <option value="13">Medium (13 pt)</option>
+              <option value="15">Large (15 pt)</option>
+            </select>
+          </div>
+
+          {/* Max Chapters Slider */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between text-xs text-slate-500 font-semibold">
+              <span>Max Chapters Limit</span>
+              <span className="text-slate-300">{maxChapters}</span>
+            </div>
+            <input
+              type="range"
+              min="5"
+              max="50"
+              step="5"
+              value={maxChapters}
+              onChange={(e) => setMaxChapters(Number(e.target.value))}
+              className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+            />
+          </div>
+        </div>
+
         <div className="glass-card p-6 flex flex-col gap-5">
           <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Compile PDF</h3>
           <p className="text-xs text-slate-500 leading-relaxed">
-            Decompresses XHTML files, strips layout elements, and draws e-book segments into standard A4 PDF pages locally.
+            Decompresses XHTML files, strips layout elements, and draws e-book segments into standard PDF pages locally.
           </p>
 
-          <div className="flex flex-col gap-2 pt-2">
+          <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
             <button
               onClick={handleConvert}
               disabled={!file || loading}

@@ -1,12 +1,14 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
-import { Music, Upload, Download, Check, ShieldAlert } from 'lucide-react';
+import { Music, Upload, Download, Check, ShieldAlert, Settings } from 'lucide-react';
 
 export const Mp3WavTool = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [duration, setDuration] = useState<string>('');
+  const [channelOption, setChannelOption] = useState<'original' | 'mono' | 'stereo'>('original');
+  const [sampleRateOption, setSampleRateOption] = useState<'original' | '44100' | '48000' | '22050'>('original');
 
   const handleConvert = async () => {
     if (!file) return;
@@ -20,8 +22,27 @@ export const Mp3WavTool = () => {
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
       setDuration(audioBuffer.duration.toFixed(1) + ' seconds');
 
+      // Resample and mix channels using OfflineAudioContext
+      const targetSR = sampleRateOption === 'original' ? audioBuffer.sampleRate : Number(sampleRateOption);
+      let targetChannels = audioBuffer.numberOfChannels;
+      if (channelOption === 'mono') targetChannels = 1;
+      if (channelOption === 'stereo') targetChannels = 2;
+
+      const offlineCtx = new OfflineAudioContext(
+        targetChannels,
+        audioBuffer.duration * targetSR,
+        targetSR
+      );
+
+      const bufferSource = offlineCtx.createBufferSource();
+      bufferSource.buffer = audioBuffer;
+      bufferSource.connect(offlineCtx.destination);
+      bufferSource.start();
+
+      const renderedBuffer = await offlineCtx.startRendering();
+
       // Encode AudioBuffer to WAV format locally
-      const wavBlob = audioBufferToWav(audioBuffer);
+      const wavBlob = audioBufferToWav(renderedBuffer);
 
       triggerBlobDownload(
         wavBlob,
@@ -168,12 +189,41 @@ export const Mp3WavTool = () => {
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
         <div className="glass-card p-6 flex flex-col gap-5">
-          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">PCM conversion</h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            Pipes audio samples through the browser Audio Context parser, and encodes raw 16-bit linear PCM WAV formats.
-          </p>
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>PCM Conversion Settings</span>
+          </h3>
 
-          <div className="flex flex-col gap-2 pt-2">
+          {/* Channel configuration */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-slate-500 font-semibold">Audio Channels</label>
+            <select
+              value={channelOption}
+              onChange={(e) => setChannelOption(e.target.value as any)}
+              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+            >
+              <option value="original">Original Channels</option>
+              <option value="mono">Mono (Mix L+R)</option>
+              <option value="stereo">Stereo (L/R Channels)</option>
+            </select>
+          </div>
+
+          {/* Sample rate configuration */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-slate-500 font-semibold">Sample Rate</label>
+            <select
+              value={sampleRateOption}
+              onChange={(e) => setSampleRateOption(e.target.value as any)}
+              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+            >
+              <option value="original">Original Rate</option>
+              <option value="48000">48,000 Hz (Studio quality)</option>
+              <option value="44100">44,100 Hz (CD quality)</option>
+              <option value="22050">22,050 Hz (Low band)</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
             <button
               onClick={handleConvert}
               disabled={!file || loading}

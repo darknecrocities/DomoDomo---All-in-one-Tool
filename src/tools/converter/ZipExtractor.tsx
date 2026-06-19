@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { parseZipEntries, decompressZipEntry, triggerBlobDownload } from '../../utils/sharedHelpers';
 import type { ZipEntry } from '../../utils/sharedHelpers';
-import { Archive, Upload, Check, ShieldAlert, Sparkles, Folder, File, AlertCircle } from 'lucide-react';
+import { Archive, Upload, Check, ShieldAlert, Sparkles, Folder, File, AlertCircle, Search } from 'lucide-react';
 
 export const ZipExtractorTool = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -10,6 +10,8 @@ export const ZipExtractorTool = () => {
   const [extractingId, setExtractingId] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFilenames, setSelectedFilenames] = useState<Set<string>>(new Set());
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -18,6 +20,7 @@ export const ZipExtractorTool = () => {
       setEntries([]);
       setError('');
       setSuccessMsg('');
+      setSelectedFilenames(new Set());
       setLoading(true);
 
       try {
@@ -44,7 +47,6 @@ export const ZipExtractorTool = () => {
       const mime = 'application/octet-stream';
       const blob = new Blob([decompressed.buffer as ArrayBuffer], { type: mime });
       
-      // Get filename from the entry
       const baseName = entry.filename.split('/').pop() || entry.filename;
       triggerBlobDownload(blob, baseName);
       setSuccessMsg(`Extracted: ${baseName}`);
@@ -52,6 +54,34 @@ export const ZipExtractorTool = () => {
       setError(`Failed to decompress entry: ${entry.filename}`);
     } finally {
       setExtractingId(null);
+    }
+  };
+
+  const extractSelected = async () => {
+    if (!file || selectedFilenames.size === 0) return;
+    setLoading(true);
+    setError('');
+    setSuccessMsg('');
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const targets = entries.filter(e => selectedFilenames.has(e.filename) && !e.filename.endsWith('/'));
+      
+      for (let i = 0; i < targets.length; i++) {
+        const entry = targets[i];
+        const decompressed = await decompressZipEntry(buffer, entry);
+        const mime = 'application/octet-stream';
+        const blob = new Blob([decompressed.buffer as ArrayBuffer], { type: mime });
+        const baseName = entry.filename.split('/').pop() || entry.filename;
+        
+        triggerBlobDownload(blob, baseName);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
+      setSuccessMsg(`Successfully extracted ${targets.length} selected files!`);
+    } catch (err) {
+      setError('An error occurred during selective extraction.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,7 +103,6 @@ export const ZipExtractorTool = () => {
         const baseName = entry.filename.split('/').pop() || entry.filename;
         
         triggerBlobDownload(blob, baseName);
-        // Delay slightly between downloads to prevent browser blocking sequential downloads
         await new Promise((resolve) => setTimeout(resolve, 300));
       }
       setSuccessMsg(`Successfully extracted all ${filesOnly.length} files!`);
@@ -84,11 +113,34 @@ export const ZipExtractorTool = () => {
     }
   };
 
+  const toggleSelect = (filename: string) => {
+    const next = new Set(selectedFilenames);
+    if (next.has(filename)) {
+      next.delete(filename);
+    } else {
+      next.add(filename);
+    }
+    setSelectedFilenames(next);
+  };
+
+  const toggleSelectAll = () => {
+    const filesOnly = entries.filter(e => !e.filename.endsWith('/'));
+    if (selectedFilenames.size === filesOnly.length) {
+      setSelectedFilenames(new Set());
+    } else {
+      setSelectedFilenames(new Set(filesOnly.map(e => e.filename)));
+    }
+  };
+
   const formatSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
+
+  const filteredEntries = entries.filter(e =>
+    e.filename.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
@@ -131,11 +183,24 @@ export const ZipExtractorTool = () => {
                     setEntries([]);
                     setError('');
                     setSuccessMsg('');
+                    setSelectedFilenames(new Set());
                   }}
                   className="text-rose-455 hover:underline font-bold"
                 >
                   Clear File
                 </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative w-full">
+                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-550" />
+                <input
+                  type="text"
+                  placeholder="Search files inside archive..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-[#151C2C]/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#4E8E5E]"
+                />
               </div>
 
               {loading && (
@@ -161,21 +226,44 @@ export const ZipExtractorTool = () => {
 
               {entries.length > 0 && (
                 <div className="flex flex-col gap-2">
-                  <span className="text-xs text-slate-455 font-bold uppercase tracking-wider">Archive Entries</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-slate-455 font-bold uppercase tracking-wider">Archive Entries</span>
+                    {selectedFilenames.size > 0 && (
+                      <span className="text-[10px] text-[#4E8E5E] font-semibold">{selectedFilenames.size} selected</span>
+                    )}
+                  </div>
                   <div className="overflow-x-auto rounded-xl border border-slate-850">
                     <table className="w-full text-left text-xs">
                       <thead className="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-850">
                         <tr>
+                          <th className="p-3 w-10">
+                            <input
+                              type="checkbox"
+                              checked={selectedFilenames.size === entries.filter(e => !e.filename.endsWith('/')).length && entries.length > 0}
+                              onChange={toggleSelectAll}
+                              className="w-3.5 h-3.5 bg-slate-900 border-slate-800 rounded text-[#4E8E5E] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                            />
+                          </th>
                           <th className="p-3">File Path</th>
-                          <th className="p-3 text-right">Uncompressed Size</th>
+                          <th className="p-3 text-right">Size</th>
                           <th className="p-3 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-850 bg-slate-950/40">
-                        {entries.map((entry, idx) => {
+                        {filteredEntries.map((entry, idx) => {
                           const isDir = entry.filename.endsWith('/');
                           return (
                             <tr key={idx} className="hover:bg-slate-900/30">
+                              <td className="p-3">
+                                {!isDir && (
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedFilenames.has(entry.filename)}
+                                    onChange={() => toggleSelect(entry.filename)}
+                                    className="w-3.5 h-3.5 bg-slate-900 border-slate-800 rounded text-[#4E8E5E] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                                  />
+                                )}
+                              </td>
                               <td className="p-3 font-mono text-slate-300 max-w-[280px] truncate flex items-center gap-2">
                                 {isDir ? (
                                   <Folder size={14} className="text-amber-500 shrink-0" />
@@ -213,10 +301,19 @@ export const ZipExtractorTool = () => {
 
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
-        <div className="glass-card p-6 flex flex-col gap-5">
+        <div className="glass-card p-6 flex flex-col gap-4">
           <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Global Actions</h3>
 
-          <div className="flex flex-col gap-2 pt-2">
+          <div className="flex flex-col gap-2.5 pt-1">
+            {selectedFilenames.size > 0 && (
+              <button
+                onClick={extractSelected}
+                disabled={loading}
+                className="btn-indigo w-full py-3 flex items-center justify-center gap-1.5"
+              >
+                <span>Extract Selected ({selectedFilenames.size})</span>
+              </button>
+            )}
             <button
               onClick={extractAll}
               disabled={!file || entries.length === 0 || loading}

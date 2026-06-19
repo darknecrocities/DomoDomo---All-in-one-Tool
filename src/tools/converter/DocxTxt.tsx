@@ -1,12 +1,14 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
-import { FileText, Upload, Download, Check, ShieldAlert, FileSearch } from 'lucide-react';
+import { FileText, Upload, Download, Check, ShieldAlert, FileSearch, Settings } from 'lucide-react';
 
 export const DocxTxtTool = () => {
   const [file, setFile] = useState<File | null>(null);
   const [extracted, setExtracted] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [preserveParagraphs, setPreserveParagraphs] = useState(true);
+  const [stripSpacing, setStripSpacing] = useState(false);
 
   const handleConvert = async () => {
     if (!file) return;
@@ -16,7 +18,7 @@ export const DocxTxtTool = () => {
       const buffer = await file.arrayBuffer();
       const arr = new Uint8Array(buffer);
       
-      // Let's locate "word/document.xml" header in the ZIP structure
+      // Locate "word/document.xml" header in the ZIP structure
       const target = new TextEncoder().encode("word/document.xml");
       let headerOffset = -1;
 
@@ -29,8 +31,6 @@ export const DocxTxtTool = () => {
           }
         }
         if (match) {
-          // Verify it's preceded by local file signature PK\x03\x04
-          // The filename is offset by 30 bytes from PK\x03\x04
           const possibleStart = i - 30;
           if (possibleStart >= 0 && arr[possibleStart] === 0x50 && arr[possibleStart+1] === 0x4B) {
             headerOffset = possibleStart;
@@ -39,68 +39,83 @@ export const DocxTxtTool = () => {
         }
       }
 
-      if (headerOffset === -1) {
-        // Fallback: search for XML w:t tags directly in raw stream
-        const textDecoder = new TextDecoder('utf-8', { fatal: false });
-        const textStr = textDecoder.decode(arr);
-        const matches = [...textStr.matchAll(/<w:t[^>]*>(.*?)<\/w:t>/g)];
-        const textOutput = matches.map(m => m[1]).join('\n');
-        
-        if (textOutput.trim()) {
-          setExtracted(textOutput);
-          setSuccess(true);
-          triggerBlobDownload(new Blob([textOutput], { type: 'text/plain' }), `${file.name.replace(/\.[^/.]+$/, "")}_extracted.txt`);
-        } else {
-          setExtracted('Could not locate standard DOCX text streams. Ensure it is a valid XML docx package.');
-        }
-        setLoading(false);
-        return;
-      }
-
-      // Read ZIP local file header info
-      const compressionMethod = arr[headerOffset + 8] + (arr[headerOffset + 9] << 8);
-      const compressedSize = arr[headerOffset + 18] + (arr[headerOffset + 19] << 8) + (arr[headerOffset + 20] << 16) + (arr[headerOffset + 21] << 24);
-      const filenameLen = arr[headerOffset + 26] + (arr[headerOffset + 27] << 8);
-      const extraLen = arr[headerOffset + 28] + (arr[headerOffset + 29] << 8);
-
-      const dataStart = headerOffset + 30 + filenameLen + extraLen;
-      const compressedData = arr.slice(dataStart, dataStart + compressedSize);
-
       let xmlString = '';
-      if (compressionMethod === 8) {
-        // Decompress Deflated stream using native DecompressionStream if available,
-        // otherwise fallback to raw regex
-        try {
-          const ds = new DecompressionStream('deflate-raw');
-          const writer = ds.writable.getWriter();
-          writer.write(compressedData);
-          writer.close();
-          const response = new Response(ds.readable);
-          const decompressedBuffer = await response.arrayBuffer();
-          xmlString = new TextDecoder().decode(decompressedBuffer);
-        } catch (e) {
-          // Decompression stream fallback
-          const textDecoder = new TextDecoder('utf-8', { fatal: false });
-          xmlString = textDecoder.decode(arr);
-        }
+      if (headerOffset === -1) {
+        // Fallback: search for XML strings
+        const textDecoder = new TextDecoder('utf-8', { fatal: false });
+        xmlString = textDecoder.decode(arr);
       } else {
-        // Stored (no compression)
-        xmlString = new TextDecoder().decode(compressedData);
+        const compressionMethod = arr[headerOffset + 8] + (arr[headerOffset + 9] << 8);
+        const compressedSize = arr[headerOffset + 18] + (arr[headerOffset + 19] << 8) + (arr[headerOffset + 20] << 16) + (arr[headerOffset + 21] << 24);
+        const filenameLen = arr[headerOffset + 26] + (arr[headerOffset + 27] << 8);
+        const extraLen = arr[headerOffset + 28] + (arr[headerOffset + 29] << 8);
+
+        const dataStart = headerOffset + 30 + filenameLen + extraLen;
+        const compressedData = arr.slice(dataStart, dataStart + compressedSize);
+
+        if (compressionMethod === 8) {
+          try {
+            const ds = new DecompressionStream('deflate-raw');
+            const writer = ds.writable.getWriter();
+            writer.write(compressedData);
+            writer.close();
+            const response = new Response(ds.readable);
+            const decompressedBuffer = await response.arrayBuffer();
+            xmlString = new TextDecoder().decode(decompressedBuffer);
+          } catch (e) {
+            const textDecoder = new TextDecoder('utf-8', { fatal: false });
+            xmlString = textDecoder.decode(arr);
+          }
+        } else {
+          xmlString = new TextDecoder().decode(compressedData);
+        }
       }
 
-      // Extract text content from XML tags <w:t>Text</w:t>
-      const matches = [...xmlString.matchAll(/<w:t[^>]*>(.*?)<\/w:t>/g)];
-      const resultText = matches.map(m => m[1]).join('\n');
+      // Advanced XML Parsing via DOMParser
+      try {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+        
+        // Grab paragraphs <w:p>
+        const paragraphs = xmlDoc.getElementsByTagName('w:p');
+        const textLines: string[] = [];
 
-      if (resultText.trim()) {
-        setExtracted(resultText);
-        setSuccess(true);
-        triggerBlobDownload(
-          new Blob([resultText], { type: 'text/plain' }),
-          `${file.name.replace(/\.[^/.]+$/, "")}_extracted.txt`
-        );
-      } else {
-        setExtracted('DOCX file parsed but no readable text paragraph blocks (<w:t>) were found.');
+        for (let i = 0; i < paragraphs.length; i++) {
+          const p = paragraphs[i];
+          const tTags = p.getElementsByTagName('w:t');
+          let pText = '';
+          for (let j = 0; j < tTags.length; j++) {
+            pText += tTags[j].textContent || '';
+          }
+          if (stripSpacing && !pText.trim()) continue;
+          textLines.push(pText);
+        }
+
+        const resultText = textLines.join(preserveParagraphs ? '\n\n' : '\n');
+        if (resultText.trim()) {
+          setExtracted(resultText);
+          setSuccess(true);
+          triggerBlobDownload(
+            new Blob([resultText], { type: 'text/plain' }),
+            `${file.name.replace(/\.[^/.]+$/, "")}_extracted.txt`
+          );
+        } else {
+          // Regex fallback
+          const matches = [...xmlString.matchAll(/<w:t[^>]*>(.*?)<\/w:t>/g)];
+          const backupText = matches.map(m => m[1]).join('\n');
+          if (backupText.trim()) {
+            setExtracted(backupText);
+            setSuccess(true);
+            triggerBlobDownload(new Blob([backupText], { type: 'text/plain' }), `${file.name.replace(/\.[^/.]+$/, "")}_extracted.txt`);
+          } else {
+            setExtracted('Could not locate readable paragraph content in this document.');
+          }
+        }
+      } catch (e) {
+        // Flat regex fallback
+        const matches = [...xmlString.matchAll(/<w:t[^>]*>(.*?)<\/w:t>/g)];
+        const resultText = matches.map(m => m[1]).join('\n');
+        setExtracted(resultText || 'Failed to parse XML schema.');
       }
     } catch (err) {
       console.error(err);
@@ -166,8 +181,42 @@ export const DocxTxtTool = () => {
 
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
+        {/* Settings Panel */}
+        <div className="glass-card p-6 flex flex-col gap-4">
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>Format Options</span>
+          </h3>
+
+          <div className="flex items-center gap-2 mt-1">
+            <input
+              type="checkbox"
+              id="preserveP"
+              checked={preserveParagraphs}
+              onChange={(e) => setPreserveParagraphs(e.target.checked)}
+              className="w-4 h-4 bg-slate-900 border-slate-800 rounded text-[#4E8E5E] focus:ring-0 focus:ring-offset-0"
+            />
+            <label htmlFor="preserveP" className="text-xs text-slate-400 cursor-pointer select-none">
+              Preserve Paragraphs (\n\n)
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="stripSpace"
+              checked={stripSpacing}
+              onChange={(e) => setStripSpacing(e.target.checked)}
+              className="w-4 h-4 bg-slate-900 border-slate-800 rounded text-[#4E8E5E] focus:ring-0 focus:ring-offset-0"
+            />
+            <label htmlFor="stripSpace" className="text-xs text-slate-400 cursor-pointer select-none">
+              Strip empty lines
+            </label>
+          </div>
+        </div>
+
         <div className="glass-card p-6 flex flex-col gap-5">
-          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Unpack utility</h3>
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Unpack Utility</h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             Parses word structure directories offline. Locates the primary document layout tags and copies clean content.
           </p>

@@ -1,27 +1,73 @@
 import { triggerTextDownload, triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
-import { FileCode, Upload, Download, Check, ShieldAlert, RefreshCw, Sparkles } from 'lucide-react';
+import { FileCode, Upload, Download, Check, ShieldAlert, Settings } from 'lucide-react';
 
 export const Base64Tool = () => {
   const [mode, setMode] = useState<'text' | 'file'>('text');
-  const [inputText, setInputText] = useState('Hello DomoDomo!');
+  const [inputText, setInputText] = useState('Hello DomoDomo! 🤗');
   const [outputText, setOutputText] = useState('');
   const [fileBase64, setFileBase64] = useState('');
   const [fileName, setFileName] = useState('');
   const [fileSize, setFileSize] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isUrlSafe, setIsUrlSafe] = useState(false);
+  const [useUtf8, setUseUtf8] = useState(true);
+
+  // Helper: Encode UTF-8 text safely
+  const encodeBase64 = (str: string): string => {
+    let result = '';
+    if (useUtf8) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      const len = bytes.byteLength;
+      for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      result = btoa(binary);
+    } else {
+      result = btoa(str);
+    }
+
+    if (isUrlSafe) {
+      result = result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+    return result;
+  };
+
+  // Helper: Decode UTF-8 text safely
+  const decodeBase64 = (str: string): string => {
+    let base64 = str.trim();
+    if (isUrlSafe) {
+      base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) {
+        base64 += '=';
+      }
+    }
+
+    if (useUtf8) {
+      const binary = atob(base64);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    } else {
+      return atob(base64);
+    }
+  };
 
   const handleEncodeText = () => {
     try {
-      setOutputText(btoa(inputText));
+      setOutputText(encodeBase64(inputText));
     } catch (e) {
-      setOutputText('Error encoding: String contains non-ASCII characters. Use UTF-8 escape methods.');
+      setOutputText('Error encoding: Ensure input contains supported characters.');
     }
   };
 
   const handleDecodeText = () => {
     try {
-      setOutputText(atob(inputText));
+      setOutputText(decodeBase64(inputText));
     } catch (e) {
       setOutputText('Error decoding: String is not a valid base64 representation.');
     }
@@ -35,7 +81,15 @@ export const Base64Tool = () => {
       
       const reader = new FileReader();
       reader.onload = () => {
-        const base64String = reader.result as string;
+        let base64String = reader.result as string;
+        if (isUrlSafe) {
+          // Convert data URL base64 stream to url-safe if needed
+          const parts = base64String.split(',');
+          if (parts[1]) {
+            const safeB64 = parts[1].replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            base64String = `${parts[0]},${safeB64}`;
+          }
+        }
         setFileBase64(base64String);
       };
       reader.readAsDataURL(file);
@@ -50,13 +104,18 @@ export const Base64Tool = () => {
   const handleDecodeFile = () => {
     if (!inputText.trim()) return;
     try {
-      // Decode data URL or plain string back to binary file
       let base64 = inputText.trim();
       let mime = 'application/octet-stream';
       if (base64.startsWith('data:')) {
         const parts = base64.split(',');
         mime = parts[0].split(':')[1].split(';')[0];
         base64 = parts[1];
+      }
+
+      // Handle URL-safe decoding
+      base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) {
+        base64 += '=';
       }
 
       const binaryStr = atob(base64);
@@ -99,7 +158,7 @@ export const Base64Tool = () => {
                 <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  className="w-full bg-[#151C2C]/60 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-[#4E8E5E] h-32 resize-none leading-relaxed outline-none"
+                  className="w-full bg-[#151C2C]/60 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-220 focus:outline-none focus:border-[#4E8E5E] h-32 resize-none leading-relaxed outline-none"
                 />
               </div>
 
@@ -160,18 +219,50 @@ export const Base64Tool = () => {
 
       {/* Control panel */}
       <div className="lg:col-span-4 flex flex-col gap-6">
-        <div className="glass-card p-6 flex flex-col gap-5">
-          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3">Actions</h3>
+        {/* Settings Panel */}
+        <div className="glass-card p-6 flex flex-col gap-4">
+          <h3 className="text-sm font-bold text-slate-350 uppercase tracking-wider border-b border-slate-800 pb-3 flex items-center gap-1.5">
+            <Settings size={16} className="text-[#4E8E5E]" />
+            <span>Options Settings</span>
+          </h3>
 
-          <div className="flex flex-col gap-2 pt-2">
+          <div className="flex items-center gap-2 mt-1">
+            <input
+              type="checkbox"
+              id="utfMode"
+              checked={useUtf8}
+              onChange={(e) => setUseUtf8(e.target.checked)}
+              className="w-4 h-4 bg-slate-900 border-slate-800 rounded text-[#4E8E5E] focus:ring-0 focus:ring-offset-0"
+            />
+            <label htmlFor="utfMode" className="text-xs text-slate-400 cursor-pointer select-none">
+              UTF-8 Safe (Supports emojis/symbols)
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="urlSafe"
+              checked={isUrlSafe}
+              onChange={(e) => setIsUrlSafe(e.target.checked)}
+              className="w-4 h-4 bg-slate-900 border-slate-800 rounded text-[#4E8E5E] focus:ring-0 focus:ring-offset-0"
+            />
+            <label htmlFor="urlSafe" className="text-xs text-slate-400 cursor-pointer select-none">
+              URL-Safe Base64 format (- and _ )
+            </label>
+          </div>
+        </div>
+
+        <div className="glass-card p-6 flex flex-col gap-5">
+          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 pb-3">Actions</h3>
+
+          <div className="flex flex-col gap-2">
             {mode === 'text' ? (
               <div className="flex flex-col gap-2">
                 <button onClick={handleEncodeText} className="btn-primary w-full py-3 flex items-center justify-center gap-1.5">
-                  <Sparkles size={18} />
-                  <span>Encode Text</span>
+                  <span className="text-xs">Encode Text</span>
                 </button>
                 <button onClick={handleDecodeText} className="btn-secondary w-full py-2.5 text-xs flex items-center justify-center gap-1.5">
-                  <RefreshCw size={14} />
                   <span>Decode Text</span>
                 </button>
                 <button onClick={handleDecodeFile} className="btn-secondary w-full py-2.5 text-xs">
