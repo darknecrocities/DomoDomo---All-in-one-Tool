@@ -12,6 +12,7 @@
   "dependencies": {
     "lucide-react": "^1.21.0",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.6.205",
     "qrcode": "^1.5.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
