@@ -2,6 +2,7 @@ import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Upload, FileText, Check, ShieldAlert, Lock } from 'lucide-react';
+import { encryptPDF } from '@pdfsmaller/pdf-encrypt';
 
 export const PDFProtectTool = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -43,9 +44,22 @@ export const PDFProtectTool = () => {
       pdf.setProducer('DomoDomo PDF Engine');
       pdf.setModificationDate(new Date());
 
-      // pdf-lib does not support native password encryption natively in JS without external webassembly, 
-      // but we embed the access-restriction flags inside the document structure keys.
-      const protectedBytes = await pdf.save();
+      let protectedBytes = await pdf.save();
+
+      // If password is provided, perform client-side PDF encryption
+      if (password) {
+        protectedBytes = await encryptPDF(
+          protectedBytes,
+          password,
+          {
+            algorithm: 'AES-256',
+            allowCopying: !restrictCopy,
+            allowExtraction: !restrictCopy,
+            allowHighQualityPrint: !restrictPrint,
+            allowPrinting: !restrictPrint
+          }
+        );
+      }
 
       triggerBlobDownload(
         new Blob([new Uint8Array(protectedBytes)], { type: 'application/pdf' }),
@@ -55,7 +69,7 @@ export const PDFProtectTool = () => {
       setTimeout(() => setSuccess(false), 3000);
     } catch (e) {
       console.error(e);
-      alert('Error writing security metadata flags.');
+      alert('Error writing security metadata flags or encrypting PDF.');
     } finally {
       setLoading(false);
     }
