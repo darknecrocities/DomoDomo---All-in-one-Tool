@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
-import { Upload, Wind, Download, Loader2, Info, Settings, ShieldAlert, Sliders } from 'lucide-react';
+import { Upload, Wind, Download, Loader2, Info, Settings, ShieldAlert, Sliders, CheckCircle2 } from 'lucide-react';
 
 const encodeWav = (buffer: AudioBuffer): ArrayBuffer => {
   const ch = buffer.numberOfChannels;
@@ -32,6 +32,11 @@ const encodeWav = (buffer: AudioBuffer): ArrayBuffer => {
 export const AudioNoiseTool = () => {
   const [file, setFile] = useState<File | null>(null);
   const [audioUrl, setAudioUrl] = useState('');
+  
+  // Denoised preview states
+  const [processedAudioUrl, setProcessedAudioUrl] = useState('');
+  const [processedBlob, setProcessedBlob] = useState<Blob | null>(null);
+
   const [highpassFreq, setHighpassFreq] = useState(80);
   const [lowpassFreq, setLowpassFreq] = useState(12000);
   const [noiseGateThresh, setNoiseGateThresh] = useState(-45);
@@ -59,6 +64,12 @@ export const AudioNoiseTool = () => {
     setAudioUrl(url);
     const baseName = f.name.replace(/\.[^.]+$/, '');
     setCustomName(`${baseName}_denoised`);
+    // Clear preview states on new upload
+    if (processedAudioUrl) {
+      URL.revokeObjectURL(processedAudioUrl);
+    }
+    setProcessedAudioUrl('');
+    setProcessedBlob(null);
   };
 
   const handleProcess = useCallback(async () => {
@@ -177,11 +188,14 @@ export const AudioNoiseTool = () => {
       const rendered = await renderCtx.startRendering();
       setProgress(85);
 
-      const targetFileName = customName.trim() ? customName.trim() : 'denoised_audio';
-
       if (outputFormat === 'wav') {
         const wavBuf = encodeWav(rendered);
-        triggerBlobDownload(new Blob([wavBuf], { type: 'audio/wav' }), `${targetFileName}.wav`);
+        const blob = new Blob([wavBuf], { type: 'audio/wav' });
+        setProcessedBlob(blob);
+        if (processedAudioUrl) {
+          URL.revokeObjectURL(processedAudioUrl);
+        }
+        setProcessedAudioUrl(URL.createObjectURL(blob));
         setProgress(100);
         setProcessing(false);
       } else {
@@ -195,7 +209,12 @@ export const AudioNoiseTool = () => {
         const chunks: BlobPart[] = [];
         mr.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
         mr.onstop = () => {
-          triggerBlobDownload(new Blob(chunks, { type: 'audio/ogg' }), `${targetFileName}.ogg`);
+          const blob = new Blob(chunks, { type: 'audio/ogg' });
+          setProcessedBlob(blob);
+          if (processedAudioUrl) {
+            URL.revokeObjectURL(processedAudioUrl);
+          }
+          setProcessedAudioUrl(URL.createObjectURL(blob));
           liveCtx.close();
           setProcessing(false);
           setProgress(0);
@@ -208,7 +227,14 @@ export const AudioNoiseTool = () => {
       console.error(err);
       setProcessing(false);
     }
-  }, [file, highpassFreq, lowpassFreq, noiseGateThresh, notch50Hz, notch60Hz, compress, deEsser, dePopper, eq60Hz, eq250Hz, eq1kHz, eq4kHz, eq16kHz, outputFormat, customName]);
+  }, [file, highpassFreq, lowpassFreq, noiseGateThresh, notch50Hz, notch60Hz, compress, deEsser, dePopper, eq60Hz, eq250Hz, eq1kHz, eq4kHz, eq16kHz, outputFormat, processedAudioUrl]);
+
+  const handleDownload = () => {
+    if (!processedBlob) return;
+    const targetFileName = customName.trim() ? customName.trim() : 'denoised_audio';
+    const ext = outputFormat === 'wav' ? 'wav' : 'ogg';
+    triggerBlobDownload(processedBlob, `${targetFileName}.${ext}`);
+  };
 
   return (
     <div className="max-w-3xl mx-auto glass-card p-6 flex flex-col gap-6 text-left">
@@ -222,7 +248,7 @@ export const AudioNoiseTool = () => {
       </div>
 
       {!file ? (
-        <label className="flex flex-col items-center gap-3 py-12 border-2 border-dashed border-slate-700/60 rounded-xl cursor-pointer hover:border-teal-500/50 hover:bg-slate-950/20 transition-all justify-center">
+        <label className="flex flex-col items-center gap-3 py-12 border-2 border-dashed border-slate-750 rounded-xl cursor-pointer hover:border-teal-500/50 hover:bg-slate-950/20 transition-all justify-center">
           <Upload size={36} className="text-teal-400" />
           <span className="text-slate-300 text-sm font-semibold">Drop or click to upload audio file</span>
           <span className="text-slate-500 text-xs">Supports MP3, WAV, OGG, FLAC, M4A, etc.</span>
@@ -232,10 +258,22 @@ export const AudioNoiseTool = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Controls */}
           <div className="md:col-span-7 flex flex-col gap-4">
+            {/* Input Player */}
             <div className="bg-slate-950/40 rounded-xl p-4 border border-slate-850/50 flex flex-col gap-2">
-              <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Audio Input Player</span>
+              <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">Original Audio Input</span>
               <audio src={audioUrl} controls className="w-full" />
             </div>
+
+            {/* Denoised Preview Player */}
+            {processedAudioUrl && (
+              <div className="bg-teal-950/20 rounded-xl p-4 border border-teal-900/30 flex flex-col gap-2 animate-fadeIn">
+                <span className="text-[10px] font-bold text-teal-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <CheckCircle2 size={12} className="text-teal-400" />
+                  <span>Denoised Preview (Filtered Output)</span>
+                </span>
+                <audio src={processedAudioUrl} controls className="w-full" />
+              </div>
+            )}
 
             {/* Frequencies Filtering */}
             <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-xl flex flex-col gap-3">
@@ -372,11 +410,21 @@ export const AudioNoiseTool = () => {
               </div>
             )}
 
-            <button onClick={handleProcess} disabled={processing}
-              className="btn-primary w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold disabled:opacity-50 mt-auto">
-              {processing ? <Loader2 size={13} className="animate-spin" /> : <Download size={13} />}
-              {processing ? `Rendering…` : 'Save Denoised Track'}
-            </button>
+            <div className="flex flex-col gap-2 mt-auto">
+              <button onClick={handleProcess} disabled={processing}
+                className="btn-primary w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold disabled:opacity-50">
+                {processing ? <Loader2 size={13} className="animate-spin" /> : <Wind size={13} />}
+                {processing ? `Rendering…` : 'Apply Filters & Preview'}
+              </button>
+
+              {processedBlob && (
+                <button onClick={handleDownload}
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold rounded-lg border border-teal-500 bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition-all">
+                  <Download size={13} />
+                  <span>Download Clean Track</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
