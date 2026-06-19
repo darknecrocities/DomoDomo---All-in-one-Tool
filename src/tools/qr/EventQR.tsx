@@ -3,32 +3,132 @@ import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import { Calendar } from 'lucide-react';
 
-
-
 export const EventQRTool = () => {
-  const [title, setTitle] = useState('Meeting');
-  const [date, setDate] = useState('2026-06-19');
+  const [title, setTitle] = useState('DomoDomo Launch Meet');
+  const [startDate, setStartDate] = useState('2026-06-19T09:00');
+  const [endDate, setEndDate] = useState('2026-06-19T10:00');
+  const [location, setLocation] = useState('Offline Sandbox');
+  const [desc, setDesc] = useState('Highlighting multi-purpose open source tools');
   const [qrUrl, setQrUrl] = useState('');
 
-  const generate = async () => {
-    const payload = `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${date.replace(/-/g, '')}T090000Z\nEND:VEVENT`;
-    const url = await QRCode.toDataURL(payload, { width: 300, color: { dark: '#4E8E5E', light: '#0B0F19' } });
-    setQrUrl(url);
+  const formatToiCalDate = (dateTimeStr: string): string => {
+    // Input format: YYYY-MM-DDTHH:MM
+    const dateObj = new Date(dateTimeStr);
+    if (isNaN(dateObj.getTime())) return '';
+    
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    
+    const yyyy = dateObj.getFullYear();
+    const mm = pad(dateObj.getMonth() + 1);
+    const dd = pad(dateObj.getDate());
+    const hh = pad(dateObj.getHours());
+    const min = pad(dateObj.getMinutes());
+    
+    return `${yyyy}${mm}${dd}T${hh}${min}00Z`;
   };
 
-  useEffect(() => { generate(); }, [title, date]);
+  const generate = async () => {
+    try {
+      const startFormatted = formatToiCalDate(startDate);
+      const endFormatted = formatToiCalDate(endDate);
+      
+      const payload = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'BEGIN:VEVENT',
+        `SUMMARY:${title}`,
+        startFormatted ? `DTSTART:${startFormatted}` : '',
+        endFormatted ? `DTEND:${endFormatted}` : '',
+        `LOCATION:${location}`,
+        `DESCRIPTION:${desc}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].filter(line => line !== '').join('\n');
+
+      const url = await QRCode.toDataURL(payload, { 
+        width: 300, 
+        margin: 2,
+        color: { dark: '#4E8E5E', light: '#0B0F19' } 
+      });
+      setQrUrl(url);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => { generate(); }, [title, startDate, endDate, location, desc]);
 
   return (
-    <div className="max-w-md mx-auto glass-card p-6 flex flex-col gap-4 text-left">
-      <h3 className="font-bold text-teal-400 border-b border-slate-800 pb-2 flex items-center gap-2">
-        <Calendar size={16} /> Event Calendar QR
-      </h3>
-      <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} className="bg-slate-900 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-200" />
-      <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-slate-900 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-200" />
+    <div className="max-w-md mx-auto glass-card p-6 flex flex-col gap-5 text-left">
+      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 className="font-bold text-white flex items-center gap-2 text-lg">
+          <Calendar className="text-[#4E8E5E]" size={20} />
+          <span>Event Calendar QR</span>
+        </h3>
+        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">iCalendar Card</span>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs text-slate-400 font-semibold">Event Title</label>
+        <input
+          type="text"
+          placeholder="e.g. Project Sync"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs text-slate-400 font-semibold">Start Date & Time</label>
+          <input
+            type="datetime-local"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-250 focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs text-slate-400 font-semibold">End Date & Time</label>
+          <input
+            type="datetime-local"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-250 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs text-slate-400 font-semibold">Location</label>
+        <input
+          type="text"
+          placeholder="e.g. Conference Room A / Virtual Link"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs text-slate-400 font-semibold">Description</label>
+        <textarea
+          placeholder="Brief details about the event..."
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          className="w-full bg-[#151C2C]/60 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none h-20 resize-none outline-none"
+        />
+      </div>
+
       {qrUrl && (
-        <div className="flex flex-col items-center gap-3">
-          <img src={qrUrl} className="w-40 h-40 border border-slate-800 rounded" alt="Event QR" />
-          <button onClick={() => triggerDownload(qrUrl, 'event_qr.png')} className="btn-primary w-full py-2 text-xs">Download PNG</button>
+        <div className="flex flex-col items-center gap-4 pt-4 border-t border-slate-800/80">
+          <div className="p-3 bg-slate-950/40 border border-slate-850 rounded-2xl flex items-center justify-center">
+            <img src={qrUrl} className="w-44 h-44 rounded-xl border border-slate-800" alt="Event QR" />
+          </div>
+          <button onClick={() => triggerDownload(qrUrl, 'event_qr.png')} className="btn-primary w-full py-3 text-xs font-bold">
+            Download Calendar QR
+          </button>
         </div>
       )}
     </div>
