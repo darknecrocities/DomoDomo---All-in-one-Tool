@@ -154,7 +154,11 @@ const TECH_STACK: TechItem[] = [
   { name: 'Vite', desc: 'Bundler', color: '#646CFF', icon: 'vite' },
   { name: 'Transformers.js', desc: 'AI Pipelines', color: '#FF9D00', icon: 'transformers' },
   { name: 'FFmpeg.wasm', desc: 'Video processing', color: '#00E676', icon: 'ffmpeg' },
-  { name: 'pdf-lib', desc: 'PDF Mutation', color: '#EC407A', icon: 'pdflib' }
+  { name: 'pdf-lib', desc: 'PDF Mutation', color: '#EC407A', icon: 'pdflib' },
+  { name: 'Tesseract.js', desc: 'Local OCR', color: '#5E35B1', icon: 'tesseract' },
+  { name: 'Web Audio API', desc: 'Sound Engine', color: '#00B0FF', icon: 'webaudio' },
+  { name: 'ONNX Runtime', desc: 'WASM Models', color: '#0078D4', icon: 'onnx' },
+  { name: 'WebGPU', desc: 'Hardware Accel', color: '#E65100', icon: 'webgpu' }
 ];
 
 const renderTechIcon = (icon: string) => {
@@ -247,6 +251,30 @@ const renderTechIcon = (icon: string) => {
           <polyline points="14 2 14 8 20 8" />
           <line x1="16" y1="13" x2="8" y2="13" />
           <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+      );
+    case 'tesseract':
+      return (
+        <span className="text-xl leading-none select-none">👁️</span>
+      );
+    case 'webaudio':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#00B0FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2v20M17 5v14M22 9v6M7 8v8M2 10v4" />
+        </svg>
+      );
+    case 'onnx':
+      return (
+        <svg className="w-6 h-6 rounded overflow-hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/255/svg">
+          <rect width="100" height="100" fill="#0078D4"/>
+          <text x="50" y="65" fill="white" fontSize="30" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">ONNX</text>
+        </svg>
+      );
+    case 'webgpu':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#E65100" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="4" />
+          <path d="M6 12h12M12 6v12" />
         </svg>
       );
     default:
@@ -492,6 +520,62 @@ export const Dashboard = () => {
               <p className="text-slate-400 text-xs leading-relaxed">
                 No need to open multiple websites. Edit PDFs, compress videos, build resumes, scan QRs, and format codes inside a single cohesive system.
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Local First Advantage & Benefits Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="glass-card p-6 border-slate-800/80 bg-[#151C2C]/30 text-left">
+          <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
+            <Shield className="text-[#4E8E5E]" size={20} />
+            <span>Why Local-First Processing Wins</span>
+          </h3>
+          <div className="flex flex-col gap-3 text-xs text-slate-350">
+            <div className="flex gap-2">
+              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span><strong>Absolute Privacy:</strong> Your sensitive files (passports, signatures, photos) never traverse network servers. Data leaks are physically impossible.</span>
+            </div>
+            <div className="flex gap-2">
+              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span><strong>No Size/Bandwidth Costs:</strong> Process gigabytes of PDF merges or video compressions locally without consuming uploading bandwidth.</span>
+            </div>
+            <div className="flex gap-2">
+              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span><strong>Offline Resilience:</strong> Runs completely without an internet connection once cached, perfect for remote environments or flights.</span>
+            </div>
+            <div className="flex gap-2">
+              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span><strong>Fast Execution:</strong> Avoid cloud queues and server lags by using local hardware-accelerated CPU and WebAssembly.</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="glass-card p-6 border-slate-800/80 bg-[#151C2C]/30 text-left">
+          <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
+            <Cpu className="text-indigo-400" size={20} />
+            <span>Under the Hood Architecture</span>
+          </h3>
+          <p className="text-slate-400 text-xs leading-relaxed mb-4">
+            DomoDomo integrates native web sandboxes, compiled code engines, and deep neural models compiled for the web. Here is how your browser processes files:
+          </p>
+          <div className="grid grid-cols-2 gap-3 text-[11px]">
+            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
+              <div className="font-bold text-slate-200">ONNX Runtime</div>
+              <div className="text-slate-500 text-[10px] mt-0.5">Executes local transformer models directly via WASM threads.</div>
+            </div>
+            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
+              <div className="font-bold text-slate-200">FFmpeg WASM</div>
+              <div className="text-slate-500 text-[10px] mt-0.5">Hardware video codecs compiled to target browser architectures.</div>
+            </div>
+            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
+              <div className="font-bold text-slate-200">IndexedDB Storage</div>
+              <div className="text-slate-500 text-[10px] mt-0.5">Secure sandbox to process files without bloating memory.</div>
+            </div>
+            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
+              <div className="font-bold text-slate-200">Web Speech Engine</div>
+              <div className="text-slate-500 text-[10px] mt-0.5">Native operating system speech recognition for live typing.</div>
             </div>
           </div>
         </div>
