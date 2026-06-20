@@ -133,16 +133,26 @@ export const aiService = {
   },
 
   // Generate text using local Ollama model
-  async generateTextOllama(model: string, prompt: string, numPredict: number = 120): Promise<string> {
+  async generateTextOllama(
+    model: string,
+    prompt: string,
+    numPredict: number = 120,
+    systemPrompt?: string,
+    options?: { temperature?: number; topK?: number; topP?: number }
+  ): Promise<string> {
     const res = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: model,
         prompt: prompt,
+        system: systemPrompt,
         stream: false,
         options: {
-          num_predict: numPredict
+          num_predict: numPredict,
+          temperature: options?.temperature,
+          top_k: options?.topK,
+          top_p: options?.topP
         }
       })
     });
@@ -151,7 +161,18 @@ export const aiService = {
     return data.response || '';
   },
 
-  async generateText(prompt: string, maxTokens: number = 120, onProgress?: LoadingProgressCallback, modelOverride?: string): Promise<string> {
+  async generateText(
+    prompt: string,
+    maxTokens: number = 120,
+    onProgress?: LoadingProgressCallback,
+    modelOverride?: string,
+    options?: {
+      systemPrompt?: string;
+      temperature?: number;
+      topK?: number;
+      topP?: number;
+    }
+  ): Promise<string> {
     // 1. Attempt to run via Ollama
     const ollama = await this.checkOllama();
     if (ollama.status && ollama.models.length > 0) {
@@ -160,7 +181,7 @@ export const aiService = {
       
       onProgress?.(`Generating via local Ollama (${selectedModel})...`, 50);
       try {
-        const text = await this.generateTextOllama(selectedModel, prompt, maxTokens);
+        const text = await this.generateTextOllama(selectedModel, prompt, maxTokens, options?.systemPrompt, options);
         onProgress?.('Ready', 100);
         return text;
       } catch (err: any) {
