@@ -31,6 +31,12 @@ export const Shell = () => {
         }
       })
       .catch((err) => console.error('Failed to fetch github stars:', err));
+
+    try {
+      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+    } catch (e) {
+      console.warn('AdSense initial push:', e);
+    }
   }, []);
 
   return (
@@ -105,6 +111,17 @@ export const Shell = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
         <Outlet />
       </main>
+
+      {/* Google AdSense Unit */}
+      <div className="max-w-7xl w-full mx-auto px-6 mb-4 flex justify-center">
+        <div className="w-full max-w-[728px] overflow-hidden opacity-75 hover:opacity-100 transition-opacity">
+          <ins className="adsbygoogle"
+               style={{ display: 'block' }}
+               data-ad-client="ca-pub-7800058547773500"
+               data-ad-format="horizontal"
+               data-full-width-responsive="false"></ins>
+        </div>
+      </div>
 
       {/* Bottom Footer */}
       <footer className="bg-[#111213] border-t border-[#2A2D30] px-6 py-6">
