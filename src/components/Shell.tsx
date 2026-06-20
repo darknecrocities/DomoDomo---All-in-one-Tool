@@ -118,8 +118,9 @@ export const Shell = () => {
           <ins className="adsbygoogle"
                style={{ display: 'block' }}
                data-ad-client="ca-pub-7800058547773500"
-               data-ad-format="horizontal"
-               data-full-width-responsive="false"></ins>
+               data-ad-slot="3689718163"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
         </div>
       </div>
 
