@@ -153,13 +153,15 @@ const TECH_STACK: TechItem[] = [
   { name: 'TypeScript', desc: 'Type Safety', color: '#3178C6', icon: 'typescript' },
   { name: 'Tailwind CSS', desc: 'Styling', color: '#06B6D4', icon: 'tailwind' },
   { name: 'WebAssembly', desc: 'WASM Speed', color: '#654FF0', icon: 'wasm' },
-  { name: 'Hugging Face', desc: 'Model Hub', color: '#FFD21E', icon: 'huggingface' },
-  { name: 'Llama 3', desc: 'Local Inference', color: '#0064E0', icon: 'llama' },
+  { name: 'Ollama', desc: 'Local LLM Daemon', color: '#B22222', icon: 'ollama' },
   { name: 'Vite', desc: 'Bundler', color: '#646CFF', icon: 'vite' },
   { name: 'Transformers.js', desc: 'AI Pipelines', color: '#FF9D00', icon: 'transformers' },
   { name: 'FFmpeg.wasm', desc: 'Video processing', color: '#00E676', icon: 'ffmpeg' },
   { name: 'pdf-lib', desc: 'PDF Mutation', color: '#EC407A', icon: 'pdflib' },
+  { name: 'PDF Encrypt', desc: 'PDF Security', color: '#D32F2F', icon: 'pdfencrypt' },
   { name: 'Tesseract.js', desc: 'Local OCR', color: '#5E35B1', icon: 'tesseract' },
+  { name: 'IndexedDB', desc: 'Sandbox Cache', color: '#4682B4', icon: 'indexeddb' },
+  { name: 'Streams API', desc: 'Response Streaming', color: '#20B2AA', icon: 'streams' },
   { name: 'Web Audio API', desc: 'Sound Engine', color: '#00B0FF', icon: 'webaudio' },
   { name: 'ONNX Runtime', desc: 'WASM Models', color: '#0078D4', icon: 'onnx' },
   { name: 'WebGPU', desc: 'Hardware Accel', color: '#E65100', icon: 'webgpu' }
@@ -198,17 +200,37 @@ const renderTechIcon = (icon: string) => {
           <text x="50" y="65" fill="white" fontSize="45" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">wa</text>
         </svg>
       );
-    case 'huggingface':
+    case 'ollama':
       return (
-        <span className="text-xl leading-none select-none">🤗</span>
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#B22222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" />
+          <path d="M6 10h12" />
+          <path d="M9 14h6" />
+          <circle cx="9" cy="7" r="1" fill="#B22222" />
+          <circle cx="15" cy="7" r="1" fill="#B22222" />
+        </svg>
       );
-    case 'llama':
+    case 'pdfencrypt':
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#0064E0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 18V8a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v10" />
-          <path d="M9 11H6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h3" />
-          <circle cx="11" cy="7" r="0.75" fill="#0064E0" />
-          <circle cx="15" cy="7" r="0.75" fill="#0064E0" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#D32F2F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      );
+    case 'indexeddb':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#4682B4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="12" cy="5" rx="9" ry="3" />
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+          <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3" />
+        </svg>
+      );
+    case 'streams':
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#20B2AA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 17a5 5 0 0 1 10 0" />
+          <path d="M6 17a1 1 0 0 1 8 0" />
+          <path d="M2 12a9 9 0 0 1 18 0" />
         </svg>
       );
     case 'vite':
