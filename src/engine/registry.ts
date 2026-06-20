@@ -108,6 +108,16 @@ import { AITextRewriterTool } from '../tools/ai/AITextRewriter';
 import { AITranslatorTool } from '../tools/ai/AITranslator';
 import { AISpeechToTextTool } from '../tools/ai/AISpeechToText';
 import { AISemanticSearchTool } from '../tools/ai/AISemanticSearch';
+import { AICodeExplainerTool } from '../tools/ai/AICodeExplainer';
+import { AIFlashcardMakerTool } from '../tools/ai/AIFlashcardMaker';
+import { AISentimentJournalTool } from '../tools/ai/AISentimentJournal';
+import { AIEmailComposerTool } from '../tools/ai/AIEmailComposer';
+import { AIStoryGeneratorTool } from '../tools/ai/AIStoryGenerator';
+import { AIDebateAssistantTool } from '../tools/ai/AIDebateAssistant';
+import { AIMathSolverTool } from '../tools/ai/AIMathSolver';
+import { AIRecipeGeneratorTool } from '../tools/ai/AIRecipeGenerator';
+import { AICodeReviewerTool } from '../tools/ai/AICodeReviewer';
+import { AIMindMapperTool } from '../tools/ai/AIMindMapper';
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -207,7 +217,7 @@ export const TOOLS: Tool[] = [
   { id: 'html-minify', name: 'HTML Minifier', category: 'dev', description: 'Minify code lines by stripping tags whitespaces.', icon: 'Hammer', run: async (i) => i, component: HTMLMinifierTool },
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', run: async (i) => i, component: ColorConverterTool },
 
-  // AI Tools (10)
+  // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat locally with Domo assistant under absolute leak-free security.', icon: 'Hammer', run: async (i) => i, component: LocalAIChatTool },
   { id: 'ai-summarizer', name: 'Summarizer', category: 'ai', description: 'Summarize text documents using local parsing.', icon: 'Hammer', run: async (i) => i, component: AISummarizerTool },
   { id: 'caption-gen', name: 'Caption Generator', category: 'ai', description: 'Generate descriptive image captions.', icon: 'Hammer', run: async (i) => i, component: AICaptionTool },
@@ -217,7 +227,17 @@ export const TOOLS: Tool[] = [
   { id: 'text-rewriter', name: 'Text Rewriter', category: 'ai', description: 'Rewrite text into corporate or casual tones.', icon: 'Hammer', run: async (i) => i, component: AITextRewriterTool },
   { id: 'ai-translator', name: 'Translator', category: 'ai', description: 'Translate text arrays locally.', icon: 'Hammer', run: async (i) => i, component: AITranslatorTool },
   { id: 'ai-stt', name: 'Speech-to-Text', category: 'ai', description: 'Transcribe spoken audio inputs locally.', icon: 'Hammer', run: async (i) => i, component: AISpeechToTextTool },
-  { id: 'semantic-search', name: 'Semantic Search', category: 'ai', description: 'Search local indexes using similarity matching.', icon: 'Hammer', run: async (i) => i, component: AISemanticSearchTool }
+  { id: 'semantic-search', name: 'Semantic Search', category: 'ai', description: 'Search local indexes using similarity matching.', icon: 'Hammer', run: async (i) => i, component: AISemanticSearchTool },
+  { id: 'ai-code-explainer', name: 'AI Code Explainer', category: 'ai', description: 'Paste code to get plain-English explanations, complexity score, and translation.', icon: 'Hammer', run: async (i) => i, component: AICodeExplainerTool },
+  { id: 'ai-flashcard-maker', name: 'AI Flashcard Maker', category: 'ai', description: 'Turn any text/topic into Q&A flashcards for studying.', icon: 'Hammer', run: async (i) => i, component: AIFlashcardMakerTool },
+  { id: 'ai-sentiment-journal', name: 'AI Sentiment Journal', category: 'ai', description: 'Write journal entries and have AI track mood and emotion trends.', icon: 'Hammer', run: async (i) => i, component: AISentimentJournalTool },
+  { id: 'ai-email-composer', name: 'AI Email Composer', category: 'ai', description: 'Generate professional emails from bullet points or intent.', icon: 'Hammer', run: async (i) => i, component: AIEmailComposerTool },
+  { id: 'ai-story-generator', name: 'AI Story Generator', category: 'ai', description: 'Generate short stories from genre/character/setting prompts.', icon: 'Hammer', run: async (i) => i, component: AIStoryGeneratorTool },
+  { id: 'ai-debate-assistant', name: 'AI Debate Assistant', category: 'ai', description: 'Given a topic, generate pro/con arguments and rebuttals.', icon: 'Hammer', run: async (i) => i, component: AIDebateAssistantTool },
+  { id: 'ai-math-solver', name: 'AI Math Solver', category: 'ai', description: 'Paste math problems and get step-by-step solutions.', icon: 'Hammer', run: async (i) => i, component: AIMathSolverTool },
+  { id: 'ai-recipe-generator', name: 'AI Recipe Generator', category: 'ai', description: 'Ingredients in → full recipe with steps, nutrition, and variants.', icon: 'Hammer', run: async (i) => i, component: AIRecipeGeneratorTool },
+  { id: 'ai-code-reviewer', name: 'AI Code Reviewer', category: 'ai', description: 'Review code for bugs, security issues, and best practices.', icon: 'Hammer', run: async (i) => i, component: AICodeReviewerTool },
+  { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', run: async (i) => i, component: AIMindMapperTool }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {
