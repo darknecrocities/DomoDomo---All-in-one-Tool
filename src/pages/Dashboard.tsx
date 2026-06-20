@@ -125,7 +125,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'html-minify', name: 'HTML Minifier', category: 'dev', description: 'Minify code lines by stripping tags whitespaces.', icon: 'Hammer', status: 'functional' },
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', status: 'functional' },
 
-  // AI Tools (10)
+  // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat offline with local Domo assistant.', icon: 'Hammer', status: 'functional' },
   { id: 'ai-summarizer', name: 'Summarizer', category: 'ai', description: 'Summarize text documents using local parsing.', icon: 'Hammer', status: 'functional' },
   { id: 'caption-gen', name: 'Caption Generator', category: 'ai', description: 'Generate descriptive image captions.', icon: 'Hammer', status: 'functional' },
@@ -135,7 +135,17 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'text-rewriter', name: 'Text Rewriter', category: 'ai', description: 'Rewrite text into corporate or casual tones.', icon: 'Hammer', status: 'functional' },
   { id: 'ai-translator', name: 'Translator', category: 'ai', description: 'Translate text arrays locally.', icon: 'Hammer', status: 'functional' },
   { id: 'ai-stt', name: 'Speech-to-Text', category: 'ai', description: 'Transcribe spoken audio inputs locally.', icon: 'Hammer', status: 'functional' },
-  { id: 'semantic-search', name: 'Semantic Search', category: 'ai', description: 'Search local indexes using similarity matching.', icon: 'Hammer', status: 'functional' }
+  { id: 'semantic-search', name: 'Semantic Search', category: 'ai', description: 'Search local indexes using similarity matching.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-code-explainer', name: 'AI Code Explainer', category: 'ai', description: 'Paste code to get plain-English explanations, complexity score, and translation.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-flashcard-maker', name: 'AI Flashcard Maker', category: 'ai', description: 'Turn any text/topic into Q&A flashcards for studying.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-sentiment-journal', name: 'AI Sentiment Journal', category: 'ai', description: 'Write journal entries and have AI track mood and emotion trends.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-email-composer', name: 'AI Email Composer', category: 'ai', description: 'Generate professional emails from bullet points or intent.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-story-generator', name: 'AI Story Generator', category: 'ai', description: 'Generate short stories from genre/character/setting prompts.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-debate-assistant', name: 'AI Debate Assistant', category: 'ai', description: 'Given a topic, generate pro/con arguments and rebuttals.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-math-solver', name: 'AI Math Solver', category: 'ai', description: 'Paste math problems and get step-by-step solutions.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-recipe-generator', name: 'AI Recipe Generator', category: 'ai', description: 'Ingredients in → full recipe with steps, nutrition, and variants.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-code-reviewer', name: 'AI Code Reviewer', category: 'ai', description: 'Review code for bugs, security issues, and best practices.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', status: 'functional' }
 ];
 
 export const Dashboard = () => {
