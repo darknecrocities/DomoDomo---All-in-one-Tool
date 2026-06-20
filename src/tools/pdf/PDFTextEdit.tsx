@@ -56,6 +56,8 @@ export const PDFTextEditTool = () => {
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [scale, setScale] = useState(1.2);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  const [currentViewport, setCurrentViewport] = useState<any>(null);
+  const [highlightAll, setHighlightAll] = useState(true);
   
   // Custom text configuration
   const [customText, setCustomText] = useState('New Text Block');
@@ -109,6 +111,7 @@ export const PDFTextEditTool = () => {
         const page = await pdfjsDoc.getPage(currentPage);
         const viewport = page.getViewport({ scale });
         setViewportSize({ width: viewport.width, height: viewport.height });
+        setCurrentViewport(viewport);
 
         const canvas = canvasRef.current;
         if (canvas) {
@@ -361,13 +364,10 @@ export const PDFTextEditTool = () => {
 
   // Render inline inputs
   const renderOverlayInputs = () => {
-    if (!pdfjsDoc || currentPageItems.length === 0) return null;
+    if (!pdfjsDoc || !currentViewport || currentPageItems.length === 0) return null;
     
     try {
-      const page = pdfjsDoc.getCachedPage ? pdfjsDoc.getCachedPage(currentPage) : null;
-      if (!page) return null;
-      
-      const viewport = page.getViewport({ scale });
+      const viewport = currentViewport;
       
       return currentPageItems.map((item) => {
         const [vx, vy] = viewport.convertToViewportPoint(item.x, item.y);
@@ -376,6 +376,15 @@ export const PDFTextEditTool = () => {
         const isActive = activeItemId === item.id;
         const isChanged = item.text !== item.originalText;
         const shouldShowOpaque = isChanged || isActive || item.isNew;
+
+        let inputClass = "";
+        if (shouldShowOpaque) {
+          inputClass = "bg-white border-[#4E8E5E] text-slate-950 shadow-sm z-10";
+        } else if (highlightAll) {
+          inputClass = "bg-[#4E8E5E]/5 border-dashed border-[#4E8E5E]/30 text-transparent hover:bg-[#4E8E5E]/15 hover:border-[#4E8E5E]/60 hover:text-slate-900/70";
+        } else {
+          inputClass = "bg-transparent text-transparent border-transparent hover:bg-[#4E8E5E]/10 hover:border-[#4E8E5E]/40 hover:text-slate-900/60";
+        }
 
         return (
           <div
@@ -401,13 +410,9 @@ export const PDFTextEditTool = () => {
                 fontSize: `${item.fontSize * scale}px`,
                 fontFamily: item.fontFamily === 'Times-Roman' ? 'serif' : item.fontFamily === 'Courier' ? 'monospace' : 'sans-serif'
               }}
-              className={`w-full h-full text-slate-950 font-medium px-1 py-0.5 rounded border transition-all focus:outline-none ${
-                shouldShowOpaque 
-                  ? 'bg-white border-indigo-500 shadow-sm z-10' 
-                  : 'bg-transparent text-transparent border-transparent hover:bg-indigo-500/10 hover:border-indigo-400/50 hover:text-slate-900/60'
-              } ${
+              className={`w-full h-full font-medium px-1 py-0.5 rounded border transition-all focus:outline-none ${inputClass} ${
                 isActive 
-                  ? 'ring-2 ring-indigo-500/15' 
+                  ? 'ring-2 ring-[#4E8E5E]/20' 
                   : item.isNew 
                     ? 'border-dotted border-violet-400 bg-violet-500/5' 
                     : ''
@@ -445,6 +450,16 @@ export const PDFTextEditTool = () => {
             </h2>
             {file && (
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setHighlightAll(prev => !prev)}
+                  className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all ${
+                    highlightAll 
+                      ? 'bg-[#4E8E5E]/15 border-[#4E8E5E]/40 text-[#4E8E5E]' 
+                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {highlightAll ? 'Hide Text Fields' : 'Highlight All Text'}
+                </button>
                 <button
                   onClick={() => setScale(prev => Math.max(prev - 0.1, 0.7))}
                   className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-slate-400 hover:text-slate-200 text-xs font-semibold"
