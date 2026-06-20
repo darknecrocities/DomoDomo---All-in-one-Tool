@@ -23,6 +23,7 @@ import { PDFSignTool } from '../tools/pdf/PDFSign';
 import { PDFProtectTool } from '../tools/pdf/PDFProtect';
 import { PDFExtractTextTool } from '../tools/pdf/PDFExtractText';
 import { PDFViewerTool } from '../tools/pdf/PDFViewer';
+import { PDFTextEditTool } from '../tools/pdf/PDFTextEdit';
 
 // Document Suite Imports
 import { RichTextTool } from '../tools/document/RichText';
@@ -132,9 +133,10 @@ export const TOOLS: Tool[] = [
   { id: 'pdf-protect', name: 'Protect PDF', category: 'pdf', description: 'Set passwords and encryption constraints on PDFs.', icon: 'FileText', run: async (i) => i, component: PDFProtectTool },
   { id: 'pdf-ocr', name: 'Extract Text (OCR)', category: 'pdf', description: 'Transcribe PDFs using structural parsing.', icon: 'FileText', run: async (i) => i, component: PDFExtractTextTool },
   { id: 'pdf-viewer', name: 'PDF Viewer', category: 'pdf', description: 'Read and view PDF books locally in frame.', icon: 'FileText', run: async (i) => i, component: PDFViewerTool },
+  { id: 'pdf-text-edit', name: 'Edit PDF Text', category: 'pdf', description: 'Select, modify, search/replace, and add text on PDF pages offline.', icon: 'FileText', run: async (i) => i, component: PDFTextEditTool },
 
   // Document Tools (10)
-  { id: 'rich-text', name: 'Rich Text Editor', category: 'document', description: 'Offline document generator with text formatting.', icon: 'FileText', run: async (i) => i, component: RichTextTool },
+  { id: 'rich-text', name: 'Rich Text Editor', category: 'document', description: 'Leak-free local document generator with text formatting.', icon: 'FileText', run: async (i) => i, component: RichTextTool },
   { id: 'markdown-editor', name: 'Markdown Editor', category: 'document', description: 'Live preview Markdown syntax writing board.', icon: 'FileText', run: async (i) => i, component: MarkdownTool },
   { id: 'ocr-scanner', name: 'OCR Scanner', category: 'document', description: 'Extract text from scanned pages using local OCR.', icon: 'FileText', run: async (i) => i, component: OCRScannerTool },
   { id: 'resume-builder', name: 'Resume Builder', category: 'document', description: 'Compile developer resumes to TXT instantly.', icon: 'FileText', run: async (i) => i, component: ResumeBuilderTool },
@@ -195,7 +197,7 @@ export const TOOLS: Tool[] = [
 
   // Dev Tools (10)
   { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'Beautify and validate JSON strings.', icon: 'Hammer', run: async (i) => i, component: JSONFormatterTool },
-  { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads offline.', icon: 'Hammer', run: async (i) => i, component: JWTDecoderTool },
+  { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads locally with zero data leaks.', icon: 'Hammer', run: async (i) => i, component: JWTDecoderTool },
   { id: 'dev-base64', name: 'Base64 Tool', category: 'dev', description: 'Encode or decode base64 strings.', icon: 'Hammer', run: async (i) => i, component: DevBase64Tool },
   { id: 'regex-tester', name: 'Regex Tester', category: 'dev', description: 'Test expression matching patterns.', icon: 'Hammer', run: async (i) => i, component: RegexTesterTool },
   { id: 'uuid-gen', name: 'UUID Generator', category: 'dev', description: 'Generate unique random UUIDv4 keys.', icon: 'Hammer', run: async (i) => i, component: UUIDGeneratorTool },
@@ -206,7 +208,7 @@ export const TOOLS: Tool[] = [
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', run: async (i) => i, component: ColorConverterTool },
 
   // AI Tools (10)
-  { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat offline with local Panda assistant.', icon: 'Hammer', run: async (i) => i, component: LocalAIChatTool },
+  { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat locally with Panda assistant under absolute leak-free security.', icon: 'Hammer', run: async (i) => i, component: LocalAIChatTool },
   { id: 'ai-summarizer', name: 'Summarizer', category: 'ai', description: 'Summarize text documents using local parsing.', icon: 'Hammer', run: async (i) => i, component: AISummarizerTool },
   { id: 'caption-gen', name: 'Caption Generator', category: 'ai', description: 'Generate descriptive image captions.', icon: 'Hammer', run: async (i) => i, component: AICaptionTool },
   { id: 'ocr-assistant', name: 'OCR Assistant', category: 'ai', description: 'Format OCR results into clean layouts.', icon: 'Hammer', run: async (i) => i, component: AIOCRAssistantTool },

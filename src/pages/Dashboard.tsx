@@ -24,7 +24,7 @@ const CATEGORIES = [
   { id: 'video', name: 'Video WASM' },
   { id: 'audio', name: 'Audio Web' },
   { id: 'dev', name: 'Developer Tools' },
-  { id: 'ai', name: 'Local AI' },
+  { id: 'ai', name: 'Local AI (Maintenance)' },
   { id: 'about', name: 'About DomoDomo' }
 ];
 
@@ -52,6 +52,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'pdf-protect', name: 'Protect PDF', category: 'pdf', description: 'Set passwords and encryption constraints on PDFs.', icon: 'FileText', status: 'functional' },
   { id: 'pdf-ocr', name: 'Extract Text (OCR)', category: 'pdf', description: 'Transcribe PDFs using structural parsing.', icon: 'FileText', status: 'functional' },
   { id: 'pdf-viewer', name: 'PDF Viewer', category: 'pdf', description: 'Read and view PDF books locally in frame.', icon: 'FileText', status: 'functional' },
+  { id: 'pdf-text-edit', name: 'Edit PDF Text', category: 'pdf', description: 'Select, modify, search/replace, and add text on PDF pages offline.', icon: 'FileText', status: 'functional' },
 
   // Document (10)
   { id: 'rich-text', name: 'Rich Text Editor', category: 'document', description: 'Offline document generator with text formatting.', icon: 'FileText', status: 'functional' },
@@ -288,11 +289,20 @@ export const Dashboard = () => {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [copiedColor, setCopiedColor] = useState('');
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  const handleCategoryChange = (catId: string) => {
+    setActiveCategory(catId);
+    setVisibleCount(12);
+  };
 
   const filteredTools = ALL_PLANNED_TOOLS.filter((tool) => {
     const matchesSearch =
       tool.name.toLowerCase().includes(search.toLowerCase()) ||
       tool.description.toLowerCase().includes(search.toLowerCase());
+    if (activeCategory === 'all' && tool.category === 'ai') {
+      return false;
+    }
     const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -311,7 +321,7 @@ export const Dashboard = () => {
           <div className="flex flex-wrap gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 text-xs font-semibold w-fit">
               <Globe size={12} />
-              <span>Multi-Purpose Open-Source Web Tool Suite</span>
+              <span>Free, Leak-Free, Open-Source Web Tool Suite</span>
             </div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold w-fit">
               <Code size={12} />
@@ -325,7 +335,7 @@ export const Dashboard = () => {
             </span>
           </h1>
           <p className="text-slate-400 text-sm md:text-base leading-relaxed">
-            DomoDomo is an open-source hub of high-performance web utilities. Convert files, edit images, split/merge PDFs, and run local AI models directly in your browser. No servers, no signups, no limits.
+            DomoDomo is a free, 100% open-source tool suite with absolute leak-free security. Edit files, compress videos, split/merge PDFs, and run local AI models directly in your browser. Your data never leaves your device.
           </p>
         </div>
 
@@ -334,7 +344,7 @@ export const Dashboard = () => {
             <Layers size={24} className="text-green-400" />
             <div className="flex flex-col text-left">
               <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Features</span>
-              <span className="text-slate-200 font-semibold text-sm">80+ Web Tools</span>
+              <span className="text-slate-200 font-semibold text-sm">90+ Web Tools</span>
             </div>
           </div>
           <div className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl flex items-center gap-3">
@@ -380,13 +390,13 @@ export const Dashboard = () => {
             </h2>
             
             <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-              Behind DomoDomo is Panda, our friendly offline mascot and locally running AI engine. Panda represents our ironclad commitment to user privacy. By running highly optimized transformer models, WebAssembly algorithms, and speech recognizers completely inside your browser, Panda ensures your credentials, document data, and image files are never sent to external servers or used for data training.
+              Behind DomoDomo is Panda, our friendly privacy mascot and locally running AI engine. Panda represents our ironclad commitment to user privacy. By running highly optimized transformer models, WebAssembly algorithms, and speech recognizers completely inside your browser, Panda ensures your credentials, document data, and image files are never sent to external servers or used for data training.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
               <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
-                <div className="text-emerald-400 font-bold text-sm mb-1">100% Offline AI</div>
-                <div className="text-[11px] text-slate-400">Local language translation, semantic searches, and OCR text extraction.</div>
+                <div className="text-emerald-400 font-bold text-sm mb-1">100% Leak-Free AI</div>
+                <div className="text-[11px] text-slate-400">Privacy-first local language translation, semantic searches, and OCR text extraction.</div>
               </div>
               <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
                 <div className="text-emerald-400 font-bold text-sm mb-1">No Cloud Leakage</div>
@@ -413,7 +423,7 @@ export const Dashboard = () => {
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-4xl font-extrabold text-white tracking-tight">80+</span>
+            <span className="text-4xl font-extrabold text-white tracking-tight">90+</span>
             <h3 className="font-bold text-lg text-slate-200 mt-2">Web Utilities</h3>
             <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
               Every tool executes 100% locally on your machine with high-performance logic.
@@ -632,6 +642,100 @@ export const Dashboard = () => {
         </div>
       </div>
 
+      {/* Leak-Free Security Audit & Isolation Guarantee Section */}
+      <div className="glass-card p-8 border-[#4E8E5E]/20 bg-gradient-to-r from-[#151C2C]/45 via-[#11241B]/15 to-slate-950/50 text-left relative overflow-hidden">
+        <div className="max-w-3xl mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold w-fit mb-3">
+            <Shield size={12} />
+            <span>Zero Server Footprint</span>
+          </div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            Leak-Free Security Audit & Isolation Guarantee
+          </h2>
+          <p className="text-slate-400 text-xs md:text-sm mt-1.5 leading-relaxed">
+            Every utility on DomoDomo has undergone rigorous peer review to guarantee zero outbound network leaks. Since we operate fully client-side:
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 flex flex-col gap-2">
+            <span className="text-teal-400 font-bold text-sm">IndexedDB Sandbox</span>
+            <span className="text-[11px] text-slate-450 leading-relaxed">
+              Files are stored in client-side IndexedDB sandboxes. They are fully isolated within your browser namespace and automatically destroyed when you close the tab.
+            </span>
+          </div>
+          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 flex flex-col gap-2">
+            <span className="text-teal-400 font-bold text-sm">No Backend Endpoints</span>
+            <span className="text-[11px] text-slate-450 leading-relaxed">
+              DomoDomo does not contain API endpoint routes or server integrations. You can completely disconnect your Wi-Fi and the tools will remain 100% operational.
+            </span>
+          </div>
+          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 flex flex-col gap-2">
+            <span className="text-teal-400 font-bold text-sm">Inspector Ready</span>
+            <span className="text-[11px] text-slate-450 leading-relaxed">
+              Open your browser DevTools (Network tab) at any time. You will verify that no outbound packets or files are transmitted during file operations.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Premium Suites Showcase Section */}
+      <div className="glass-card p-8 border-slate-800/80 bg-gradient-to-br from-[#151C2C]/30 via-slate-950/20 to-slate-950/60 text-left">
+        <div className="max-w-3xl mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-semibold w-fit mb-3">
+            <Sparkles size={12} />
+            <span>Top Featured Suites</span>
+          </div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            Explore Highlighted Utilities
+          </h2>
+          <p className="text-slate-400 text-xs md:text-sm mt-1.5 leading-relaxed">
+            DomoDomo offers specialized modular suites optimized for modern web standards:
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div 
+            onClick={() => handleCategoryChange('pdf')}
+            className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 hover:border-[#4E8E5E]/40 cursor-pointer hover:bg-slate-900/40 transition-all flex flex-col gap-3 group"
+          >
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-slate-200 text-sm group-hover:text-white transition-colors">PDF Document Suite</span>
+              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">New Editor</span>
+            </div>
+            <span className="text-xs text-slate-450 leading-relaxed">
+              Combine, split, compress, sign, or live-edit text blocks and add custom annotations on PDFs fully client-side.
+            </span>
+          </div>
+
+          <div 
+            onClick={() => handleCategoryChange('photo')}
+            className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 hover:border-indigo-500/40 cursor-pointer hover:bg-slate-900/40 transition-all flex flex-col gap-3 group"
+          >
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-slate-200 text-sm group-hover:text-white transition-colors">Photo & Image Suite</span>
+              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Functional</span>
+            </div>
+            <span className="text-xs text-slate-450 leading-relaxed">
+              Instantly erase backgrounds, crop, rotate, resize, overlay watermarks, and compress images with Canvas.
+            </span>
+          </div>
+
+          <div 
+            onClick={() => handleCategoryChange('ai')}
+            className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 hover:border-[#4E8E5E]/40 cursor-pointer hover:bg-slate-900/40 transition-all flex flex-col gap-3 group"
+          >
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-slate-200 text-sm group-hover:text-white transition-colors">Local AI Suite</span>
+              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Privacy AI</span>
+            </div>
+            <span className="text-xs text-slate-450 leading-relaxed">
+              Engage with local chat agents, summarize documents, translate text structures, and extract OCR strings with no leaks.
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         {/* Categories Scroller */}
@@ -639,7 +743,7 @@ export const Dashboard = () => {
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
+              onClick={() => handleCategoryChange(cat.id)}
               className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 ${
                 activeCategory === cat.id
                   ? 'bg-[#4E8E5E] text-white border-[#4E8E5E] shadow-md shadow-green-500/10'
@@ -695,19 +799,61 @@ export const Dashboard = () => {
               </div>
             </div>
 
+            {/* Redesigned & Expanded About Section details */}
             <div className="glass-card p-6 flex flex-col gap-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <CpuIcon size={20} className="text-indigo-400" />
-                <span>Modern Typography Guidelines</span>
+                <CpuIcon size={20} className="text-[#4E8E5E]" />
+                <span>How DomoDomo Works Offline</span>
               </h2>
-              <div className="flex flex-col gap-3 text-sm">
-                <div className="flex justify-between items-center py-2 border-b border-slate-850">
-                  <span className="text-slate-400">Primary Font</span>
-                  <span className="text-slate-200 font-bold">{BRAND_KIT.typography.primary}</span>
+              
+              <div className="flex flex-col gap-4 text-xs">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-[#4E8E5E]/15 border border-[#4E8E5E]/30 text-[#4E8E5E] flex items-center justify-center font-bold shrink-0">1</div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-200">Local File Blob Loading</span>
+                    <span className="text-slate-400 leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-slate-400">Secondary Font</span>
-                  <span className="text-slate-200 font-bold">{BRAND_KIT.typography.secondary}</span>
+
+                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
+                  <div className="w-6 h-6 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold shrink-0">2</div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-200">Sandboxed CPU & GPU Execution</span>
+                    <span className="text-slate-400 leading-relaxed">High-performance algorithms (using WebAssembly, Canvas matrices, and local WebGPU frameworks) process the binary arrays inside your browser tab sandbox.</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
+                  <div className="w-6 h-6 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center font-bold shrink-0">3</div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-200">Immediate Local Compilation</span>
+                    <span className="text-slate-400 leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Developer FAQ Accordion */}
+            <div className="glass-card p-6 flex flex-col gap-5">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                <ShieldAlert size={20} className="text-[#4E8E5E]" />
+                <span>Frequently Asked Questions (FAQ)</span>
+              </h2>
+              
+              <div className="flex flex-col gap-4 text-xs text-left">
+                <div className="flex flex-col gap-1 p-3 bg-slate-900/30 rounded-xl border border-slate-850">
+                  <span className="font-bold text-slate-200 text-sm">Is DomoDomo really free?</span>
+                  <span className="text-slate-400 leading-relaxed">Yes! DomoDomo is 100% free with no limits, no subscription plans, no premium paywalls, and no account registrations required.</span>
+                </div>
+
+                <div className="flex flex-col gap-1 p-3 bg-slate-900/30 rounded-xl border border-slate-850">
+                  <span className="font-bold text-slate-200 text-sm">How do I verify there are no data leaks?</span>
+                  <span className="text-slate-400 leading-relaxed">You can open your browser DevTools (F12), click the Network tab, and run any file converters or PDF editors. You will see that zero HTTP packets or uploads occur during processing.</span>
+                </div>
+
+                <div className="flex flex-col gap-1 p-3 bg-slate-900/30 rounded-xl border border-slate-850">
+                  <span className="font-bold text-slate-200 text-sm">Will it work without an internet connection?</span>
+                  <span className="text-slate-400 leading-relaxed">Yes! Once the dashboard assets are loaded, you can disconnect your router or turn on Airplane mode. The WebAssembly and Canvas scripts run entirely offline in your browser.</span>
                 </div>
               </div>
             </div>
@@ -742,9 +888,18 @@ export const Dashboard = () => {
             </div>
           </div>
         </div>
+      ) : activeCategory === 'ai' ? (
+        <div className="col-span-full py-16 flex flex-col items-center justify-center text-center p-12 bg-slate-900/30 border border-slate-800 rounded-3xl gap-4 py-20">
+          <Cpu size={48} className="text-amber-500 animate-pulse" />
+          <h3 className="text-xl font-bold text-white">Local AI Suite Under Maintenance</h3>
+          <p className="text-xs text-slate-400 max-w-md leading-relaxed">
+            Our local browser-based language models are currently undergoing optimizations and weight compression updates to improve loading speeds. This suite will be back online soon!
+          </p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTools.map((tool) => {
+        <div className="flex flex-col gap-6 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTools.slice(0, activeCategory === 'all' ? visibleCount : undefined).map((tool) => {
             const isReady = tool.status === 'functional';
             return (
               <div
@@ -806,13 +961,22 @@ export const Dashboard = () => {
                 )}
               </div>
             );
-          })}
+            })}
 
-          {filteredTools.length === 0 && (
-            <div className="col-span-full py-16 flex flex-col items-center justify-center text-slate-500 gap-2">
-              <Cpu size={32} className="opacity-40 animate-pulse" />
-              <p className="text-sm">No local tools matched your selection.</p>
-            </div>
+            {filteredTools.length === 0 && (
+              <div className="col-span-full py-16 flex flex-col items-center justify-center text-slate-500 gap-2">
+                <Cpu size={32} className="opacity-40 animate-pulse" />
+                <p className="text-sm">No local tools matched your selection.</p>
+              </div>
+            )}
+          </div>
+          {activeCategory === 'all' && filteredTools.length > visibleCount && (
+            <button
+              onClick={() => setVisibleCount(filteredTools.length)}
+              className="btn-primary self-center px-8 py-3.5 mt-4 hover:scale-[1.02] active:scale-95 transition-transform flex items-center gap-2"
+            >
+              <span>See All Tools ({filteredTools.length})</span>
+            </button>
           )}
         </div>
       )}
