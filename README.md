@@ -9,7 +9,7 @@ DomoDomo is a 100% client-side, offline-first web utility application. Built as 
 DomoDomo operates on a **zero-leak mandate**. Standard SaaS utilities require uploading sensitive business contracts or personal photos to remote cloud servers. DomoDomo compiles and processes all assets locally on your CPU/GPU using modern browser sandboxing.
 
 ### Component-Based Architecture
-- **`/src/engine`**: Contains the core registry (`registry.ts`) registering all 90 functional tools.
+- **`/src/engine`**: Contains the core registry (`registry.ts`) registering all 100 functional tools.
 - **`/src/pages`**: Handles routing, the primary tool frame containers, and the main visual dashboard.
 - **`/src/tools`**: Categorized directory holding React/TypeScript components for all utility modules.
 - **`/src/utils`**: Core service files containing brand tokens, helpers, and singleton API layers.
@@ -40,6 +40,19 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 ## 🤖 Local Ollama Integration (Offline LLM)
 
 To ensure complete privacy without external API subscription costs, DomoDomo integrates directly with local **Ollama** runtimes on `http://localhost:11434`.
+
+### Premium Offline AI Tool Suite (20 Tools Total)
+The suite includes the original 10 offline AI utilities (Chat, Summarizer, Caption Generator, OCR Assistant, Prompt Enhancer, Image Classifier, Text Rewriter, Translator, Speech-to-Text, and Semantic Search), plus **10 brand-new tools** added to the line-up:
+- **AI Code Explainer**: Paste code to get plain-English explanations, complexity scores, and translation.
+- **AI Flashcard Maker**: Turn any text/topic into study Q&A flashcard decks with flip animations.
+- **AI Sentiment Journal**: Private daily mood analyzer and emotion trend tracker.
+- **AI Email Composer**: Compose or reply with tone, length, and subject generation.
+- **AI Story Generator**: Story builder with plot twist and chapter continuation support.
+- **AI Debate Assistant**: Argument builder for PRO/CON positions and steelman counters.
+- **AI Math Solver**: Step-by-step solver and word problem parser with LaTeX notation.
+- **AI Recipe Generator**: Plan recipes, nutrition profiles, and shopping lists from ingredients on hand.
+- **AI Code Reviewer**: Audit code structure for security issues, bugs, and performance optimization.
+- **AI Mind Mapper**: Organizes topics into visual indented hierarchy trees and outlines.
 
 ### Direct Downloader & Stream Reader
 When running locally, DomoDomo detects your system specifications (CPU threads and system RAM) using browser detection APIs to recommend the optimal LLM (e.g., `llama3.2:1b` for medium setups, `qwen2.5:0.5b` for low specs). You can download these models with a single click in the UI via the Fetch Stream Reader API which updates a live progress bar.
