@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap, Lock } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { BRAND_KIT } from '../utils/BrandKit';
 import { Logo } from '../components/Logo';
+import { aiService } from '../utils/aiService';
+
 
 interface PlannedTool {
   id: string;
@@ -288,6 +290,33 @@ export const Dashboard = () => {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [copiedColor, setCopiedColor] = useState('');
+  const [hasOllama, setHasOllama] = useState(false);
+
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+
+  useEffect(() => {
+    let active = true;
+    const check = async () => {
+      try {
+        const res = await aiService.checkOllama();
+        if (active) {
+          setHasOllama(res.status && res.models.length > 0);
+        }
+      } catch {
+        if (active) {
+          setHasOllama(false);
+        }
+      }
+    };
+
+    check();
+    const interval = setInterval(check, 5000);
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const filteredTools = ALL_PLANNED_TOOLS.filter((tool) => {
     const matchesSearch =
@@ -636,19 +665,27 @@ export const Dashboard = () => {
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         {/* Categories Scroller */}
         <div className="flex gap-2 overflow-x-auto pb-2 -mb-2 scrollbar-none pr-4 shrink-1">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 ${
-                activeCategory === cat.id
-                  ? 'bg-[#4E8E5E] text-white border-[#4E8E5E] shadow-md shadow-green-500/10'
-                  : 'bg-[#151C2C]/50 hover:bg-[#151C2C]/80 border-slate-800 text-slate-400 hover:text-slate-250'
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isAICat = cat.id === 'ai';
+            const isUnavailable = isAICat && (!isLocal || !hasOllama);
+            const displayName = isUnavailable ? 'Local AI (Unavailable)' : cat.name;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
+                  activeCategory === cat.id
+                    ? 'bg-[#4E8E5E] text-white border-[#4E8E5E] shadow-md shadow-green-500/10'
+                    : isUnavailable
+                      ? 'bg-[#151C2C]/30 border-slate-900/60 text-slate-500 hover:text-slate-400 hover:bg-[#151C2C]/50'
+                      : 'bg-[#151C2C]/50 hover:bg-[#151C2C]/80 border-slate-800 text-slate-400 hover:text-slate-250'
+                }`}
+              >
+                {isUnavailable && <Lock size={12} className="text-amber-500 animate-pulse" />}
+                <span>{displayName}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Search Field */}
@@ -740,6 +777,116 @@ export const Dashboard = () => {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      ) : activeCategory === 'ai' && (!isLocal || !hasOllama) ? (
+        <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl">
+                <ShieldAlert size={24} />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white font-sans tracking-tight">Local AI Offline Setup Required</h2>
+                <p className="text-slate-400 text-xs mt-1">To run fully private models client-side, some configuration is required.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[11px] text-slate-400 font-mono">
+              <span className={`w-2 h-2 rounded-full ${!isLocal ? 'bg-rose-500' : 'bg-amber-500 animate-pulse'}`}></span>
+              <span>{!isLocal ? 'Online Mode (Restricted)' : 'Local Mode (Ollama Offline)'}</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+            <div className="flex flex-col gap-4">
+              <h3 className="font-bold text-slate-250 text-sm flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-xs font-mono">1</span>
+                <span>Host DomoDomo Locally</span>
+              </h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Due to browser security protocols (CORS & Mixed Content), websites loaded over <code className="text-teal-400 font-mono">https://</code> cannot communicate with your local machine's ports. DomoDomo must be run locally:
+              </p>
+              <div className="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-[11px] text-slate-300 relative group">
+                <pre className="overflow-x-auto">
+{`git clone https://github.com/darknecrocities/DomoDomo.git
+cd DomoDomo
+npm install
+npm run dev`}
+                </pre>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h3 className="font-bold text-slate-250 text-sm flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-xs font-mono">2</span>
+                <span>Install & Start Ollama</span>
+              </h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Ollama runs LLMs locally on your own machine. Install Ollama and run a model of your choice:
+              </p>
+              <div className="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-[11px] text-slate-300 relative group">
+                <pre className="overflow-x-auto">
+{`# 1. Install Ollama from ollama.com
+# 2. Run your preferred model:
+ollama run llama3`}
+                </pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 border-t border-slate-800/65 pt-6 mt-2">
+            <h3 className="font-bold text-slate-250 text-sm flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-xs font-mono">3</span>
+              <span>Enable Browser CORS Access</span>
+            </h3>
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Ollama blocks browser access by default. You must configure the environment variable <code className="text-teal-400 font-mono">OLLAMA_ORIGINS="*"</code> before starting the application:
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-slate-900/40 border border-slate-850 p-3.5 rounded-xl">
+                <span className="text-indigo-400 font-bold text-[11px] uppercase tracking-wider">macOS</span>
+                <pre className="text-[10px] text-slate-400 font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
+{`launchctl setenv OLLAMA_ORIGINS "*"`}
+                </pre>
+                <p className="text-[9px] text-slate-500 mt-2">Restart the Ollama application afterward.</p>
+              </div>
+              <div className="bg-slate-900/40 border border-slate-850 p-3.5 rounded-xl">
+                <span className="text-indigo-400 font-bold text-[11px] uppercase tracking-wider">Windows</span>
+                <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                  Add <code className="text-teal-400">OLLAMA_ORIGINS</code> with value <code className="text-teal-400">*</code> to System Environment Variables, then restart Ollama from the tray.
+                </p>
+              </div>
+              <div className="bg-slate-900/40 border border-slate-850 p-3.5 rounded-xl">
+                <span className="text-indigo-400 font-bold text-[11px] uppercase tracking-wider">Linux</span>
+                <pre className="text-[10px] text-slate-400 font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
+{`systemctl edit ollama.service
+# Add:
+# [Service]
+# Environment="OLLAMA_ORIGINS=*"`}
+                </pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#151C2C]/50 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 mt-2">
+            <div className="flex items-center gap-3 self-start sm:self-center">
+              <div className="animate-spin text-teal-400">
+                <Cpu size={18} />
+              </div>
+              <div className="text-left">
+                <span className="text-xs font-bold text-slate-250 block">Checking connection status...</span>
+                <span className="text-[10px] text-slate-500 block">Pinging http://localhost:11434/api/tags every 5s</span>
+              </div>
+            </div>
+            <button 
+              onClick={async () => {
+                const res = await aiService.checkOllama();
+                setHasOllama(res.status && res.models.length > 0);
+              }}
+              className="btn-secondary py-1.5 px-4 text-xs font-semibold shrink-0"
+            >
+              Retry Connection
+            </button>
           </div>
         </div>
       ) : (
