@@ -692,6 +692,96 @@ export const Dashboard = () => {
                   <span className="text-[#4E8E5E] font-bold text-xs">IndexedDB</span>
                   <span className="text-[11px] text-slate-400">Caches files locally in secure browser sandboxes.</span>
                 </div>
+                {/* SaaS vs DomoDomo Comparison Matrix */}
+            <div className="glass-card p-6 flex flex-col gap-5">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                <Globe size={20} className="text-[#4E8E5E]" />
+                <span>Cloud SaaS vs. DomoDomo Local Matrix</span>
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400">
+                      <th className="py-2.5 font-bold uppercase tracking-wider">Capability</th>
+                      <th className="py-2.5 font-bold uppercase tracking-wider px-3">Traditional SaaS (Cloud)</th>
+                      <th className="py-2.5 font-bold uppercase tracking-wider text-emerald-400 px-3">DomoDomo (Local)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-850/60 text-slate-350">
+                    <tr>
+                      <td className="py-3 font-semibold text-slate-200">Data Security</td>
+                      <td className="py-3 px-3">Uploaded to cloud servers (leaks & exposure risk)</td>
+                      <td className="py-3 text-emerald-300 font-medium px-3">100% Client-Side Sandbox (No Outbound Packets)</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-semibold text-slate-200">File Size Limits</td>
+                      <td className="py-3 px-3">Capped at 50MB - 100MB (forces paid upgrades)</td>
+                      <td className="py-3 text-emerald-300 font-medium px-3">Unlimited (limited only by device hardware)</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-semibold text-slate-200">Pricing model</td>
+                      <td className="py-3 px-3">$15 - $50+ / month subscription tiers</td>
+                      <td className="py-3 text-emerald-300 font-medium px-3">100% Free & Open-Source (MIT License)</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-semibold text-slate-200">Offline Usability</td>
+                      <td className="py-3 px-3">Requires active network connection</td>
+                      <td className="py-3 text-emerald-300 font-medium px-3">Works completely offline once cached</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-semibold text-slate-200">Queue Times</td>
+                      <td className="py-3 px-3">Queued upload delays & cloud server queues</td>
+                      <td className="py-3 text-emerald-300 font-medium px-3">Instant compilation (WASM & CPU threads)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Enterprise Self-Hosting & Compliance */}
+            <div className="glass-card p-6 flex flex-col gap-4 bg-gradient-to-r from-indigo-950/25 via-slate-900/10 to-transparent border-indigo-500/20">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                <Shield size={20} className="text-indigo-400" />
+                <span>Enterprise Self-Hosting & Compliance</span>
+              </h2>
+              <p className="text-slate-350 text-xs leading-relaxed">
+                Large corporations often block employees from uploading sensitive blueprints, customer datasets, or confidential contracts to external cloud utility webs. Since DomoDomo has <strong>zero server overhead</strong> and is licensed under the MIT permissive license, system administrators can deploy it on an internal private network domain (e.g. <code>toolbox.internal.company.com</code>). This guarantees employees have access to premium converters while ensuring zero outbound bytes traverse corporate firewalls.
+              </p>
+            </div>
+
+            {/* Redesigned & Expanded About Section details */}
+            <div className="glass-card p-6 flex flex-col gap-5">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                <CpuIcon size={20} className="text-[#4E8E5E]" />
+                <span>How DomoDomo Works Offline</span>
+              </h2>
+              
+              <div className="flex flex-col gap-4 text-xs">
+                <div className="flex gap-3 items-start">
+                  <div className="w-6 h-6 rounded-full bg-[#4E8E5E]/15 border border-[#4E8E5E]/30 text-[#4E8E5E] flex items-center justify-center font-bold shrink-0">1</div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-200">Local File Blob Loading</span>
+                    <span className="text-slate-400 leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
+                  <div className="w-6 h-6 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold shrink-0">2</div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-200">Sandboxed CPU & GPU Execution</span>
+                    <span className="text-slate-400 leading-relaxed">High-performance algorithms (using WebAssembly, Canvas matrices, and local WebGPU frameworks) process the binary arrays inside your browser tab sandbox.</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
+                  <div className="w-6 h-6 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center font-bold shrink-0">3</div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-200">Immediate Local Compilation</span>
+                    <span className="text-slate-400 leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
               </div>
             </div>
 
