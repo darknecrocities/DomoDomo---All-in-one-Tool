@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Outlet, Link } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star } from 'lucide-react';
+import { Outlet, Link, NavLink } from 'react-router-dom';
+import { ShieldAlert, ServerCrash } from 'lucide-react';
 import { Logo } from './Logo';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -38,7 +37,34 @@ export const Shell = () => {
       {/* Top Navbar */}
       <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50 px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Logo />
+          <div className="flex items-center gap-8">
+            <Link to="/" className="hover:opacity-95 transition-opacity">
+              <Logo />
+            </Link>
+            <nav className="flex items-center gap-5">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `text-xs font-bold tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                  }`
+                }
+              >
+                Tools
+              </NavLink>
+              <NavLink
+                to="/about"
+                className={({ isActive }) =>
+                  `text-xs font-bold tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                  }`
+                }
+              >
+                About DomoDomo
+              </NavLink>
+            </nav>
+          </div>
 
           <div className="flex items-center gap-4">
             <Link
