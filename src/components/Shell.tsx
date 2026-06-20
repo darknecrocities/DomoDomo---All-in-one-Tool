@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
-import { ShieldAlert, ServerCrash } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star } from 'lucide-react';
 import { Logo } from './Logo';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
