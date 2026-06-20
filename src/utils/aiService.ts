@@ -64,6 +64,75 @@ export const aiService = {
     }
   },
 
+  // Pull a model from Ollama library and report progress
+  async pullOllamaModel(modelName: string, onProgress: (status: string, progress: number) => void): Promise<void> {
+    const res = await fetch('http://localhost:11434/api/pull', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: modelName, stream: true })
+    });
+    if (!res.ok) throw new Error(`Failed to start pulling model: ${res.statusText}`);
+
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error('ReadableStream not supported');
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const data = JSON.parse(line);
+          if (data.status) {
+            let progress = 0;
+            if (data.total && data.completed) {
+              progress = Math.round((data.completed / data.total) * 100);
+            }
+            onProgress(data.status, progress);
+          }
+        } catch (e) {
+          console.warn('Error parsing JSON from Ollama pull stream:', e);
+        }
+      }
+    }
+  },
+
+  // Get user hardware specifications and recommend a model
+  getHardwareRecommendation(): { ram: string; cores: number; hasWebGPU: boolean; tier: 'low' | 'medium' | 'high'; recommendedModel: string; explanation: string } {
+    const ram = (navigator as any).deviceMemory ? `${(navigator as any).deviceMemory} GB` : 'Unknown (estimated 8GB)';
+    const ramValue = (navigator as any).deviceMemory || 8;
+    const cores = navigator.hardwareConcurrency || 4;
+    const hasWebGPU = !!(navigator as any).gpu;
+
+    let tier: 'low' | 'medium' | 'high' = 'medium';
+    let recommendedModel = 'llama3.2:1b';
+    let explanation = 'Balanced model offering good performance with low resource usage.';
+
+    if (ramValue < 8 || cores < 6) {
+      tier = 'low';
+      recommendedModel = 'qwen2.5:0.5b'; // very tiny download, fast response
+      explanation = 'Recommended for lighter hardware setups to ensure fast response times and low memory footprint.';
+    } else if (ramValue >= 16) {
+      tier = 'high';
+      recommendedModel = 'llama3:8b';
+      explanation = 'High performance model offering advanced accuracy and contextual understanding on your machine.';
+    } else {
+      tier = 'medium';
+      recommendedModel = 'llama3.2:1b';
+      explanation = 'Balanced model offering good performance with low resource usage.';
+    }
+
+    return { ram, cores, hasWebGPU, tier, recommendedModel, explanation };
+  },
+
   // Generate text using local Ollama model
   async generateTextOllama(model: string, prompt: string): Promise<string> {
     const res = await fetch('http://localhost:11434/api/generate', {

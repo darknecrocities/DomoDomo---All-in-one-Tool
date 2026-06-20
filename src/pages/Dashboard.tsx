@@ -293,6 +293,13 @@ export const Dashboard = () => {
   const [copiedColor, setCopiedColor] = useState('');
   const [visibleCount, setVisibleCount] = useState(12);
   const [hasOllama, setHasOllama] = useState(false);
+  const [ollamaModels, setOllamaModels] = useState<string[]>([]);
+  const [selectedOllamaModel, setSelectedOllamaModel] = useState('');
+  const [downloadingModel, setDownloadingModel] = useState('');
+  const [downloadStatus, setDownloadStatus] = useState('');
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [downloadError, setDownloadError] = useState('');
+  const [showManageModels, setShowManageModels] = useState(false);
 
   const handleCategoryChange = (catId: string) => {
     setActiveCategory(catId);
@@ -307,11 +314,22 @@ export const Dashboard = () => {
       try {
         const res = await aiService.checkOllama();
         if (active) {
-          setHasOllama(res.status && res.models.length > 0);
+          setHasOllama(res.status);
+          setOllamaModels(res.models);
+          if (res.status && res.models.length > 0) {
+            const saved = aiService.getSelectedOllamaModel();
+            const chosen = saved && res.models.includes(saved) ? saved : res.models[0];
+            setSelectedOllamaModel(chosen);
+            aiService.setSelectedOllamaModel(chosen);
+          } else {
+            setSelectedOllamaModel('');
+          }
         }
       } catch {
         if (active) {
           setHasOllama(false);
+          setOllamaModels([]);
+          setSelectedOllamaModel('');
         }
       }
     };
@@ -324,6 +342,38 @@ export const Dashboard = () => {
       clearInterval(interval);
     };
   }, []);
+
+  const handlePullModel = async (modelName: string) => {
+    setDownloadingModel(modelName);
+    setDownloadStatus('Starting download...');
+    setDownloadProgress(0);
+    setDownloadError('');
+    try {
+      await aiService.pullOllamaModel(modelName, (status, progress) => {
+        setDownloadStatus(status);
+        setDownloadProgress(progress);
+      });
+      const res = await aiService.checkOllama();
+      setOllamaModels(res.models);
+      if (res.status && res.models.length > 0) {
+        const saved = aiService.getSelectedOllamaModel();
+        const chosen = saved && res.models.includes(saved) ? saved : res.models[0];
+        setSelectedOllamaModel(chosen);
+        aiService.setSelectedOllamaModel(chosen);
+      } else {
+        setSelectedOllamaModel('');
+      }
+      setDownloadStatus('Finished downloading successfully!');
+      setTimeout(() => {
+        setDownloadStatus('');
+        setDownloadProgress(0);
+      }, 3000);
+    } catch (err: any) {
+      setDownloadError(err.message || 'Download failed. Ensure OLLAMA_ORIGINS="*" is set and Ollama is running.');
+    } finally {
+      setDownloadingModel('');
+    }
+  };
 
   const filteredTools = ALL_PLANNED_TOOLS.filter((tool) => {
     const matchesSearch =
@@ -1164,8 +1214,241 @@ ollama run llama3`}
             </button>
           </div>
         </div>
+      ) : activeCategory === 'ai' && ollamaModels.length === 0 ? (
+        (() => {
+          const hardware = aiService.getHardwareRecommendation();
+          return (
+            <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-2xl">
+                    <Cpu size={24} className={downloadingModel ? "animate-spin" : ""} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white font-sans tracking-tight">Local Ollama Model Downloader</h2>
+                    <p className="text-slate-400 text-xs mt-1">Ollama is active, but no models are installed. Download one below to begin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hardware Specs Panel */}
+              <div className="bg-slate-950/60 border border-slate-850 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[10px] text-slate-500 uppercase font-semibold tracking-wider">Detected System Specifications</span>
+                  <div className="flex flex-wrap gap-4 text-xs font-semibold text-slate-300 mt-0.5">
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-500">RAM:</span>
+                      <span className="text-teal-400">{hardware.ram}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-500">Cores:</span>
+                      <span className="text-teal-400">{hardware.cores} threads</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-500">WebGPU:</span>
+                      <span className={hardware.hasWebGPU ? "text-emerald-400" : "text-amber-500"}>
+                        {hardware.hasWebGPU ? "Supported" : "Not supported"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-[#4E8E5E]/10 border border-[#4E8E5E]/20 p-3.5 rounded-xl max-w-sm">
+                  <span className="text-[#4E8E5E] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
+                  <p className="text-slate-355 text-[11px] leading-relaxed mt-1">
+                    Based on your specs, we recommend running <strong className="text-white font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
+                  </p>
+                </div>
+              </div>
+
+              {/* Models list */}
+              <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-slate-200 text-sm">Select a model to download directly via Ollama:</h3>
+                
+                {downloadingModel && (
+                  <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col gap-3">
+                    <div className="flex justify-between items-center text-xs font-semibold">
+                      <span className="text-teal-400 flex items-center gap-2">
+                        <span className="animate-spin w-3 h-3 border-2 border-teal-500 border-t-transparent rounded-full"></span>
+                        <span>Downloading {downloadingModel}...</span>
+                      </span>
+                      <span className="text-slate-300">{downloadProgress}%</span>
+                    </div>
+                    <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-855">
+                      <div 
+                        className="bg-gradient-to-r from-teal-500 to-indigo-600 h-full transition-all duration-300"
+                        style={{ width: `${downloadProgress}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-450">{downloadStatus}</span>
+                  </div>
+                )}
+
+                {downloadError && (
+                  <div className="bg-rose-500/10 border border-rose-500/25 p-4 rounded-xl text-xs text-rose-450 font-semibold leading-relaxed">
+                    {downloadError}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    { name: 'qwen2.5:0.5b', size: '397 MB', desc: 'Ultra lightweight. Excellent for low-spec or quick test runs.', tier: 'low' },
+                    { name: 'llama3.2:1b', size: '1.3 GB', desc: 'Balanced small model. Good comprehension and response times.', tier: 'medium' },
+                    { name: 'gemma2:2b', size: '1.6 GB', desc: 'Google-optimized small model. High accuracy for text generation.', tier: 'medium' },
+                    { name: 'llama3:8b', size: '4.7 GB', desc: 'Powerful industry standard. Requires 8GB+ RAM.', tier: 'high' },
+                    { name: 'mistral:7b', size: '4.1 GB', desc: 'High quality reasoning model. Requires 8GB+ RAM.', tier: 'high' }
+                  ].map((model) => {
+                    const isRecommended = model.name === hardware.recommendedModel;
+                    return (
+                      <div 
+                        key={model.name}
+                        className={`bg-slate-900/40 border p-5 rounded-2xl flex flex-col justify-between gap-4 transition-all relative ${
+                          isRecommended ? 'border-teal-500/40 bg-teal-950/5' : 'border-slate-850 hover:border-slate-800'
+                        }`}
+                      >
+                        {isRecommended && (
+                          <span className="absolute -top-2.5 right-4 bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
+                            Recommended
+                          </span>
+                        )}
+                        <div className="flex flex-col gap-1 text-left">
+                          <span className="font-bold text-slate-200 text-sm block font-mono">{model.name}</span>
+                          <span className="text-[10px] text-slate-500 block font-semibold">Download Size: {model.size}</span>
+                          <p className="text-slate-400 text-[11px] leading-relaxed mt-2">{model.desc}</p>
+                        </div>
+                        <button
+                          onClick={() => handlePullModel(model.name)}
+                          disabled={!!downloadingModel}
+                          className={`w-full py-2 rounded-xl text-xs font-bold transition-all ${
+                            isRecommended 
+                              ? 'bg-teal-500 text-slate-950 hover:bg-teal-400 disabled:opacity-40' 
+                              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-40'
+                          }`}
+                        >
+                          {downloadingModel === model.name ? 'Downloading...' : 'Install Model'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })()
       ) : (
-        <div className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col gap-6 w-full text-left">
+          {activeCategory === 'ai' && (
+            (() => {
+              const hardware = aiService.getHardwareRecommendation();
+              return (
+                <div className="glass-card p-5 flex flex-col gap-4 bg-[#151C2C]/30 border-slate-850">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-xl">
+                        <Cpu size={18} />
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold">Active LLM Model</span>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-sm font-bold text-slate-200 font-mono">{selectedOllamaModel || 'None'}</span>
+                          <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold uppercase tracking-wider">
+                            Ollama Active
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                      <select
+                        value={selectedOllamaModel}
+                        onChange={(e) => {
+                          setSelectedOllamaModel(e.target.value);
+                          aiService.setSelectedOllamaModel(e.target.value);
+                        }}
+                        className="bg-slate-950/80 text-slate-250 border border-slate-800 rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-teal-500 w-full md:w-56"
+                      >
+                        {ollamaModels.map(m => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                      
+                      <button
+                        onClick={() => setShowManageModels(!showManageModels)}
+                        className="btn-secondary py-2 px-4 text-xs font-semibold w-full md:w-auto shrink-0 flex items-center justify-center gap-1.5"
+                      >
+                        <ChevronDown size={14} className={`transform transition-transform ${showManageModels ? 'rotate-180' : ''}`} />
+                        <span>Download More Models</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {showManageModels && (
+                    <div className="border-t border-slate-800/80 pt-5 mt-2 flex flex-col gap-4">
+                      <div className="bg-slate-950/40 p-4 rounded-xl border border-slate-850 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <div>
+                          <span className="text-[10px] text-slate-500 uppercase font-semibold block">Hardware Recommendation System</span>
+                          <span className="text-xs text-slate-350 block mt-1">
+                            System RAM: <strong className="text-teal-400">{hardware.ram}</strong> | CPU Cores: <strong className="text-teal-400">{hardware.cores}</strong>
+                          </span>
+                        </div>
+                        <div className="text-xs text-slate-400 max-w-md bg-slate-900/60 p-2.5 rounded-lg border border-slate-850">
+                          We recommend <strong className="text-white font-mono">{hardware.recommendedModel}</strong> for your hardware.
+                        </div>
+                      </div>
+
+                      {downloadingModel && (
+                        <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col gap-2">
+                          <div className="flex justify-between items-center text-xs font-semibold">
+                            <span className="text-teal-400">Downloading {downloadingModel}...</span>
+                            <span>{downloadProgress}%</span>
+                          </div>
+                          <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+                            <div className="bg-teal-500 h-full" style={{ width: `${downloadProgress}%` }} />
+                          </div>
+                        </div>
+                      )}
+
+                      {downloadError && (
+                        <div className="bg-rose-500/10 border border-rose-500/25 p-3 rounded-lg text-xs text-rose-450 font-semibold">
+                          {downloadError}
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        {[
+                          { name: 'qwen2.5:0.5b', size: '397MB' },
+                          { name: 'llama3.2:1b', size: '1.3GB' },
+                          { name: 'gemma2:2b', size: '1.6GB' },
+                          { name: 'llama3:8b', size: '4.7GB' },
+                          { name: 'mistral:7b', size: '4.1GB' }
+                        ].map((m) => {
+                          const alreadyInstalled = ollamaModels.includes(m.name);
+                          return (
+                            <div key={m.name} className="bg-slate-950/80 border border-slate-850/85 p-3 rounded-xl flex flex-col justify-between gap-3">
+                              <div className="text-left">
+                                <span className="text-[11px] font-bold text-slate-200 block font-mono truncate">{m.name}</span>
+                                <span className="text-[9px] text-slate-500 block font-semibold mt-0.5">{m.size}</span>
+                              </div>
+                              <button
+                                onClick={() => handlePullModel(m.name)}
+                                disabled={alreadyInstalled || !!downloadingModel}
+                                className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${
+                                  alreadyInstalled
+                                    ? 'bg-slate-900 text-slate-500 cursor-default border border-slate-850'
+                                    : 'bg-teal-500/10 text-teal-400 border border-teal-500/20 hover:bg-teal-500/20'
+                                }`}
+                              >
+                                {alreadyInstalled ? 'Installed' : downloadingModel === m.name ? 'Downloading' : 'Download'}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTools.slice(0, activeCategory === 'all' ? visibleCount : undefined).map((tool) => {
             const isReady = tool.status === 'functional';
