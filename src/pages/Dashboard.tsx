@@ -26,7 +26,7 @@ const CATEGORIES = [
   { id: 'video', name: 'Video WASM' },
   { id: 'audio', name: 'Audio Web' },
   { id: 'dev', name: 'Developer Tools' },
-  { id: 'ai', name: 'Local AI (Maintenance)' },
+  { id: 'ai', name: 'Local AI' },
   { id: 'about', name: 'About DomoDomo' }
 ];
 
