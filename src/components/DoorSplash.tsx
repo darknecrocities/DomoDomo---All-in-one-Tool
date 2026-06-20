@@ -5,13 +5,6 @@ export const DoorSplash = () => {
   const [stage, setStage] = useState<'visible' | 'logo-fade' | 'door-open' | 'gone'>('visible');
 
   useEffect(() => {
-    // Check if splash has already been shown in this browser session
-    const hasShown = sessionStorage.getItem('domodomo_splash_shown');
-    if (hasShown === 'true') {
-      setStage('gone');
-      return;
-    }
-
     // Timeline configuration
     // Stage 1: Logo fades out
     const logoFadeTimer = setTimeout(() => {
@@ -26,7 +19,6 @@ export const DoorSplash = () => {
     // Stage 3: Splash is fully removed from DOM
     const completeTimer = setTimeout(() => {
       setStage('gone');
-      sessionStorage.setItem('domodomo_splash_shown', 'true');
     }, 3100);
 
     return () => {
