@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { ShieldAlert, ServerCrash } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -27,6 +27,15 @@ export const Shell = () => {
           <Logo />
 
           <div className="flex items-center gap-4">
+            <Link
+              to="/docs"
+              className="text-xs font-semibold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
+            >
+              Documentation
+            </Link>
+
+            <div className="h-4 w-[1px] bg-[#2A2D30]" />
+
             {/* Status indicator */}
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
               <ShieldAlert size={13} className="shrink-0" />

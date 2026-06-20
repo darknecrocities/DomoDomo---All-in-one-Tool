@@ -3,6 +3,7 @@ import { Shell } from './components/Shell';
 import { Dashboard } from './pages/Dashboard';
 import { ToolContainer } from './pages/ToolContainer';
 import { DoorSplash } from './components/DoorSplash';
+import { Documentation } from './pages/Documentation';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />
             <Route path="tool/:id" element={<ToolContainer />} />
+            <Route path="docs" element={<Documentation />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
