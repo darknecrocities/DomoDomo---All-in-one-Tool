@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap, ChevronDown, Terminal } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { BRAND_KIT } from '../utils/BrandKit';
 import { Logo } from '../components/Logo';
@@ -857,6 +857,45 @@ export const Dashboard = () => {
                 </div>
               </div>
             </div>
+
+            {/* Local Installation Guide from README */}
+            <div className="glass-card p-6 flex flex-col gap-5">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                <Terminal size={20} className="text-[#4E8E5E]" />
+                <span>Local Installation Guide</span>
+              </h2>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Get DomoDomo running fully offline on your own machine in less than 2 minutes:
+              </p>
+              
+              <div className="flex flex-col gap-3 font-mono text-[11px] bg-slate-950 p-4 rounded-xl border border-slate-850 text-slate-300">
+                <div>
+                  <span className="text-slate-500"># 1. Clone the repository</span>
+                  <div className="text-emerald-400">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git</div>
+                  <div className="text-emerald-400">cd DomoDomo---All-in-one-Tool</div>
+                </div>
+
+                <div className="border-t border-slate-900 pt-2">
+                  <span className="text-slate-500"># 2. Install dependencies</span>
+                  <div className="text-emerald-400">npm install</div>
+                </div>
+
+                <div className="border-t border-slate-900 pt-2">
+                  <span className="text-slate-500"># 3. Start development server</span>
+                  <div className="text-emerald-400">npm run dev</div>
+                </div>
+
+                <div className="border-t border-slate-900 pt-2">
+                  <span className="text-slate-500"># 4. Build production bundle</span>
+                  <div className="text-emerald-400">npm run build</div>
+                </div>
+              </div>
+
+              <div className="text-[10px] text-slate-500 flex justify-between border-t border-slate-850/60 pt-3">
+                <span>License: MIT Permissive License</span>
+                <span>Version: 1.0.0</span>
+              </div>
+            </div>
           </div>
 
           {/* Color swatches */}
@@ -971,12 +1010,18 @@ export const Dashboard = () => {
             )}
           </div>
           {activeCategory === 'all' && filteredTools.length > visibleCount && (
-            <button
-              onClick={() => setVisibleCount(filteredTools.length)}
-              className="btn-primary self-center px-8 py-3.5 mt-4 hover:scale-[1.02] active:scale-95 transition-transform flex items-center gap-2"
-            >
-              <span>See All Tools ({filteredTools.length})</span>
-            </button>
+            <div className="flex flex-col items-center gap-3 mt-8 pb-10 w-full">
+              <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+                Showing 12 of {filteredTools.length} total utilities
+              </div>
+              <button
+                onClick={() => setVisibleCount(filteredTools.length)}
+                className="group px-8 py-4 bg-gradient-to-r from-[#4E8E5E] to-emerald-500 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+              >
+                <span>Reveal All {filteredTools.length} Tools</span>
+                <ChevronDown size={18} className="group-hover:translate-y-0.5 transition-transform" />
+              </button>
+            </div>
           )}
         </div>
       )}
