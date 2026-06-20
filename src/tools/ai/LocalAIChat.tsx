@@ -16,6 +16,10 @@ export const LocalAIChatTool = () => {
   const [statusMsg, setStatusMsg] = useState('');
   const [progress, setProgress] = useState(0);
   const [modelLoaded, setModelLoaded] = useState(false);
+  
+  const [ollamaModels, setOllamaModels] = useState<string[]>([]);
+  const [selectedModel, setSelectedModel] = useState('');
+  const [isOllamaMode, setIsOllamaMode] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +27,31 @@ export const LocalAIChatTool = () => {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
+
+  // Check Ollama on mount
+  useEffect(() => {
+    const checkOllamaStatus = async () => {
+      try {
+        const res = await aiService.checkOllama();
+        if (res.status && res.models.length > 0) {
+          setOllamaModels(res.models);
+          setIsOllamaMode(true);
+          const saved = aiService.getSelectedOllamaModel();
+          const initial = saved && res.models.includes(saved) ? saved : res.models[0];
+          setSelectedModel(initial);
+          setModelLoaded(true);
+        }
+      } catch (err) {
+        console.warn('Failed to detect local Ollama runtime:', err);
+      }
+    };
+    checkOllamaStatus();
+  }, []);
+
+  const handleModelChange = (model: string) => {
+    setSelectedModel(model);
+    aiService.setSelectedOllamaModel(model);
+  };
 
   const loadModel = async () => {
     setStatusMsg('Initializing model...');
@@ -45,18 +74,16 @@ export const LocalAIChatTool = () => {
     setLoading(true);
 
     try {
-      // Lazy load model if not loaded yet
-      if (!modelLoaded) {
+      if (!modelLoaded && !isOllamaMode) {
         await loadModel();
       }
 
-      // Format direct instruction for Seq2Seq T5 model
       const prompt = `You are Panda, a helpful offline AI Assistant. Respond briefly and friendly. User query: ${userText}`;
 
       const response = await aiService.generateText(prompt, 120, (status, prog) => {
         setStatusMsg(status);
         setProgress(prog);
-      });
+      }, isOllamaMode ? selectedModel : undefined);
 
       const cleanResponse = response.trim() || "I processed your request, but returned an empty response. Please try again.";
 
@@ -76,13 +103,25 @@ export const LocalAIChatTool = () => {
           <Cpu size={18} className="animate-pulse" />
           <span>Local Panda Assistant</span>
         </h3>
-        <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-          LaMini-Flan-T5 (78M parameters)
-        </span>
+        {isOllamaMode ? (
+          <select
+            value={selectedModel}
+            onChange={(e) => handleModelChange(e.target.value)}
+            className="bg-slate-800 text-slate-200 border border-slate-700 rounded px-2 py-0.5 text-[10px] font-semibold focus:outline-none"
+          >
+            {ollamaModels.map(m => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+        ) : (
+          <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
+            LaMini-Flan-T5 (78M parameters)
+          </span>
+        )}
       </div>
 
       {/* Model Loader Screen */}
-      {!modelLoaded && (
+      {!modelLoaded && !isOllamaMode && (
         <div className="bg-slate-950/80 border border-slate-850/60 rounded-lg p-4 my-3 flex flex-col items-center justify-center gap-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
             <Sparkles size={14} className="text-teal-400" />

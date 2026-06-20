@@ -42,7 +42,45 @@ const makeProgressCallback = (callback?: LoadingProgressCallback) => {
 };
 
 export const aiService = {
-  // 1. Text Generation (LLM) Pipeline - LaMini-Flan-T5-78M
+  // Get / Set selected Ollama model from localStorage
+  getSelectedOllamaModel(): string | null {
+    return localStorage.getItem('domodomo_selected_ollama_model');
+  },
+
+  setSelectedOllamaModel(model: string) {
+    localStorage.setItem('domodomo_selected_ollama_model', model);
+  },
+
+  // Check if Ollama is running and get installed models
+  async checkOllama(): Promise<{ status: boolean; models: string[] }> {
+    try {
+      const res = await fetch('http://localhost:11434/api/tags');
+      if (!res.ok) return { status: false, models: [] };
+      const data = await res.json();
+      const models = (data.models || []).map((m: any) => m.name);
+      return { status: true, models };
+    } catch (err) {
+      return { status: false, models: [] };
+    }
+  },
+
+  // Generate text using local Ollama model
+  async generateTextOllama(model: string, prompt: string): Promise<string> {
+    const res = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: model,
+        prompt: prompt,
+        stream: false
+      })
+    });
+    if (!res.ok) throw new Error('Ollama failed to generate text');
+    const data = await res.json();
+    return data.response || '';
+  },
+
+  // 1. Text Generation (LLM) Pipeline - LaMini-Flan-T5-78M (with Ollama bypass)
   async initLLM(modelName: string = 'Xenova/LaMini-Flan-T5-78M', onProgress?: LoadingProgressCallback) {
     if (textGenPipeline) {
       if (onProgress) onProgress('Ready', 100);
@@ -52,7 +90,6 @@ export const aiService = {
     const { pipeline } = await getTransformers();
     onProgress?.('Loading LLM text generation pipeline...', 10);
     
-    // Use text2text-generation for Seq2Seq models like T5
     textGenPipeline = await pipeline('text2text-generation', modelName, {
       progress_callback: makeProgressCallback(onProgress)
     });
@@ -60,7 +97,24 @@ export const aiService = {
     return textGenPipeline;
   },
 
-  async generateText(prompt: string, maxTokens: number = 120, onProgress?: LoadingProgressCallback): Promise<string> {
+  async generateText(prompt: string, maxTokens: number = 120, onProgress?: LoadingProgressCallback, modelOverride?: string): Promise<string> {
+    // 1. Attempt to run via Ollama first
+    const ollama = await this.checkOllama();
+    if (ollama.status && ollama.models.length > 0) {
+      const savedModel = this.getSelectedOllamaModel();
+      const selectedModel = modelOverride || (savedModel && ollama.models.includes(savedModel) ? savedModel : ollama.models[0]);
+      
+      onProgress?.(`Generating via local Ollama (${selectedModel})...`, 50);
+      try {
+        const text = await this.generateTextOllama(selectedModel, prompt);
+        onProgress?.('Ready', 100);
+        return text;
+      } catch (err) {
+        console.warn('Ollama generate failed, falling back to browser models:', err);
+      }
+    }
+
+    // 2. Fallback to in-browser LaMini model
     const pipe = await this.initLLM('Xenova/LaMini-Flan-T5-78M', onProgress);
     
     const output = await pipe(prompt, {
