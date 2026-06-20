@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap, ChevronDown, Terminal, Lock } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
-import { BRAND_KIT } from '../utils/BrandKit';
-import { Logo } from '../components/Logo';
 import { aiService } from '../utils/aiService';
 
 
@@ -26,8 +24,7 @@ const CATEGORIES = [
   { id: 'video', name: 'Video WASM' },
   { id: 'audio', name: 'Audio Web' },
   { id: 'dev', name: 'Developer Tools' },
-  { id: 'ai', name: 'Local AI' },
-  { id: 'about', name: 'About DomoDomo' }
+  { id: 'ai', name: 'Local AI' }
 ];
 
 const ALL_PLANNED_TOOLS: PlannedTool[] = [
@@ -141,178 +138,10 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'semantic-search', name: 'Semantic Search', category: 'ai', description: 'Search local indexes using similarity matching.', icon: 'Hammer', status: 'functional' }
 ];
 
-interface TechItem {
-  name: string;
-  desc: string;
-  color: string;
-  icon: string;
-}
-
-const TECH_STACK: TechItem[] = [
-  { name: 'React', desc: 'Frontend UI', color: '#61DAFB', icon: 'react' },
-  { name: 'TypeScript', desc: 'Type Safety', color: '#3178C6', icon: 'typescript' },
-  { name: 'Tailwind CSS', desc: 'Styling', color: '#06B6D4', icon: 'tailwind' },
-  { name: 'WebAssembly', desc: 'WASM Speed', color: '#654FF0', icon: 'wasm' },
-  { name: 'Ollama', desc: 'Local LLM Daemon', color: '#B22222', icon: 'ollama' },
-  { name: 'Vite', desc: 'Bundler', color: '#646CFF', icon: 'vite' },
-  { name: 'Transformers.js', desc: 'AI Pipelines', color: '#FF9D00', icon: 'transformers' },
-  { name: 'FFmpeg.wasm', desc: 'Video processing', color: '#00E676', icon: 'ffmpeg' },
-  { name: 'pdf-lib', desc: 'PDF Mutation', color: '#EC407A', icon: 'pdflib' },
-  { name: 'PDF Encrypt', desc: 'PDF Security', color: '#D32F2F', icon: 'pdfencrypt' },
-  { name: 'Tesseract.js', desc: 'Local OCR', color: '#5E35B1', icon: 'tesseract' },
-  { name: 'IndexedDB', desc: 'Sandbox Cache', color: '#4682B4', icon: 'indexeddb' },
-  { name: 'Streams API', desc: 'Response Streaming', color: '#20B2AA', icon: 'streams' },
-  { name: 'Web Audio API', desc: 'Sound Engine', color: '#00B0FF', icon: 'webaudio' },
-  { name: 'ONNX Runtime', desc: 'WASM Models', color: '#0078D4', icon: 'onnx' },
-  { name: 'WebGPU', desc: 'Hardware Accel', color: '#E65100', icon: 'webgpu' }
-];
-
-const renderTechIcon = (icon: string) => {
-  switch (icon) {
-    case 'react':
-      return (
-        <svg className="w-6 h-6" viewBox="-11.5 -10.23 23 20.46" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="0" cy="0" r="2.05" fill="#61DAFB"/>
-          <g stroke="#61DAFB" strokeWidth="1" fill="none">
-            <ellipse rx="11" ry="4.2"/>
-            <ellipse rx="11" ry="4.2" transform="rotate(60)"/>
-            <ellipse rx="11" ry="4.2" transform="rotate(120)"/>
-          </g>
-        </svg>
-      );
-    case 'typescript':
-      return (
-        <svg className="w-6 h-6 rounded overflow-hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="100" fill="#3178C6"/>
-          <text x="50" y="75" fill="white" fontSize="55" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">TS</text>
-        </svg>
-      );
-    case 'tailwind':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 6.018C13.8 3.618 16.5 3 20.1 4.218c3.6 1.218 4.5 3.636 2.7 7.254-1.8 3.618-4.5 4.237-8.1 3.019C11.1 13.273 8.4 12.055 4.8 13.273 1.2 14.49 0 16.91 0 20.528c0-3.618 1.8-6.018 5.4-7.236 3.6-1.218 6.3-.6 9.9.618" fill="#06B6D4"/>
-        </svg>
-      );
-    case 'wasm':
-      return (
-        <svg className="w-6 h-6 rounded-md overflow-hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="100" fill="#654FF0"/>
-          <text x="50" y="65" fill="white" fontSize="45" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">wa</text>
-        </svg>
-      );
-    case 'ollama':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#B22222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" />
-          <path d="M6 10h12" />
-          <path d="M9 14h6" />
-          <circle cx="9" cy="7" r="1" fill="#B22222" />
-          <circle cx="15" cy="7" r="1" fill="#B22222" />
-        </svg>
-      );
-    case 'pdfencrypt':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#D32F2F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
-      );
-    case 'indexeddb':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#4682B4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="12" cy="5" rx="9" ry="3" />
-          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-          <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3" />
-        </svg>
-      );
-    case 'streams':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#20B2AA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2 17a5 5 0 0 1 10 0" />
-          <path d="M6 17a1 1 0 0 1 8 0" />
-          <path d="M2 12a9 9 0 0 1 18 0" />
-        </svg>
-      );
-    case 'vite':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 22h20L12 2z" fill="url(#viteGradient)"/>
-          <path d="M11 11l4-9-8 12h5l-1 8 8-11h-8z" fill="#FFD600"/>
-          <defs>
-            <linearGradient id="viteGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#4158D0"/>
-              <stop offset="0.5" stopColor="#C850C0"/>
-              <stop offset="1" stopColor="#FFCC70"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      );
-    case 'transformers':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#FF9D00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="11" width="18" height="10" rx="2" />
-          <circle cx="12" cy="5" r="2" />
-          <path d="M12 7v4" />
-          <line x1="8" y1="16" x2="8.01" y2="16" />
-          <line x1="16" y1="16" x2="16.01" y2="16" />
-        </svg>
-      );
-    case 'ffmpeg':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#00E676" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
-          <line x1="7" y1="2" x2="7" y2="22" />
-          <line x1="17" y1="2" x2="17" y2="22" />
-          <line x1="2" y1="12" x2="22" y2="12" />
-          <line x1="2" y1="7" x2="7" y2="7" />
-          <line x1="2" y1="17" x2="7" y2="17" />
-          <line x1="17" y1="17" x2="22" y2="17" />
-          <line x1="17" y1="7" x2="22" y2="7" />
-        </svg>
-      );
-    case 'pdflib':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#EC407A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" y1="13" x2="8" y2="13" />
-          <line x1="16" y1="17" x2="8" y2="17" />
-        </svg>
-      );
-    case 'tesseract':
-      return (
-        <span className="text-xl leading-none select-none">👁️</span>
-      );
-    case 'webaudio':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#00B0FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2v20M17 5v14M22 9v6M7 8v8M2 10v4" />
-        </svg>
-      );
-    case 'onnx':
-      return (
-        <svg className="w-6 h-6 rounded overflow-hidden" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/255/svg">
-          <rect width="100" height="100" fill="#0078D4"/>
-          <text x="50" y="65" fill="white" fontSize="30" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">ONNX</text>
-        </svg>
-      );
-    case 'webgpu':
-      return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#E65100" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="20" height="20" rx="4" />
-          <path d="M6 12h12M12 6v12" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-};
-
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [copiedColor, setCopiedColor] = useState('');
   const [visibleCount, setVisibleCount] = useState(12);
   const [hasOllama, setHasOllama] = useState(false);
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
@@ -322,7 +151,6 @@ export const Dashboard = () => {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [downloadError, setDownloadError] = useState('');
   const [showManageModels, setShowManageModels] = useState(false);
-  const [domoActiveTab, setDomoActiveTab] = useState<'privacy' | 'engine' | 'compliance'>('privacy');
   
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -340,48 +168,60 @@ export const Dashboard = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const detectHardware = () => {
+    const cores = navigator.hardwareConcurrency || 4;
+    let ram = 'Unknown';
+    if ('deviceMemory' in navigator) {
+      ram = `${(navigator as any).deviceMemory} GB`;
+    }
+    
+    let hasWebGPU = false;
+    if ('gpu' in navigator) {
+      hasWebGPU = true;
+    }
+
+    let recommendedModel = 'qwen2.5:0.5b';
+    let explanation = 'Qwen 0.5B runs smoothly on virtually all computers offline.';
+
+    if (cores >= 8 && hasWebGPU) {
+      recommendedModel = 'llama3.2:1b';
+      explanation = 'Llama 1B runs efficiently with high accuracy using your GPU resources.';
+    } else if (cores >= 12) {
+      recommendedModel = 'gemma2:2b';
+      explanation = 'Gemma 2B offers strong logic and executes perfectly on high-thread CPUs.';
+    }
+
+    return { cores, ram, hasWebGPU, recommendedModel, explanation };
+  };
+
+  const hardware = detectHardware();
   const handleCategoryChange = (catId: string) => {
     setActiveCategory(catId);
     setVisibleCount(12);
   };
-
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
-  const hardware = aiService.getHardwareRecommendation();
 
   useEffect(() => {
-    let active = true;
-    const check = async () => {
-      try {
-        const res = await aiService.checkOllama();
-        if (active) {
-          setHasOllama(res.status);
-          setOllamaModels(res.models);
-          if (res.status && res.models.length > 0) {
-            const saved = aiService.getSelectedOllamaModel();
-            const chosen = saved && res.models.includes(saved) ? saved : res.models[0];
-            setSelectedOllamaModel(chosen);
-            aiService.setSelectedOllamaModel(chosen);
-          } else {
-            setSelectedOllamaModel('');
-          }
-        }
-      } catch {
-        if (active) {
-          setHasOllama(false);
-          setOllamaModels([]);
-          setSelectedOllamaModel('');
+    let interval: NodeJS.Timeout;
+    const checkStatus = async () => {
+      const res = await aiService.checkOllama();
+      setHasOllama(res.status && res.models.length > 0);
+      if (res.status) {
+        setOllamaModels(res.models);
+        if (res.models.length > 0 && !selectedOllamaModel) {
+          const defaultModel = res.models.includes(hardware.recommendedModel)
+            ? hardware.recommendedModel
+            : res.models[0];
+          setSelectedOllamaModel(defaultModel);
+          aiService.setSelectedOllamaModel(defaultModel);
         }
       }
     };
 
-    check();
-    const interval = setInterval(check, 5000);
-
-    return () => {
-      active = false;
-      clearInterval(interval);
-    };
-  }, []);
+    checkStatus();
+    interval = setInterval(checkStatus, 5000);
+    return () => clearInterval(interval);
+  }, [selectedOllamaModel, hardware.recommendedModel]);
 
   const handlePullModel = async (modelName: string) => {
     setDownloadingModel(modelName);
@@ -394,10 +234,9 @@ export const Dashboard = () => {
         setDownloadProgress(progress);
       });
       const res = await aiService.checkOllama();
-      setOllamaModels(res.models);
-      if (res.status && res.models.length > 0) {
-        const saved = aiService.getSelectedOllamaModel();
-        const chosen = saved && res.models.includes(saved) ? saved : res.models[0];
+      if (res.status) {
+        setOllamaModels(res.models);
+        const chosen = res.models.includes(modelName) ? modelName : res.models[0];
         setSelectedOllamaModel(chosen);
         aiService.setSelectedOllamaModel(chosen);
       } else {
@@ -425,12 +264,6 @@ export const Dashboard = () => {
     const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const handleCopyColor = (hex: string) => {
-    navigator.clipboard.writeText(hex);
-    setCopiedColor(hex);
-    setTimeout(() => setCopiedColor(''), 2000);
-  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -507,422 +340,6 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* Meet Domo: Your Local-First Privacy Companion */}
-      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left relative overflow-hidden group">
-        <div className="flex flex-col lg:flex-row gap-8 items-start z-10 relative">
-          <div className="flex-shrink-0 p-4 bg-[#111213] border border-[#2A2D30] rounded-2xl group-hover:scale-105 transition-transform duration-300 self-center lg:self-start">
-            <Logo size={100} showText={false} />
-          </div>
-          
-          <div className="flex-1 flex flex-col gap-4">
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
-                <Sparkles size={11} />
-                Meet Domo
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/25 text-[11px] font-bold uppercase tracking-wider">
-                Zero Cloud Telemetry
-              </span>
-            </div>
-            
-            <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight leading-tight">
-              Domo: Your Local-First Privacy Guardian & AI Companion
-            </h2>
-            
-            {/* Interactive Tab Switcher */}
-            <div className="flex flex-wrap gap-3 border-b border-[#2A2D30] pb-2 mt-2">
-              {[
-                { id: 'privacy', label: '100% Privacy Mandate' },
-                { id: 'engine', label: 'WASM & WebGPU Engine' },
-                { id: 'compliance', label: 'Self-Hosting Compliance' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setDomoActiveTab(tab.id as any)}
-                  className={`pb-2 px-1 text-xs font-semibold border-b-2 transition-all ${
-                    domoActiveTab === tab.id
-                      ? 'border-[#3C6B4D] text-[#ECEBE9]'
-                      : 'border-transparent text-[#72706C] hover:text-[#A3A09B]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Dynamic Content Pane */}
-            <div className="min-h-[100px] flex flex-col gap-2 justify-center py-2 transition-all duration-300">
-              {domoActiveTab === 'privacy' && (
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-[#3C6B4D] font-bold text-sm">Absolute Client-Side Sandbox</h3>
-                  <p className="text-[#A3A09B] text-xs leading-relaxed">
-                    Behind DomoDomo is <strong>Domo</strong>, our privacy mascot and local execution engine. Domo guarantees that your sensitive credentials, documents, voice clips, and graphics never touch external servers or telemetry frameworks. By executing 100% client-side inside a sandboxed context, Domo fully protects your security profile against cloud injection or backend tracking.
-                  </p>
-                </div>
-              )}
-              {domoActiveTab === 'engine' && (
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-[#3C6B4D] font-bold text-sm">GPU Accelerated WebGPU & WASM Runtime</h3>
-                  <p className="text-[#A3A09B] text-xs leading-relaxed">
-                    Domo harnesses high-performance client architectures. By leveraging low-level WebAssembly (WASM) instructions alongside modern hardware-accelerated WebGPU browser pipelines, Domo compiles heavy compression matrices, sign hashes, and local LLM tokens directly on your local silicon. Experience lightning-fast, near-native speeds with zero network latency.
-                  </p>
-                </div>
-              )}
-              {domoActiveTab === 'compliance' && (
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-[#3C6B4D] font-bold text-sm">Self-Hosting & Enterprise Zero-Data Policy</h3>
-                  <p className="text-[#A3A09B] text-xs leading-relaxed">
-                    Perfect for secure corporate profiles and strict firewalls. Licensed under the permissive MIT license, DomoDomo has <strong>zero server overhead</strong>. Admins can host the compiled static build inside isolated corporate networks (e.g. <code>toolbox.internal.company.com</code>) to give teams high-tier offline utilities without risking outbound data leaks.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
-              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
-                <div className="text-[#3C6B4D] font-bold text-xs mb-1">100% Leak-Free AI</div>
-                <div className="text-[11px] text-[#A3A09B] leading-relaxed">
-                  Run privacy-first local language translation, semantic searches, text summarization, and OCR extraction. Everything remains fully local on your device.
-                </div>
-              </div>
-              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
-                <div className="text-[#3C6B4D] font-bold text-xs mb-1">No Cloud Leakage</div>
-                <div className="text-[11px] text-[#A3A09B] leading-relaxed">
-                  Zero data collection, analytics tracking, log dumping, or profiling cookies. What is processed locally stays offline, completely hidden from third-party servers.
-                </div>
-              </div>
-              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
-                <div className="text-[#3C6B4D] font-bold text-xs mb-1">GPU Accelerated</div>
-                <div className="text-[11px] text-[#A3A09B] leading-relaxed">
-                  Leverages native in-browser WebGPU and WebAssembly instructions to run demanding models at near-native execution speeds without server latencies.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Infographic Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/40 transition-all duration-200">
-          <div className="flex justify-between items-start">
-            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] group-hover:scale-105 transition-transform duration-200">
-              <Layers size={22} />
-            </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-              Instant
-            </span>
-          </div>
-          <div className="mt-6">
-            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">90+</span>
-            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Web Utilities</h3>
-            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
-              Every tool executes 100% locally on your machine with high-performance logic.
-            </p>
-          </div>
-        </div>
-
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#E29E2D]/40 transition-all duration-200">
-          <div className="flex justify-between items-start">
-            <div className="p-3 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] group-hover:scale-105 transition-transform duration-200">
-              <Globe size={22} />
-            </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20">
-              Diverse
-            </span>
-          </div>
-          <div className="mt-6">
-            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">10</span>
-            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Categories</h3>
-            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
-              Providing specialized modules for PDFs, Video WASM, Audio, Local AI, and Converters.
-            </p>
-          </div>
-        </div>
-
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/40 transition-all duration-200">
-          <div className="flex justify-between items-start">
-            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] group-hover:scale-105 transition-transform duration-200">
-              <Cpu size={22} />
-            </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-              Engine
-            </span>
-          </div>
-          <div className="mt-6">
-            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">WASM</span>
-            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Modern Stack</h3>
-            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
-              Powered by WebAssembly core scripts and client Canvas/DOM WebAPIs for speed.
-            </p>
-          </div>
-        </div>
-
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#E29E2D]/40 transition-all duration-200">
-          <div className="flex justify-between items-start">
-            <div className="p-3 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] group-hover:scale-105 transition-transform duration-200">
-              <Code size={22} />
-            </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20">
-              License
-            </span>
-          </div>
-          <div className="mt-6">
-            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">100%</span>
-            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Open Source</h3>
-            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
-              Free to use, inspect, customize, and self-host under standard permissive licensing.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Tech Stack Marquee Carousel */}
-      <div className="relative w-full overflow-hidden py-5 border-y border-[#2A2D30] bg-[#18191B] rounded-xl">
-        <div className="text-center mb-3">
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#72706C]">
-            Powered by modern browser tech & frameworks
-          </span>
-        </div>
-        
-        {/* Shadow mask overlays for fade out edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#111213] to-transparent pointer-events-none z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#111213] to-transparent pointer-events-none z-10" />
-
-        <div className="flex overflow-hidden relative w-full">
-          <div className="animate-marquee flex gap-6 items-center py-1">
-            {/* First Set of Items */}
-            {TECH_STACK.map((tech, idx) => (
-              <div key={`tech-1-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-[#111213] border border-[#2A2D30] rounded-xl hover:border-[#3C6B4D]/50 transition-colors shrink-0">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#18191B] border border-[#2A2D30]" style={{ color: tech.color }}>
-                  {renderTechIcon(tech.icon)}
-                </div>
-                <div className="flex flex-col text-left pr-2">
-                  <span className="text-xs font-bold text-[#ECEBE9]">{tech.name}</span>
-                  <span className="text-[9px] text-[#72706C] uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
-                </div>
-              </div>
-            ))}
-            {/* Duplicate Set for Infinite Scroll Loop */}
-            {TECH_STACK.map((tech, idx) => (
-              <div key={`tech-2-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-[#111213] border border-[#2A2D30] rounded-xl hover:border-[#3C6B4D]/50 transition-colors shrink-0">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#18191B] border border-[#2A2D30]" style={{ color: tech.color }}>
-                  {renderTechIcon(tech.icon)}
-                </div>
-                <div className="flex flex-col text-left pr-2">
-                  <span className="text-xs font-bold text-[#ECEBE9]">{tech.name}</span>
-                  <span className="text-[9px] text-[#72706C] uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Purpose & Core Capabilities Section */}
-      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left">
-        <div className="max-w-3xl mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-3">
-            <Sparkles size={12} />
-            <span>Mission & Core Purpose</span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] tracking-tight">
-            Designed for Developers, Creators, and Power Users
-          </h2>
-          <p className="text-[#A3A09B] text-sm md:text-base mt-2.5 leading-relaxed">
-            DomoDomo solves the friction of traditional web utilities. Instead of uploading sensitive documents, private pictures, and huge videos to remote servers, DomoDomo compiles the processing logic directly inside your browser sandbox.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex gap-4">
-            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] h-fit shrink-0">
-              <Shield size={20} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-bold text-[#ECEBE9] text-base">Uncompromising Security</h4>
-              <p className="text-[#A3A09B] text-xs leading-relaxed">
-                Zero data tracking, zero uploads, zero server databases. Your files never leave your computer, preserving absolute confidentiality.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="p-3 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] h-fit shrink-0">
-              <Cpu size={20} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-bold text-[#ECEBE9] text-base">Local AI & WebAssembly</h4>
-              <p className="text-[#A3A09B] text-xs leading-relaxed">
-                Runs lightweight machine learning models (like ONNX and Transformers.js) and compiled C++ modules directly on your device.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] h-fit shrink-0">
-              <Zap size={20} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="font-bold text-[#ECEBE9] text-base">All-in-One Utility Hub</h4>
-              <p className="text-[#A3A09B] text-xs leading-relaxed">
-                No need to open multiple websites. Edit PDFs, compress videos, build resumes, scan QRs, and format codes inside a single cohesive system.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Local First Advantage & Benefits Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B] text-left">
-          <h3 className="font-bold text-lg text-[#ECEBE9] mb-4 flex items-center gap-2">
-            <Shield className="text-[#3C6B4D]" size={20} />
-            <span>Why Local-First Processing Wins</span>
-          </h3>
-          <div className="flex flex-col gap-3 text-xs text-[#A3A09B]">
-            <div className="flex gap-2">
-              <span className="text-[#3C6B4D] font-bold">✓</span>
-              <span><strong>Absolute Privacy:</strong> Your sensitive files (passports, signatures, photos) never traverse network servers. Data leaks are physically impossible.</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-[#3C6B4D] font-bold">✓</span>
-              <span><strong>No Size/Bandwidth Costs:</strong> Process gigabytes of PDF merges or video compressions locally without consuming uploading bandwidth.</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-[#3C6B4D] font-bold">✓</span>
-              <span><strong>Offline Resilience:</strong> Runs completely without an internet connection once cached, perfect for remote environments or flights.</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-[#3C6B4D] font-bold">✓</span>
-              <span><strong>Fast Execution:</strong> Avoid cloud queues and server lags by using local hardware-accelerated CPU and WebAssembly.</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B] text-left">
-          <h3 className="font-bold text-lg text-[#ECEBE9] mb-4 flex items-center gap-2">
-            <Cpu className="text-[#E29E2D]" size={20} />
-            <span>Under the Hood Architecture</span>
-          </h3>
-          <p className="text-[#A3A09B] text-xs leading-relaxed mb-4">
-            DomoDomo integrates native web sandboxes, compiled code engines, and deep neural models compiled for the web. Here is how your browser processes files:
-          </p>
-          <div className="grid grid-cols-2 gap-3 text-[11px]">
-            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
-              <div className="font-bold text-[#ECEBE9]">ONNX Runtime</div>
-              <div className="text-[#72706C] text-[10px] mt-0.5">Executes local transformer models directly via WASM threads.</div>
-            </div>
-            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
-              <div className="font-bold text-[#ECEBE9]">FFmpeg WASM</div>
-              <div className="text-[#72706C] text-[10px] mt-0.5">Hardware video codecs compiled to target browser architectures.</div>
-            </div>
-            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
-              <div className="font-bold text-[#ECEBE9]">IndexedDB Storage</div>
-              <div className="text-[#72706C] text-[10px] mt-0.5">Secure sandbox to process files without bloating memory.</div>
-            </div>
-            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
-              <div className="font-bold text-[#ECEBE9]">Web Speech Engine</div>
-              <div className="text-[#72706C] text-[10px] mt-0.5">Native operating system speech recognition for live typing.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Leak-Free Security Audit & Isolation Guarantee Section */}
-      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left relative overflow-hidden">
-        <div className="max-w-3xl mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-3">
-            <Shield size={12} />
-            <span>Zero Server Footprint</span>
-          </div>
-          <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight">
-            Leak-Free Security Audit & Isolation Guarantee
-          </h2>
-          <p className="text-[#A3A09B] text-xs md:text-sm mt-1.5 leading-relaxed">
-            Every utility on DomoDomo has undergone rigorous peer review to guarantee zero outbound network leaks. Since we operate fully client-side:
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
-            <span className="text-[#3C6B4D] font-bold text-sm">IndexedDB Sandbox</span>
-            <span className="text-[11px] text-[#A3A09B] leading-relaxed">
-              Files are stored in client-side IndexedDB sandboxes. They are fully isolated within your browser namespace and automatically destroyed when you close the tab.
-            </span>
-          </div>
-          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
-            <span className="text-[#3C6B4D] font-bold text-sm">No Backend Endpoints</span>
-            <span className="text-[11px] text-[#A3A09B] leading-relaxed">
-              DomoDomo does not contain API endpoint routes or server integrations. You can completely disconnect your Wi-Fi and the tools will remain 100% operational.
-            </span>
-          </div>
-          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
-            <span className="text-[#3C6B4D] font-bold text-sm">Inspector Ready</span>
-            <span className="text-[11px] text-[#A3A09B] leading-relaxed">
-              Open your browser DevTools (Network tab) at any time. You will verify that no outbound packets or files are transmitted during file operations.
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Premium Suites Showcase Section */}
-      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left">
-        <div className="max-w-3xl mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 text-xs font-semibold w-fit mb-3">
-            <Sparkles size={12} />
-            <span>Top Featured Suites</span>
-          </div>
-          <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight">
-            Explore Highlighted Utilities
-          </h2>
-          <p className="text-[#A3A09B] text-xs md:text-sm mt-1.5 leading-relaxed">
-            DomoDomo offers specialized modular suites optimized for modern web standards:
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div 
-            onClick={() => handleCategoryChange('pdf')}
-            className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] hover:border-[#3C6B4D]/50 cursor-pointer hover:bg-[#1C1D1F] transition-all flex flex-col gap-3 group"
-          >
-            <div className="flex justify-between items-center">
-              <span className="font-bold text-[#ECEBE9] text-sm group-hover:text-[#3C6B4D] transition-colors">PDF Document Suite</span>
-              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">New Editor</span>
-            </div>
-            <span className="text-xs text-[#A3A09B] leading-relaxed">
-              Combine, split, compress, sign, or live-edit text blocks and add custom annotations on PDFs fully client-side.
-            </span>
-          </div>
-
-          <div 
-            onClick={() => handleCategoryChange('photo')}
-            className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] hover:border-[#E29E2D]/50 cursor-pointer hover:bg-[#1C1D1F] transition-all flex flex-col gap-3 group"
-          >
-            <div className="flex justify-between items-center">
-              <span className="font-bold text-[#ECEBE9] text-sm group-hover:text-[#E29E2D] transition-colors">Photo & Image Suite</span>
-              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20">Functional</span>
-            </div>
-            <span className="text-xs text-[#A3A09B] leading-relaxed">
-              Instantly erase backgrounds, crop, rotate, resize, overlay watermarks, and compress images with Canvas.
-            </span>
-          </div>
-
-          <div 
-            onClick={() => handleCategoryChange('ai')}
-            className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] hover:border-[#3C6B4D]/50 cursor-pointer hover:bg-[#1C1D1F] transition-all flex flex-col gap-3 group"
-          >
-            <div className="flex justify-between items-center">
-              <span className="font-bold text-[#ECEBE9] text-sm group-hover:text-[#3C6B4D] transition-colors">Local AI Suite</span>
-              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">Privacy AI</span>
-            </div>
-            <span className="text-xs text-[#A3A09B] leading-relaxed">
-              Engage with local chat agents, summarize documents, translate text structures, and extract OCR strings with no leaks.
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Unified Command Bar Panel */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl">
         {/* Categories Tabs */}
@@ -951,240 +368,24 @@ export const Dashboard = () => {
         </div>
 
         {/* Search Field with keybind hint */}
-        {activeCategory !== 'about' && (
-          <div className="relative shrink-0 w-full md:w-80 group">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors" />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Search local tools..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
-              <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">⌘</kbd>
-              <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">K</kbd>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Grid of Tools OR About Section */}
-      {activeCategory === 'about' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
-          {/* Brand Philosophy */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <ShieldAlert size={20} className="text-[#3C6B4D]" />
-                <span>The DomoDomo Privacy Mandate</span>
-              </h2>
-              <p className="text-[#A3A09B] text-sm leading-relaxed">
-                {BRAND_KIT.philosophy} Unlike regular web apps that process your PDFs, images, and videos on cloud servers, <strong>DomoDomo compiles everything locally on your CPU/GPU</strong> using standard browser Sandboxing APIs.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-1">
-                  <span className="text-[#3C6B4D] font-bold text-xs">WebAssembly</span>
-                  <span className="text-[11px] text-[#A3A09B]">Enables high-performance low-level modules like pdf-lib.</span>
-                </div>
-                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-1">
-                  <span className="text-[#3C6B4D] font-bold text-xs">Canvas APIs</span>
-                  <span className="text-[11px] text-[#A3A09B]">Processes backgrounds, overlays, colors, and visual matrices instantly.</span>
-                </div>
-                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-1">
-                  <span className="text-[#3C6B4D] font-bold text-xs">IndexedDB</span>
-                  <span className="text-[11px] text-[#A3A09B]">Caches files locally in secure browser sandboxes.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* SaaS vs DomoDomo Comparison Matrix */}
-            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <Globe size={20} className="text-[#3C6B4D]" />
-                <span>Cloud SaaS vs. DomoDomo Local Matrix</span>
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-[#2A2D30] text-[#A3A09B]">
-                      <th className="py-2.5 font-bold uppercase tracking-wider">Capability</th>
-                      <th className="py-2.5 font-bold uppercase tracking-wider px-3">Traditional SaaS (Cloud)</th>
-                      <th className="py-2.5 font-bold uppercase tracking-wider text-[#3C6B4D] px-3">DomoDomo (Local)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#2A2D30]/60 text-[#A3A09B]">
-                    <tr>
-                      <td className="py-3 font-semibold text-[#ECEBE9]">Data Security</td>
-                      <td className="py-3 px-3">Uploaded to cloud servers (leaks & exposure risk)</td>
-                      <td className="py-3 text-[#3C6B4D] font-medium px-3">100% Client-Side Sandbox (No Outbound Packets)</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 font-semibold text-[#ECEBE9]">File Size Limits</td>
-                      <td className="py-3 px-3">Capped at 50MB - 100MB (forces paid upgrades)</td>
-                      <td className="py-3 text-[#3C6B4D] font-medium px-3">Unlimited (limited only by device hardware)</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 font-semibold text-[#ECEBE9]">Pricing model</td>
-                      <td className="py-3 px-3">$15 - $50+ / month subscription tiers</td>
-                      <td className="py-3 text-[#3C6B4D] font-medium px-3">100% Free & Open-Source (MIT License)</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 font-semibold text-[#ECEBE9]">Offline Usability</td>
-                      <td className="py-3 px-3">Requires active network connection</td>
-                      <td className="py-3 text-[#3C6B4D] font-medium px-3">Works completely offline once cached</td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 font-semibold text-[#ECEBE9]">Queue Times</td>
-                      <td className="py-3 px-3">Queued upload delays & cloud server queues</td>
-                      <td className="py-3 text-[#3C6B4D] font-medium px-3">Instant compilation (WASM & CPU threads)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Enterprise Self-Hosting & Compliance */}
-            <div className="glass-card p-6 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <Shield size={20} className="text-[#3C6B4D]" />
-                <span>Enterprise Self-Hosting & Compliance</span>
-              </h2>
-              <p className="text-[#A3A09B] text-xs leading-relaxed">
-                Large corporations often block employees from uploading sensitive blueprints, customer datasets, or confidential contracts to external cloud utility webs. Since DomoDomo has <strong>zero server overhead</strong> and is licensed under the MIT permissive license, system administrators can deploy it on an internal private network domain (e.g. <code>toolbox.internal.company.com</code>). This guarantees employees have access to premium converters while ensuring zero outbound bytes traverse corporate firewalls.
-              </p>
-            </div>
-
-            {/* How DomoDomo Works Offline */}
-            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <CpuIcon size={20} className="text-[#3C6B4D]" />
-                <span>How DomoDomo Works Offline</span>
-              </h2>
-              
-              <div className="flex flex-col gap-4 text-xs">
-                <div className="flex gap-3 items-start">
-                  <div className="w-6 h-6 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center font-bold shrink-0">1</div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-[#ECEBE9]">Local File Blob Loading</span>
-                    <span className="text-[#A3A09B] leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 items-start border-t border-[#2A2D30] pt-3">
-                  <div className="w-6 h-6 rounded-full bg-[#E29E2D]/15 border border-[#E29E2D]/30 text-[#E29E2D] flex items-center justify-center font-bold shrink-0">2</div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-[#ECEBE9]">Sandboxed CPU & GPU Execution</span>
-                    <span className="text-[#A3A09B] leading-relaxed">High-performance algorithms (using WebAssembly, Canvas matrices, and local WebGPU frameworks) process the binary arrays inside your browser tab sandbox.</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 items-start border-t border-[#2A2D30] pt-3">
-                  <div className="w-6 h-6 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center font-bold shrink-0">3</div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-[#ECEBE9]">Immediate Local Compilation</span>
-                    <span className="text-[#A3A09B] leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Developer FAQ Accordion */}
-            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <ShieldAlert size={20} className="text-[#3C6B4D]" />
-                <span>Frequently Asked Questions (FAQ)</span>
-              </h2>
-              
-              <div className="flex flex-col gap-4 text-xs text-left">
-                <div className="flex flex-col gap-1 p-3 bg-[#111213] rounded-xl border border-[#2A2D30]">
-                  <span className="font-bold text-[#ECEBE9] text-sm">Is DomoDomo really free?</span>
-                  <span className="text-[#A3A09B] leading-relaxed">Yes! DomoDomo is 100% free with no limits, no subscription plans, no premium paywalls, and no account registrations required.</span>
-                </div>
-
-                <div className="flex flex-col gap-1 p-3 bg-[#111213] rounded-xl border border-[#2A2D30]">
-                  <span className="font-bold text-[#ECEBE9] text-sm">How do I verify there are no data leaks?</span>
-                  <span className="text-[#A3A09B] leading-relaxed">You can open your browser DevTools (F12), click the Network tab, and run any file converters or PDF editors. You will see that zero HTTP packets or uploads occur during processing.</span>
-                </div>
-
-                <div className="flex flex-col gap-1 p-3 bg-[#111213] rounded-xl border border-[#2A2D30]">
-                  <span className="font-bold text-[#ECEBE9] text-sm">Will it work without an internet connection?</span>
-                  <span className="text-[#A3A09B] leading-relaxed">Yes! Once the dashboard assets are loaded, you can disconnect your router or turn on Airplane mode. The WebAssembly and Canvas scripts run entirely offline in your browser.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Local Installation Guide from README */}
-            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <Terminal size={20} className="text-[#3C6B4D]" />
-                <span>Local Installation Guide</span>
-              </h2>
-              <p className="text-[#A3A09B] text-xs leading-relaxed">
-                Get DomoDomo running fully offline on your own machine in less than 2 minutes:
-              </p>
-              
-              <div className="flex flex-col gap-3 font-mono text-[11px] bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-slate-350">
-                <div>
-                  <span className="text-[#72706C]"># 1. Clone the repository</span>
-                  <div className="text-[#3C6B4D]">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git</div>
-                  <div className="text-[#3C6B4D]">cd DomoDomo---All-in-one-Tool</div>
-                </div>
-
-                <div className="border-t border-[#2A2D30] pt-2">
-                  <span className="text-[#72706C]"># 2. Install dependencies</span>
-                  <div className="text-[#3C6B4D]">npm install</div>
-                </div>
-
-                <div className="border-t border-[#2A2D30] pt-2">
-                  <span className="text-[#72706C]"># 3. Start development server</span>
-                  <div className="text-[#3C6B4D]">npm run dev</div>
-                </div>
-
-                <div className="border-t border-[#2A2D30] pt-2">
-                  <span className="text-[#72706C]"># 4. Build production bundle</span>
-                  <div className="text-[#3C6B4D]">npm run build</div>
-                </div>
-              </div>
-
-              <div className="text-[10px] text-[#72706C] flex justify-between border-t border-[#2A2D30] pt-3">
-                <span>License: MIT Permissive License</span>
-                <span>Version: 1.0.0</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Color swatches */}
-          <div className="lg:col-span-4 flex flex-col gap-6">
-            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
-              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                <span>Domo Brandkit</span>
-              </h2>
-              <div className="flex flex-col gap-4">
-                {Object.entries(BRAND_KIT.colors).map(([key, col]) => (
-                  <div key={key} className="flex items-center justify-between bg-[#111213] p-3 rounded-xl border border-[#2A2D30]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded border border-[#2A2D30] shadow-inner" style={{ backgroundColor: col.hex }} />
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-[#ECEBE9]">{col.name}</span>
-                        <span className="text-[10px] text-[#72706C] font-mono">{col.hex}</span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleCopyColor(col.hex)}
-                      className="p-1.5 bg-[#18191B] rounded-lg hover:bg-[#1E2022] border border-[#2A2D30] transition-colors text-[#A3A09B] hover:text-[#ECEBE9]"
-                      title="Copy Hex"
-                    >
-                      {copiedColor === col.hex ? <Check size={14} className="text-[#3C6B4D]" /> : <Copy size={14} />}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="relative shrink-0 w-full md:w-80 group">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors" />
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Search local tools..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
+            <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">⌘</kbd>
+            <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">K</kbd>
           </div>
         </div>
-      ) : activeCategory === 'ai' && (!isLocal || !hasOllama) ? (
+      </div>
+
+      {activeCategory === 'ai' && (!isLocal || !hasOllama) ? (
         <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto border-[#2A2D30] bg-[#18191B]">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
             <div className="flex items-center gap-3">
