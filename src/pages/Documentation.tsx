@@ -154,7 +154,17 @@ const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: Tool
       { id: 'text-rewriter', name: 'Text Rewriter', engine: 'Ollama Tone Transformation Pipeline', details: 'Applies style templates using local models, rewriting paragraphs into alternative tones.' },
       { id: 'ai-translator', name: 'Translator', engine: 'Ollama Translation Pipeline', details: 'Directs local LLMs to translate text strings, maintaining structure and context.' },
       { id: 'ai-stt', name: 'Speech-to-Text', engine: 'Ollama Audio Transcription Pipeline', details: 'Processes audio files through local models to generate text transcriptions.' },
-      { id: 'semantic-search', name: 'Semantic Search', engine: 'Ollama Embedding Engine', details: 'Passes document texts to embedding models, storing vectors to perform similarity searches.' }
+      { id: 'semantic-search', name: 'Semantic Search', engine: 'Ollama Embedding Engine', details: 'Passes document texts to embedding models, storing vectors to perform similarity searches.' },
+      { id: 'ai-code-explainer', name: 'AI Code Explainer', engine: 'Ollama Code Explanation Pipeline', details: 'Analyzes code segments step-by-step, assessing complexity and translating logic to other languages.' },
+      { id: 'ai-flashcard-maker', name: 'AI Flashcard Maker', engine: 'Ollama Educational Q&A Pipeline', details: 'Transforms any text input or topic into structured Q&A card decks for study sessions.' },
+      { id: 'ai-sentiment-journal', name: 'AI Sentiment Journal', engine: 'Ollama Sentiment & Mood Analysis Pipeline', details: 'Evaluates mood trends, keywords, and emotions from daily journal entries securely saved in local storage.' },
+      { id: 'ai-email-composer', name: 'AI Email Composer', engine: 'Ollama Business Copywriting Pipeline', details: 'Drafts or replies to emails with options for tone, length, and subject lines based on user intent.' },
+      { id: 'ai-story-generator', name: 'AI Story Generator', engine: 'Ollama Creative Fiction Pipeline', details: 'Generates fantasy, sci-fi, horror, or comedy stories complete with characters, settings, and twists.' },
+      { id: 'ai-debate-assistant', name: 'AI Debate Assistant', engine: 'Ollama Argumentation Pipeline', details: 'Constructs PRO and CON arguments, opening/closing statements, and counterpoints for a given topic.' },
+      { id: 'ai-math-solver', name: 'AI Math Solver', engine: 'Ollama Mathematical Reasoning Pipeline', details: 'Solves complex equations and word problems step-by-step with LaTeX formatting.' },
+      { id: 'ai-recipe-generator', name: 'AI Recipe Generator', engine: 'Ollama Culinary Optimization Pipeline', details: 'Recommends cooking recipes, nutrition estimates, and missing ingredient lists from available items.' },
+      { id: 'ai-code-reviewer', name: 'AI Code Reviewer', engine: 'Ollama Static Review Pipeline', details: 'Audits code structure for bugs, security weaknesses, performance, and best practices.' },
+      { id: 'ai-mind-mapper', name: 'AI Mind Mapper', engine: 'Ollama Hierarchical Layout Pipeline', details: 'Extracts concepts from topics to organize them into nested branches and outlines.' }
     ]
   }
 };
