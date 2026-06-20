@@ -151,8 +151,8 @@ export const DoorSplash = () => {
             <span className="font-extrabold text-3xl tracking-tight leading-none bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent font-heading">
               Domo<span className="text-[#ECEBE9] font-normal">Domo</span>
             </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#72706C] font-bold">
-              Local Workshop
+            <span className="text-[10px] uppercase tracking-[0.2em] text-[#72706C] font-bold">
+              All-in-One Tool Hub
             </span>
           </div>
 

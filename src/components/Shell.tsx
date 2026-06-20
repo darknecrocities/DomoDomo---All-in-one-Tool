@@ -41,7 +41,7 @@ export const Shell = () => {
       <footer className="bg-[#111213] border-t border-[#2A2D30] px-6 py-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <div className="flex flex-col gap-1">
-            <span className="text-[#ECEBE9] text-xs font-bold tracking-wide">DomoDomo Workshop</span>
+            <span className="text-[#ECEBE9] text-xs font-bold tracking-wide">DomoDomo: All-in-One Tool Hub</span>
             <span className="text-[#72706C] text-[11px]">
               All tools run fully inside your browser sandbox. No file chunks, keys, or uploads ever touch a server.
             </span>

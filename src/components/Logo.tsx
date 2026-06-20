@@ -67,8 +67,8 @@ export const Logo = ({ className = '', size = 40, showText = true }: LogoProps) 
           <span className="font-extrabold text-2xl tracking-tight leading-none bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent font-sans">
             Domo<span className="text-white font-semibold">Domo</span>
           </span>
-          <span className="text-[9px] uppercase tracking-[0.25em] text-slate-500 font-bold leading-none mt-1">
-            Local Toolbox
+          <span className="text-[9px] uppercase tracking-[0.18em] text-[#72706C] font-bold leading-none mt-1">
+            All-in-One Tool Hub
           </span>
         </div>
       )}
