@@ -10,9 +10,9 @@ export const ToolContainer = () => {
 
   if (!tool) {
     return (
-      <div className="glass-card p-12 text-center flex flex-col items-center gap-4 max-w-md mx-auto my-12">
-        <h2 className="text-xl font-bold text-rose-400">Tool Not Found</h2>
-        <p className="text-slate-400 text-sm">
+      <div className="glass-card p-12 text-center flex flex-col items-center gap-4 max-w-md mx-auto my-12 border-[#2A2D30] bg-[#18191B]">
+        <h2 className="text-xl font-bold text-rose-450">Tool Not Found</h2>
+        <p className="text-[#A3A09B] text-sm">
           The requested tool does not exist or is still in development.
         </p>
         <button onClick={() => navigate('/')} className="btn-primary mt-4">
@@ -28,30 +28,30 @@ export const ToolContainer = () => {
   return (
     <div className="flex flex-col gap-8">
       {/* Tool Header Breadcrumb */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-800/80">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#2A2D30]">
         <div className="flex flex-col gap-2">
           {/* Breadcrumb nav */}
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#72706C] uppercase tracking-wider">
             <button
               onClick={() => navigate('/')}
-              className="hover:text-teal-400 flex items-center gap-1 transition-colors"
+              className="hover:text-[#3C6B4D] flex items-center gap-1 transition-colors"
             >
               <Home size={12} />
               <span>Dashboard</span>
             </button>
             <span>/</span>
-            <span className="text-slate-400">{tool.category}</span>
+            <span className="text-[#A3A09B]">{tool.category}</span>
           </div>
 
           <div className="flex items-center gap-3 mt-1">
-            <div className="p-2.5 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-xl">
+            <div className="p-2.5 bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#3C6B4D] rounded-xl">
               <DynamicIcon name={tool.icon} size={20} />
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white font-sans tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight">
               {tool.name}
             </h2>
           </div>
-          <p className="text-slate-400 text-sm mt-1 max-w-2xl leading-relaxed">
+          <p className="text-[#A3A09B] text-sm mt-1 max-w-2xl leading-relaxed">
             {tool.description}
           </p>
         </div>

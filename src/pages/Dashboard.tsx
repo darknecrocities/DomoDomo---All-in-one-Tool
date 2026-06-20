@@ -329,6 +329,7 @@ export const Dashboard = () => {
   };
 
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+  const hardware = aiService.getHardwareRecommendation();
 
   useEffect(() => {
     let active = true;
@@ -417,99 +418,89 @@ export const Dashboard = () => {
   return (
     <div className="flex flex-col gap-8">
       {/* Hero Welcome banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-[#151C2C] to-slate-900 border border-slate-800 p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-2xl">
+      <div className="relative overflow-hidden rounded-lg bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex flex-col gap-3 max-w-2xl z-10 text-left">
           <div className="flex flex-wrap gap-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 text-xs font-semibold w-fit">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
               <Globe size={12} />
-              <span>Free, Leak-Free, Open-Source Web Tool Suite</span>
+              <span>Sandbox Offline Web Utilities</span>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold w-fit">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#1E2022] text-[#A3A09B] border border-[#2A2D30] text-xs font-semibold w-fit">
               <Code size={12} />
               <span>100% Free & Open Source</span>
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mt-1">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1">
             All-in-One <br />
-            <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-[#4E8E5E] bg-clip-text text-transparent">
-              Web Utility Hub.
+            <span className="text-[#3C6B4D]">
+              Local Toolbox.
             </span>
           </h1>
-          <p className="text-slate-400 text-sm md:text-base leading-relaxed">
-            DomoDomo is a free, 100% open-source tool suite with absolute leak-free security. Edit files, compress videos, split/merge PDFs, and run local AI models directly in your browser. Your data never leaves your device.
+          <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed">
+            DomoDomo is a premium, open-source productivity workshop running entirely in your browser sandbox. Edit files, compress media, compile PDF modifications, and run local AI models. Your files never touch the cloud.
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 w-full md:w-auto z-10">
-          <div className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl flex items-center gap-3">
-            <Layers size={24} className="text-green-400" />
+          <div className="p-4 bg-[#111213] border border-[#2A2D30] rounded-xl flex items-center gap-3">
+            <Layers size={22} className="text-[#3C6B4D]" />
             <div className="flex flex-col text-left">
-              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Features</span>
-              <span className="text-slate-200 font-semibold text-sm">90+ Web Tools</span>
+              <span className="text-[10px] text-[#72706C] font-bold uppercase tracking-wider">Features</span>
+              <span className="text-[#ECEBE9] font-semibold text-xs">90+ Utilities</span>
             </div>
           </div>
-          <div className="p-4 bg-slate-950/40 border border-slate-850 rounded-2xl flex items-center gap-3">
-            <Cpu size={24} className="text-indigo-400" />
+          <div className="p-4 bg-[#111213] border border-[#2A2D30] rounded-xl flex items-center gap-3">
+            <Cpu size={22} className="text-[#E29E2D]" />
             <div className="flex flex-col text-left">
-              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Performance</span>
-              <span className="text-slate-200 font-semibold text-sm">GPU / WebAPI</span>
+              <span className="text-[10px] text-[#72706C] font-bold uppercase tracking-wider">Speed</span>
+              <span className="text-[#ECEBE9] font-semibold text-xs">GPU Accelerated</span>
             </div>
           </div>
         </div>
-        
-        {/* Abstract background blobs */}
-        <div className="absolute right-0 top-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute left-1/3 bottom-0 w-60 h-60 bg-green-500/5 rounded-full blur-[80px] pointer-events-none" />
       </div>
 
       {/* Meet Domo: Your Local-First Privacy Companion */}
-      <div className="glass-card p-8 border-[#4E8E5E]/20 bg-gradient-to-br from-[#151C2C]/80 via-[#11241B]/40 to-slate-950/60 text-left relative overflow-hidden group shadow-2xl">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-green-500/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute -left-12 -bottom-12 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
-        
+      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left relative overflow-hidden group">
         <div className="flex flex-col lg:flex-row gap-8 items-center z-10 relative">
-          <div className="flex-shrink-0 p-4 bg-slate-900/60 border border-slate-800/80 rounded-2xl shadow-inner group-hover:scale-105 transition-transform duration-300">
+          <div className="flex-shrink-0 p-4 bg-[#111213] border border-[#2A2D30] rounded-2xl group-hover:scale-105 transition-transform duration-300">
             <Logo size={100} showText={false} />
           </div>
           
           <div className="flex-1 flex flex-col gap-4">
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold uppercase tracking-wider">
-                <Sparkles size={12} />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
+                <Sparkles size={11} />
                 Meet Domo
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 text-[11px] font-bold uppercase tracking-wider">
-                Zero Cloud Tracking
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/25 text-[11px] font-bold uppercase tracking-wider">
+                Zero Cloud Telemetry
               </span>
             </div>
             
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
-              Domo: Your Local-First <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent">
-                Privacy Guardian & AI Companion
-              </span>
+            <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight leading-tight">
+              Domo: Your Local-First Privacy Guardian & AI Companion
             </h2>
             
-            <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+            <p className="text-[#A3A09B] text-sm leading-relaxed">
               Behind DomoDomo is <strong>Domo</strong>, our friendly privacy mascot and locally running AI engine. Domo represents our ironclad, non-negotiable commitment to absolute user privacy. By utilizing highly optimized local neural architectures, WebAssembly (WASM) compiler runtimes, and hardware-accelerated WebGPU browser engines directly on your device, Domo guarantees that your sensitive credentials, document databases, image assets, and voice captures never leave your machine. Everything executes client-side inside a secure, sandbox-isolated container with zero outbound telemetry, trackers, or cookies.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
-              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl hover:border-emerald-500/30 transition-all duration-300">
-                <div className="text-emerald-400 font-bold text-sm mb-1">100% Leak-Free AI</div>
-                <div className="text-[11px] text-slate-400 leading-relaxed">
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
+                <div className="text-[#3C6B4D] font-bold text-xs mb-1">100% Leak-Free AI</div>
+                <div className="text-[11px] text-[#A3A09B] leading-relaxed">
                   Run privacy-first local language translation, semantic searches, text summarization, and OCR extraction. Everything remains fully local on your device.
                 </div>
               </div>
-              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl hover:border-emerald-500/30 transition-all duration-300">
-                <div className="text-emerald-400 font-bold text-sm mb-1">No Cloud Leakage</div>
-                <div className="text-[11px] text-slate-400 leading-relaxed">
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
+                <div className="text-[#3C6B4D] font-bold text-xs mb-1">No Cloud Leakage</div>
+                <div className="text-[11px] text-[#A3A09B] leading-relaxed">
                   Zero data collection, analytics tracking, log dumping, or profiling cookies. What is processed locally stays offline, completely hidden from third-party servers.
                 </div>
               </div>
-              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl hover:border-emerald-500/30 transition-all duration-300">
-                <div className="text-emerald-400 font-bold text-sm mb-1">GPU Accelerated</div>
-                <div className="text-[11px] text-slate-400 leading-relaxed">
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
+                <div className="text-[#3C6B4D] font-bold text-xs mb-1">GPU Accelerated</div>
+                <div className="text-[11px] text-[#A3A09B] leading-relaxed">
                   Leverages native in-browser WebGPU and WebAssembly instructions to run demanding models at near-native execution speeds without server latencies.
                 </div>
               </div>
@@ -520,118 +511,114 @@ export const Dashboard = () => {
 
       {/* Infographic Stats Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-emerald-500/30 transition-all duration-300">
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/40 transition-all duration-200">
           <div className="flex justify-between items-start">
-            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-105 transition-transform duration-300">
+            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] group-hover:scale-105 transition-transform duration-200">
               <Layers size={22} />
             </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
               Instant
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-4xl font-extrabold text-white tracking-tight">90+</span>
-            <h3 className="font-bold text-lg text-slate-200 mt-2">Web Utilities</h3>
-            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">90+</span>
+            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Web Utilities</h3>
+            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
               Every tool executes 100% locally on your machine with high-performance logic.
             </p>
           </div>
-          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors" />
         </div>
 
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-indigo-500/30 transition-all duration-300">
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#E29E2D]/40 transition-all duration-200">
           <div className="flex justify-between items-start">
-            <div className="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 group-hover:scale-105 transition-transform duration-300">
+            <div className="p-3 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] group-hover:scale-105 transition-transform duration-200">
               <Globe size={22} />
             </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20">
               Diverse
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-4xl font-extrabold text-white tracking-tight">10</span>
-            <h3 className="font-bold text-lg text-slate-200 mt-2">Categories</h3>
-            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">10</span>
+            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Categories</h3>
+            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
               Providing specialized modules for PDFs, Video WASM, Audio, Local AI, and Converters.
             </p>
           </div>
-          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors" />
         </div>
 
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-emerald-500/30 transition-all duration-300">
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/40 transition-all duration-200">
           <div className="flex justify-between items-start">
-            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 group-hover:scale-105 transition-transform duration-300">
+            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] group-hover:scale-105 transition-transform duration-200">
               <Cpu size={22} />
             </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
               Engine
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-4xl font-extrabold text-white tracking-tight">WASM</span>
-            <h3 className="font-bold text-lg text-slate-200 mt-2">Modern Stack</h3>
-            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">WASM</span>
+            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Modern Stack</h3>
+            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
               Powered by WebAssembly core scripts and client Canvas/DOM WebAPIs for speed.
             </p>
           </div>
-          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-colors" />
         </div>
 
-        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-slate-800/80 hover:border-indigo-500/30 transition-all duration-300">
+        <div className="glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group border-[#2A2D30] bg-[#18191B] hover:border-[#E29E2D]/40 transition-all duration-200">
           <div className="flex justify-between items-start">
-            <div className="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 group-hover:scale-105 transition-transform duration-300">
+            <div className="p-3 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] group-hover:scale-105 transition-transform duration-200">
               <Code size={22} />
             </div>
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20">
               License
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-4xl font-extrabold text-white tracking-tight">100%</span>
-            <h3 className="font-bold text-lg text-slate-200 mt-2">Open Source</h3>
-            <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+            <span className="text-4xl font-extrabold text-[#ECEBE9] tracking-tight">100%</span>
+            <h3 className="font-bold text-base text-[#ECEBE9] mt-2">Open Source</h3>
+            <p className="text-[#A3A09B] text-xs mt-1.5 leading-relaxed">
               Free to use, inspect, customize, and self-host under standard permissive licensing.
             </p>
           </div>
-          <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors" />
         </div>
       </div>
 
       {/* Tech Stack Marquee Carousel */}
-      <div className="relative w-full overflow-hidden py-6 border-y border-slate-800/40 bg-[#151C2C]/25 backdrop-blur-sm rounded-2xl">
-        <div className="text-center mb-4">
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
+      <div className="relative w-full overflow-hidden py-5 border-y border-[#2A2D30] bg-[#18191B] rounded-xl">
+        <div className="text-center mb-3">
+          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#72706C]">
             Powered by modern browser tech & frameworks
           </span>
         </div>
         
         {/* Shadow mask overlays for fade out edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#0B0F19] to-transparent pointer-events-none z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#0B0F19] to-transparent pointer-events-none z-10" />
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#111213] to-transparent pointer-events-none z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#111213] to-transparent pointer-events-none z-10" />
 
         <div className="flex overflow-hidden relative w-full">
-          <div className="animate-marquee flex gap-8 items-center py-2">
+          <div className="animate-marquee flex gap-6 items-center py-1">
             {/* First Set of Items */}
             {TECH_STACK.map((tech, idx) => (
-              <div key={`tech-1-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-slate-900/60 border border-slate-850 rounded-xl hover:border-slate-700 transition-colors shrink-0">
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-950/60 border border-slate-800" style={{ color: tech.color }}>
+              <div key={`tech-1-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-[#111213] border border-[#2A2D30] rounded-xl hover:border-[#3C6B4D]/50 transition-colors shrink-0">
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#18191B] border border-[#2A2D30]" style={{ color: tech.color }}>
                   {renderTechIcon(tech.icon)}
                 </div>
                 <div className="flex flex-col text-left pr-2">
-                  <span className="text-xs font-bold text-slate-200">{tech.name}</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
+                  <span className="text-xs font-bold text-[#ECEBE9]">{tech.name}</span>
+                  <span className="text-[9px] text-[#72706C] uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
                 </div>
               </div>
             ))}
             {/* Duplicate Set for Infinite Scroll Loop */}
             {TECH_STACK.map((tech, idx) => (
-              <div key={`tech-2-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-slate-900/60 border border-slate-850 rounded-xl hover:border-slate-700 transition-colors shrink-0">
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-950/60 border border-slate-800" style={{ color: tech.color }}>
+              <div key={`tech-2-${idx}`} className="flex items-center gap-3 px-4 py-2 bg-[#111213] border border-[#2A2D30] rounded-xl hover:border-[#3C6B4D]/50 transition-colors shrink-0">
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#18191B] border border-[#2A2D30]" style={{ color: tech.color }}>
                   {renderTechIcon(tech.icon)}
                 </div>
                 <div className="flex flex-col text-left pr-2">
-                  <span className="text-xs font-bold text-slate-200">{tech.name}</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
+                  <span className="text-xs font-bold text-[#ECEBE9]">{tech.name}</span>
+                  <span className="text-[9px] text-[#72706C] uppercase tracking-wider font-semibold whitespace-nowrap">{tech.desc}</span>
                 </div>
               </div>
             ))}
@@ -640,52 +627,52 @@ export const Dashboard = () => {
       </div>
 
       {/* Main Purpose & Core Capabilities Section */}
-      <div className="glass-card p-8 border-slate-800/80 bg-gradient-to-br from-[#151C2C]/50 via-[#151C2C]/30 to-slate-950/40 text-left">
+      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left">
         <div className="max-w-3xl mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold w-fit mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-3">
             <Sparkles size={12} />
             <span>Mission & Core Purpose</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] tracking-tight">
             Designed for Developers, Creators, and Power Users
           </h2>
-          <p className="text-slate-400 text-sm md:text-base mt-2.5 leading-relaxed">
+          <p className="text-[#A3A09B] text-sm md:text-base mt-2.5 leading-relaxed">
             DomoDomo solves the friction of traditional web utilities. Instead of uploading sensitive documents, private pictures, and huge videos to remote servers, DomoDomo compiles the processing logic directly inside your browser sandbox.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex gap-4">
-            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 h-fit shrink-0">
+            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] h-fit shrink-0">
               <Shield size={20} />
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="font-bold text-slate-200 text-base">Uncompromising Security</h4>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <h4 className="font-bold text-[#ECEBE9] text-base">Uncompromising Security</h4>
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
                 Zero data tracking, zero uploads, zero server databases. Your files never leave your computer, preserving absolute confidentiality.
               </p>
             </div>
           </div>
 
           <div className="flex gap-4">
-            <div className="p-3 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 h-fit shrink-0">
+            <div className="p-3 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] h-fit shrink-0">
               <Cpu size={20} />
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="font-bold text-slate-200 text-base">Local AI & WebAssembly</h4>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <h4 className="font-bold text-[#ECEBE9] text-base">Local AI & WebAssembly</h4>
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
                 Runs lightweight machine learning models (like ONNX and Transformers.js) and compiled C++ modules directly on your device.
               </p>
             </div>
           </div>
 
           <div className="flex gap-4">
-            <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 h-fit shrink-0">
+            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] h-fit shrink-0">
               <Zap size={20} />
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="font-bold text-slate-200 text-base">All-in-One Utility Hub</h4>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <h4 className="font-bold text-[#ECEBE9] text-base">All-in-One Utility Hub</h4>
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
                 No need to open multiple websites. Edit PDFs, compress videos, build resumes, scan QRs, and format codes inside a single cohesive system.
               </p>
             </div>
@@ -695,91 +682,91 @@ export const Dashboard = () => {
 
       {/* Local First Advantage & Benefits Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass-card p-6 border-slate-800/80 bg-[#151C2C]/30 text-left">
-          <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
-            <Shield className="text-[#4E8E5E]" size={20} />
+        <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B] text-left">
+          <h3 className="font-bold text-lg text-[#ECEBE9] mb-4 flex items-center gap-2">
+            <Shield className="text-[#3C6B4D]" size={20} />
             <span>Why Local-First Processing Wins</span>
           </h3>
-          <div className="flex flex-col gap-3 text-xs text-slate-350">
+          <div className="flex flex-col gap-3 text-xs text-[#A3A09B]">
             <div className="flex gap-2">
-              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span className="text-[#3C6B4D] font-bold">✓</span>
               <span><strong>Absolute Privacy:</strong> Your sensitive files (passports, signatures, photos) never traverse network servers. Data leaks are physically impossible.</span>
             </div>
             <div className="flex gap-2">
-              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span className="text-[#3C6B4D] font-bold">✓</span>
               <span><strong>No Size/Bandwidth Costs:</strong> Process gigabytes of PDF merges or video compressions locally without consuming uploading bandwidth.</span>
             </div>
             <div className="flex gap-2">
-              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span className="text-[#3C6B4D] font-bold">✓</span>
               <span><strong>Offline Resilience:</strong> Runs completely without an internet connection once cached, perfect for remote environments or flights.</span>
             </div>
             <div className="flex gap-2">
-              <span className="text-[#4E8E5E] font-bold">✓</span>
+              <span className="text-[#3C6B4D] font-bold">✓</span>
               <span><strong>Fast Execution:</strong> Avoid cloud queues and server lags by using local hardware-accelerated CPU and WebAssembly.</span>
             </div>
           </div>
         </div>
 
-        <div className="glass-card p-6 border-slate-800/80 bg-[#151C2C]/30 text-left">
-          <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
-            <Cpu className="text-indigo-400" size={20} />
+        <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B] text-left">
+          <h3 className="font-bold text-lg text-[#ECEBE9] mb-4 flex items-center gap-2">
+            <Cpu className="text-[#E29E2D]" size={20} />
             <span>Under the Hood Architecture</span>
           </h3>
-          <p className="text-slate-400 text-xs leading-relaxed mb-4">
+          <p className="text-[#A3A09B] text-xs leading-relaxed mb-4">
             DomoDomo integrates native web sandboxes, compiled code engines, and deep neural models compiled for the web. Here is how your browser processes files:
           </p>
           <div className="grid grid-cols-2 gap-3 text-[11px]">
-            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
-              <div className="font-bold text-slate-200">ONNX Runtime</div>
-              <div className="text-slate-500 text-[10px] mt-0.5">Executes local transformer models directly via WASM threads.</div>
+            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
+              <div className="font-bold text-[#ECEBE9]">ONNX Runtime</div>
+              <div className="text-[#72706C] text-[10px] mt-0.5">Executes local transformer models directly via WASM threads.</div>
             </div>
-            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
-              <div className="font-bold text-slate-200">FFmpeg WASM</div>
-              <div className="text-slate-500 text-[10px] mt-0.5">Hardware video codecs compiled to target browser architectures.</div>
+            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
+              <div className="font-bold text-[#ECEBE9]">FFmpeg WASM</div>
+              <div className="text-[#72706C] text-[10px] mt-0.5">Hardware video codecs compiled to target browser architectures.</div>
             </div>
-            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
-              <div className="font-bold text-slate-200">IndexedDB Storage</div>
-              <div className="text-slate-500 text-[10px] mt-0.5">Secure sandbox to process files without bloating memory.</div>
+            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
+              <div className="font-bold text-[#ECEBE9]">IndexedDB Storage</div>
+              <div className="text-[#72706C] text-[10px] mt-0.5">Secure sandbox to process files without bloating memory.</div>
             </div>
-            <div className="bg-slate-900/60 p-3 rounded-lg border border-slate-850">
-              <div className="font-bold text-slate-200">Web Speech Engine</div>
-              <div className="text-slate-500 text-[10px] mt-0.5">Native operating system speech recognition for live typing.</div>
+            <div className="bg-[#111213] p-3 rounded-lg border border-[#2A2D30]">
+              <div className="font-bold text-[#ECEBE9]">Web Speech Engine</div>
+              <div className="text-[#72706C] text-[10px] mt-0.5">Native operating system speech recognition for live typing.</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Leak-Free Security Audit & Isolation Guarantee Section */}
-      <div className="glass-card p-8 border-[#4E8E5E]/20 bg-gradient-to-r from-[#151C2C]/45 via-[#11241B]/15 to-slate-950/50 text-left relative overflow-hidden">
+      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left relative overflow-hidden">
         <div className="max-w-3xl mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold w-fit mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-3">
             <Shield size={12} />
             <span>Zero Server Footprint</span>
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight">
             Leak-Free Security Audit & Isolation Guarantee
           </h2>
-          <p className="text-slate-400 text-xs md:text-sm mt-1.5 leading-relaxed">
+          <p className="text-[#A3A09B] text-xs md:text-sm mt-1.5 leading-relaxed">
             Every utility on DomoDomo has undergone rigorous peer review to guarantee zero outbound network leaks. Since we operate fully client-side:
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 flex flex-col gap-2">
-            <span className="text-teal-400 font-bold text-sm">IndexedDB Sandbox</span>
-            <span className="text-[11px] text-slate-450 leading-relaxed">
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
+            <span className="text-[#3C6B4D] font-bold text-sm">IndexedDB Sandbox</span>
+            <span className="text-[11px] text-[#A3A09B] leading-relaxed">
               Files are stored in client-side IndexedDB sandboxes. They are fully isolated within your browser namespace and automatically destroyed when you close the tab.
             </span>
           </div>
-          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 flex flex-col gap-2">
-            <span className="text-teal-400 font-bold text-sm">No Backend Endpoints</span>
-            <span className="text-[11px] text-slate-450 leading-relaxed">
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
+            <span className="text-[#3C6B4D] font-bold text-sm">No Backend Endpoints</span>
+            <span className="text-[11px] text-[#A3A09B] leading-relaxed">
               DomoDomo does not contain API endpoint routes or server integrations. You can completely disconnect your Wi-Fi and the tools will remain 100% operational.
             </span>
           </div>
-          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 flex flex-col gap-2">
-            <span className="text-teal-400 font-bold text-sm">Inspector Ready</span>
-            <span className="text-[11px] text-slate-450 leading-relaxed">
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
+            <span className="text-[#3C6B4D] font-bold text-sm">Inspector Ready</span>
+            <span className="text-[11px] text-[#A3A09B] leading-relaxed">
               Open your browser DevTools (Network tab) at any time. You will verify that no outbound packets or files are transmitted during file operations.
             </span>
           </div>
@@ -787,16 +774,16 @@ export const Dashboard = () => {
       </div>
 
       {/* Featured Premium Suites Showcase Section */}
-      <div className="glass-card p-8 border-slate-800/80 bg-gradient-to-br from-[#151C2C]/30 via-slate-950/20 to-slate-950/60 text-left">
+      <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left">
         <div className="max-w-3xl mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-semibold w-fit mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 text-xs font-semibold w-fit mb-3">
             <Sparkles size={12} />
             <span>Top Featured Suites</span>
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight">
             Explore Highlighted Utilities
           </h2>
-          <p className="text-slate-400 text-xs md:text-sm mt-1.5 leading-relaxed">
+          <p className="text-[#A3A09B] text-xs md:text-sm mt-1.5 leading-relaxed">
             DomoDomo offers specialized modular suites optimized for modern web standards:
           </p>
         </div>
@@ -804,39 +791,39 @@ export const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div 
             onClick={() => handleCategoryChange('pdf')}
-            className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 hover:border-[#4E8E5E]/40 cursor-pointer hover:bg-slate-900/40 transition-all flex flex-col gap-3 group"
+            className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] hover:border-[#3C6B4D]/50 cursor-pointer hover:bg-[#1C1D1F] transition-all flex flex-col gap-3 group"
           >
             <div className="flex justify-between items-center">
-              <span className="font-bold text-slate-200 text-sm group-hover:text-white transition-colors">PDF Document Suite</span>
-              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">New Editor</span>
+              <span className="font-bold text-[#ECEBE9] text-sm group-hover:text-[#3C6B4D] transition-colors">PDF Document Suite</span>
+              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">New Editor</span>
             </div>
-            <span className="text-xs text-slate-450 leading-relaxed">
+            <span className="text-xs text-[#A3A09B] leading-relaxed">
               Combine, split, compress, sign, or live-edit text blocks and add custom annotations on PDFs fully client-side.
             </span>
           </div>
 
           <div 
             onClick={() => handleCategoryChange('photo')}
-            className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 hover:border-indigo-500/40 cursor-pointer hover:bg-slate-900/40 transition-all flex flex-col gap-3 group"
+            className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] hover:border-[#E29E2D]/50 cursor-pointer hover:bg-[#1C1D1F] transition-all flex flex-col gap-3 group"
           >
             <div className="flex justify-between items-center">
-              <span className="font-bold text-slate-200 text-sm group-hover:text-white transition-colors">Photo & Image Suite</span>
-              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Functional</span>
+              <span className="font-bold text-[#ECEBE9] text-sm group-hover:text-[#E29E2D] transition-colors">Photo & Image Suite</span>
+              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20">Functional</span>
             </div>
-            <span className="text-xs text-slate-450 leading-relaxed">
+            <span className="text-xs text-[#A3A09B] leading-relaxed">
               Instantly erase backgrounds, crop, rotate, resize, overlay watermarks, and compress images with Canvas.
             </span>
           </div>
 
           <div 
             onClick={() => handleCategoryChange('ai')}
-            className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 hover:border-[#4E8E5E]/40 cursor-pointer hover:bg-slate-900/40 transition-all flex flex-col gap-3 group"
+            className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] hover:border-[#3C6B4D]/50 cursor-pointer hover:bg-[#1C1D1F] transition-all flex flex-col gap-3 group"
           >
             <div className="flex justify-between items-center">
-              <span className="font-bold text-slate-200 text-sm group-hover:text-white transition-colors">Local AI Suite</span>
-              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Privacy AI</span>
+              <span className="font-bold text-[#ECEBE9] text-sm group-hover:text-[#3C6B4D] transition-colors">Local AI Suite</span>
+              <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">Privacy AI</span>
             </div>
-            <span className="text-xs text-slate-450 leading-relaxed">
+            <span className="text-xs text-[#A3A09B] leading-relaxed">
               Engage with local chat agents, summarize documents, translate text structures, and extract OCR strings with no leaks.
             </span>
           </div>
@@ -857,13 +844,13 @@ export const Dashboard = () => {
                 onClick={() => handleCategoryChange(cat.id)}
                 className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
                   activeCategory === cat.id
-                    ? 'bg-[#4E8E5E] text-white border-[#4E8E5E] shadow-md shadow-green-500/10'
+                    ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm'
                     : isUnavailable
-                      ? 'bg-[#151C2C]/30 border-slate-900/60 text-slate-500 hover:text-slate-400 hover:bg-[#151C2C]/50'
-                      : 'bg-[#151C2C]/50 hover:bg-[#151C2C]/80 border-slate-800 text-slate-400 hover:text-slate-250'
+                      ? 'bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]'
+                      : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
               >
-                {isUnavailable && <Lock size={12} className="text-amber-500 animate-pulse" />}
+                {isUnavailable && <Lock size={12} className="text-[#E29E2D] animate-pulse" />}
                 <span>{displayName}</span>
               </button>
             );
@@ -873,13 +860,13 @@ export const Dashboard = () => {
         {/* Search Field */}
         {activeCategory !== 'about' && (
           <div className="relative shrink-0 w-full md:w-80">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#72706C]" />
             <input
               type="text"
               placeholder="Search local tools..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#151C2C]/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-[#4E8E5E] transition-colors placeholder:text-slate-500"
+              className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-colors placeholder:text-[#72706C]"
             />
           </div>
         )}
@@ -890,67 +877,70 @@ export const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
           {/* Brand Philosophy */}
           <div className="lg:col-span-8 flex flex-col gap-6">
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <ShieldAlert size={20} className="text-[#4E8E5E]" />
+            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                <ShieldAlert size={20} className="text-[#3C6B4D]" />
                 <span>The DomoDomo Privacy Mandate</span>
               </h2>
-              <p className="text-slate-350 text-sm leading-relaxed">
+              <p className="text-[#A3A09B] text-sm leading-relaxed">
                 {BRAND_KIT.philosophy} Unlike regular web apps that process your PDFs, images, and videos on cloud servers, <strong>DomoDomo compiles everything locally on your CPU/GPU</strong> using standard browser Sandboxing APIs.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div className="bg-slate-900/60 border border-slate-850 p-4 rounded-xl flex flex-col gap-1">
-                  <span className="text-[#4E8E5E] font-bold text-xs">WebAssembly</span>
-                  <span className="text-[11px] text-slate-400">Enables high-performance low-level modules like pdf-lib.</span>
+                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-1">
+                  <span className="text-[#3C6B4D] font-bold text-xs">WebAssembly</span>
+                  <span className="text-[11px] text-[#A3A09B]">Enables high-performance low-level modules like pdf-lib.</span>
                 </div>
-                <div className="bg-slate-900/60 border border-slate-850 p-4 rounded-xl flex flex-col gap-1">
-                  <span className="text-indigo-400 font-bold text-xs">Canvas APIs</span>
-                  <span className="text-[11px] text-slate-400">Processes backgrounds, overlays, colors, and visual matrices instantly.</span>
+                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-1">
+                  <span className="text-[#3C6B4D] font-bold text-xs">Canvas APIs</span>
+                  <span className="text-[11px] text-[#A3A09B]">Processes backgrounds, overlays, colors, and visual matrices instantly.</span>
                 </div>
-                <div className="bg-slate-900/60 border border-slate-850 p-4 rounded-xl flex flex-col gap-1">
-                  <span className="text-[#4E8E5E] font-bold text-xs">IndexedDB</span>
-                  <span className="text-[11px] text-slate-400">Caches files locally in secure browser sandboxes.</span>
+                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-1">
+                  <span className="text-[#3C6B4D] font-bold text-xs">IndexedDB</span>
+                  <span className="text-[11px] text-[#A3A09B]">Caches files locally in secure browser sandboxes.</span>
                 </div>
-                {/* SaaS vs DomoDomo Comparison Matrix */}
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Globe size={20} className="text-[#4E8E5E]" />
+              </div>
+            </div>
+
+            {/* SaaS vs DomoDomo Comparison Matrix */}
+            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                <Globe size={20} className="text-[#3C6B4D]" />
                 <span>Cloud SaaS vs. DomoDomo Local Matrix</span>
               </h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-800 text-slate-400">
+                    <tr className="border-b border-[#2A2D30] text-[#A3A09B]">
                       <th className="py-2.5 font-bold uppercase tracking-wider">Capability</th>
                       <th className="py-2.5 font-bold uppercase tracking-wider px-3">Traditional SaaS (Cloud)</th>
-                      <th className="py-2.5 font-bold uppercase tracking-wider text-emerald-400 px-3">DomoDomo (Local)</th>
+                      <th className="py-2.5 font-bold uppercase tracking-wider text-[#3C6B4D] px-3">DomoDomo (Local)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-850/60 text-slate-350">
+                  <tbody className="divide-y divide-[#2A2D30]/60 text-[#A3A09B]">
                     <tr>
-                      <td className="py-3 font-semibold text-slate-200">Data Security</td>
+                      <td className="py-3 font-semibold text-[#ECEBE9]">Data Security</td>
                       <td className="py-3 px-3">Uploaded to cloud servers (leaks & exposure risk)</td>
-                      <td className="py-3 text-emerald-300 font-medium px-3">100% Client-Side Sandbox (No Outbound Packets)</td>
+                      <td className="py-3 text-[#3C6B4D] font-medium px-3">100% Client-Side Sandbox (No Outbound Packets)</td>
                     </tr>
                     <tr>
-                      <td className="py-3 font-semibold text-slate-200">File Size Limits</td>
+                      <td className="py-3 font-semibold text-[#ECEBE9]">File Size Limits</td>
                       <td className="py-3 px-3">Capped at 50MB - 100MB (forces paid upgrades)</td>
-                      <td className="py-3 text-emerald-300 font-medium px-3">Unlimited (limited only by device hardware)</td>
+                      <td className="py-3 text-[#3C6B4D] font-medium px-3">Unlimited (limited only by device hardware)</td>
                     </tr>
                     <tr>
-                      <td className="py-3 font-semibold text-slate-200">Pricing model</td>
+                      <td className="py-3 font-semibold text-[#ECEBE9]">Pricing model</td>
                       <td className="py-3 px-3">$15 - $50+ / month subscription tiers</td>
-                      <td className="py-3 text-emerald-300 font-medium px-3">100% Free & Open-Source (MIT License)</td>
+                      <td className="py-3 text-[#3C6B4D] font-medium px-3">100% Free & Open-Source (MIT License)</td>
                     </tr>
                     <tr>
-                      <td className="py-3 font-semibold text-slate-200">Offline Usability</td>
+                      <td className="py-3 font-semibold text-[#ECEBE9]">Offline Usability</td>
                       <td className="py-3 px-3">Requires active network connection</td>
-                      <td className="py-3 text-emerald-300 font-medium px-3">Works completely offline once cached</td>
+                      <td className="py-3 text-[#3C6B4D] font-medium px-3">Works completely offline once cached</td>
                     </tr>
                     <tr>
-                      <td className="py-3 font-semibold text-slate-200">Queue Times</td>
+                      <td className="py-3 font-semibold text-[#ECEBE9]">Queue Times</td>
                       <td className="py-3 px-3">Queued upload delays & cloud server queues</td>
-                      <td className="py-3 text-emerald-300 font-medium px-3">Instant compilation (WASM & CPU threads)</td>
+                      <td className="py-3 text-[#3C6B4D] font-medium px-3">Instant compilation (WASM & CPU threads)</td>
                     </tr>
                   </tbody>
                 </table>
@@ -958,145 +948,109 @@ export const Dashboard = () => {
             </div>
 
             {/* Enterprise Self-Hosting & Compliance */}
-            <div className="glass-card p-6 flex flex-col gap-4 bg-gradient-to-r from-indigo-950/25 via-slate-900/10 to-transparent border-indigo-500/20">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Shield size={20} className="text-indigo-400" />
+            <div className="glass-card p-6 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                <Shield size={20} className="text-[#3C6B4D]" />
                 <span>Enterprise Self-Hosting & Compliance</span>
               </h2>
-              <p className="text-slate-350 text-xs leading-relaxed">
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
                 Large corporations often block employees from uploading sensitive blueprints, customer datasets, or confidential contracts to external cloud utility webs. Since DomoDomo has <strong>zero server overhead</strong> and is licensed under the MIT permissive license, system administrators can deploy it on an internal private network domain (e.g. <code>toolbox.internal.company.com</code>). This guarantees employees have access to premium converters while ensuring zero outbound bytes traverse corporate firewalls.
               </p>
             </div>
 
-            {/* Redesigned & Expanded About Section details */}
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <CpuIcon size={20} className="text-[#4E8E5E]" />
+            {/* How DomoDomo Works Offline */}
+            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                <CpuIcon size={20} className="text-[#3C6B4D]" />
                 <span>How DomoDomo Works Offline</span>
               </h2>
               
               <div className="flex flex-col gap-4 text-xs">
                 <div className="flex gap-3 items-start">
-                  <div className="w-6 h-6 rounded-full bg-[#4E8E5E]/15 border border-[#4E8E5E]/30 text-[#4E8E5E] flex items-center justify-center font-bold shrink-0">1</div>
+                  <div className="w-6 h-6 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center font-bold shrink-0">1</div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-slate-200">Local File Blob Loading</span>
-                    <span className="text-slate-400 leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
+                    <span className="font-bold text-[#ECEBE9]">Local File Blob Loading</span>
+                    <span className="text-[#A3A09B] leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
                   </div>
                 </div>
 
-                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
-                  <div className="w-6 h-6 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold shrink-0">2</div>
+                <div className="flex gap-3 items-start border-t border-[#2A2D30] pt-3">
+                  <div className="w-6 h-6 rounded-full bg-[#E29E2D]/15 border border-[#E29E2D]/30 text-[#E29E2D] flex items-center justify-center font-bold shrink-0">2</div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-slate-200">Sandboxed CPU & GPU Execution</span>
-                    <span className="text-slate-400 leading-relaxed">High-performance algorithms (using WebAssembly, Canvas matrices, and local WebGPU frameworks) process the binary arrays inside your browser tab sandbox.</span>
+                    <span className="font-bold text-[#ECEBE9]">Sandboxed CPU & GPU Execution</span>
+                    <span className="text-[#A3A09B] leading-relaxed">High-performance algorithms (using WebAssembly, Canvas matrices, and local WebGPU frameworks) process the binary arrays inside your browser tab sandbox.</span>
                   </div>
                 </div>
 
-                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
-                  <div className="w-6 h-6 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center font-bold shrink-0">3</div>
+                <div className="flex gap-3 items-start border-t border-[#2A2D30] pt-3">
+                  <div className="w-6 h-6 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center font-bold shrink-0">3</div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-slate-200">Immediate Local Compilation</span>
-                    <span className="text-slate-400 leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-              </div>
-            </div>
-
-            {/* Redesigned & Expanded About Section details */}
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <CpuIcon size={20} className="text-[#4E8E5E]" />
-                <span>How DomoDomo Works Offline</span>
-              </h2>
-              
-              <div className="flex flex-col gap-4 text-xs">
-                <div className="flex gap-3 items-start">
-                  <div className="w-6 h-6 rounded-full bg-[#4E8E5E]/15 border border-[#4E8E5E]/30 text-[#4E8E5E] flex items-center justify-center font-bold shrink-0">1</div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-slate-200">Local File Blob Loading</span>
-                    <span className="text-slate-400 leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
-                  <div className="w-6 h-6 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold shrink-0">2</div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-slate-200">Sandboxed CPU & GPU Execution</span>
-                    <span className="text-slate-400 leading-relaxed">High-performance algorithms (using WebAssembly, Canvas matrices, and local WebGPU frameworks) process the binary arrays inside your browser tab sandbox.</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 items-start border-t border-slate-850/60 pt-3">
-                  <div className="w-6 h-6 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center font-bold shrink-0">3</div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-bold text-slate-200">Immediate Local Compilation</span>
-                    <span className="text-slate-400 leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
+                    <span className="font-bold text-[#ECEBE9]">Immediate Local Compilation</span>
+                    <span className="text-[#A3A09B] leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Developer FAQ Accordion */}
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <ShieldAlert size={20} className="text-[#4E8E5E]" />
+            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                <ShieldAlert size={20} className="text-[#3C6B4D]" />
                 <span>Frequently Asked Questions (FAQ)</span>
               </h2>
               
               <div className="flex flex-col gap-4 text-xs text-left">
-                <div className="flex flex-col gap-1 p-3 bg-slate-900/30 rounded-xl border border-slate-850">
-                  <span className="font-bold text-slate-200 text-sm">Is DomoDomo really free?</span>
-                  <span className="text-slate-400 leading-relaxed">Yes! DomoDomo is 100% free with no limits, no subscription plans, no premium paywalls, and no account registrations required.</span>
+                <div className="flex flex-col gap-1 p-3 bg-[#111213] rounded-xl border border-[#2A2D30]">
+                  <span className="font-bold text-[#ECEBE9] text-sm">Is DomoDomo really free?</span>
+                  <span className="text-[#A3A09B] leading-relaxed">Yes! DomoDomo is 100% free with no limits, no subscription plans, no premium paywalls, and no account registrations required.</span>
                 </div>
 
-                <div className="flex flex-col gap-1 p-3 bg-slate-900/30 rounded-xl border border-slate-850">
-                  <span className="font-bold text-slate-200 text-sm">How do I verify there are no data leaks?</span>
-                  <span className="text-slate-400 leading-relaxed">You can open your browser DevTools (F12), click the Network tab, and run any file converters or PDF editors. You will see that zero HTTP packets or uploads occur during processing.</span>
+                <div className="flex flex-col gap-1 p-3 bg-[#111213] rounded-xl border border-[#2A2D30]">
+                  <span className="font-bold text-[#ECEBE9] text-sm">How do I verify there are no data leaks?</span>
+                  <span className="text-[#A3A09B] leading-relaxed">You can open your browser DevTools (F12), click the Network tab, and run any file converters or PDF editors. You will see that zero HTTP packets or uploads occur during processing.</span>
                 </div>
 
-                <div className="flex flex-col gap-1 p-3 bg-slate-900/30 rounded-xl border border-slate-850">
-                  <span className="font-bold text-slate-200 text-sm">Will it work without an internet connection?</span>
-                  <span className="text-slate-400 leading-relaxed">Yes! Once the dashboard assets are loaded, you can disconnect your router or turn on Airplane mode. The WebAssembly and Canvas scripts run entirely offline in your browser.</span>
+                <div className="flex flex-col gap-1 p-3 bg-[#111213] rounded-xl border border-[#2A2D30]">
+                  <span className="font-bold text-[#ECEBE9] text-sm">Will it work without an internet connection?</span>
+                  <span className="text-[#A3A09B] leading-relaxed">Yes! Once the dashboard assets are loaded, you can disconnect your router or turn on Airplane mode. The WebAssembly and Canvas scripts run entirely offline in your browser.</span>
                 </div>
               </div>
             </div>
 
             {/* Local Installation Guide from README */}
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Terminal size={20} className="text-[#4E8E5E]" />
+            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                <Terminal size={20} className="text-[#3C6B4D]" />
                 <span>Local Installation Guide</span>
               </h2>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
                 Get DomoDomo running fully offline on your own machine in less than 2 minutes:
               </p>
               
-              <div className="flex flex-col gap-3 font-mono text-[11px] bg-slate-950 p-4 rounded-xl border border-slate-850 text-slate-300">
+              <div className="flex flex-col gap-3 font-mono text-[11px] bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-slate-350">
                 <div>
-                  <span className="text-slate-500"># 1. Clone the repository</span>
-                  <div className="text-emerald-400">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git</div>
-                  <div className="text-emerald-400">cd DomoDomo---All-in-one-Tool</div>
+                  <span className="text-[#72706C]"># 1. Clone the repository</span>
+                  <div className="text-[#3C6B4D]">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git</div>
+                  <div className="text-[#3C6B4D]">cd DomoDomo---All-in-one-Tool</div>
                 </div>
 
-                <div className="border-t border-slate-900 pt-2">
-                  <span className="text-slate-500"># 2. Install dependencies</span>
-                  <div className="text-emerald-400">npm install</div>
+                <div className="border-t border-[#2A2D30] pt-2">
+                  <span className="text-[#72706C]"># 2. Install dependencies</span>
+                  <div className="text-[#3C6B4D]">npm install</div>
                 </div>
 
-                <div className="border-t border-slate-900 pt-2">
-                  <span className="text-slate-500"># 3. Start development server</span>
-                  <div className="text-emerald-400">npm run dev</div>
+                <div className="border-t border-[#2A2D30] pt-2">
+                  <span className="text-[#72706C]"># 3. Start development server</span>
+                  <div className="text-[#3C6B4D]">npm run dev</div>
                 </div>
 
-                <div className="border-t border-slate-900 pt-2">
-                  <span className="text-slate-500"># 4. Build production bundle</span>
-                  <div className="text-emerald-400">npm run build</div>
+                <div className="border-t border-[#2A2D30] pt-2">
+                  <span className="text-[#72706C]"># 4. Build production bundle</span>
+                  <div className="text-[#3C6B4D]">npm run build</div>
                 </div>
               </div>
 
-              <div className="text-[10px] text-slate-500 flex justify-between border-t border-slate-850/60 pt-3">
+              <div className="text-[10px] text-[#72706C] flex justify-between border-t border-[#2A2D30] pt-3">
                 <span>License: MIT Permissive License</span>
                 <span>Version: 1.0.0</span>
               </div>
@@ -1105,26 +1059,26 @@ export const Dashboard = () => {
 
           {/* Color swatches */}
           <div className="lg:col-span-4 flex flex-col gap-6">
-            <div className="glass-card p-6 flex flex-col gap-5">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+            <div className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
+              <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
                 <span>Domo Brandkit</span>
               </h2>
               <div className="flex flex-col gap-4">
                 {Object.entries(BRAND_KIT.colors).map(([key, col]) => (
-                  <div key={key} className="flex items-center justify-between bg-slate-900/40 p-3 rounded-xl border border-slate-850">
+                  <div key={key} className="flex items-center justify-between bg-[#111213] p-3 rounded-xl border border-[#2A2D30]">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded border border-slate-700 shadow-inner" style={{ backgroundColor: col.hex }} />
+                      <div className="w-8 h-8 rounded border border-[#2A2D30] shadow-inner" style={{ backgroundColor: col.hex }} />
                       <div className="flex flex-col">
-                        <span className="text-xs font-bold text-slate-200">{col.name}</span>
-                        <span className="text-[10px] text-slate-500 font-mono">{col.hex}</span>
+                        <span className="text-xs font-bold text-[#ECEBE9]">{col.name}</span>
+                        <span className="text-[10px] text-[#72706C] font-mono">{col.hex}</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleCopyColor(col.hex)}
-                      className="p-1.5 bg-slate-950/60 rounded-lg hover:bg-slate-850 transition-colors text-slate-400 hover:text-white"
+                      className="p-1.5 bg-[#18191B] rounded-lg hover:bg-[#1E2022] border border-[#2A2D30] transition-colors text-[#A3A09B] hover:text-[#ECEBE9]"
                       title="Copy Hex"
                     >
-                      {copiedColor === col.hex ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                      {copiedColor === col.hex ? <Check size={14} className="text-[#3C6B4D]" /> : <Copy size={14} />}
                     </button>
                   </div>
                 ))}
@@ -1133,33 +1087,33 @@ export const Dashboard = () => {
           </div>
         </div>
       ) : activeCategory === 'ai' && (!isLocal || !hasOllama) ? (
-        <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+        <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto border-[#2A2D30] bg-[#18191B]">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl">
+              <div className="p-3 bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] rounded-xl">
                 <ShieldAlert size={24} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white font-sans tracking-tight">Local AI Offline Setup Required</h2>
-                <p className="text-slate-400 text-xs mt-1">To run fully private models client-side, some configuration is required.</p>
+                <h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">Local AI Offline Setup Required</h2>
+                <p className="text-[#A3A09B] text-xs mt-1">To run fully private models client-side, some configuration is required.</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-[11px] text-slate-400 font-mono">
-              <span className={`w-2 h-2 rounded-full ${!isLocal ? 'bg-rose-500' : 'bg-amber-500 animate-pulse'}`}></span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] text-[11px] text-[#A3A09B] font-mono">
+              <span className={`w-2 h-2 rounded-full ${!isLocal ? 'bg-rose-500' : 'bg-[#E29E2D] animate-pulse'}`}></span>
               <span>{!isLocal ? 'Online Mode (Restricted)' : 'Local Mode (Ollama Offline)'}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
             <div className="flex flex-col gap-4">
-              <h3 className="font-bold text-slate-250 text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-xs font-mono">1</span>
+              <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">1</span>
                 <span>Host DomoDomo Locally</span>
               </h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Due to browser security protocols (CORS & Mixed Content), websites loaded over <code className="text-teal-400 font-mono">https://</code> cannot communicate with your local machine's ports. DomoDomo must be run locally:
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
+                Due to browser security protocols (CORS & Mixed Content), websites loaded over <code className="text-[#3C6B4D] font-mono">https://</code> cannot communicate with your local machine's ports. DomoDomo must be run locally:
               </p>
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-[11px] text-slate-300 relative group">
+              <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">
 {`git clone https://github.com/darknecrocities/DomoDomo.git
 cd DomoDomo
@@ -1170,14 +1124,14 @@ npm run dev`}
             </div>
 
             <div className="flex flex-col gap-4">
-              <h3 className="font-bold text-slate-250 text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-xs font-mono">2</span>
+              <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">2</span>
                 <span>Install & Start Ollama</span>
               </h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <p className="text-[#A3A09B] text-xs leading-relaxed">
                 Ollama runs LLMs locally on your own machine. Install Ollama and run a model of your choice:
               </p>
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-900 font-mono text-[11px] text-slate-300 relative group">
+              <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">
 {`# 1. Install Ollama from ollama.com
 # 2. Run your preferred model:
@@ -1187,31 +1141,31 @@ ollama run llama3`}
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-slate-800/65 pt-6 mt-2">
-            <h3 className="font-bold text-slate-250 text-sm flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center text-xs font-mono">3</span>
+          <div className="flex flex-col gap-4 border-t border-[#2A2D30] pt-6 mt-2">
+            <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">3</span>
               <span>Enable Browser CORS Access</span>
             </h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
-              Ollama blocks browser access by default. You must configure the environment variable <code className="text-teal-400 font-mono">OLLAMA_ORIGINS="*"</code> before starting the application:
+            <p className="text-[#A3A09B] text-xs leading-relaxed">
+              Ollama blocks browser access by default. You must configure the environment variable <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> before starting the application:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-900/40 border border-slate-850 p-3.5 rounded-xl">
-                <span className="text-indigo-400 font-bold text-[11px] uppercase tracking-wider">macOS</span>
-                <pre className="text-[10px] text-slate-400 font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
+              <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
+                <span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">macOS</span>
+                <pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
 {`launchctl setenv OLLAMA_ORIGINS "*"`}
                 </pre>
-                <p className="text-[9px] text-slate-500 mt-2">Restart the Ollama application afterward.</p>
+                <p className="text-[9px] text-[#72706C] mt-2">Restart the Ollama application afterward.</p>
               </div>
-              <div className="bg-slate-900/40 border border-slate-850 p-3.5 rounded-xl">
-                <span className="text-indigo-400 font-bold text-[11px] uppercase tracking-wider">Windows</span>
-                <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
-                  Add <code className="text-teal-400">OLLAMA_ORIGINS</code> with value <code className="text-teal-400">*</code> to System Environment Variables, then restart Ollama from the tray.
+              <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
+                <span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">Windows</span>
+                <p className="text-[10px] text-[#A3A09B] mt-1 leading-relaxed">
+                  Add <code className="text-[#3C6B4D]">OLLAMA_ORIGINS</code> with value <code className="text-[#3C6B4D]">*</code> to System Environment Variables, then restart Ollama from the tray.
                 </p>
               </div>
-              <div className="bg-slate-900/40 border border-slate-850 p-3.5 rounded-xl">
-                <span className="text-indigo-400 font-bold text-[11px] uppercase tracking-wider">Linux</span>
-                <pre className="text-[10px] text-slate-400 font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
+              <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
+                <span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">Linux</span>
+                <pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
 {`systemctl edit ollama.service
 # Add:
 # [Service]
@@ -1221,14 +1175,14 @@ ollama run llama3`}
             </div>
           </div>
 
-          <div className="bg-[#151C2C]/50 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 mt-2">
+          <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4 mt-2">
             <div className="flex items-center gap-3 self-start sm:self-center">
-              <div className="animate-spin text-teal-400">
+              <div className="animate-spin text-[#3C6B4D]">
                 <Cpu size={18} />
               </div>
               <div className="text-left">
-                <span className="text-xs font-bold text-slate-250 block">Checking connection status...</span>
-                <span className="text-[10px] text-slate-500 block">Pinging http://localhost:11434/api/tags every 5s</span>
+                <span className="text-xs font-bold text-[#ECEBE9] block">Checking connection status...</span>
+                <span className="text-[10px] text-[#72706C] block">Pinging http://localhost:11434/api/tags every 5s</span>
               </div>
             </div>
             <button 
@@ -1243,46 +1197,43 @@ ollama run llama3`}
           </div>
         </div>
       ) : activeCategory === 'ai' && ollamaModels.length === 0 ? (
-        (() => {
-          const hardware = aiService.getHardwareRecommendation();
-          return (
-            <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
+        <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B]">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-2xl">
+                  <div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
                     <Cpu size={24} className={downloadingModel ? "animate-spin" : ""} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white font-sans tracking-tight">Local Ollama Model Downloader</h2>
-                    <p className="text-slate-400 text-xs mt-1">Ollama is active, but no models are installed. Download one below to begin.</p>
+                    <h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">Local Ollama Model Downloader</h2>
+                    <p className="text-[#A3A09B] text-xs mt-1">Ollama is active, but no models are installed. Download one below to begin.</p>
                   </div>
                 </div>
               </div>
 
               {/* Hardware Specs Panel */}
-              <div className="bg-slate-950/60 border border-slate-850 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] text-slate-500 uppercase font-semibold tracking-wider">Detected System Specifications</span>
-                  <div className="flex flex-wrap gap-4 text-xs font-semibold text-slate-300 mt-0.5">
+                  <span className="text-[10px] text-[#72706C] uppercase font-semibold tracking-wider">Detected System Specifications</span>
+                  <div className="flex flex-wrap gap-4 text-xs font-semibold text-[#A3A09B] mt-0.5">
                     <div className="flex items-center gap-1">
-                      <span className="text-slate-500">RAM:</span>
-                      <span className="text-teal-400">{hardware.ram}</span>
+                      <span className="text-[#72706C]">RAM:</span>
+                      <span className="text-[#3C6B4D]">{hardware.ram}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-slate-500">Cores:</span>
-                      <span className="text-teal-400">{hardware.cores} threads</span>
+                      <span className="text-[#72706C]">Cores:</span>
+                      <span className="text-[#3C6B4D]">{hardware.cores} threads</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-slate-500">WebGPU:</span>
-                      <span className={hardware.hasWebGPU ? "text-emerald-400" : "text-amber-500"}>
+                      <span className="text-[#72706C]">WebGPU:</span>
+                      <span className={hardware.hasWebGPU ? "text-[#3C6B4D]" : "text-[#E29E2D]"}>
                         {hardware.hasWebGPU ? "Supported" : "Not supported"}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="bg-[#4E8E5E]/10 border border-[#4E8E5E]/20 p-3.5 rounded-xl max-w-sm">
-                  <span className="text-[#4E8E5E] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
-                  <p className="text-slate-355 text-[11px] leading-relaxed mt-1">
+                <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
+                  <span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
+                  <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
                     Based on your specs, we recommend running <strong className="text-white font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
                   </p>
                 </div>
@@ -1290,24 +1241,23 @@ ollama run llama3`}
 
               {/* Models list */}
               <div className="flex flex-col gap-4">
-                <h3 className="font-bold text-slate-200 text-sm">Select a model to download directly via Ollama:</h3>
-                
+                <h3 className="font-bold text-[#ECEBE9] text-sm">Select a model to download directly:</h3>
                 {downloadingModel && (
-                  <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col gap-3">
+                  <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col gap-3">
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-teal-400 flex items-center gap-2">
-                        <span className="animate-spin w-3 h-3 border-2 border-teal-500 border-t-transparent rounded-full"></span>
+                      <span className="text-[#3C6B4D] flex items-center gap-2">
+                        <span className="animate-spin w-3 h-3 border-2 border-[#3C6B4D] border-t-transparent rounded-full"></span>
                         <span>Downloading {downloadingModel}...</span>
                       </span>
-                      <span className="text-slate-300">{downloadProgress}%</span>
+                      <span className="text-[#ECEBE9]">{downloadProgress}%</span>
                     </div>
-                    <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-855">
+                    <div className="w-full bg-[#18191B] rounded-full h-2 overflow-hidden border border-[#2A2D30]">
                       <div 
-                        className="bg-gradient-to-r from-teal-500 to-indigo-600 h-full transition-all duration-300"
+                        className="bg-[#3C6B4D] h-full transition-all duration-300"
                         style={{ width: `${downloadProgress}%` }}
                       />
                     </div>
-                    <span className="text-[10px] font-mono text-slate-450">{downloadStatus}</span>
+                    <span className="text-[10px] font-mono text-[#72706C]">{downloadStatus}</span>
                   </div>
                 )}
 
@@ -1329,27 +1279,27 @@ ollama run llama3`}
                     return (
                       <div 
                         key={model.name}
-                        className={`bg-slate-900/40 border p-5 rounded-2xl flex flex-col justify-between gap-4 transition-all relative ${
-                          isRecommended ? 'border-teal-500/40 bg-teal-950/5' : 'border-slate-850 hover:border-slate-800'
+                        className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${
+                          isRecommended ? 'border-[#3C6B4D]/40 bg-[#3C6B4D]/5' : 'border-[#2A2D30] hover:border-[#2E533B]/40'
                         }`}
                       >
                         {isRecommended && (
-                          <span className="absolute -top-2.5 right-4 bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
+                          <span className="absolute -top-2.5 right-4 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
                             Recommended
                           </span>
                         )}
                         <div className="flex flex-col gap-1 text-left">
-                          <span className="font-bold text-slate-200 text-sm block font-mono">{model.name}</span>
-                          <span className="text-[10px] text-slate-500 block font-semibold">Download Size: {model.size}</span>
-                          <p className="text-slate-400 text-[11px] leading-relaxed mt-2">{model.desc}</p>
+                          <span className="font-bold text-[#ECEBE9] text-sm block font-mono">{model.name}</span>
+                          <span className="text-[10px] text-[#72706C] block font-semibold">Download Size: {model.size}</span>
+                          <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-2">{model.desc}</p>
                         </div>
                         <button
                           onClick={() => handlePullModel(model.name)}
                           disabled={!!downloadingModel}
-                          className={`w-full py-2 rounded-xl text-xs font-bold transition-all ${
+                          className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${
                             isRecommended 
-                              ? 'bg-teal-500 text-slate-950 hover:bg-teal-400 disabled:opacity-40' 
-                              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-40'
+                              ? 'bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] disabled:opacity-40' 
+                              : 'bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#A3A09B] disabled:opacity-40'
                           }`}
                         >
                           {downloadingModel === model.name ? 'Downloading...' : 'Install Model'}
@@ -1360,25 +1310,20 @@ ollama run llama3`}
                 </div>
               </div>
             </div>
-          );
-        })()
-      ) : (
+          ) : (
         <div className="flex flex-col gap-6 w-full text-left">
           {activeCategory === 'ai' && (
-            (() => {
-              const hardware = aiService.getHardwareRecommendation();
-              return (
-                <div className="glass-card p-5 flex flex-col gap-4 bg-[#151C2C]/30 border-slate-850">
+            <div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-xl">
+                      <div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
                         <Cpu size={18} />
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold">Active LLM Model</span>
+                        <span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">Active LLM Model</span>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-sm font-bold text-slate-200 font-mono">{selectedOllamaModel || 'None'}</span>
-                          <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold uppercase tracking-wider">
+                          <span className="text-sm font-bold text-[#ECEBE9] font-mono">{selectedOllamaModel || 'None'}</span>
+                          <span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
                             Ollama Active
                           </span>
                         </div>
@@ -1392,7 +1337,7 @@ ollama run llama3`}
                           setSelectedOllamaModel(e.target.value);
                           aiService.setSelectedOllamaModel(e.target.value);
                         }}
-                        className="bg-slate-950/80 text-slate-250 border border-slate-800 rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-teal-500 w-full md:w-56"
+                        className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
                       >
                         {ollamaModels.map(m => (
                           <option key={m} value={m}>{m}</option>
@@ -1410,27 +1355,27 @@ ollama run llama3`}
                   </div>
 
                   {showManageModels && (
-                    <div className="border-t border-slate-800/80 pt-5 mt-2 flex flex-col gap-4">
-                      <div className="bg-slate-950/40 p-4 rounded-xl border border-slate-850 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div className="border-t border-[#2A2D30] pt-5 mt-2 flex flex-col gap-4">
+                      <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div>
-                          <span className="text-[10px] text-slate-500 uppercase font-semibold block">Hardware Recommendation System</span>
-                          <span className="text-xs text-slate-350 block mt-1">
-                            System RAM: <strong className="text-teal-400">{hardware.ram}</strong> | CPU Cores: <strong className="text-teal-400">{hardware.cores}</strong>
+                          <span className="text-[10px] text-[#72706C] uppercase font-semibold block">Hardware Recommendation System</span>
+                          <span className="text-xs text-[#A3A09B] block mt-1">
+                            System RAM: <strong className="text-[#3C6B4D]">{hardware.ram}</strong> | CPU Cores: <strong className="text-[#3C6B4D]">{hardware.cores}</strong>
                           </span>
                         </div>
-                        <div className="text-xs text-slate-400 max-w-md bg-slate-900/60 p-2.5 rounded-lg border border-slate-850">
+                        <div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
                           We recommend <strong className="text-white font-mono">{hardware.recommendedModel}</strong> for your hardware.
                         </div>
                       </div>
 
                       {downloadingModel && (
-                        <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl flex flex-col gap-2">
+                        <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
                           <div className="flex justify-between items-center text-xs font-semibold">
-                            <span className="text-teal-400">Downloading {downloadingModel}...</span>
+                            <span className="text-[#3C6B4D]">Downloading {downloadingModel}...</span>
                             <span>{downloadProgress}%</span>
                           </div>
-                          <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                            <div className="bg-teal-500 h-full" style={{ width: `${downloadProgress}%` }} />
+                          <div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
+                            <div className="bg-[#3C6B4D] h-full" style={{ width: `${downloadProgress}%` }} />
                           </div>
                         </div>
                       )}
@@ -1451,18 +1396,18 @@ ollama run llama3`}
                         ].map((m) => {
                           const alreadyInstalled = ollamaModels.includes(m.name);
                           return (
-                            <div key={m.name} className="bg-slate-950/80 border border-slate-850/85 p-3 rounded-xl flex flex-col justify-between gap-3">
+                            <div key={m.name} className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl flex flex-col justify-between gap-3">
                               <div className="text-left">
-                                <span className="text-[11px] font-bold text-slate-200 block font-mono truncate">{m.name}</span>
-                                <span className="text-[9px] text-slate-500 block font-semibold mt-0.5">{m.size}</span>
+                                <span className="text-[11px] font-bold text-[#ECEBE9] block font-mono truncate">{m.name}</span>
+                                <span className="text-[9px] text-[#72706C] block font-semibold mt-0.5">{m.size}</span>
                               </div>
                               <button
                                 onClick={() => handlePullModel(m.name)}
                                 disabled={alreadyInstalled || !!downloadingModel}
                                 className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${
                                   alreadyInstalled
-                                    ? 'bg-slate-900 text-slate-500 cursor-default border border-slate-850'
-                                    : 'bg-teal-500/10 text-teal-400 border border-teal-500/20 hover:bg-teal-500/20'
+                                    ? 'bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]'
+                                    : 'bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20'
                                 }`}
                               >
                                 {alreadyInstalled ? 'Installed' : downloadingModel === m.name ? 'Downloading' : 'Download'}
@@ -1474,9 +1419,7 @@ ollama run llama3`}
                     </div>
                   )}
                 </div>
-              );
-            })()
-          )}
+              )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTools.slice(0, activeCategory === 'all' ? visibleCount : undefined).map((tool) => {
             const isReady = tool.status === 'functional';
@@ -1486,64 +1429,59 @@ ollama run llama3`}
                 onClick={() => isReady && navigate(`/tool/${tool.id}`)}
                 className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
                   isReady
-                    ? 'cursor-pointer glass-card-hover border-slate-800/80'
-                    : 'opacity-50 border-dashed border-slate-850 select-none'
-                }`}
+                    ? 'cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50 hover:bg-[#1C1D1F] hover:-translate-y-0.5'
+                    : 'opacity-50 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
+                } transition-all duration-200`}
               >
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-start">
-                    <div className={`p-3 rounded-2xl border ${
+                    <div className={`p-3 rounded-xl border ${
                       isReady 
-                        ? 'bg-green-500/15 border-green-500/30 text-green-400 group-hover:scale-105 transition-transform' 
-                        : 'bg-slate-900 border-slate-850 text-slate-500'
+                        ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform' 
+                        : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
                     }`}>
                       <DynamicIcon name={tool.icon} size={22} />
                     </div>
                     {isReady ? (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
                         Ready
                       </span>
                     ) : (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-slate-800 text-slate-500">
+                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
                         Planned
                       </span>
                     )}
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <h3 className="font-bold text-lg text-slate-250 group-hover:text-white transition-colors">
+                    <h3 className="font-bold text-lg text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors">
                       {tool.name}
                     </h3>
-                    <p className="text-slate-400 text-xs leading-relaxed">
+                    <p className="text-[#A3A09B] text-xs leading-relaxed">
                       {tool.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Footer badges */}
-                <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-800/60">
-                  <span className="text-[10px] uppercase font-semibold tracking-wider text-slate-500">
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
+                  <span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
                     {tool.category} Tool
                   </span>
                   
                   {isReady && (
-                    <span className="text-xs font-semibold text-green-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                    <span className="text-xs font-semibold text-[#3C6B4D] group-hover:translate-x-1 transition-transform flex items-center gap-1">
                       <span>Open</span>
                       <span>→</span>
                     </span>
                   )}
                 </div>
-
-                {/* Background gradient highlights for active items */}
-                {isReady && (
-                  <div className="absolute -right-12 -bottom-12 w-24 h-24 bg-green-500/5 rounded-full blur-2xl group-hover:bg-green-500/10 transition-colors" />
-                )}
               </div>
             );
             })}
 
             {filteredTools.length === 0 && (
-              <div className="col-span-full py-16 flex flex-col items-center justify-center text-slate-500 gap-2">
+              <div className="col-span-full py-16 flex flex-col items-center justify-center text-[#72706C] gap-2">
                 <Cpu size={32} className="opacity-40 animate-pulse" />
                 <p className="text-sm">No local tools matched your selection.</p>
               </div>
@@ -1551,12 +1489,12 @@ ollama run llama3`}
           </div>
           {activeCategory === 'all' && filteredTools.length > visibleCount && (
             <div className="flex flex-col items-center gap-3 mt-8 pb-10 w-full">
-              <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+              <div className="text-xs text-[#72706C] font-bold uppercase tracking-wider">
                 Showing 12 of {filteredTools.length} total utilities
               </div>
               <button
                 onClick={() => setVisibleCount(filteredTools.length)}
-                className="group px-8 py-4 bg-gradient-to-r from-[#4E8E5E] to-emerald-500 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+                className="btn-primary group px-8 py-3.5 hover:scale-[1.01] transition-all flex items-center gap-2"
               >
                 <span>Reveal All {filteredTools.length} Tools</span>
                 <ChevronDown size={18} className="group-hover:translate-y-0.5 transition-transform" />

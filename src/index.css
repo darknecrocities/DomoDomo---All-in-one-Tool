@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,69 +6,73 @@
 
 @layer base {
   body {
-    @apply bg-[#0B0F19] text-[#E2E8F0] font-sans antialiased overflow-x-hidden;
+    @apply bg-[#111213] text-[#ECEBE9] font-sans antialiased overflow-x-hidden;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(78, 142, 94, 0.08) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(78, 142, 94, 0.04) 0px, transparent 50%);
+      radial-gradient(at 50% 0%, rgba(60, 107, 77, 0.05) 0px, transparent 60%);
     background-attachment: fixed;
   }
 
-  /* Custom Scrollbars */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+
+  /* Custom Workshop Scrollbars */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.5);
+    background: #111213;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(51, 65, 85, 0.8);
-    border-radius: 4px;
+    background: #2A2D30;
+    border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(78, 142, 94, 0.6);
+    background: #3C6B4D;
   }
 }
 
 @layer components {
+  /* Premium tactile cards replacing transparent glassmorphism */
   .glass-card {
-    @apply bg-[#151C2C]/60 backdrop-blur-md border border-slate-800/80 rounded-2xl transition-all duration-300;
+    @apply bg-[#18191B] border border-[#2A2D30] rounded-card transition-all duration-200 shadow-sm shadow-black/10;
   }
 
   .glass-card-hover {
-    @apply hover:border-emerald-500/30 hover:bg-[#151C2C]/80 hover:shadow-[0_0_30px_-5px_rgba(78,142,94,0.15)] hover:-translate-y-0.5;
+    @apply hover:border-[#3C6B4D]/40 hover:bg-[#1B1D1F] hover:shadow-md hover:shadow-black/20 hover:-translate-y-0.5;
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-[#4E8E5E] to-[#3D7349] hover:from-[#5aa36d] hover:to-[#468253] text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-green-950/20 transition-all duration-300 hover:shadow-green-500/10 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2;
+    @apply bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] font-semibold py-2 px-4 rounded-xl border border-[#4a845f]/20 shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
   .btn-secondary {
-    @apply bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/60 font-semibold py-2.5 px-5 rounded-xl transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2;
+    @apply bg-[#1E2022] hover:bg-[#25282B] text-[#A3A09B] border border-[#2A2D30] font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
+  /* Retained for backward compatibility/utilities */
   .btn-indigo {
-    @apply bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-300 hover:shadow-indigo-500/30 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2;
+    @apply bg-[#1E2022] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
   .glow-text-teal {
-    text-shadow: 0 0 20px rgba(78, 142, 94, 0.4);
+    @apply text-[#3C6B4D] font-bold;
   }
   
   .glow-text-indigo {
-    text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    @apply text-[#E29E2D] font-bold;
   }
 }
 
-/* Animations */
+/* Minimalist slow animation loop */
 @keyframes pulse-slow {
-  0%, 100% { opacity: 0.4; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 0.8; }
 }
 
 .animate-pulse-slow {
-  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse-slow 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes marquee {
@@ -79,7 +83,7 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 30s linear infinite;
+  animation: marquee 35s linear infinite;
 }
 
 .animate-marquee:hover {

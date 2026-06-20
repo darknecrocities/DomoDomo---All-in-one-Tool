@@ -7,20 +7,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0B0F19',
-        card: '#151C2C',
+        background: '#111213',
+        card: '#18191B',
         primary: {
-          DEFAULT: '#4E8E5E', // Domo Green
-          hover: '#3D7349',
+          DEFAULT: '#3C6B4D', // Forest Jade
+          hover: '#2E533B',
         },
         secondary: {
-          DEFAULT: '#6366f1', // Indigo
-          hover: '#4f46e5',
+          DEFAULT: '#E29E2D', // Amber accent
+          hover: '#C28420',
         },
-        accent: '#f43f5e', // Rose
+        accent: '#F59E0B',
+      },
+      borderRadius: {
+        card: '24px',
       },
       fontFamily: {
-        sans: ['Outfit', 'Inter', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Sora', 'Space Grotesk', 'sans-serif'],
       },
     },
   },
