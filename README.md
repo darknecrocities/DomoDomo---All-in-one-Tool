@@ -23,7 +23,7 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 ### Core Stack
 - **Framework**: [React 19](https://react.dev/) + [Vite](https://vite.dev/) (For ultra-fast Hot Module Replacement and bundler efficiency)
 - **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict type safety)
-- **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) (Fluid utilities matching the custom Panda Green theme)
+- **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) (Fluid utilities matching the custom Domo Green theme)
 - **Icons**: [Lucide React](https://lucide.dev/) (Scalable vector icons)
 
 ### Processing & Acceleration Libraries

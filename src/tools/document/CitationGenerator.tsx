@@ -10,7 +10,7 @@ export const CitationGeneratorTool = () => {
   const [author, setAuthor] = useState('Parejas, Arron');
   const [title, setTitle] = useState('DomoDomo Project Local Architecture');
   const [year, setYear] = useState('2026');
-  const [publisher, setPublisher] = useState('Panda Tech Labs');
+  const [publisher, setPublisher] = useState('Domo Tech Labs');
   const [journal, setJournal] = useState('Journal of Offline Utility Research');
   const [volume, setVolume] = useState('14');
   const [issue, setIssue] = useState('3');

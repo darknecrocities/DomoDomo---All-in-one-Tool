@@ -5,7 +5,7 @@ export const BRAND_KIT = {
   
   colors: {
     primary: {
-      name: 'Panda Green',
+      name: 'Domo Green',
       hex: '#4E8E5E',
       rgb: 'rgb(78, 142, 94)',
       role: 'Action buttons, status highlights, main branding headers.'
@@ -41,5 +41,5 @@ export const BRAND_KIT = {
     secondary: 'Inter (High-readability sans-serif for body, inputs, and UI details)'
   },
 
-  logoUsage: 'Panda Avatar SVG with forest green backdrop, white silhouette, and round bamboo green eyes.'
+  logoUsage: 'Domo Avatar SVG with forest green backdrop, white silhouette, and round bamboo green eyes.'
 };

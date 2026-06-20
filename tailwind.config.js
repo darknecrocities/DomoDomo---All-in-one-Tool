@@ -10,7 +10,7 @@ export default {
         background: '#0B0F19',
         card: '#151C2C',
         primary: {
-          DEFAULT: '#4E8E5E', // Panda Green
+          DEFAULT: '#4E8E5E', // Domo Green
           hover: '#3D7349',
         },
         secondary: {

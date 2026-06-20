@@ -129,7 +129,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', status: 'functional' },
 
   // AI Tools (10)
-  { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat offline with local Panda assistant.', icon: 'Hammer', status: 'functional' },
+  { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat offline with local Domo assistant.', icon: 'Hammer', status: 'functional' },
   { id: 'ai-summarizer', name: 'Summarizer', category: 'ai', description: 'Summarize text documents using local parsing.', icon: 'Hammer', status: 'functional' },
   { id: 'caption-gen', name: 'Caption Generator', category: 'ai', description: 'Generate descriptive image captions.', icon: 'Hammer', status: 'functional' },
   { id: 'ocr-assistant', name: 'OCR Assistant', category: 'ai', description: 'Format OCR results into clean layouts.', icon: 'Hammer', status: 'functional' },
@@ -462,7 +462,7 @@ export const Dashboard = () => {
         <div className="absolute left-1/3 bottom-0 w-60 h-60 bg-green-500/5 rounded-full blur-[80px] pointer-events-none" />
       </div>
 
-      {/* Meet Panda: Your Local-First Privacy Companion */}
+      {/* Meet Domo: Your Local-First Privacy Companion */}
       <div className="glass-card p-8 border-[#4E8E5E]/20 bg-gradient-to-br from-[#151C2C]/80 via-[#11241B]/40 to-slate-950/60 text-left relative overflow-hidden group shadow-2xl">
         <div className="absolute right-0 top-0 w-96 h-96 bg-green-500/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute -left-12 -bottom-12 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
@@ -476,7 +476,7 @@ export const Dashboard = () => {
             <div className="flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold uppercase tracking-wider">
                 <Sparkles size={12} />
-                Meet Panda
+                Meet Domo
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 text-[11px] font-bold uppercase tracking-wider">
                 Zero Cloud Tracking
@@ -484,28 +484,34 @@ export const Dashboard = () => {
             </div>
             
             <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
-              Panda: Your Local-First <br className="hidden sm:inline" />
+              Domo: Your Local-First <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent">
                 Privacy Guardian & AI Companion
               </span>
             </h2>
             
             <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-              Behind DomoDomo is Panda, our friendly privacy mascot and locally running AI engine. Panda represents our ironclad commitment to user privacy. By running highly optimized transformer models, WebAssembly algorithms, and speech recognizers completely inside your browser, Panda ensures your credentials, document data, and image files are never sent to external servers or used for data training.
+              Behind DomoDomo is <strong>Domo</strong>, our friendly privacy mascot and locally running AI engine. Domo represents our ironclad, non-negotiable commitment to absolute user privacy. By utilizing highly optimized local neural architectures, WebAssembly (WASM) compiler runtimes, and hardware-accelerated WebGPU browser engines directly on your device, Domo guarantees that your sensitive credentials, document databases, image assets, and voice captures never leave your machine. Everything executes client-side inside a secure, sandbox-isolated container with zero outbound telemetry, trackers, or cookies.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
-              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
+              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl hover:border-emerald-500/30 transition-all duration-300">
                 <div className="text-emerald-400 font-bold text-sm mb-1">100% Leak-Free AI</div>
-                <div className="text-[11px] text-slate-400">Privacy-first local language translation, semantic searches, and OCR text extraction.</div>
+                <div className="text-[11px] text-slate-400 leading-relaxed">
+                  Run privacy-first local language translation, semantic searches, text summarization, and OCR extraction. Everything remains fully local on your device.
+                </div>
               </div>
-              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
+              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl hover:border-emerald-500/30 transition-all duration-300">
                 <div className="text-emerald-400 font-bold text-sm mb-1">No Cloud Leakage</div>
-                <div className="text-[11px] text-slate-400">Zero data collection, logs, trackers, or cookie tracking. What is local stays local.</div>
+                <div className="text-[11px] text-slate-400 leading-relaxed">
+                  Zero data collection, analytics tracking, log dumping, or profiling cookies. What is processed locally stays offline, completely hidden from third-party servers.
+                </div>
               </div>
-              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl">
+              <div className="bg-[#151C2C]/40 border border-slate-850 p-4 rounded-xl hover:border-emerald-500/30 transition-all duration-300">
                 <div className="text-emerald-400 font-bold text-sm mb-1">GPU Accelerated</div>
-                <div className="text-[11px] text-slate-400">Leverages native WebGPU/WASM to run tasks at near-native speeds in-browser.</div>
+                <div className="text-[11px] text-slate-400 leading-relaxed">
+                  Leverages native in-browser WebGPU and WebAssembly instructions to run demanding models at near-native execution speeds without server latencies.
+                </div>
               </div>
             </div>
           </div>
@@ -1101,7 +1107,7 @@ export const Dashboard = () => {
           <div className="lg:col-span-4 flex flex-col gap-6">
             <div className="glass-card p-6 flex flex-col gap-5">
               <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-                <span>Panda Brandkit</span>
+                <span>Domo Brandkit</span>
               </h2>
               <div className="flex flex-col gap-4">
                 {Object.entries(BRAND_KIT.colors).map(([key, col]) => (

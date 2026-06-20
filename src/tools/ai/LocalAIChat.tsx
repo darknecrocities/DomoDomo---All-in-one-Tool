@@ -9,7 +9,7 @@ interface Message {
 
 export const LocalAIChatTool = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { sender: 'ai', text: 'Hello! I am Panda, your offline AI Assistant powered by local Ollama. Ask me anything!' }
+    { sender: 'ai', text: 'Hello! I am Domo, your offline AI Assistant powered by local Ollama. Ask me anything!' }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ export const LocalAIChatTool = () => {
     setStatusMsg('Generating response...');
 
     try {
-      const prompt = `You are Panda, a helpful offline AI Assistant. Respond briefly and friendly. User query: ${userText}`;
+      const prompt = `You are Domo, a helpful offline AI Assistant. Respond briefly and friendly. User query: ${userText}`;
 
       const response = await aiService.generateText(prompt, 120, (status) => {
         setStatusMsg(status);
@@ -79,7 +79,7 @@ export const LocalAIChatTool = () => {
       <div className="flex justify-between items-center border-b border-slate-850 pb-3">
         <h3 className="font-bold text-teal-400 flex items-center gap-2 text-base">
           <Cpu size={18} className="animate-pulse" />
-          <span>Local Panda Assistant</span>
+          <span>Local Domo Assistant</span>
         </h3>
         {ollamaModels.length > 0 ? (
           <select
@@ -128,7 +128,7 @@ export const LocalAIChatTool = () => {
           onChange={(e) => setInput(e.target.value)} 
           onKeyDown={(e) => e.key === 'Enter' && handleSend()} 
           className="flex-1 bg-slate-900/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-200" 
-          placeholder={ollamaModels.length === 0 ? "Ollama model required. Download one on Dashboard." : "Ask Panda anything..."}
+          placeholder={ollamaModels.length === 0 ? "Ollama model required. Download one on Dashboard." : "Ask Domo anything..."}
           disabled={loading || ollamaModels.length === 0}
         />
         <button 

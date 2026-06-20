@@ -24,7 +24,7 @@ To maintain clean and high-quality code across our 90 client-side tools, please 
 
 ### 4. Styling & Branding
 - Keep components responsive and clean.
-- Use our signature Panda Brandkit scheme (Primary color: `#4E8E5E`).
+- Use our signature Domo Brandkit scheme (Primary color: `#4E8E5E`).
 - Use smooth micro-animations on interactive states.
 
 ---
@@ -46,4 +46,4 @@ To maintain clean and high-quality code across our 90 client-side tools, please 
    ```
 5. **Open a Pull Request** (PR) detailing your modifications and verifying that your code builds locally via `npm run build`.
 
-Thank you for contributing to DomoDomo! 🐼
+Thank you for contributing to DomoDomo!

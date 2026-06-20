@@ -18,17 +18,17 @@ export const Logo = ({ className = '', size = 40, showText = true }: LogoProps) 
         {/* Background matching domodomo.png green */}
         <rect width="100" height="100" fill="#4E8E5E" />
         
-        {/* Panda Head Base */}
+        {/* Domo Head Base */}
         <path
           d="M5 100 C 5 65, 20 48, 50 48 C 80 48, 95 65, 95 100 Z"
           fill="#FFFFFF"
         />
         
-        {/* Panda Left Ear */}
+        {/* Domo Left Ear */}
         <circle cx="22" cy="62" r="14" fill="#FFFFFF" />
         <circle cx="22" cy="62" r="8" fill="#4E8E5E" />
 
-        {/* Panda Right Ear */}
+        {/* Domo Right Ear */}
         <circle cx="78" cy="62" r="14" fill="#FFFFFF" />
         <circle cx="78" cy="62" r="8" fill="#4E8E5E" />
 
