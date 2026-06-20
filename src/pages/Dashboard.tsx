@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Cpu, ShieldAlert, CpuIcon, Check, Copy, Globe, Layers, Code, Shield, Sparkles, Zap, ChevronDown, Terminal, Lock } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
@@ -322,6 +322,23 @@ export const Dashboard = () => {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [downloadError, setDownloadError] = useState('');
   const [showManageModels, setShowManageModels] = useState(false);
+  const [domoActiveTab, setDomoActiveTab] = useState<'privacy' | 'engine' | 'compliance'>('privacy');
+  
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      } else if (e.key === '/' && document.activeElement !== searchInputRef.current && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleCategoryChange = (catId: string) => {
     setActiveCategory(catId);
@@ -418,8 +435,11 @@ export const Dashboard = () => {
   return (
     <div className="flex flex-col gap-8">
       {/* Hero Welcome banner */}
-      <div className="relative overflow-hidden rounded-lg bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="flex flex-col gap-3 max-w-2xl z-10 text-left">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
+        {/* Subtle grid backdrop decoration */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
+
+        <div className="lg:col-span-7 flex flex-col gap-4 text-left z-10">
           <div className="flex flex-wrap gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
               <Globe size={12} />
@@ -430,30 +450,58 @@ export const Dashboard = () => {
               <span>100% Free & Open Source</span>
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1">
-            All-in-One <br />
+          <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
+            Your Local-First <br />
             <span className="text-[#3C6B4D]">
-              Local Toolbox.
+              Productivity Workshop.
             </span>
           </h1>
-          <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed">
-            DomoDomo is a premium, open-source productivity workshop running entirely in your browser sandbox. Edit files, compress media, compile PDF modifications, and run local AI models. Your files never touch the cloud.
+          <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-xl">
+            DomoDomo is an open-source productivity workshop running entirely in your browser sandbox. Edit files, compress media, compile PDF modifications, and run local AI models. Your files never touch the cloud.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 w-full md:w-auto z-10">
-          <div className="p-4 bg-[#111213] border border-[#2A2D30] rounded-xl flex items-center gap-3">
-            <Layers size={22} className="text-[#3C6B4D]" />
-            <div className="flex flex-col text-left">
-              <span className="text-[10px] text-[#72706C] font-bold uppercase tracking-wider">Features</span>
-              <span className="text-[#ECEBE9] font-semibold text-xs">90+ Utilities</span>
+        {/* Right side mock status console */}
+        <div className="lg:col-span-5 w-full z-10">
+          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30">
+            {/* Header console bar */}
+            <div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+              </div>
+              <span className="text-[10px] font-mono text-[#72706C] font-semibold">domodomo-terminal v1.0.0</span>
+              <div className="w-12" /> {/* spacer */}
             </div>
-          </div>
-          <div className="p-4 bg-[#111213] border border-[#2A2D30] rounded-xl flex items-center gap-3">
-            <Cpu size={22} className="text-[#E29E2D]" />
-            <div className="flex flex-col text-left">
-              <span className="text-[10px] text-[#72706C] font-bold uppercase tracking-wider">Speed</span>
-              <span className="text-[#ECEBE9] font-semibold text-xs">GPU Accelerated</span>
+            
+            {/* Console specs grid */}
+            <div className="p-4 grid grid-cols-2 gap-3 text-left font-mono text-[10px] text-[#A3A09B]">
+              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
+                <span className="text-[#72706C] font-semibold">sandbox_host</span>
+                <span className="text-[#ECEBE9] font-bold">localhost</span>
+              </div>
+              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
+                <span className="text-[#72706C] font-semibold">data_security</span>
+                <span className="text-[#3C6B4D] font-bold">100% client_side</span>
+              </div>
+              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
+                <span className="text-[#72706C] font-semibold">system_threads</span>
+                <span className="text-[#ECEBE9] font-bold">{navigator.hardwareConcurrency || 4} available</span>
+              </div>
+              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
+                <span className="text-[#72706C] font-semibold">wasm_runtime</span>
+                <span className="text-[#ECEBE9] font-bold">isolated_active</span>
+              </div>
+              <div className="col-span-2 bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex justify-between items-center">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[#72706C] font-semibold">cloud_telemetry</span>
+                  <span className="text-[#ECEBE9] font-bold">disabled_no_servers</span>
+                </div>
+                <div className="px-2 py-0.5 rounded bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/35 font-bold uppercase tracking-wider text-[8px]">
+                  Secure
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -461,8 +509,8 @@ export const Dashboard = () => {
 
       {/* Meet Domo: Your Local-First Privacy Companion */}
       <div className="glass-card p-8 border-[#2A2D30] bg-[#18191B] text-left relative overflow-hidden group">
-        <div className="flex flex-col lg:flex-row gap-8 items-center z-10 relative">
-          <div className="flex-shrink-0 p-4 bg-[#111213] border border-[#2A2D30] rounded-2xl group-hover:scale-105 transition-transform duration-300">
+        <div className="flex flex-col lg:flex-row gap-8 items-start z-10 relative">
+          <div className="flex-shrink-0 p-4 bg-[#111213] border border-[#2A2D30] rounded-2xl group-hover:scale-105 transition-transform duration-300 self-center lg:self-start">
             <Logo size={100} showText={false} />
           </div>
           
@@ -481,9 +529,54 @@ export const Dashboard = () => {
               Domo: Your Local-First Privacy Guardian & AI Companion
             </h2>
             
-            <p className="text-[#A3A09B] text-sm leading-relaxed">
-              Behind DomoDomo is <strong>Domo</strong>, our friendly privacy mascot and locally running AI engine. Domo represents our ironclad, non-negotiable commitment to absolute user privacy. By utilizing highly optimized local neural architectures, WebAssembly (WASM) compiler runtimes, and hardware-accelerated WebGPU browser engines directly on your device, Domo guarantees that your sensitive credentials, document databases, image assets, and voice captures never leave your machine. Everything executes client-side inside a secure, sandbox-isolated container with zero outbound telemetry, trackers, or cookies.
-            </p>
+            {/* Interactive Tab Switcher */}
+            <div className="flex flex-wrap gap-3 border-b border-[#2A2D30] pb-2 mt-2">
+              {[
+                { id: 'privacy', label: '100% Privacy Mandate' },
+                { id: 'engine', label: 'WASM & WebGPU Engine' },
+                { id: 'compliance', label: 'Self-Hosting Compliance' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setDomoActiveTab(tab.id as any)}
+                  className={`pb-2 px-1 text-xs font-semibold border-b-2 transition-all ${
+                    domoActiveTab === tab.id
+                      ? 'border-[#3C6B4D] text-[#ECEBE9]'
+                      : 'border-transparent text-[#72706C] hover:text-[#A3A09B]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Dynamic Content Pane */}
+            <div className="min-h-[100px] flex flex-col gap-2 justify-center py-2 transition-all duration-300">
+              {domoActiveTab === 'privacy' && (
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-[#3C6B4D] font-bold text-sm">Absolute Client-Side Sandbox</h3>
+                  <p className="text-[#A3A09B] text-xs leading-relaxed">
+                    Behind DomoDomo is <strong>Domo</strong>, our privacy mascot and local execution engine. Domo guarantees that your sensitive credentials, documents, voice clips, and graphics never touch external servers or telemetry frameworks. By executing 100% client-side inside a sandboxed context, Domo fully protects your security profile against cloud injection or backend tracking.
+                  </p>
+                </div>
+              )}
+              {domoActiveTab === 'engine' && (
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-[#3C6B4D] font-bold text-sm">GPU Accelerated WebGPU & WASM Runtime</h3>
+                  <p className="text-[#A3A09B] text-xs leading-relaxed">
+                    Domo harnesses high-performance client architectures. By leveraging low-level WebAssembly (WASM) instructions alongside modern hardware-accelerated WebGPU browser pipelines, Domo compiles heavy compression matrices, sign hashes, and local LLM tokens directly on your local silicon. Experience lightning-fast, near-native speeds with zero network latency.
+                  </p>
+                </div>
+              )}
+              {domoActiveTab === 'compliance' && (
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-[#3C6B4D] font-bold text-sm">Self-Hosting & Enterprise Zero-Data Policy</h3>
+                  <p className="text-[#A3A09B] text-xs leading-relaxed">
+                    Perfect for secure corporate profiles and strict firewalls. Licensed under the permissive MIT license, DomoDomo has <strong>zero server overhead</strong>. Admins can host the compiled static build inside isolated corporate networks (e.g. <code>toolbox.internal.company.com</code>) to give teams high-tier offline utilities without risking outbound data leaks.
+                  </p>
+                </div>
+              )}
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
               <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl hover:border-[#3C6B4D]/40 transition-all duration-200">
@@ -830,10 +923,10 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
-        {/* Categories Scroller */}
-        <div className="flex gap-2 overflow-x-auto pb-2 -mb-2 scrollbar-none pr-4 shrink-1">
+      {/* Unified Command Bar Panel */}
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl">
+        {/* Categories Tabs */}
+        <div className="flex gap-1 overflow-x-auto pb-2 -mb-2 md:pb-0 md:mb-0 scrollbar-none pr-4 shrink-1">
           {CATEGORIES.map((cat) => {
             const isAICat = cat.id === 'ai';
             const isUnavailable = isAICat && (!isLocal || !hasOllama);
@@ -847,7 +940,7 @@ export const Dashboard = () => {
                     ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm'
                     : isUnavailable
                       ? 'bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]'
-                      : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]'
                 }`}
               >
                 {isUnavailable && <Lock size={12} className="text-[#E29E2D] animate-pulse" />}
@@ -857,17 +950,22 @@ export const Dashboard = () => {
           })}
         </div>
 
-        {/* Search Field */}
+        {/* Search Field with keybind hint */}
         {activeCategory !== 'about' && (
-          <div className="relative shrink-0 w-full md:w-80">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#72706C]" />
+          <div className="relative shrink-0 w-full md:w-80 group">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors" />
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search local tools..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-colors placeholder:text-[#72706C]"
+              className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
             />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
+              <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">⌘</kbd>
+              <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">K</kbd>
+            </div>
           </div>
         )}
       </div>
