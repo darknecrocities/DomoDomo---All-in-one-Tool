@@ -262,30 +262,30 @@ export const Documentation = () => {
                 <svg width="600" height="260" viewBox="0 0 600 260" fill="none" className="min-w-[500px]">
                   {/* Browser Sandbox Frame */}
                   <rect x="10" y="10" width="580" height="240" rx="12" fill="#18191B" stroke="#2A2D30" strokeWidth="2" />
-                  <text x="30" y="32" fill="#72706C" fontSize="10" fontFamily="monospace" fontWeight="bold">BROWSER SANDBOX (ISOLATED CLIENT NODE)</text>
+                  <text x="30" y="38" fill="#72706C" fontSize="10" fontFamily="monospace" fontWeight="bold" dominantBaseline="central">BROWSER SANDBOX (ISOLATED CLIENT NODE)</text>
 
                   {/* Input Source */}
                   <rect x="37" y="80" width="90" height="50" rx="8" fill="#111213" stroke="#2A2D30" />
-                  <text x="82" y="105" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">User Files</text>
-                  <text x="82" y="120" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">File / Image Blobs</text>
+                  <text x="82" y="98" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">User Files</text>
+                  <text x="82" y="114" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">File / Image Blobs</text>
 
                   {/* Arrow 1 */}
                   <path d="M127 105 H167" stroke="#3C6B4D" strokeWidth="2" markerEnd="url(#arrow)" />
 
                   {/* Memory Iframe Cache */}
                   <rect x="167" y="60" width="220" height="90" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
-                  <text x="277" y="85" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">DomoDomo Engines</text>
-                  <text x="277" y="102" fill="#3C6B4D" fontSize="9" fontFamily="monospace" textAnchor="middle">IndexedDB / Memory Cache</text>
-                  <text x="277" y="122" fill="#A3A09B" fontSize="9" fontFamily="sans-serif" textAnchor="middle">WASM Runtimes & Canvas</text>
-                  <text x="277" y="137" fill="#E29E2D" fontSize="8" fontFamily="monospace" textAnchor="middle">WebGPU (LLM Queries)</text>
+                  <text x="277" y="78" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">DomoDomo Engines</text>
+                  <text x="277" y="96" fill="#3C6B4D" fontSize="9" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">IndexedDB / Memory Cache</text>
+                  <text x="277" y="114" fill="#A3A09B" fontSize="9" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central">WASM Runtimes & Canvas</text>
+                  <text x="277" y="132" fill="#E29E2D" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">WebGPU (LLM Queries)</text>
 
                   {/* Arrow 2 */}
                   <path d="M387 105 H427" stroke="#3C6B4D" strokeWidth="2" markerEnd="url(#arrow)" />
 
                   {/* Local compilation output */}
                   <rect x="427" y="80" width="90" height="50" rx="8" fill="#111213" stroke="#2A2D30" />
-                  <text x="472" y="105" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Output Buffers</text>
-                  <text x="472" y="120" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">ArrayBuffer Stream</text>
+                  <text x="472" y="98" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">Output Buffers</text>
+                  <text x="472" y="114" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">ArrayBuffer Stream</text>
 
                   {/* Arrow 3 */}
                   <path d="M517 105 H543" stroke="#3C6B4D" strokeWidth="2" markerEnd="url(#arrow)" />
@@ -293,13 +293,13 @@ export const Documentation = () => {
                   {/* Browser Download Node */}
                   <circle cx="565" cy="105" r="18" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
                   <path d="M565 97 V107 M560 102 L565 107 L570 102 M559 111 H571" stroke="#ECEBE9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <text x="565" y="138" fill="#ECEBE9" fontSize="9" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Download</text>
-                  <text x="565" y="153" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Local Save</text>
+                  <text x="565" y="138" fill="#ECEBE9" fontSize="9" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">Download</text>
+                  <text x="565" y="153" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">Local Save</text>
 
                   {/* Bottom blocked Cloud server */}
                   <rect x="190" y="185" width="220" height="40" rx="8" fill="#111213" stroke="#E29E2D" strokeDasharray="4 4" />
-                  <path d="M205 205 L215 215 M215 205 L205 215" stroke="#E29E2D" strokeWidth="2" />
-                  <text x="310" y="208" fill="#E29E2D" fontSize="10" fontFamily="sans-serif" fontWeight="bold">NO OUTBOUND WAN TRAFFIC</text>
+                  <path d="M205 200 L215 210 M215 200 L205 210 M385 200 L395 210 M395 200 L385 210" stroke="#E29E2D" strokeWidth="2" />
+                  <text x="300" y="205" fill="#E29E2D" fontSize="10" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">NO OUTBOUND WAN TRAFFIC</text>
 
                   {/* Markers definition */}
                   <defs>
