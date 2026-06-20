@@ -294,7 +294,7 @@ export const Documentation = () => {
                   <circle cx="565" cy="105" r="18" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
                   <path d="M565 97 V107 M560 102 L565 107 L570 102 M559 111 H571" stroke="#ECEBE9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   <text x="565" y="138" fill="#ECEBE9" fontSize="9" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Download</text>
-                  <text x="565" y="149" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Local Save</text>
+                  <text x="565" y="153" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Local Save</text>
 
                   {/* Bottom blocked Cloud server */}
                   <rect x="190" y="185" width="220" height="40" rx="8" fill="#111213" stroke="#E29E2D" strokeDasharray="4 4" />
