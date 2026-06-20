@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Link } from 'react-router-dom';
-import { ShieldAlert, ServerCrash } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star } from 'lucide-react';
 import { Logo } from './Logo';
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -19,6 +20,19 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
 );
 
 export const Shell = () => {
+  const [stars, setStars] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool')
+      .then((res) => res.json())
+      .then((data) => {
+        if (typeof data.stargazers_count === 'number') {
+          setStars(data.stargazers_count);
+        }
+      })
+      .catch((err) => console.error('Failed to fetch github stars:', err));
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#111213]">
       {/* Top Navbar */}
@@ -48,10 +62,13 @@ export const Shell = () => {
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
               title="GitHub Repository"
             >
-              <GithubIcon size={18} />
+              <GithubIcon size={14} />
+              <div className="h-3 w-[1px] bg-[#2A2D30] group-hover:bg-[#3C6B4D]/30" />
+              <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
+              <span className="text-[10px] font-mono leading-none">{stars !== null ? stars : '—'}</span>
             </a>
           </div>
         </div>
