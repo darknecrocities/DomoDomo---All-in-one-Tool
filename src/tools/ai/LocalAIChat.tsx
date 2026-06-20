@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Cpu, Loader2, Sparkles } from 'lucide-react';
+import { Send, Cpu, Loader2 } from 'lucide-react';
 import { aiService } from '../../utils/aiService';
 
 interface Message {
@@ -9,17 +9,14 @@ interface Message {
 
 export const LocalAIChatTool = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { sender: 'ai', text: 'Hello! I am Panda, your offline AI Assistant. I run 100% locally on your browser. Once the model is loaded, I can answer your questions with zero cloud tracking!' }
+    { sender: 'ai', text: 'Hello! I am Panda, your offline AI Assistant powered by local Ollama. Ask me anything!' }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
-  const [progress, setProgress] = useState(0);
-  const [modelLoaded, setModelLoaded] = useState(false);
-  
+
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState('');
-  const [isOllamaMode, setIsOllamaMode] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -35,11 +32,9 @@ export const LocalAIChatTool = () => {
         const res = await aiService.checkOllama();
         if (res.status && res.models.length > 0) {
           setOllamaModels(res.models);
-          setIsOllamaMode(true);
           const saved = aiService.getSelectedOllamaModel();
           const initial = saved && res.models.includes(saved) ? saved : res.models[0];
           setSelectedModel(initial);
-          setModelLoaded(true);
         }
       } catch (err) {
         console.warn('Failed to detect local Ollama runtime:', err);
@@ -53,37 +48,20 @@ export const LocalAIChatTool = () => {
     aiService.setSelectedOllamaModel(model);
   };
 
-  const loadModel = async () => {
-    setStatusMsg('Initializing model...');
-    try {
-      await aiService.initLLM('Xenova/LaMini-Flan-T5-78M', (status, prog) => {
-        setStatusMsg(status);
-        setProgress(prog);
-      });
-      setModelLoaded(true);
-    } catch (err: any) {
-      setStatusMsg(`Error loading model: ${err.message || err}`);
-    }
-  };
-
   const handleSend = async () => {
     if (!input.trim() || loading) return;
     const userText = input.trim();
     setMessages(prev => [...prev, { sender: 'user', text: userText }]);
     setInput('');
     setLoading(true);
+    setStatusMsg('Generating response...');
 
     try {
-      if (!modelLoaded && !isOllamaMode) {
-        await loadModel();
-      }
-
       const prompt = `You are Panda, a helpful offline AI Assistant. Respond briefly and friendly. User query: ${userText}`;
 
-      const response = await aiService.generateText(prompt, 120, (status, prog) => {
+      const response = await aiService.generateText(prompt, 120, (status) => {
         setStatusMsg(status);
-        setProgress(prog);
-      }, isOllamaMode ? selectedModel : undefined);
+      }, selectedModel || undefined);
 
       const cleanResponse = response.trim() || "I processed your request, but returned an empty response. Please try again.";
 
@@ -103,7 +81,7 @@ export const LocalAIChatTool = () => {
           <Cpu size={18} className="animate-pulse" />
           <span>Local Panda Assistant</span>
         </h3>
-        {isOllamaMode ? (
+        {ollamaModels.length > 0 ? (
           <select
             value={selectedModel}
             onChange={(e) => handleModelChange(e.target.value)}
@@ -114,45 +92,11 @@ export const LocalAIChatTool = () => {
             ))}
           </select>
         ) : (
-          <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750">
-            LaMini-Flan-T5 (78M parameters)
+          <span className="text-[10px] bg-slate-800 text-slate-350 px-2 py-0.5 rounded border border-slate-750 font-mono">
+            No Ollama Models Found
           </span>
         )}
       </div>
-
-      {/* Model Loader Screen */}
-      {!modelLoaded && !isOllamaMode && (
-        <div className="bg-slate-950/80 border border-slate-850/60 rounded-lg p-4 my-3 flex flex-col items-center justify-center gap-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-            <Sparkles size={14} className="text-teal-400" />
-            <span>LLM Download & initialization required</span>
-          </div>
-          <p className="text-[11px] text-slate-400 text-center max-w-sm">
-            This will download the AI model directly to your browser's local cache (~240MB). Subsequent visits will load instantly without downloading.
-          </p>
-          {statusMsg ? (
-            <div className="w-full flex flex-col gap-2.5 items-center mt-1">
-              <div className="text-[10px] font-mono text-slate-400 text-center truncate max-w-full">
-                {statusMsg}
-              </div>
-              <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                <div 
-                  className="bg-gradient-to-r from-teal-500 to-indigo-600 h-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="text-[10px] font-semibold text-slate-300">{progress}%</span>
-            </div>
-          ) : (
-            <button 
-              onClick={loadModel}
-              className="btn-primary py-1.5 px-4 text-xs mt-1 flex items-center gap-1.5"
-            >
-              Load Offline Model
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto my-3 flex flex-col gap-3.5 pr-1 text-xs">
@@ -171,10 +115,9 @@ export const LocalAIChatTool = () => {
         {loading && statusMsg && (
           <div className="flex items-center gap-2 text-slate-400 font-mono text-[10px] bg-slate-950/60 p-2.5 rounded-lg border border-slate-900 self-start animate-pulse">
             <Loader2 size={12} className="animate-spin text-teal-400" />
-            <span>{statusMsg} {progress > 0 ? `(${progress}%)` : ''}</span>
+            <span>{statusMsg}</span>
           </div>
         )}
-        <div ref={chatEndRef} />
       </div>
 
       {/* Inputs */}
@@ -185,12 +128,12 @@ export const LocalAIChatTool = () => {
           onChange={(e) => setInput(e.target.value)} 
           onKeyDown={(e) => e.key === 'Enter' && handleSend()} 
           className="flex-1 bg-slate-900/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-200" 
-          placeholder="Ask Panda anything..."
-          disabled={loading}
+          placeholder={ollamaModels.length === 0 ? "Ollama model required. Download one on Dashboard." : "Ask Panda anything..."}
+          disabled={loading || ollamaModels.length === 0}
         />
         <button 
           onClick={handleSend} 
-          disabled={loading || !input.trim()}
+          disabled={loading || !input.trim() || ollamaModels.length === 0}
           className="btn-primary py-2 px-4 text-xs flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none"
         >
           {loading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
