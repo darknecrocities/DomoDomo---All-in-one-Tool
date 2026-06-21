@@ -130,6 +130,23 @@ export const AIDomoAgentHub = () => {
     setAgentActivity((prev) => [...prev, newLog]);
   };
 
+  const simulateLiveCoding = (fullContent: string) => {
+    let index = 0;
+    setEditorContent('');
+    const cleanContent = fullContent.replace(/^```\w*\n/, '').replace(/\n```$/, '');
+    const stepSize = Math.max(1, Math.floor(cleanContent.length / 40));
+    
+    const interval = setInterval(() => {
+      index += stepSize;
+      if (index >= cleanContent.length) {
+        setEditorContent(cleanContent);
+        clearInterval(interval);
+      } else {
+        setEditorContent(cleanContent.substring(0, index) + '█');
+      }
+    }, 45);
+  };
+
   const checkStatus = async () => {
     try {
       const res = await aiService.checkOllama();
@@ -153,17 +170,27 @@ export const AIDomoAgentHub = () => {
   const handleMountDirectory = async () => {
     setErrorMsg(null);
     try {
-      const handle = await (window as any).showDirectoryPicker();
+      const handle = await (window as any).showDirectoryPicker({
+        mode: 'readwrite'
+      });
+      // Explicitly request write permission on the handle inside this click handler to prevent user-activation requirements later
+      if (handle.requestPermission) {
+        const perm = await handle.requestPermission({ mode: 'readwrite' });
+        if (perm !== 'granted') {
+          setErrorMsg('Write permissions are required to create and modify files inside this folder.');
+          return;
+        }
+      }
       setDirHandle(handle);
       await refreshFileTree(handle);
       
       setChatLog((prev) => [
         ...prev,
-        { role: 'system', text: `📁 Connected to workspace folder: "${handle.name}". You can now instruct Domo Agent to read/write files!` }
+        { role: 'system', text: `📁 Connected to workspace folder: "${handle.name}". Read/Write permissions granted! You can now instruct Domo Agent to read/write files.` }
       ]);
     } catch (err: any) {
       if (err.name !== 'AbortError') {
-        setErrorMsg('File System Access API is not supported or permission was denied.');
+        setErrorMsg('File System Access API is not supported or write permission was denied.');
       }
     }
   };
@@ -406,11 +433,10 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
 
         await refreshFileTree();
         
-        // If it was the active file, update editor content
-        if (activeFile && activeFile.path === filePath) {
-          setActiveFile((prev) => prev ? { ...prev, content: codeContent } : null);
-          setEditorContent(codeContent);
-        }
+        // Auto-open created file and simulate live typing
+        setActiveFile({ path: filePath, handle: fileHandle, content: codeContent });
+        simulateLiveCoding(codeContent);
+
       } catch (e: any) {
         addActivityLog('error', `Failed writing file "${filePath}": ${e.message || e}`);
         console.warn('Agent failed to write file:', filePath, e);
