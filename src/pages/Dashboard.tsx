@@ -155,7 +155,9 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'ai-math-solver', name: 'AI Math Solver', category: 'ai', description: 'Paste math problems and get step-by-step solutions.', icon: 'Hammer', status: 'functional' },
   { id: 'ai-recipe-generator', name: 'AI Recipe Generator', category: 'ai', description: 'Ingredients in → full recipe with steps, nutrition, and variants.', icon: 'Hammer', status: 'functional' },
   { id: 'ai-code-reviewer', name: 'AI Code Reviewer', category: 'ai', description: 'Review code for bugs, security issues, and best practices.', icon: 'Hammer', status: 'functional' },
-  { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', status: 'functional' }
+  { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', status: 'functional' },
+  { id: 'openclaw-hub', name: 'OpenClaw Model Hub', category: 'ai', description: 'Download and manage open offline language models locally.', icon: 'Hammer', status: 'functional' },
+  { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', status: 'functional' }
 ];
 
 export const Dashboard = () => {

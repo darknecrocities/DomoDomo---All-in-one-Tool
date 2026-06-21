@@ -128,6 +128,8 @@ import { AIMathSolverTool } from '../tools/ai/AIMathSolver';
 import { AIRecipeGeneratorTool } from '../tools/ai/AIRecipeGenerator';
 import { AICodeReviewerTool } from '../tools/ai/AICodeReviewer';
 import { AIMindMapperTool } from '../tools/ai/AIMindMapper';
+import { AIOpenClawHub } from '../tools/ai/AIOpenClawHub';
+import { AIDomoSelection } from '../tools/ai/AIDomoSelection';
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -257,7 +259,9 @@ export const TOOLS: Tool[] = [
   { id: 'ai-math-solver', name: 'AI Math Solver', category: 'ai', description: 'Paste math problems and get step-by-step solutions.', icon: 'Hammer', run: async (i) => i, component: AIMathSolverTool },
   { id: 'ai-recipe-generator', name: 'AI Recipe Generator', category: 'ai', description: 'Ingredients in → full recipe with steps, nutrition, and variants.', icon: 'Hammer', run: async (i) => i, component: AIRecipeGeneratorTool },
   { id: 'ai-code-reviewer', name: 'AI Code Reviewer', category: 'ai', description: 'Review code for bugs, security issues, and best practices.', icon: 'Hammer', run: async (i) => i, component: AICodeReviewerTool },
-  { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', run: async (i) => i, component: AIMindMapperTool }
+  { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', run: async (i) => i, component: AIMindMapperTool },
+  { id: 'openclaw-hub', name: 'OpenClaw Model Hub', category: 'ai', description: 'Download and manage open offline language models locally.', icon: 'Hammer', run: async (i) => i, component: AIOpenClawHub },
+  { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', run: async (i) => i, component: AIDomoSelection }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {
