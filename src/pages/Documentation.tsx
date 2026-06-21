@@ -253,7 +253,7 @@ export const Documentation = () => {
             <div className="flex flex-col gap-5">
               <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">Introduction</h2>
               <p className="text-[#A3A09B] text-xs md:text-sm leading-relaxed">
-                DomoDomo is designed as a **Local-First Web Workshop**. Unlike typical SaaS productivity tools that process your media assets, documents, and private credentials on remote cloud servers, DomoDomo compiles and executes all operations client-side inside the user's browser sandbox.
+                DomoDomo is designed as a <strong className="font-bold text-[#ECEBE9]">Local-First Web Workshop</strong>. Unlike typical SaaS productivity tools that process your media assets, documents, and private credentials on remote cloud servers, DomoDomo compiles and executes all operations client-side inside the user's browser sandbox.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
@@ -276,7 +276,7 @@ export const Documentation = () => {
             <div className="flex flex-col gap-5">
               <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">System Architecture</h2>
               <p className="text-[#A3A09B] text-xs md:text-sm leading-relaxed">
-                DomoDomo operates within a **sandboxed container namespace** provided by modern web browser security engines. The diagram below illustrates the relationship between components:
+                DomoDomo operates within a <strong className="font-bold text-[#ECEBE9]">sandboxed container namespace</strong> provided by modern web browser security engines. The diagram below illustrates the relationship between components:
               </p>
 
               {/* Architecture SVG diagram */}
