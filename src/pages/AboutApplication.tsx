@@ -3,8 +3,8 @@ import { Logo } from '../components/Logo';
 import { BRAND_KIT } from '../utils/BrandKit';
 
 const stats = [
-  { label: 'Web Utilities', value: '90+', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
-  { label: 'Categories', value: '10', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, and AI suites.', icon: Globe },
+  { label: 'Web Utilities', value: '100+', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
+  { label: 'Categories', value: '11', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, and API suites.', icon: Globe },
   { label: 'Runtime', value: 'WASM', detail: 'Browser-native execution with WebAssembly and client APIs.', icon: Cpu },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
@@ -63,6 +63,31 @@ export const AboutApplication = () => {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* Recent Updates & Expansion Log */}
+      <section className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+          <Sparkles size={12} />
+          <span>Latest Release Updates</span>
+        </div>
+        <h2 className="text-xl md:text-2xl font-extrabold text-[#ECEBE9] tracking-tight">
+          What's New in DomoDomo
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
+            <span className="text-[#3C6B4D] font-bold text-sm block">10 New Developer Utilities</span>
+            <p className="text-xs text-[#A3A09B] leading-relaxed">
+              Added powerful local-first developer tools under the Dev suite, including Cron Expression Parser, SQL Formatter, YAML-JSON Converter, Markdown Table Builder, Side-by-Side Diff Checker, Keyboard Event Finder, CSS Box Shadow & Glassmorphism Designers, Number Base Converter, and Screen Telemetry diagnostics.
+            </p>
+          </div>
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
+            <span className="text-[#3C6B4D] font-bold text-sm block">Library API Hub (1,480+ Integrations)</span>
+            <p className="text-xs text-[#A3A09B] leading-relaxed">
+              A comprehensive directory of verified public APIs with dynamic client-side pagination, search indexing, category groupings, and immediate code generation (JavaScript fetch, Python, and cURL requests) for streamlined development.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="glass-card p-8 border-[#2A2D30] bg-[#18191B]">
