@@ -174,7 +174,9 @@ const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: Tool
       { id: 'ai-math-solver', name: 'AI Math Solver', engine: 'Ollama Mathematical Reasoning Pipeline', details: 'Solves complex equations and word problems step-by-step with LaTeX formatting.' },
       { id: 'ai-recipe-generator', name: 'AI Recipe Generator', engine: 'Ollama Culinary Optimization Pipeline', details: 'Recommends cooking recipes, nutrition estimates, and missing ingredient lists from available items.' },
       { id: 'ai-code-reviewer', name: 'AI Code Reviewer', engine: 'Ollama Static Review Pipeline', details: 'Audits code structure for bugs, security weaknesses, performance, and best practices.' },
-      { id: 'ai-mind-mapper', name: 'AI Mind Mapper', engine: 'Ollama Hierarchical Layout Pipeline', details: 'Extracts concepts from topics to organize them into nested branches and outlines.' }
+      { id: 'ai-mind-mapper', name: 'AI Mind Mapper', engine: 'Ollama Hierarchical Layout Pipeline', details: 'Extracts concepts from topics to organize them into nested branches and outlines.' },
+      { id: 'openclaw-hub', name: 'OpenClaw Model Hub', engine: 'Ollama Model Download Registry', details: 'Manages and pulls open-source language models offline into local systems with progress tracking.' },
+      { id: 'domo-selection', name: 'DomoDomo Selection Explainer', engine: 'Ollama Highlight Selector Pipeline', details: 'Provides inline segment highlighting actions answered by the friendly DomoDomo mascot persona.' }
     ]
   }
 };
