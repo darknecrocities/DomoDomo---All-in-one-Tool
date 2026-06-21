@@ -138,7 +138,17 @@ const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: Tool
       { id: 'api-tester', name: 'API Tester', engine: 'fetch Client API', details: 'Dispatches client HTTP requests, measuring response timings, header parameters, and data payloads.' },
       { id: 'url-encoder', name: 'URL Encoder', engine: 'encodeURIComponent / decodeURIComponent', details: 'Encodes parameter values to safe URL formatting or decodes them.' },
       { id: 'html-minify', name: 'HTML Minifier', engine: 'Regex Minification Engine', details: 'Strips document whitespaces, carriage returns, and comment layouts from code strings.' },
-      { id: 'color-converter', name: 'Color Converter', engine: 'Color Conversion Formulas', details: 'Computes conversion equations to map color definitions between HEX, RGB, HSL, and CMYK formats.' }
+      { id: 'color-converter', name: 'Color Converter', engine: 'Color Conversion Formulas', details: 'Computes conversion equations to map color definitions between HEX, RGB, HSL, and CMYK formats.' },
+      { id: 'cron-parser', name: 'Cron Expression Parser', engine: 'Cron Parsing Algorithms', details: 'Parses cron expression schedules or generates strings interactively, displaying simulated execution runtimes.' },
+      { id: 'sql-formatter', name: 'SQL Formatter', engine: 'SQL Keyword Lexer Rules', details: 'Formats, minifies, and aligns SQL syntax keywords to customized tab indentations client-side.' },
+      { id: 'yaml-json', name: 'YAML ↔ JSON Converter', engine: 'YAML Parser and JSON Serializer', details: 'Inter-converts objects and arrays between YAML markup strings and standard nested JSON hierarchies.' },
+      { id: 'md-table-gen', name: 'Markdown Table Generator', engine: 'Markdown Table Compiler', details: 'Generates structured Markdown syntax code for table structures using interactive headers and column alignments.' },
+      { id: 'diff-checker', name: 'Diff Checker', engine: 'Line Diff Comparison Engine', details: 'Compares two text lists line-by-line, compiling deleted, added, or modified code line decorations.' },
+      { id: 'keycode-finder', name: 'Keyboard Keycode Finder', engine: 'DOM Keyboard Event Listeners', details: 'Tracks keypress logs dynamically, displaying key name, event code, character code, and active modifiers.' },
+      { id: 'box-shadow-gen', name: 'Box Shadow Generator', engine: 'CSS Style Compilation Engine', details: 'Compiles custom offsets, colors, and blur settings into valid box-shadow properties and overlays them on a preview element.' },
+      { id: 'base-converter', name: 'Base Converter', engine: 'Number Parsing Algorithms', details: 'Converts integers between base-10, base-2, base-8, and base-16 formats with logical steps walkthrough.' },
+      { id: 'glassmorphism-gen', name: 'Glassmorphism Generator', engine: 'CSS Backdrop Filter Compiler', details: 'Computes combinations of saturation, blur, tint colors, and boundary borders into modern Glass CSS assets.' },
+      { id: 'screen-info', name: 'Screen & Device Info', engine: 'DOM Window Screen API', details: 'Inspects client environment parameters including device viewport dimensions, pixel density, connection limits, and storage estimations.' }
     ]
   },
   ai: {
