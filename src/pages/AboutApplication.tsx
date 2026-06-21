@@ -90,7 +90,7 @@ export const AboutApplication = () => {
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
             <span className="text-[#3C6B4D] font-bold text-sm block">Domo Agent Hub & Explainer</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
-              A local-first offline IDE with browser folder mounting, file writing commands, and the DomoDomo Selection Explainer with local file upload support and custom markdown responses.
+              A local-first offline IDE with browser folder mounting, Multi-Agent sequential/parallel orchestration, file writing commands, Autosave, Live Coding simulation toggles, correct extension mapping, and custom markdown responses.
             </p>
           </div>
         </div>

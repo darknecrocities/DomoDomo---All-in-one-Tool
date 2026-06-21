@@ -117,6 +117,14 @@ const highlightCode = (code: string) => {
   });
 };
 
+const getCorrectedFilePath = (path: string) => {
+  let cleaned = path.trim();
+  if (cleaned.endsWith('.python')) cleaned = cleaned.slice(0, -7) + '.py';
+  if (cleaned.endsWith('.javascript')) cleaned = cleaned.slice(0, -11) + '.js';
+  if (cleaned.endsWith('.typescript')) cleaned = cleaned.slice(0, -11) + '.ts';
+  return cleaned;
+};
+
 export const AIDomoAgentHub = () => {
   const [activeTab, setActiveTab] = useState<'ide' | 'orchestrator' | 'models' | 'setup'>('ide');
   const [osTab, setOsTab] = useState<'mac' | 'win' | 'linux'>('mac');
@@ -131,6 +139,10 @@ export const AIDomoAgentHub = () => {
   const [activeFile, setActiveFile] = useState<{ path: string; handle: any; content: string } | null>(null);
   const [editorContent, setEditorContent] = useState<string>('');
   const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+
+  // Options toggles
+  const [autosave, setAutosave] = useState<boolean>(true);
+  const [liveCodingEnabled, setLiveCodingEnabled] = useState<boolean>(true);
 
   // Multi-Agent Configuration
   interface AgentConfig {
@@ -282,7 +294,7 @@ export const AIDomoAgentHub = () => {
 
     while ((match = writeRegex.exec(text)) !== null) {
       found = true;
-      const fileName = match[1].trim();
+      const fileName = getCorrectedFilePath(match[1].trim());
       const rawContent = match[2];
       const content = cleanCodeContent(rawContent);
 
@@ -298,6 +310,10 @@ export const AIDomoAgentHub = () => {
         return [...filtered, newArtifact];
       });
       setActiveArtifact(newArtifact);
+
+      if (autosave && dirHandle) {
+        handleWriteArtifactToWorkspace(newArtifact, true);
+      }
     }
 
     if (!found) {
@@ -305,9 +321,26 @@ export const AIDomoAgentHub = () => {
       let blockMatch;
       let blockCount = 1;
       while ((blockMatch = codeBlockRegex.exec(text)) !== null) {
-        const lang = blockMatch[1] || 'txt';
+        const rawLang = blockMatch[1]?.toLowerCase() || 'txt';
+        const langMap: Record<string, string> = {
+          'python': 'py',
+          'javascript': 'js',
+          'typescript': 'ts',
+          'golang': 'go',
+          'rust': 'rs',
+          'csharp': 'cs',
+          'c++': 'cpp',
+          'cpp': 'cpp',
+          'html': 'html',
+          'css': 'css',
+          'json': 'json',
+          'markdown': 'md',
+          'bash': 'sh',
+          'sh': 'sh'
+        };
+        const ext = langMap[rawLang] || rawLang;
         const content = blockMatch[2].trim();
-        const fileName = `output_${agentName.toLowerCase().replace(/\s+/g, '_')}_${blockCount}.${lang}`;
+        const fileName = `output_${agentName.toLowerCase().replace(/\s+/g, '_')}_${blockCount}.${ext}`;
         
         const newArtifact = {
           id: Math.random().toString(36).substring(7),
@@ -320,12 +353,16 @@ export const AIDomoAgentHub = () => {
           return [...filtered, newArtifact];
         });
         setActiveArtifact(newArtifact);
+
+        if (autosave && dirHandle) {
+          handleWriteArtifactToWorkspace(newArtifact, true);
+        }
         blockCount++;
       }
     }
   };
 
-  const handleWriteArtifactToWorkspace = async (artifact: typeof activeArtifact) => {
+  const handleWriteArtifactToWorkspace = async (artifact: { id: string; name: string; content: string; agentName: string } | null, silent = false) => {
     if (!artifact || !dirHandle) {
       setErrorMsg('Cannot write artifact. Ensure a workspace folder is mounted.');
       return;
@@ -347,7 +384,11 @@ export const AIDomoAgentHub = () => {
       setActiveFile({ path: artifact.name, handle: fileHandle, content: artifact.content });
       simulateLiveCoding(artifact.content);
       
-      alert(`✅ Successfully wrote "${artifact.name}" to workspace!`);
+      if (!silent) {
+        alert(`✅ Successfully wrote "${artifact.name}" to workspace!`);
+      } else {
+        addActivityLog('success', `Auto-wrote generated artifact: "${artifact.name}"`);
+      }
     } catch (e: any) {
       setErrorMsg(`Failed to write artifact: ${e.message || e}`);
     }
@@ -355,6 +396,24 @@ export const AIDomoAgentHub = () => {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const debouncedSave = (fileHandle: any, path: string, content: string) => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const writable = await fileHandle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        setActiveFile((prev) => prev && prev.path === path ? { ...prev, content } : prev);
+        addActivityLog('write', `Autosaved file: ${path}`);
+      } catch (err) {
+        console.warn('Autosave failed:', err);
+      }
+    }, 1000);
+  };
 
   const handleEditorScroll = () => {
     if (textareaRef.current && preRef.current) {
@@ -393,9 +452,13 @@ export const AIDomoAgentHub = () => {
   };
 
   const simulateLiveCoding = (fullContent: string) => {
+    const cleanContent = cleanCodeContent(fullContent);
+    if (!liveCodingEnabled) {
+      setEditorContent(cleanContent);
+      return;
+    }
     let index = 0;
     setEditorContent('');
-    const cleanContent = cleanCodeContent(fullContent);
     const stepSize = Math.max(1, Math.floor(cleanContent.length / 40));
     
     const interval = setInterval(() => {
@@ -408,6 +471,7 @@ export const AIDomoAgentHub = () => {
       }
     }, 45);
   };
+
 
   const checkStatus = async () => {
     try {
@@ -932,20 +996,45 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
               <div className="flex justify-between items-center pb-2 border-b border-[#2A2D30]">
                 <div className="flex items-center gap-2">
                   <FileText size={14} className="text-[#3C6B4D]" />
-                  <span className="text-xs font-bold text-[#ECEBE9] truncate max-w-xs">
+                  <span className="text-xs font-bold text-[#ECEBE9] truncate max-w-[120px]">
                     {activeFile ? activeFile.path : 'No file open'}
                   </span>
                 </div>
-                {activeFile && (
-                  <button
-                    onClick={handleSaveFile}
-                    className="p-1 rounded bg-[#111213] border border-[#2A2D30] text-[#A3A09B] hover:text-emerald-500 flex items-center gap-1 text-[10px] font-semibold"
-                    title="Save changes"
-                  >
-                    <Save size={12} />
-                    <span>Save</span>
-                  </button>
-                )}
+                
+                <div className="flex items-center gap-3">
+                  {/* Autosave Toggle */}
+                  <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={autosave}
+                      onChange={(e) => setAutosave(e.target.checked)}
+                      className="rounded bg-[#111213] border-[#2A2D30] text-[#3C6B4D] focus:ring-0 w-3 h-3 accent-[#3C6B4D]"
+                    />
+                    <span className="text-[9px] text-[#A3A09B] font-semibold uppercase tracking-wider">Autosave</span>
+                  </label>
+                  
+                  {/* Live Coding Toggle */}
+                  <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={liveCodingEnabled}
+                      onChange={(e) => setLiveCodingEnabled(e.target.checked)}
+                      className="rounded bg-[#111213] border-[#2A2D30] text-[#3C6B4D] focus:ring-0 w-3 h-3 accent-[#3C6B4D]"
+                    />
+                    <span className="text-[9px] text-[#A3A09B] font-semibold uppercase tracking-wider">Live Code</span>
+                  </label>
+
+                  {activeFile && (
+                    <button
+                      onClick={handleSaveFile}
+                      className="p-1 rounded bg-[#111213] border border-[#2A2D30] text-[#A3A09B] hover:text-emerald-500 flex items-center gap-1 text-[10px] font-semibold"
+                      title="Save changes"
+                    >
+                      <Save size={12} />
+                      <span>Save</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {activeFile ? (
@@ -958,7 +1047,13 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
                   <textarea
                     ref={textareaRef}
                     value={editorContent}
-                    onChange={(e) => setEditorContent(e.target.value)}
+                    onChange={(e) => {
+                      const newContent = e.target.value;
+                      setEditorContent(newContent);
+                      if (autosave && activeFile) {
+                        debouncedSave(activeFile.handle, activeFile.path, newContent);
+                      }
+                    }}
                     onScroll={handleEditorScroll}
                     className="absolute inset-0 w-full h-full p-4 bg-transparent text-transparent caret-[#ECEBE9] border border-transparent rounded-xl focus:outline-none resize-none overflow-auto font-mono text-[11px] leading-relaxed whitespace-pre break-all text-left"
                   />
@@ -1107,7 +1202,7 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
                 </div>
 
                 {/* Pipeline Mode Switcher */}
-                <div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] space-y-2 text-left">
+                <div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] space-y-2.5 text-left">
                   <span className="text-[10px] font-bold uppercase text-[#72706C] tracking-wider block">Orchestration Protocol</span>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -1131,11 +1226,33 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
                       ⚡ Parallel Evaluation
                     </button>
                   </div>
-                  <span className="text-[9px] text-[#72706C] leading-tight block mt-1.5">
+                  <span className="text-[9px] text-[#72706C] leading-tight block">
                     {orchestrationMode === 'sequential' 
                       ? 'Outputs from previous agents feed as inputs into subsequent agents (recommended, lighter VRAM footprint).'
                       : 'Agents analyze the same task in parallel (requires separate processing stages to stay smooth).'}
                   </span>
+                  
+                  {/* Preferences Toggles */}
+                  <div className="flex flex-col gap-2 border-t border-[#2A2D30]/60 pt-2.5 mt-1.5">
+                    <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={autosave}
+                        onChange={(e) => setAutosave(e.target.checked)}
+                        className="rounded bg-[#18191B] border-[#2A2D30] text-[#3C6B4D] focus:ring-0 w-3 h-3 accent-[#3C6B4D]"
+                      />
+                      <span className="text-[9px] text-[#A3A09B] font-semibold uppercase tracking-wider">Auto-write Artifacts</span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={liveCodingEnabled}
+                        onChange={(e) => setLiveCodingEnabled(e.target.checked)}
+                        className="rounded bg-[#18191B] border-[#2A2D30] text-[#3C6B4D] focus:ring-0 w-3 h-3 accent-[#3C6B4D]"
+                      />
+                      <span className="text-[9px] text-[#A3A09B] font-semibold uppercase tracking-wider">Live Coding Simulation</span>
+                    </label>
+                  </div>
                 </div>
 
                 {/* List of Agents */}

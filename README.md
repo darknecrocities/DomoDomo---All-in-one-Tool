@@ -37,9 +37,18 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 
 ---
 
-## 🤖 Local Ollama Integration (Offline LLM)
+## 🤖 Local Ollama Integration & Domo Agent Hub
 
 To ensure complete privacy without external API subscription costs, DomoDomo integrates directly with local **Ollama** runtimes on `http://localhost:11434`.
+
+### 🧠 Domo Agent Hub & Multi-Agent Orchestrator
+The Domo Agent Hub is a local-first custom IDE workspace that hooks directly to your local folders using browser file system handles.
+- **Multi-Agent Orchestrator:** Configure, name, and assign distinct LLM models to multiple specialized agent personas (e.g., Domo Architect, Domo Hacker, Domo Auditor) to work simultaneously or sequentially.
+  - *Sequential Chain:* Flows agent outputs downstream as context to the next agent (optimal for low VRAM specs).
+  - *Parallel Evaluation:* Processes agent responses concurrently to compare perspectives.
+- **Debounced Autosave & Auto-write:** Includes automatic saving as you edit files, and an optional auto-write compiler that automatically writes generated agent artifacts straight to your mounted directory.
+- **Live Coding simulation:** Offers a visual typing simulation of generated code that can be toggled on/off to display output instantly.
+- **File Extension Correction:** Dynamically maps fallback code extensions (e.g., mapping `.python` -> `.py`, `.javascript` -> `.js`, `.typescript` -> `.ts`) when parsing block responses.
 
 ### Premium Offline AI Tool Suite (20 Tools Total)
 The suite includes the original 10 offline AI utilities (Chat, Summarizer, Caption Generator, OCR Assistant, Prompt Enhancer, Image Classifier, Text Rewriter, Translator, Speech-to-Text, and Semantic Search), plus **10 brand-new tools** added to the line-up:
