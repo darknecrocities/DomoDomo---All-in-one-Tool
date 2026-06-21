@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Folder,
   FileCode,
@@ -86,6 +86,37 @@ const POPULAR_MODELS: ModelMeta[] = [
   }
 ];
 
+const cleanCodeContent = (raw: string) => {
+  let content = raw.trim();
+  content = content.replace(/^```\w*\n/, '');
+  content = content.replace(/\n```$/, '');
+  return content.trim();
+};
+
+const highlightCode = (code: string) => {
+  if (!code) return '';
+  let escaped = code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  const tokenRegex = /(\/\/.*|#.*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d+(?:\.\d+)?\b)|(\b\w+\b)|([^\s\w]+)/g;
+  const keywords = new Set(['const','let','var','function','return','import','export','from','class','extends','if','else','for','while','do','break','continue','switch','case','default','try','catch','finally','throw','new','this','typeof','instanceof','async','await','yield','def','elif','as','in','is','not','and','or','lambda','pass','except','raise','with','assert','global','nonlocal','del']);
+  const builtins = new Set(['console','log','error','warn','info','window','document','process','require','self','true','false','null','undefined','Object','Array','String','Number','Boolean','Function','Promise','Map','Set','None','int','str','float','list','dict','tuple','set','bool','len','range','open','print','sys','os','math']);
+
+  return escaped.replace(tokenRegex, (match, comment, string, number, word) => {
+    if (comment) return `<span class="text-[#72706C] italic">${comment}</span>`;
+    if (string) return `<span class="text-[#E29E2D]">${string}</span>`;
+    if (number) return `<span class="text-[#BD93F9]">${number}</span>`;
+    if (word) {
+      if (keywords.has(word)) return `<span class="text-[#FF79C6] font-bold">${word}</span>`;
+      if (builtins.has(word)) return `<span class="text-[#8BE9FD]">${word}</span>`;
+      return word;
+    }
+    return match;
+  });
+};
+
 export const AIDomoAgentHub = () => {
   const [activeTab, setActiveTab] = useState<'ide' | 'models' | 'setup'>('ide');
   const [osTab, setOsTab] = useState<'mac' | 'win' | 'linux'>('mac');
@@ -100,6 +131,16 @@ export const AIDomoAgentHub = () => {
   const [activeFile, setActiveFile] = useState<{ path: string; handle: any; content: string } | null>(null);
   const [editorContent, setEditorContent] = useState<string>('');
   const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const preRef = useRef<HTMLPreElement>(null);
+
+  const handleEditorScroll = () => {
+    if (textareaRef.current && preRef.current) {
+      preRef.current.scrollTop = textareaRef.current.scrollTop;
+      preRef.current.scrollLeft = textareaRef.current.scrollLeft;
+    }
+  };
 
   // Chat State
   const [prompt, setPrompt] = useState<string>('');
@@ -133,7 +174,7 @@ export const AIDomoAgentHub = () => {
   const simulateLiveCoding = (fullContent: string) => {
     let index = 0;
     setEditorContent('');
-    const cleanContent = fullContent.replace(/^```\w*\n/, '').replace(/\n```$/, '');
+    const cleanContent = cleanCodeContent(fullContent);
     const stepSize = Math.max(1, Math.floor(cleanContent.length / 40));
     
     const interval = setInterval(() => {
@@ -677,11 +718,20 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
               </div>
 
               {activeFile ? (
-                <textarea
-                  value={editorContent}
-                  onChange={(e) => setEditorContent(e.target.value)}
-                  className="w-full flex-1 h-96 min-h-[350px] bg-[#111213] border border-[#2A2D30] rounded-xl p-4 font-mono text-[11px] text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]/50 leading-relaxed resize-none"
-                />
+                <div className="relative w-full flex-1 min-h-[380px] font-mono text-[11px] leading-relaxed">
+                  <pre
+                    ref={preRef}
+                    className="absolute inset-0 w-full h-full p-4 bg-[#111213] border border-[#2A2D30] rounded-xl overflow-auto pointer-events-none whitespace-pre break-all text-[#ECEBE9] text-left"
+                    dangerouslySetInnerHTML={{ __html: highlightCode(editorContent) }}
+                  />
+                  <textarea
+                    ref={textareaRef}
+                    value={editorContent}
+                    onChange={(e) => setEditorContent(e.target.value)}
+                    onScroll={handleEditorScroll}
+                    className="absolute inset-0 w-full h-full p-4 bg-transparent text-transparent caret-[#ECEBE9] border border-transparent rounded-xl focus:outline-none resize-none overflow-auto font-mono text-[11px] leading-relaxed whitespace-pre break-all text-left"
+                  />
+                </div>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-8 space-y-3">
                   <FileCode size={36} className="text-[#72706C] stroke-[1.5]" />
