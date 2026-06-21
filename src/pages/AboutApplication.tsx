@@ -74,7 +74,7 @@ export const AboutApplication = () => {
         <h2 className="text-xl md:text-2xl font-extrabold text-[#ECEBE9] tracking-tight">
           What's New in DomoDomo
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
             <span className="text-[#3C6B4D] font-bold text-sm block">10 New Developer Utilities</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
@@ -85,6 +85,12 @@ export const AboutApplication = () => {
             <span className="text-[#3C6B4D] font-bold text-sm block">Library API Hub (1,480+ Integrations)</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               A comprehensive directory of verified public APIs with dynamic client-side pagination, search indexing, category groupings, and immediate code generation (JavaScript fetch, Python, and cURL requests) for streamlined development.
+            </p>
+          </div>
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
+            <span className="text-[#3C6B4D] font-bold text-sm block">Domo Agent Hub & Explainer</span>
+            <p className="text-xs text-[#A3A09B] leading-relaxed">
+              A local-first offline IDE with browser folder mounting, file writing commands, and the DomoDomo Selection Explainer with local file upload support and custom markdown responses.
             </p>
           </div>
         </div>

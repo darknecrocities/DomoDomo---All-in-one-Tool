@@ -52,49 +52,52 @@ export const Shell = () => {
 
           <div className="flex items-center gap-4">
             {/* Desktop nav links */}
-            <nav className="hidden md:flex items-center gap-5">
+            <nav className="hidden md:flex items-center gap-4 text-xs font-bold">
               <NavLink
                 to="/"
                 end
                 className={({ isActive }) =>
-                  `text-xs font-bold tracking-wide transition-colors ${
+                  `tracking-wide transition-colors ${
                     isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
                 Tools
               </NavLink>
-              <div className="h-3 w-[1px] bg-[#2A2D30]" />
+              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  `text-xs font-bold tracking-wide transition-colors ${
+                  `tracking-wide transition-colors ${
                     isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
                 About DomoDomo
               </NavLink>
+              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
               <NavLink
                 to="/library-api"
                 className={({ isActive }) =>
-                  `text-xs font-bold tracking-wide transition-colors ${
+                  `tracking-wide transition-colors ${
                     isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
                 Library API
               </NavLink>
+              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
+              <NavLink
+                to="/docs"
+                className={({ isActive }) =>
+                  `tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                  }`
+                }
+              >
+                Documentation
+              </NavLink>
             </nav>
-
-            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
-
-            <Link
-              to="/docs"
-              className="hidden md:inline text-xs font-semibold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
-            >
-              Documentation
-            </Link>
 
             <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
