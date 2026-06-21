@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star, Menu, X } from 'lucide-react';
 import { Logo } from './Logo';
+
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
   <svg
@@ -21,6 +22,7 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
 
 export const Shell = () => {
   const [stars, setStars] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool')
@@ -42,13 +44,15 @@ export const Shell = () => {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#111213]">
       {/* Top Navbar */}
-      <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50 px-6 py-3.5">
+      <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50 px-4 sm:px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="hover:opacity-95 transition-opacity">
-              <Logo />
-            </Link>
-            <nav className="flex items-center gap-5">
+          <Link to="/" className="hover:opacity-95 transition-opacity">
+            <Logo />
+          </Link>
+
+          <div className="flex items-center gap-4">
+            {/* Desktop nav links */}
+            <nav className="hidden md:flex items-center gap-5">
               <NavLink
                 to="/"
                 end
@@ -60,6 +64,7 @@ export const Shell = () => {
               >
                 Tools
               </NavLink>
+              <div className="h-3 w-[1px] bg-[#2A2D30]" />
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
@@ -71,17 +76,17 @@ export const Shell = () => {
                 About DomoDomo
               </NavLink>
             </nav>
-          </div>
 
-          <div className="flex items-center gap-4">
+            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
+
             <Link
               to="/docs"
-              className="text-xs font-semibold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
+              className="hidden md:inline text-xs font-semibold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
             >
               Documentation
             </Link>
 
-            <div className="h-4 w-[1px] bg-[#2A2D30]" />
+            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
             {/* Status indicator */}
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
@@ -89,13 +94,13 @@ export const Shell = () => {
               <span>Sandbox Local</span>
             </div>
 
-            <div className="h-4 w-[1px] bg-[#2A2D30] hidden sm:block" />
+            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
             <a
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
               title="GitHub Repository"
             >
               <GithubIcon size={14} />
@@ -103,12 +108,74 @@ export const Shell = () => {
               <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
               <span className="text-[10px] font-mono leading-none">{stars !== null ? stars : '—'}</span>
             </a>
+
+            {/* Hamburger button - mobile only */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-3 pt-3 border-t border-[#2A2D30]">
+            <nav className="flex flex-col gap-1 pb-3">
+              <NavLink
+                to="/"
+                end
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
+              >
+                Tools
+              </NavLink>
+              <NavLink
+                to="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
+              >
+                About DomoDomo
+              </NavLink>
+              <Link
+                to="/docs"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
+              >
+                Documentation
+              </Link>
+              <a
+                href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors flex items-center gap-2"
+              >
+                <GithubIcon size={16} />
+                <span>GitHub</span>
+                {stars !== null && (
+                  <>
+                    <Star size={12} className="text-[#E29E2D] fill-[#E29E2D]" />
+                    <span className="text-[10px] font-mono">{stars}</span>
+                  </>
+                )}
+              </a>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Main Content Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Outlet />
       </main>
 
@@ -143,7 +210,7 @@ export const Shell = () => {
               <span>Zero-Server Architecture</span>
             </span>
             <span>•</span>
-            <span className="text-[#A3A09B]">v1.0.0 (Stable)</span>
+            <span className="text-[#A3A09B]">v2.0.0</span>
           </div>
         </div>
       </footer>
