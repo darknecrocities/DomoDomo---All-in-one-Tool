@@ -176,7 +176,7 @@ const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: Tool
       { id: 'ai-code-reviewer', name: 'AI Code Reviewer', engine: 'Ollama Static Review Pipeline', details: 'Audits code structure for bugs, security weaknesses, performance, and best practices.' },
       { id: 'ai-mind-mapper', name: 'AI Mind Mapper', engine: 'Ollama Hierarchical Layout Pipeline', details: 'Extracts concepts from topics to organize them into nested branches and outlines.' },
       { id: 'domo-agent-hub', name: 'Domo Agent Hub', engine: 'Ollama Workspace File API', details: 'Mounts local directories using File System Access handles to edit files and direct AI coding runs offline.' },
-      { id: 'domo-selection', name: 'DomoDomo Selection Explainer', engine: 'Ollama Highlight Selector Pipeline', details: 'Provides inline segment highlighting actions answered by the friendly DomoDomo mascot persona.' }
+      { id: 'domo-selection', name: 'DomoDomo Selection Explainer', engine: 'Ollama Highlight Selector Pipeline', details: 'Provides inline segment highlighting and local file upload support, answered by the friendly DomoDomo mascot persona with custom markdown formatting.' }
     ]
   }
 };

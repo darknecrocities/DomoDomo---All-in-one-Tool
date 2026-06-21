@@ -48,50 +48,56 @@ export const Shell = () => {
             <Link to="/" className="hover:opacity-95 transition-opacity">
               <Logo />
             </Link>
-            <nav className="flex items-center gap-5">
+            <nav className="flex items-center gap-4 text-xs font-bold">
               <NavLink
                 to="/"
                 end
                 className={({ isActive }) =>
-                  `text-xs font-bold tracking-wide transition-colors ${
+                  `tracking-wide transition-colors ${
                     isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
                 Tools
               </NavLink>
+              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  `text-xs font-bold tracking-wide transition-colors ${
+                  `tracking-wide transition-colors ${
                     isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
                 About DomoDomo
               </NavLink>
+              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
               <NavLink
                 to="/library-api"
                 className={({ isActive }) =>
-                  `text-xs font-bold tracking-wide transition-colors ${
+                  `tracking-wide transition-colors ${
                     isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
                 Library API
               </NavLink>
+              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
+              <NavLink
+                to="/docs"
+                className={({ isActive }) =>
+                  `tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                  }`
+                }
+              >
+                Documentation
+              </NavLink>
             </nav>
           </div>
 
           <div className="flex items-center gap-4">
-            <Link
-              to="/docs"
-              className="text-xs font-semibold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
-            >
-              Documentation
-            </Link>
-
-            <div className="h-4 w-[1px] bg-[#2A2D30]" />
+            <div className="h-4 w-[1px] bg-[#2A2D30] hidden md:block" />
 
             {/* Status indicator */}
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
