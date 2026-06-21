@@ -128,7 +128,7 @@ import { AIMathSolverTool } from '../tools/ai/AIMathSolver';
 import { AIRecipeGeneratorTool } from '../tools/ai/AIRecipeGenerator';
 import { AICodeReviewerTool } from '../tools/ai/AICodeReviewer';
 import { AIMindMapperTool } from '../tools/ai/AIMindMapper';
-import { AIOpenClawHub } from '../tools/ai/AIOpenClawHub';
+import { AIDomoAgentHub } from '../tools/ai/AIDomoAgentHub';
 import { AIDomoSelection } from '../tools/ai/AIDomoSelection';
 
 export const TOOLS: Tool[] = [
@@ -260,7 +260,7 @@ export const TOOLS: Tool[] = [
   { id: 'ai-recipe-generator', name: 'AI Recipe Generator', category: 'ai', description: 'Ingredients in → full recipe with steps, nutrition, and variants.', icon: 'Hammer', run: async (i) => i, component: AIRecipeGeneratorTool },
   { id: 'ai-code-reviewer', name: 'AI Code Reviewer', category: 'ai', description: 'Review code for bugs, security issues, and best practices.', icon: 'Hammer', run: async (i) => i, component: AICodeReviewerTool },
   { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', run: async (i) => i, component: AIMindMapperTool },
-  { id: 'openclaw-hub', name: 'OpenClaw Model Hub', category: 'ai', description: 'Download and manage open offline language models locally.', icon: 'Hammer', run: async (i) => i, component: AIOpenClawHub },
+  { id: 'domo-agent-hub', name: 'Domo Agent Hub', category: 'ai', description: 'Interactive offline coding IDE & AI agent workspace.', icon: 'Hammer', run: async (i) => i, component: AIDomoAgentHub },
   { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', run: async (i) => i, component: AIDomoSelection }
 ];
 
