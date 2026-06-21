@@ -9,7 +9,8 @@ import {
   Check,
   Cpu,
   MessageSquare,
-  Info
+  Info,
+  Upload
 } from 'lucide-react';
 import { aiService } from '../../utils/aiService';
 
@@ -45,6 +46,25 @@ export const AIDomoSelection = () => {
   useEffect(() => {
     checkStatus();
   }, []);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (text) {
+        setInputText(text);
+        setSelectedText('');
+        setResponse(`📂 Loaded file: **${file.name}** (${(file.size / 1024).toFixed(1)} KB).\n\nYou can now highlight code segments or text, or select one of the action buttons below to run analysis!`);
+      }
+    };
+    reader.onerror = () => {
+      setResponse("❌ Failed to read uploaded file.");
+    };
+    reader.readAsText(file);
+  };
 
   // Monitor text highlights in the textarea
   const handleSelection = () => {
@@ -169,9 +189,21 @@ ${contextText}
           <div className="glass-card bg-[#18191B] p-4 space-y-3 relative">
             <div className="flex justify-between items-center text-xs font-semibold">
               <span className="text-[#A3A09B]">Interactive Workspace Editor</span>
-              <span className="text-[10px] font-mono text-[#72706C]">
-                {selectedText ? '✏️ Selection Detected' : '💡 Highlight text to target Domo'}
-              </span>
+              <div className="flex items-center gap-3">
+                <label className="cursor-pointer text-[10px] font-bold text-[#3C6B4D] hover:text-[#4A845F] bg-[#3C6B4D]/10 hover:bg-[#3C6B4D]/20 border border-[#3C6B4D]/25 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                  <Upload size={12} />
+                  <span>Upload File</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".txt,.js,.jsx,.ts,.tsx,.json,.md,.html,.css,.py,.java,.cpp,.c"
+                    onChange={handleFileUpload}
+                  />
+                </label>
+                <span className="text-[10px] font-mono text-[#72706C]">
+                  {selectedText ? '✏️ Selection Detected' : '💡 Highlight text to target Domo'}
+                </span>
+              </div>
             </div>
             
             <textarea
@@ -257,9 +289,9 @@ ${contextText}
                     <span className="text-xs text-[#72706C] block">{statusText}</span>
                   </div>
                 ) : response ? (
-                  <pre className="whitespace-pre-wrap font-sans text-xs bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-[#ECEBE9] overflow-x-auto">
-                    {response}
-                  </pre>
+                  <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-[#ECEBE9] overflow-y-auto space-y-2 max-h-[450px]">
+                    {renderMarkdown(response)}
+                  </div>
                 ) : (
                   <div className="text-center py-12 space-y-2">
                     <MessageSquare size={36} className="mx-auto text-[#72706C] stroke-[1.5]" />
@@ -308,4 +340,99 @@ ${contextText}
     </div>
   );
 };
+// Custom Lightweight Markdown Parser for Premium Text & Code Presentation
+const renderMarkdown = (text: string) => {
+  if (!text) return null;
+
+  const parts = text.split(/(```[\s\S]*?```)/g);
+
+  return parts.map((part, i) => {
+    if (part.startsWith('```')) {
+      const match = part.match(/```(\w*)\n([\s\S]*?)```/);
+      const language = match ? match[1] : '';
+      const code = match ? match[2] : part.slice(3, -3);
+
+      return (
+        <div key={i} className="my-3 rounded-lg overflow-hidden border border-[#2A2D30] bg-[#0A0B0C] text-left">
+          {language && (
+            <div className="bg-[#151618] px-3 py-1.5 text-[10px] font-mono text-[#72706C] border-b border-[#2A2D30]/60 uppercase tracking-wider flex justify-between items-center">
+              <span>{language}</span>
+            </div>
+          )}
+          <pre className="p-3 overflow-x-auto font-mono text-[11px] text-[#ECEBE9] leading-relaxed">
+            <code>{code}</code>
+          </pre>
+        </div>
+      );
+    }
+
+    const lines = part.split('\n');
+    return (
+      <div key={i} className="space-y-1 text-left">
+        {lines.map((line, lineIdx) => {
+          const content = line;
+          
+          if (content.startsWith('### ')) {
+            return (
+              <h4 key={lineIdx} className="text-xs font-bold text-[#ECEBE9] mt-3 mb-1">
+                {parseInlineMarkdown(content.slice(4))}
+              </h4>
+            );
+          }
+          if (content.startsWith('## ')) {
+            return (
+              <h3 key={lineIdx} className="text-sm font-extrabold text-[#ECEBE9] mt-4 mb-2">
+                {parseInlineMarkdown(content.slice(3))}
+              </h3>
+            );
+          }
+          if (content.startsWith('# ')) {
+            return (
+              <h2 key={lineIdx} className="text-base font-black text-[#ECEBE9] mt-4 mb-2">
+                {parseInlineMarkdown(content.slice(2))}
+              </h2>
+            );
+          }
+
+          if (content.trim().startsWith('- ') || content.trim().startsWith('* ')) {
+            const listText = content.replace(/^\s*[-*]\s+/, '');
+            return (
+              <ul key={lineIdx} className="list-disc pl-4 my-1 text-xs text-[#A3A09B]">
+                <li>{parseInlineMarkdown(listText)}</li>
+              </ul>
+            );
+          }
+
+          return (
+            <p key={lineIdx} className="min-h-[1.2em] leading-relaxed text-xs text-[#A3A09B]">
+              {parseInlineMarkdown(content)}
+            </p>
+          );
+        })}
+      </div>
+    );
+  });
+};
+
+const parseInlineMarkdown = (text: string) => {
+  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="font-extrabold text-[#ECEBE9]">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={i} className="bg-[#111213] border border-[#2A2D30] px-1.5 py-0.5 rounded font-mono text-[10px] text-amber-400">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+};
+
 export default AIDomoSelection;
