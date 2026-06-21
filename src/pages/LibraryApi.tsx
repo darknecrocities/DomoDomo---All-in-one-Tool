@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Search,
   ExternalLink,
@@ -34,6 +34,25 @@ export const LibraryApi = () => {
   const [selectedApi, setSelectedApi] = useState<APIEntry | null>(null);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'js' | 'python' | 'curl'>('js');
+  const [drawerClosing, setDrawerClosing] = useState(false);
+
+  const closeDrawer = useCallback(() => {
+    setDrawerClosing(true);
+    setTimeout(() => {
+      setSelectedApi(null);
+      setDrawerClosing(false);
+    }, 250);
+  }, []);
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (selectedApi) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedApi]);
   
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -329,19 +348,30 @@ curl -X GET "${endpoint}" \\
 
       {/* Details Side-Drawer / Modal Overlay */}
       {selectedApi && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-end bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setSelectedApi(null)}>
+        <div
+          className={`fixed inset-0 z-[100] ${
+            drawerClosing ? 'animate-fade-out' : 'animate-fade-in'
+          }`}
+          onClick={closeDrawer}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+          {/* Drawer Panel - positioned below navbar */}
           <div
-            className="w-full max-w-xl h-full bg-[#18191B] border-l border-[#2A2D30] flex flex-col justify-between shadow-2xl relative"
+            className={`absolute top-14 right-0 bottom-0 w-full max-w-xl flex flex-col bg-[#18191B] border-l border-t border-[#2A2D30] rounded-tl-2xl shadow-2xl ${
+              drawerClosing ? 'animate-slide-out-right' : 'animate-slide-in-right'
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header (Fixed) */}
-            <div className="p-6 md:p-8 pb-4 border-b border-[#2A2D30]/60 space-y-4">
+            {/* Modal Header */}
+            <div className="shrink-0 p-6 md:p-8 pb-4 border-b border-[#2A2D30]/60 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2.5 py-1 rounded-md">
                   {selectedApi.category}
                 </span>
                 <button
-                  onClick={() => setSelectedApi(null)}
+                  onClick={closeDrawer}
                   className="text-xs font-semibold text-[#A3A09B] hover:text-[#ECEBE9] bg-[#1E2022] hover:bg-[#25282B] px-3 py-1.5 rounded-lg border border-[#2A2D30] transition-colors"
                 >
                   Close
@@ -442,7 +472,7 @@ curl -X GET "${endpoint}" \\
             </div>
 
             {/* Modal Action Buttons (Fixed Footer) */}
-            <div className="p-6 md:p-8 pt-4 border-t border-[#2A2D30]/60 flex gap-3">
+            <div className="shrink-0 p-6 md:p-8 pt-4 border-t border-[#2A2D30]/60 flex gap-3">
               <a
                 href={selectedApi.link}
                 target="_blank"
@@ -454,7 +484,7 @@ curl -X GET "${endpoint}" \\
                 <ExternalLink size={12} />
               </a>
               <button
-                onClick={() => setSelectedApi(null)}
+                onClick={closeDrawer}
                 className="btn-secondary text-xs px-5"
               >
                 Done
