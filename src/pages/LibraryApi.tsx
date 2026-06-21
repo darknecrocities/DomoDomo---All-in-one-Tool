@@ -331,11 +331,11 @@ curl -X GET "${endpoint}" \\
       {selectedApi && (
         <div className="fixed inset-0 z-[100] flex items-center justify-end bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setSelectedApi(null)}>
           <div
-            className="w-full max-w-xl h-full bg-[#18191B] border-l border-[#2A2D30] p-6 md:p-8 flex flex-col justify-between overflow-y-auto space-y-6 shadow-2xl relative"
+            className="w-full max-w-xl h-full bg-[#18191B] border-l border-[#2A2D30] flex flex-col justify-between shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="space-y-4">
+            {/* Modal Header (Fixed) */}
+            <div className="p-6 md:p-8 pb-4 border-b border-[#2A2D30]/60 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2.5 py-1 rounded-md">
                   {selectedApi.category}
@@ -356,7 +356,10 @@ curl -X GET "${endpoint}" \\
                   {selectedApi.description}
                 </p>
               </div>
+            </div>
 
+            {/* Scrollable Modal Content */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 py-4 space-y-6">
               {/* Specs Table */}
               <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs">
                 <div className="space-y-1">
@@ -438,8 +441,8 @@ curl -X GET "${endpoint}" \\
               </div>
             </div>
 
-            {/* Modal Action Buttons */}
-            <div className="pt-6 border-t border-[#2A2D30]/60 flex gap-3">
+            {/* Modal Action Buttons (Fixed Footer) */}
+            <div className="p-6 md:p-8 pt-4 border-t border-[#2A2D30]/60 flex gap-3">
               <a
                 href={selectedApi.link}
                 target="_blank"
