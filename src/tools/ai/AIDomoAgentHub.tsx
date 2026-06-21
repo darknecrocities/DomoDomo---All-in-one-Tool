@@ -118,7 +118,7 @@ const highlightCode = (code: string) => {
 };
 
 export const AIDomoAgentHub = () => {
-  const [activeTab, setActiveTab] = useState<'ide' | 'models' | 'setup'>('ide');
+  const [activeTab, setActiveTab] = useState<'ide' | 'orchestrator' | 'models' | 'setup'>('ide');
   const [osTab, setOsTab] = useState<'mac' | 'win' | 'linux'>('mac');
   
   const [ollamaActive, setOllamaActive] = useState(false);
@@ -131,6 +131,227 @@ export const AIDomoAgentHub = () => {
   const [activeFile, setActiveFile] = useState<{ path: string; handle: any; content: string } | null>(null);
   const [editorContent, setEditorContent] = useState<string>('');
   const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+
+  // Multi-Agent Configuration
+  interface AgentConfig {
+    id: string;
+    name: string;
+    role: string;
+    model: string;
+    promptTemplate: string;
+  }
+
+  const [agents, setAgents] = useState<AgentConfig[]>([
+    {
+      id: 'agent-1',
+      name: 'Domo Architect',
+      role: 'System Architect',
+      model: '',
+      promptTemplate: 'You are the Domo Architect. Break down the user prompt into structural specifications and file requirements.'
+    },
+    {
+      id: 'agent-2',
+      name: 'Domo Hacker',
+      role: 'Frontend Coder',
+      model: '',
+      promptTemplate: 'You are the Domo Hacker. Implement complete frontend code files (HTML, CSS, JS, React) based on the structural specs. Use the [WRITE_FILE: path] format.'
+    },
+    {
+      id: 'agent-3',
+      name: 'Domo Auditor',
+      role: 'QA & Security Reviewer',
+      model: '',
+      promptTemplate: 'You are the Domo Auditor. Review the code structures, find syntax/logic bugs, and provide refactoring suggestions.'
+    }
+  ]);
+
+  const [orchestratorPrompt, setOrchestratorPrompt] = useState<string>('');
+  const [isOrchestrating, setIsOrchestrating] = useState<boolean>(false);
+  const [orchestrationMode, setOrchestrationMode] = useState<'sequential' | 'simultaneous'>('sequential');
+  
+  // Shared memory blackboard log: dialogs between agents
+  const [blackboardLogs, setBlackboardLogs] = useState<{ agentName: string; text: string; role: 'system' | 'agent'; timestamp: string; agentId?: string }[]>([]);
+  
+  // Generated Artifacts list: files created or proposed
+  const [artifacts, setArtifacts] = useState<{ id: string; name: string; content: string; agentName: string }[]>([]);
+  const [activeArtifact, setActiveArtifact] = useState<{ id: string; name: string; content: string; agentName: string } | null>(null);
+
+  // Custom agent creation helpers
+  const handleAddAgent = () => {
+    const newId = `agent-${Math.random().toString(36).substring(7)}`;
+    setAgents((prev) => [
+      ...prev,
+      {
+        id: newId,
+        name: `Agent ${prev.length + 1}`,
+        role: 'Assistant Persona',
+        model: selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : ''),
+        promptTemplate: 'You are a custom AI agent. Perform tasks in coordination with other agents.'
+      }
+    ]);
+  };
+
+  const handleRemoveAgent = (id: string) => {
+    if (agents.length <= 1) {
+      setErrorMsg('You must have at least one agent to run orchestration.');
+      return;
+    }
+    setAgents((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const handleUpdateAgent = (id: string, field: keyof AgentConfig, val: string) => {
+    setAgents((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, [field]: val } : a))
+    );
+  };
+
+  // Multi-Agent pipeline executor
+  const handleOrchestrate = async () => {
+    if (!orchestratorPrompt.trim() || isOrchestrating) return;
+    setIsOrchestrating(true);
+    setBlackboardLogs([]);
+    setArtifacts([]);
+    setActiveArtifact(null);
+
+    const timestamp = () => new Date().toTimeString().split(' ')[0];
+    const logToBlackboard = (agentName: string, text: string, role: 'system' | 'agent' = 'agent', agentId?: string) => {
+      setBlackboardLogs((prev) => [
+        ...prev,
+        { agentName, text, role, agentId, timestamp: timestamp() }
+      ]);
+    };
+
+    logToBlackboard('System', `🚀 Starting Multi-Agent Orchestration (${orchestrationMode === 'sequential' ? 'Sequential Chain' : 'Parallel Evaluation'})`, 'system');
+    logToBlackboard('System', `Goal Task: "${orchestratorPrompt}"`, 'system');
+
+    try {
+      if (orchestrationMode === 'sequential') {
+        let currentContext = orchestratorPrompt;
+        
+        for (let i = 0; i < agents.length; i++) {
+          const agent = agents[i];
+          const agentModel = agent.model || selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b');
+          
+          logToBlackboard('System', `⏱️ Activating ${agent.name} (${agent.role}) via model ${agentModel}...`, 'system');
+          
+          const systemPrompt = `${agent.promptTemplate}\n\nMaintain context. Keep output structured and highly professional.`;
+          const userPrompt = `Input context from previous pipeline step:\n"""\n${currentContext}\n"""\n\nOverall Goal: ${orchestratorPrompt}`;
+
+          const responseText = await aiService.generateText(userPrompt, 800, () => {}, agentModel, { systemPrompt });
+          
+          logToBlackboard(agent.name, responseText, 'agent', agent.id);
+          currentContext = responseText;
+
+          extractOrchestratedArtifacts(responseText, agent.name);
+          
+          // CPU optimization pause
+          await new Promise((resolve) => setTimeout(resolve, 800));
+        }
+      } else {
+        // Parallel mode: Query one by one to keep the device smooth but use separate inputs
+        for (let i = 0; i < agents.length; i++) {
+          const agent = agents[i];
+          const agentModel = agent.model || selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b');
+          
+          logToBlackboard('System', `⏱️ Running Parallel Prompt evaluation for ${agent.name}...`, 'system');
+          
+          const systemPrompt = `${agent.promptTemplate}\n\nReview the overall task based on your specific role.`;
+          const userPrompt = `Goal Task to solve: ${orchestratorPrompt}`;
+
+          const responseText = await aiService.generateText(userPrompt, 800, () => {}, agentModel, { systemPrompt });
+          
+          logToBlackboard(agent.name, responseText, 'agent', agent.id);
+          extractOrchestratedArtifacts(responseText, agent.name);
+          
+          await new Promise((resolve) => setTimeout(resolve, 800));
+        }
+      }
+
+      logToBlackboard('System', `✅ Multi-Agent Orchestration completed successfully.`, 'system');
+    } catch (err: any) {
+      logToBlackboard('System', `❌ Orchestration failed: ${err.message || err}`, 'system');
+    } finally {
+      setIsOrchestrating(false);
+    }
+  };
+
+  const extractOrchestratedArtifacts = (text: string, agentName: string) => {
+    const writeRegex = /\[WRITE_FILE:\s*([^\s\]]+)\]([\s\S]*?)\[END_WRITE_FILE\]/g;
+    let match;
+    let found = false;
+
+    while ((match = writeRegex.exec(text)) !== null) {
+      found = true;
+      const fileName = match[1].trim();
+      const rawContent = match[2];
+      const content = cleanCodeContent(rawContent);
+
+      const newArtifact = {
+        id: Math.random().toString(36).substring(7),
+        name: fileName,
+        content,
+        agentName
+      };
+
+      setArtifacts((prev) => {
+        const filtered = prev.filter((a) => a.name !== fileName);
+        return [...filtered, newArtifact];
+      });
+      setActiveArtifact(newArtifact);
+    }
+
+    if (!found) {
+      const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+      let blockMatch;
+      let blockCount = 1;
+      while ((blockMatch = codeBlockRegex.exec(text)) !== null) {
+        const lang = blockMatch[1] || 'txt';
+        const content = blockMatch[2].trim();
+        const fileName = `output_${agentName.toLowerCase().replace(/\s+/g, '_')}_${blockCount}.${lang}`;
+        
+        const newArtifact = {
+          id: Math.random().toString(36).substring(7),
+          name: fileName,
+          content,
+          agentName
+        };
+        setArtifacts((prev) => {
+          const filtered = prev.filter((a) => a.name !== fileName);
+          return [...filtered, newArtifact];
+        });
+        setActiveArtifact(newArtifact);
+        blockCount++;
+      }
+    }
+  };
+
+  const handleWriteArtifactToWorkspace = async (artifact: typeof activeArtifact) => {
+    if (!artifact || !dirHandle) {
+      setErrorMsg('Cannot write artifact. Ensure a workspace folder is mounted.');
+      return;
+    }
+    try {
+      const parts = artifact.name.split('/');
+      let currentDir = dirHandle;
+      for (let i = 0; i < parts.length - 1; i++) {
+        currentDir = await currentDir.getDirectoryHandle(parts[i], { create: true });
+      }
+      const fileHandle = await currentDir.getFileHandle(parts[parts.length - 1], { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(artifact.content);
+      await writable.close();
+      
+      await refreshFileTree();
+      
+      // Auto-open in main IDE workspace
+      setActiveFile({ path: artifact.name, handle: fileHandle, content: artifact.content });
+      simulateLiveCoding(artifact.content);
+      
+      alert(`✅ Successfully wrote "${artifact.name}" to workspace!`);
+    } catch (e: any) {
+      setErrorMsg(`Failed to write artifact: ${e.message || e}`);
+    }
+  };
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
@@ -584,6 +805,16 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
           Domo Agent IDE Workspace
         </button>
         <button
+          onClick={() => setActiveTab('orchestrator')}
+          className={`pb-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
+            activeTab === 'orchestrator'
+              ? 'border-[#3C6B4D] text-[#ECEBE9]'
+              : 'border-transparent text-[#72706C] hover:text-[#A3A09B]'
+          }`}
+        >
+          Multi-Agent Orchestrator
+        </button>
+        <button
           onClick={() => setActiveTab('models')}
           className={`pb-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-all ${
             activeTab === 'models'
@@ -852,6 +1083,258 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
                 >
                   <Play size={10} />
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'orchestrator' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Agent Configuration Panel (Col 4) */}
+          <div className="lg:col-span-4 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[500px]">
+            <div className="space-y-4 flex-1 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center pb-2 border-b border-[#2A2D30]">
+                  <span className="text-xs font-bold uppercase text-[#72706C] tracking-wider">Configure Agents</span>
+                  <button
+                    onClick={handleAddAgent}
+                    className="py-1 px-2.5 bg-[#3C6B4D]/15 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 border border-[#3C6B4D]/35 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-colors"
+                  >
+                    <Plus size={11} />
+                    <span>Add Agent</span>
+                  </button>
+                </div>
+
+                {/* Pipeline Mode Switcher */}
+                <div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] space-y-2 text-left">
+                  <span className="text-[10px] font-bold uppercase text-[#72706C] tracking-wider block">Orchestration Protocol</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setOrchestrationMode('sequential')}
+                      className={`py-1.5 px-3 rounded-lg text-[10px] font-bold border transition-colors ${
+                        orchestrationMode === 'sequential'
+                          ? 'bg-[#3C6B4D]/10 text-emerald-500 border-[#3C6B4D]/25'
+                          : 'bg-[#18191B] text-[#72706C] border-[#2A2D30] hover:text-[#A3A09B]'
+                      }`}
+                    >
+                      ⛓️ Sequential Chain
+                    </button>
+                    <button
+                      onClick={() => setOrchestrationMode('simultaneous')}
+                      className={`py-1.5 px-3 rounded-lg text-[10px] font-bold border transition-colors ${
+                        orchestrationMode === 'simultaneous'
+                          ? 'bg-[#3C6B4D]/10 text-emerald-500 border-[#3C6B4D]/25'
+                          : 'bg-[#18191B] text-[#72706C] border-[#2A2D30] hover:text-[#A3A09B]'
+                      }`}
+                    >
+                      ⚡ Parallel Evaluation
+                    </button>
+                  </div>
+                  <span className="text-[9px] text-[#72706C] leading-tight block mt-1.5">
+                    {orchestrationMode === 'sequential' 
+                      ? 'Outputs from previous agents feed as inputs into subsequent agents (recommended, lighter VRAM footprint).'
+                      : 'Agents analyze the same task in parallel (requires separate processing stages to stay smooth).'}
+                  </span>
+                </div>
+
+                {/* List of Agents */}
+                <div className="space-y-3 overflow-y-auto max-h-[380px] pr-1">
+                  {agents.map((agent) => (
+                    <div key={agent.id} className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl space-y-2.5 text-left relative group">
+                      <button
+                        onClick={() => handleRemoveAgent(agent.id)}
+                        className="absolute top-2 right-2 text-xs text-[#72706C] hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Remove agent"
+                      >
+                        ✕
+                      </button>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-0.5">
+                          <label className="text-[9px] font-bold text-[#72706C] uppercase">Agent Name</label>
+                          <input
+                            type="text"
+                            value={agent.name}
+                            onChange={(e) => handleUpdateAgent(agent.id, 'name', e.target.value)}
+                            className="w-full bg-[#18191B] border border-[#2A2D30] rounded-lg px-2 py-1 text-xs text-[#ECEBE9] font-bold focus:outline-none"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <label className="text-[9px] font-bold text-[#72706C] uppercase">Role Specialty</label>
+                          <input
+                            type="text"
+                            value={agent.role}
+                            onChange={(e) => handleUpdateAgent(agent.id, 'role', e.target.value)}
+                            className="w-full bg-[#18191B] border border-[#2A2D30] rounded-lg px-2 py-1 text-xs text-[#A3A09B] focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <label className="text-[9px] font-bold text-[#72706C] uppercase">Model Assignment</label>
+                        <select
+                          value={agent.model}
+                          onChange={(e) => handleUpdateAgent(agent.id, 'model', e.target.value)}
+                          className="w-full bg-[#18191B] border border-[#2A2D30] rounded-lg px-2 py-1 text-xs text-[#ECEBE9] focus:outline-none"
+                        >
+                          <option value="">Default ({selectedModel || 'Select model'})</option>
+                          {downloadedModels.map((m) => (
+                            <option key={m} value={m}>{m}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <label className="text-[9px] font-bold text-[#72706C] uppercase">System Prompt Instructions</label>
+                        <textarea
+                          value={agent.promptTemplate}
+                          onChange={(e) => handleUpdateAgent(agent.id, 'promptTemplate', e.target.value)}
+                          rows={2}
+                          className="w-full bg-[#18191B] border border-[#2A2D30] rounded-lg p-2 text-[10px] text-[#A3A09B] focus:outline-none resize-none"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Blackboard Memory Logs Console (Col 5) */}
+          <div className="lg:col-span-5 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[500px]">
+            <div className="space-y-4 flex-1 flex flex-col justify-between">
+              <div className="space-y-2 text-left">
+                <div className="flex items-center justify-between pb-2 border-b border-[#2A2D30]">
+                  <div className="flex items-center gap-1.5">
+                    <Terminal size={12} className="text-[#3C6B4D]" />
+                    <span className="text-xs font-bold uppercase text-[#72706C] tracking-wider">Shared Blackboard Memory</span>
+                  </div>
+                  {isOrchestrating && (
+                    <span className="text-[10px] font-bold text-[#3C6B4D] animate-pulse">Running Agents...</span>
+                  )}
+                </div>
+
+                <div className="bg-[#0A0B0C] border border-[#2A2D30] rounded-2xl p-4 h-[330px] overflow-y-auto font-mono text-[11px] space-y-3">
+                  {blackboardLogs.length === 0 ? (
+                    <div className="text-center py-20 text-[#72706C] space-y-2">
+                      <Sparkles size={24} className="mx-auto opacity-40" />
+                      <p>Blackboard is currently empty.</p>
+                      <p className="text-[9px] max-w-xs mx-auto">Configure your agent workflow, type a system goal below, and start orchestration!</p>
+                    </div>
+                  ) : (
+                    blackboardLogs.map((log, i) => (
+                      <div key={i} className="space-y-1 border-b border-[#2A2D30]/40 pb-2">
+                        <div className="flex justify-between items-center text-[10px] font-bold">
+                          <span className={log.role === 'system' ? 'text-[#3C6B4D]' : 'text-[#FF79C6]'}>
+                            {log.agentName} {log.role === 'system' ? '' : 'says:'}
+                          </span>
+                          <span className="text-[#72706C]">{log.timestamp}</span>
+                        </div>
+                        <p className={`whitespace-pre-wrap leading-relaxed ${
+                          log.role === 'system' ? 'text-[#72706C] italic' : 'text-[#ECEBE9]'
+                        }`}>
+                          {log.text}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Task Orchestrator Input Bar */}
+              <div className="relative mt-2 text-left">
+                <textarea
+                  value={orchestratorPrompt}
+                  onChange={(e) => setOrchestratorPrompt(e.target.value)}
+                  placeholder="Ask the agents to design, write code, and audit a system..."
+                  disabled={isOrchestrating}
+                  className="w-full h-16 bg-[#111213] border border-[#2A2D30] rounded-xl p-3 font-mono text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]/50 leading-relaxed resize-none pr-12"
+                />
+                <button
+                  onClick={handleOrchestrate}
+                  disabled={isOrchestrating || !orchestratorPrompt.trim()}
+                  className="absolute right-3 bottom-3 p-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] rounded-xl disabled:opacity-40 disabled:hover:bg-[#3C6B4D] transition-colors"
+                >
+                  <Play size={14} className={isOrchestrating ? 'animate-spin' : ''} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Generated Artifacts Panel (Col 3) */}
+          <div className="lg:col-span-3 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[500px]">
+            <div className="space-y-4 flex-1 flex flex-col">
+              <div className="flex justify-between items-center pb-2 border-b border-[#2A2D30]">
+                <span className="text-xs font-bold uppercase text-[#72706C] tracking-wider">Output Artifacts</span>
+                <span className="text-[10px] font-mono text-[#72706C]">Count: {artifacts.length}</span>
+              </div>
+
+              {/* Artifacts list */}
+              <div className="flex-1 flex flex-col gap-3 min-h-[380px]">
+                <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1">
+                  {artifacts.length === 0 ? (
+                    <span className="text-xs text-[#72706C] italic text-center py-6 block">No artifacts generated yet.</span>
+                  ) : (
+                    artifacts.map((art) => (
+                      <button
+                        key={art.id}
+                        onClick={() => setActiveArtifact(art)}
+                        className={`w-full text-left p-2.5 rounded-xl border text-xs flex justify-between items-center transition-all ${
+                          activeArtifact?.id === art.id
+                            ? 'bg-[#3C6B4D]/10 border-[#3C6B4D] text-emerald-500 font-bold'
+                            : 'bg-[#111213] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        }`}
+                      >
+                        <span className="truncate">{art.name}</span>
+                        <span className="text-[8px] bg-[#18191B] px-1 py-0.5 rounded text-[#72706C]">{art.agentName.split(' ')[1] || 'Agent'}</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                {/* Active Artifact Preview Panel */}
+                <div className="flex-1 flex flex-col justify-between bg-[#111213] border border-[#2A2D30] rounded-xl p-3">
+                  {activeArtifact ? (
+                    <div className="flex-1 flex flex-col justify-between gap-3 text-left">
+                      <div className="border-b border-[#2A2D30]/60 pb-1.5 flex justify-between items-center">
+                        <span className="text-[10px] font-mono font-bold text-[#ECEBE9] truncate max-w-[150px]">
+                          {activeArtifact.name}
+                        </span>
+                        <span className="text-[8px] uppercase tracking-wider text-[#72706C]">
+                          By {activeArtifact.agentName}
+                        </span>
+                      </div>
+                      
+                      <div className="flex-1 overflow-auto max-h-56 font-mono text-[9px] leading-relaxed text-[#A3A09B] bg-[#0A0B0C] p-2.5 rounded-lg border border-[#2A2D30]/60">
+                        <pre dangerouslySetInnerHTML={{ __html: highlightCode(activeArtifact.content) }} />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleWriteArtifactToWorkspace(activeArtifact)}
+                          disabled={!dirHandle}
+                          className="flex-1 py-1.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] font-bold text-[9px] uppercase tracking-wider rounded-lg transition-colors disabled:opacity-40 disabled:hover:bg-[#3C6B4D]"
+                        >
+                          Write to Workspace
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(activeArtifact.content);
+                            alert('Copied artifact content to clipboard!');
+                          }}
+                          className="py-1.5 px-2 bg-[#18191B] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30] text-[9px] rounded-lg transition-colors"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center text-[#72706C] py-20 space-y-2">
+                      <FileCode size={28} className="opacity-40" />
+                      <p className="text-[10px]">Select an artifact file to preview options.</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
