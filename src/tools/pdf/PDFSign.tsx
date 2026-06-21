@@ -51,6 +51,7 @@ export const PDFSignTool = () => {
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const isDrawingRef = useRef<boolean>(false);
+  const activeRenderTaskRef = useRef<any>(null);
 
   // Initialize/Clear Signature Canvas
   const initCanvas = () => {
@@ -67,6 +68,15 @@ export const PDFSignTool = () => {
 
   useEffect(() => {
     initCanvas();
+    return () => {
+      if (activeRenderTaskRef.current) {
+        try {
+          activeRenderTaskRef.current.cancel();
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
   }, []);
 
   // Render PDF Preview on Upload or Page Change
@@ -98,7 +108,25 @@ export const PDFSignTool = () => {
             canvas.height = displayViewport.height;
             setPreviewDim({ width: displayViewport.width, height: displayViewport.height });
 
-            await page.render({ canvasContext: context, viewport: displayViewport }).promise;
+            // Cancel any running rendering task to prevent overlaps/duplicates
+            if (activeRenderTaskRef.current) {
+              try {
+                activeRenderTaskRef.current.cancel();
+              } catch (e) {
+                // ignore
+              }
+            }
+
+            const renderTask = page.render({ canvasContext: context, viewport: displayViewport });
+            activeRenderTaskRef.current = renderTask;
+
+            try {
+              await renderTask.promise;
+            } catch (err: any) {
+              if (err.name !== 'RenderingCancelledException') {
+                throw err;
+              }
+            }
           }
         }
       } catch (err) {
@@ -207,7 +235,6 @@ export const PDFSignTool = () => {
       x: clientX - dragPos.x,
       y: clientY - dragPos.y
     };
-    e.preventDefault();
   };
 
   const handleDragMove = (e: MouseEvent | TouchEvent) => {
@@ -417,8 +444,8 @@ export const PDFSignTool = () => {
               {/* Drag Positioning Container */}
               <div
                 ref={previewContainerRef}
-                className="relative border border-slate-800 rounded-2xl bg-slate-950/30 overflow-hidden flex items-center justify-center p-2 select-none"
-                style={{ width: previewDim.width ? previewDim.width + 16 : 'auto' }}
+                className="relative border border-slate-800 rounded-2xl bg-slate-950/30 overflow-hidden flex items-center justify-center p-0 select-none touch-none"
+                style={{ width: previewDim.width ? previewDim.width : 'auto' }}
               >
                 <canvas ref={previewCanvasRef} className="rounded-lg shadow-xl" />
 
@@ -427,10 +454,10 @@ export const PDFSignTool = () => {
                   <div
                     onMouseDown={handleDragStart}
                     onTouchStart={handleDragStart}
-                    className="absolute cursor-move select-none border border-dashed border-teal-400 bg-teal-500/10 p-1 flex items-center justify-center group"
+                    className="absolute cursor-move select-none border border-dashed border-teal-400 bg-teal-500/10 p-1 flex items-center justify-center group touch-none"
                     style={{
-                      left: dragPos.x + 8,
-                      top: dragPos.y + 8,
+                      left: dragPos.x,
+                      top: dragPos.y,
                       width: (200 * sigScale) / 200,
                       height: (80 * sigScale) / 200,
                     }}
