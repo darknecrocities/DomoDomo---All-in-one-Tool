@@ -1,190 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Cpu, Shield, Terminal, Settings, GitBranch, Lock, Server, Layers } from 'lucide-react';
+import { TOOLS_DOCS } from '../utils/ToolDocsData';
+import type { ToolCategory } from '../utils/ToolDocsData';
 
 type SectionId = 'intro' | 'sys-archi' | 'offline-flow' | 'tools-ref' | 'setup-guide' | 'core-engines' | 'compliance';
-type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'ai';
-
-interface ToolDoc {
-  id: string;
-  name: string;
-  engine: string;
-  details: string;
-}
-
-const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: ToolDoc[] }> = {
-  pdf: {
-    title: 'PDF Document Suite',
-    desc: 'Local browser compilation of vector documents, overlays, signature drawing, and text manipulation.',
-    list: [
-      { id: 'pdf-text-edit', name: 'Edit PDF Text', engine: 'PDF.js + Canvas2D Layering', details: 'Leverages PDF.js core library to parse font glyph maps and text position coordinates. Renders a high-fidelity interaction canvas where text strings are overlaid with editable input blocks, compiling output edits back into standard PDF stream updates via incremental catalog revisions.' },
-      { id: 'pdf-merge', name: 'Merge PDFs', engine: 'pdf-lib (WASM Compiler)', details: 'Ingests multiple document ArrayBuffers, mapping and copying page dictionaries, cross-reference tables, and font resources into a unified binary structure. Re-builds the object tree under a single PDF catalog writer entirely client-side.' },
-      { id: 'pdf-split', name: 'Split PDF', engine: 'pdf-lib (WASM Compiler)', details: 'Parses the document\'s catalog hierarchy and cross-reference table. Creates a clean, empty document container and clones specific pages with their resource dictionaries (fonts, XObjects) before writing a serialized PDF byte stream.' },
-      { id: 'pdf-compress', name: 'Compress PDF', engine: 'pdf-lib Optimization API', details: 'Locates resource streams in the object table, traversing image streams to downsample high-resolution raster objects and running standard deflate compression on text streams while stripping redundant XML metadata and creator attributes.' },
-      { id: 'pdf-to-img', name: 'PDF → Image', engine: 'PDF.js Render Target', details: 'Executes PDF page rasterization by compiling page operators into standard 2D canvas drawing sequences at custom device-pixel-ratio scales, yielding clean base64 data URLs in PNG or JPEG format.' },
-      { id: 'img-to-pdf', name: 'Image → PDF', engine: 'pdf-lib Image Embedder', details: 'Decodes raw image headers to match dimensions, instantiates a new PDF catalog structure, registers the image stream as a page content resource, and draws the bounding box on the graphics context.' },
-      { id: 'pdf-watermark', name: 'Add Watermark', engine: 'pdf-lib Text overlays', details: 'Parses page dimensions, injects a standard translucent font state matrix, and appends a text draw operator stream directly at calculated relative coordinates without modifying underlying document layers.' },
-      { id: 'pdf-sign', name: 'Sign PDF', engine: 'pdf-lib Graphics Context', details: 'Captures mouse or touch coordinates on an HTML5 canvas to produce a vector stroke path, converting coordinates into a standard PDF path description and drawing the vector overlay directly onto the target page stream.' },
-      { id: 'pdf-protect', name: 'Protect PDF', engine: 'pdf-lib Encryption Standard', details: 'Applies client-side security algorithms to encrypt the PDF document structure. Sets permission bitmasks to block printing, copying, or modifying, and formats standard user/owner challenge strings in the trailer.' },
-      { id: 'pdf-ocr', name: 'Extract Text (OCR)', engine: 'PDF.js Text Content Parser', details: 'Processes page text streams, resolving font maps, spacing arrays, and carriage return operators to extract clean, ordered plain-text strings directly from vector streams without external API requests.' }
-    ]
-  },
-  photo: {
-    title: 'Photo & Image Suite',
-    desc: 'Client-side raster image filtering, transformations, background removal, and dimension adjustments.',
-    list: [
-      { id: 'background-remover', name: 'Background Remover', engine: 'Canvas2D + Color Distance Analytics', details: 'Extracts raw RGBA pixel matrices from an image, executing color distance formulas (e.g. Delta E) on target chroma boundaries to dynamically inject zero-alpha transparency values into matching background pixel coordinates.' },
-      { id: 'image-resizer', name: 'Image Resizer', engine: 'Canvas Scaling (Lanczos/Bilinear)', details: 'Draws source images onto an OffscreenCanvas container configured with target dimensions, utilizing bilinear or bicubic interpolation algorithms in browser rendering engines to prevent aliasing artifacts.' },
-      { id: 'image-compressor', name: 'Image Compressor', engine: 'Canvas JPEG/WebP Quantization', details: 'Extracts raw CanvasImageData, executing discrete cosine transforms (DCT) and quantization matrices using configured quality indices, and encodes the output into compressed JPEG or WebP data blobs.' },
-      { id: 'crop-rotate', name: 'Crop & Rotate Tool', engine: 'Canvas 2D Transform Matrices', details: 'Applies affine translation, rotation, and clipping matrices to a CanvasRenderingContext2D canvas, then draws the cropped section from pixel coordinate bounds to yield a newly oriented asset.' },
-      { id: 'ai-enhancer', name: 'AI Image Enhancer', engine: 'Canvas ImageData Filter Kernels', details: 'Applies multi-pass digital filters including contrast stretching, gamma adjustments, and customized pixel-convolution kernels to optimize sharpness, brightness, and color balance directly in-memory.' },
-      { id: 'watermark-tool', name: 'Watermark Tool', engine: 'Canvas Layering & Compositing', details: 'Uses globalAlpha composite operations to draw logo PNGs or custom text strings onto a baseline image matrix, matching target dimensions and position vectors before compiling to an output blob.' },
-      { id: 'image-upscaler', name: 'Image Upscaler', engine: 'Canvas Bilinear Interpolation', details: 'Iterates image scale increments using OffscreenCanvas, mapping target dimensions with interpolation filters and color adjustments to construct smooth upscaled outputs.' },
-      { id: 'palette-extractor', name: 'Color Palette Extractor', engine: 'Canvas Pixel Quantization (Median Cut)', details: 'Samples pixel clusters, executing a median-cut color quantization algorithm to isolate color spaces and identify dominant hex codes, outputting a curated palette array.' },
-      { id: 'collage-maker', name: 'Collage Maker', engine: 'Canvas Grid Compositing', details: 'Calculates layout bounds based on template files, draws multiple input image structures onto relative sub-rectangles, and applies customizable borders, margins, and padding offsets.' },
-      { id: 'format-converter', name: 'Format Converter', engine: 'Canvas toBlob Serialization', details: 'Loads input files into a browser Image element, draws the element to canvas context, and serializes the binary content into PNG, JPEG, WebP, or AVIF formats using specific MIME parameters.' }
-    ]
-  },
-  document: {
-    title: 'Document Suite',
-    desc: 'Local text editors, document template generators, academic citations, and dictionaries.',
-    list: [
-      { id: 'rich-text', name: 'Rich Text Editor', engine: 'HTML5 contentEditable API + DOM Compiler', details: 'Manages custom styling ranges using document selection ranges, rendering styled DOM nodes in real-time and exporting results as styled CSS-inline HTML, raw TXT, or PDF layouts.' },
-      { id: 'markdown-editor', name: 'Markdown Editor', engine: 'Markdown Parse Compiler', details: 'Tokenizes Markdown strings using clean regex parsers, compiling elements like lists, tables, code blocks, and headers into structured HTML strings rendered directly in the editor workspace.' },
-      { id: 'ocr-scanner', name: 'OCR Scanner', engine: 'Tesseract.js WASM Engine', details: 'Loads a Tesseract WebAssembly engine inside a Web Worker. Passes rasterized image buffers to run neural OCR character recognition, outputting coordinates and bounding box text structures.' },
-      { id: 'resume-builder', name: 'Resume Builder', engine: 'Local Schema Compiler', details: 'Binds user form fields into a normalized JSON CV schema, merging data structures with local CSS layouts and rendering printable PDF views via window.print CSS rules.' },
-      { id: 'invoice-gen', name: 'Invoice Generator', engine: 'Local Arithmetic Compiler', details: 'Performs float arithmetic calculations on invoice tables, computing line-item sums, tax rates, discounts, and formatting structured receipts ready for local storage saving or printing.' },
-      { id: 'summarizer', name: 'Summarizer', engine: 'Frequency Heuristic TF-IDF Parser', details: 'Tokenizes text into sentences, stripping common stopwords and computing local TF-IDF weights to identify high-importance phrases, compiling a concise summary structure.' },
-      { id: 'translator', name: 'Translator', engine: 'Local Dictionary Mapping', details: 'Performs client-side string translations using dictionary mappings, looking up vocabulary and syntactic templates to handle text conversions offline.' },
-      { id: 'grammar-fixer', name: 'Grammar Fixer', engine: 'Regex Match Pattern Engine', details: 'Executes multiple regular expressions checking for common grammatical mistakes, double spaces, and capitalization errors, showing highlighting selectors for corrections.' },
-      { id: 'citation-gen', name: 'Citation Generator', engine: 'Citation Format Standardizer', details: 'Compiles bibliography entries (APA, MLA, Chicago styles) by mapping input metadata strings to style rules and outputting sorted HTML strings.' },
-      { id: 'code-notes', name: 'Code Notes Editor', engine: 'DOM Syntax Highlight Parser', details: 'Renders dynamic text input with synchronized syntax highlighting overlays, parsing statements and comments into styled span tokens for readability.' }
-    ]
-  },
-  converter: {
-    title: 'Converter Suite',
-    desc: 'File format conversions, e-book compiles, Base64 translations, and ZIP archive extraction.',
-    list: [
-      { id: 'jpg-png', name: 'JPG ↔ PNG Converter', engine: 'Canvas MIME Serialization', details: 'Loads source image data, scales it to an OffscreenCanvas, and compiles the byte arrays using browser-native PNG or JPEG encoders.' },
-      { id: 'webp-jpg', name: 'WebP ↔ JPG Converter', engine: 'Canvas MIME Serialization', details: 'Converts modern WebP buffers or JPEG containers by running them through canvas context rendering pipelines and exporting targeted file formats.' },
-      { id: 'mp4-gif', name: 'MP4 ↔ GIF Converter', engine: 'FFmpeg WASM Subprocessor', details: 'Launches an FFmpeg WASM worker in-browser, parsing video frames into sequence arrays, applying color quantization tables, and assembling standard animated GIF frames.' },
-      { id: 'mp3-wav', name: 'MP3 ↔ WAV Converter', engine: 'Web Audio AudioContext', details: 'Decodes MP3 binaries to PCM AudioBuffers, instantiates a WAV writer, writes standard RIFF headers, and writes PCM float arrays as 16-bit signed integers.' },
-      { id: 'csv-json', name: 'CSV ↔ JSON Converter', engine: 'Structured String Array Parser', details: 'Splits CSV tables with regex considering escape quotes, maps column headers to JSON keys, or flattens nested JSON hierarchies back into comma-separated arrays.' },
-      { id: 'xml-json', name: 'XML ↔ JSON Converter', engine: 'Browser DOMParser Engine', details: 'Parses XML markup strings into standard XML DOM structures using DOMParser, recursively traversing nodes to compile a corresponding JSON schema.' },
-      { id: 'docx-txt', name: 'DOCX ↔ TXT Converter', engine: 'JSZip XML Traverser', details: 'Unpacks word document archives, extracts core file content (word/document.xml), and filters out text contents from tag annotations.' },
-      { id: 'epub-pdf', name: 'EPUB → PDF Converter', engine: 'JSZip HTML Compiler', details: 'Extracts EPUB container HTML files, processes embedded CSS properties, and formats the text layouts into multi-page PDF documents via pdf-lib.' },
-      { id: 'base64-tool', name: 'Base64 Converter', engine: 'FileReader API Binary Serializer', details: 'Uses FileReader to read local binary files, compiling them as base64-encoded strings, or decodes them back to binary arrays using standard browser APIs.' },
-      { id: 'zip-extractor', name: 'ZIP Extractor', engine: 'JSZip File Decompressor', details: 'Parses the central directory header of uploaded ZIP archives, extracting compression properties and writing individual file blobs.' }
-    ]
-  },
-  qr: {
-    title: 'QR & Barcode Suite',
-    desc: 'Visual matrix generators, contactless payment codes, WiFi tags, and webcam scanners.',
-    list: [
-      { id: 'qr-generator', name: 'QR Code Generator', engine: 'qrcode.js Canvas Engine', details: 'Generates binary QR matrices (error correction levels L/M/Q/H) from text strings, rendering them on a canvas element.' },
-      { id: 'qr-scanner', name: 'QR Scanner', engine: 'WebRTC Stream + jsQR WASM Decoder', details: 'Captures webcam video frames, extracts image pixel matrices, and runs jsQR image processing to locate and decode QR identifiers.' },
-      { id: 'wifi-qr', name: 'WiFi QR Generator', engine: 'WIFI Credential Format Standardizer', details: 'Serializes network parameters to standard protocol text, encoding it into custom-colored QR graphics.' },
-      { id: 'vcard-qr', name: 'vCard QR Generator', engine: 'vCard Schema Standardizer', details: 'Assembles contact details into standard vCard specifications and generates corresponding QR codes.' },
-      { id: 'event-qr', name: 'Event QR Generator', engine: 'iCalendar Standardizer', details: 'Converts event details into standard iCalendar configurations, rendering them as QR code matrices.' },
-      { id: 'payment-qr', name: 'Payment QR Generator', engine: 'Banking QR Protocol Standardizer', details: 'Formats transaction details according to global banking QR systems, outputting scannable codes.' },
-      { id: 'barcode-gen', name: 'Barcode Generator', engine: 'JsBarcode SVG Engine', details: 'Translates input data into Code128, EAN, or UPC barcode representations, drawing clean SVG vectors.' },
-      { id: 'barcode-scan', name: 'Barcode Scanner', engine: 'WebRTC Camera + Barcode Detector API', details: 'Utilizes native browser BarcodeDetector APIs or WASM libraries to process camera streams and decode barcodes.' },
-      { id: 'bulk-qr', name: 'Bulk QR Generator', engine: 'qrcode Batch Engine', details: 'Iterates through CSV datasets, compiling separate QR codes in batch and packing them into downloadable ZIP archives.' },
-      { id: 'qr-designer', name: 'QR Designer', engine: 'Canvas Custom Styling Compositor', details: 'Renders QR code patterns with modern gradient fills, rounded alignment eyes, and overlays logo images in the center.' }
-    ]
-  },
-  video: {
-    title: 'Video Suite',
-    desc: 'Local browser video trimming, container changes, subtitles injection, and frame exports.',
-    list: [
-      { id: 'trim-video', name: 'Trim Video', engine: 'FFmpeg WASM Subprocessor', details: 'Instructs FFmpeg WASM to seek target start times and execute copy operations without re-encoding video channels.' },
-      { id: 'compress-video', name: 'Compress Video', engine: 'FFmpeg WASM Transcoder', details: 'Runs FFmpeg WebAssembly to transcode input streams to modern container types (H.264/AAC), adjusting output bitrates.' },
-      { id: 'merge-videos', name: 'Merge Videos', engine: 'FFmpeg WASM Concatenator', details: 'Generates sequential file listings in FFmpeg WASM space, appending video tracks with matching structures.' },
-      { id: 'convert-video', name: 'Convert Video', engine: 'FFmpeg WASM Container Exporter', details: 'Unpacks stream formats in FFmpeg WASM memory, remuxing tracks into MP4, WebM, or MKV containers.' },
-      { id: 'extract-audio', name: 'Extract Audio', engine: 'FFmpeg WASM Demuxer', details: 'Demuxes audio streams from video containers, copying the audio data directly to MP3 or WAV files.' },
-      { id: 'add-subtitles', name: 'Add Subtitles', engine: 'FFmpeg WASM Subtitle Burner', details: 'Burns subtitle strings (SRT or VTT) onto video streams using FFmpeg WASM filtering pipelines.' },
-      { id: 'speed-control', name: 'Speed Control', engine: 'FFmpeg WASM Filter Engine', details: 'Applies video and audio filters to accelerate or slow down video streams without changing pitch.' },
-      { id: 'crop-video', name: 'Crop Video', engine: 'FFmpeg WASM Bounding Box Cropper', details: 'Trims video coordinate heights and widths to custom aspect ratios.' },
-      { id: 'gif-maker', name: 'GIF Maker', engine: 'FFmpeg WASM GIF Encoder', details: 'Extracts frame sets, generates custom color palette matrices, and exports animated GIFs.' },
-      { id: 'thumbnail-gen', name: 'Thumbnail Generator', engine: 'HTML5 Video Canvas Frame Grabber', details: 'Loads video source objects, seeks to targeted frames, and grabs pixel frames onto a canvas canvas.' }
-    ]
-  },
-  audio: {
-    title: 'Audio Suite',
-    desc: 'Sound wave editing, decibel amplification, voice recorders, and real-time visualizers.',
-    list: [
-      { id: 'audio-cutter', name: 'Audio Cutter', engine: 'Web Audio AudioContext Slice Engine', details: 'Loads audio binaries, decodes them to raw PCM buffer objects, trims target segments, and encodes outputs to WAV.' },
-      { id: 'audio-merge', name: 'Audio Merge', engine: 'AudioBuffer Concatenator', details: 'Assembles multiple decibel arrays together into a single AudioBuffer container, exporting files client-side.' },
-      { id: 'noise-removal', name: 'Noise Removal', engine: 'Web Audio BiquadFilter Engine', details: 'Applies lowpass, highpass, or bandpass biquad filters to target audio, stripping ambient frequencies.' },
-      { id: 'audio-convert', name: 'Convert Audio', engine: 'Web Audio AudioBuffer Encoder', details: 'Loads audio formats and decodes/re-encodes them into WAV or MP3 files.' },
-      { id: 'voice-recorder', name: 'Voice Recorder', engine: 'MediaRecorder API', details: 'Binds to microphone streams, capturing audio segments and serializing output to WAV/WEBM format.' },
-      { id: 'speech-to-text', name: 'Speech-to-Text', engine: 'Web Speech Recognition Engine', details: 'Leverages the native browser speech engine to transcribe speech segments into text strings in real-time.' },
-      { id: 'tts-fallback', name: 'Text-to-Speech', engine: 'Web SpeechSynthesis Engine', details: 'Invokes local browser speech synthesis tools, customizing voice accents and speeds.' },
-      { id: 'volume-booster', name: 'Volume Booster', engine: 'Web Audio GainNode', details: 'Routes AudioContext streams through a GainNode structure, amplifying signal decibels beyond standard ceilings.' },
-      { id: 'podcast-editor', name: 'Podcast Editor', engine: 'Web Audio Mixer Engine', details: 'Overlays multiple audio tracks onto a single master layout, mixing sound channels together.' },
-      { id: 'audio-visualizer', name: 'Audio Visualizer', engine: 'Web Audio AnalyserNode', details: 'Extracts real-time Fast Fourier Transform (FFT) frequencies, drawing dynamic audio wave graphics.' }
-    ]
-  },
-  dev: {
-    title: 'Developer Utilities',
-    desc: 'Formatters, token decoders, random key generators, SHA hashing, and URL parameters.',
-    list: [
-      { id: 'json-format', name: 'JSON Formatter', engine: 'JSON.parse / JSON.stringify Engine', details: 'Validates structure strings, formatting raw text into clean nested hierarchies with customizable indent sizes.' },
-      { id: 'jwt-decode', name: 'JWT Decoder', engine: 'Base64URL Decoder', details: 'Splits JSON Web Tokens at delimiters, decoding payloads into formatted JSON strings.' },
-      { id: 'dev-base64', name: 'Base64 Tool', engine: 'window.atob / window.btoa', details: 'Converts plain-text to base64 formatting, or reads base64 files back to original binaries.' },
-      { id: 'regex-tester', name: 'Regex Tester', engine: 'RegExp Object Pattern Tester', details: 'Evaluates regular expressions against strings, highlighting match groups and replacement parameters.' },
-      { id: 'uuid-gen', name: 'UUID Generator', engine: 'window.crypto.randomUUID', details: 'Uses native cryptographically secure random number generators to output unique UUIDv4 keys.' },
-      { id: 'hash-gen', name: 'Hash Generator', engine: 'WebCrypto SubtleCrypto Digests', details: 'Computes SHA-1, SHA-256, or SHA-512 hashes from input string arrays offline.' },
-      { id: 'api-tester', name: 'API Tester', engine: 'fetch Client API', details: 'Dispatches client HTTP requests, measuring response timings, header parameters, and data payloads.' },
-      { id: 'url-encoder', name: 'URL Encoder', engine: 'encodeURIComponent / decodeURIComponent', details: 'Encodes parameter values to safe URL formatting or decodes them.' },
-      { id: 'html-minify', name: 'HTML Minifier', engine: 'Regex Minification Engine', details: 'Strips document whitespaces, carriage returns, and comment layouts from code strings.' },
-      { id: 'color-converter', name: 'Color Converter', engine: 'Color Conversion Formulas', details: 'Computes conversion equations to map color definitions between HEX, RGB, HSL, and CMYK formats.' },
-      { id: 'cron-parser', name: 'Cron Expression Parser', engine: 'Cron Parsing Algorithms', details: 'Parses cron expression schedules or generates strings interactively, displaying simulated execution runtimes.' },
-      { id: 'sql-formatter', name: 'SQL Formatter', engine: 'SQL Keyword Lexer Rules', details: 'Formats, minifies, and aligns SQL syntax keywords to customized tab indentations client-side.' },
-      { id: 'yaml-json', name: 'YAML ↔ JSON Converter', engine: 'YAML Parser and JSON Serializer', details: 'Inter-converts objects and arrays between YAML markup strings and standard nested JSON hierarchies.' },
-      { id: 'md-table-gen', name: 'Markdown Table Generator', engine: 'Markdown Table Compiler', details: 'Generates structured Markdown syntax code for table structures using interactive headers and column alignments.' },
-      { id: 'diff-checker', name: 'Diff Checker', engine: 'Line Diff Comparison Engine', details: 'Compares two text lists line-by-line, compiling deleted, added, or modified code line decorations.' },
-      { id: 'keycode-finder', name: 'Keyboard Keycode Finder', engine: 'DOM Keyboard Event Listeners', details: 'Tracks keypress logs dynamically, displaying key name, event code, character code, and active modifiers.' },
-      { id: 'box-shadow-gen', name: 'Box Shadow Generator', engine: 'CSS Style Compilation Engine', details: 'Compiles custom offsets, colors, and blur settings into valid box-shadow properties and overlays them on a preview element.' },
-      { id: 'base-converter', name: 'Base Converter', engine: 'Number Parsing Algorithms', details: 'Converts integers between base-10, base-2, base-8, and base-16 formats with logical steps walkthrough.' },
-      { id: 'glassmorphism-gen', name: 'Glassmorphism Generator', engine: 'CSS Backdrop Filter Compiler', details: 'Computes combinations of saturation, blur, tint colors, and boundary borders into modern Glass CSS assets.' },
-      { id: 'screen-info', name: 'Screen & Device Info', engine: 'DOM Window Screen API', details: 'Inspects client environment parameters including device viewport dimensions, pixel density, connection limits, and storage estimations.' }
-    ]
-  },
-  ai: {
-    title: 'Local AI Suite',
-    desc: 'Local model connection pipelines, summarization, OCR formatters, and translation.',
-    list: [
-      { id: 'ai-chat', name: 'AI Chat', engine: 'Ollama Client REST Pipeline', details: 'Streams message structures to local Ollama ports, rendering response markdown content.' },
-      { id: 'ai-summarizer', name: 'Summarizer', engine: 'Ollama Model Summarizer Pipeline', details: 'Sends text content to local LLMs with custom instructions to create structured summaries.' },
-      { id: 'caption-gen', name: 'Caption Generator', engine: 'Ollama Vision Pipeline', details: 'Encodes image uploads as base64 parameters, transmitting details to local vision LLMs for captioning.' },
-      { id: 'ocr-assistant', name: 'OCR Assistant', engine: 'Ollama Layout Formatting Pipeline', details: 'Sends noisy text from OCR tools to local LLMs to format clean document configurations.' },
-      { id: 'prompt-enhancer', name: 'Prompt Enhancer', engine: 'Ollama Prompt Optimization Pipeline', details: 'Assembles prompt elements, utilizing local LLMs to expand concepts into detailed instructions.' },
-      { id: 'image-classifier', name: 'Image Classifier', engine: 'Ollama Image Classification Pipeline', details: 'Sends image parameters to local vision LLMs, returning tag listings and classification percentages.' },
-      { id: 'text-rewriter', name: 'Text Rewriter', engine: 'Ollama Tone Transformation Pipeline', details: 'Applies style templates using local models, rewriting paragraphs into alternative tones.' },
-      { id: 'ai-translator', name: 'Translator', engine: 'Ollama Translation Pipeline', details: 'Directs local LLMs to translate text strings, maintaining structure and context.' },
-      { id: 'ai-stt', name: 'Speech-to-Text', engine: 'Ollama Audio Transcription Pipeline', details: 'Processes audio files through local models to generate text transcriptions.' },
-      { id: 'semantic-search', name: 'Semantic Search', engine: 'Ollama Embedding Engine', details: 'Passes document texts to embedding models, storing vectors to perform similarity searches.' },
-      { id: 'ai-code-explainer', name: 'AI Code Explainer', engine: 'Ollama Code Explanation Pipeline', details: 'Analyzes code segments step-by-step, assessing complexity and translating logic to other languages.' },
-      { id: 'ai-flashcard-maker', name: 'AI Flashcard Maker', engine: 'Ollama Educational Q&A Pipeline', details: 'Transforms any text input or topic into structured Q&A card decks for study sessions.' },
-      { id: 'ai-sentiment-journal', name: 'AI Sentiment Journal', engine: 'Ollama Sentiment & Mood Analysis Pipeline', details: 'Evaluates mood trends, keywords, and emotions from daily journal entries securely saved in local storage.' },
-      { id: 'ai-email-composer', name: 'AI Email Composer', engine: 'Ollama Business Copywriting Pipeline', details: 'Drafts or replies to emails with options for tone, length, and subject lines based on user intent.' },
-      { id: 'ai-story-generator', name: 'AI Story Generator', engine: 'Ollama Creative Fiction Pipeline', details: 'Generates fantasy, sci-fi, horror, or comedy stories complete with characters, settings, and twists.' },
-      { id: 'ai-debate-assistant', name: 'AI Debate Assistant', engine: 'Ollama Argumentation Pipeline', details: 'Constructs PRO and CON arguments, opening/closing statements, and counterpoints for a given topic.' },
-      { id: 'ai-math-solver', name: 'AI Math Solver', engine: 'Ollama Mathematical Reasoning Pipeline', details: 'Solves complex equations and word problems step-by-step with LaTeX formatting.' },
-      { id: 'ai-recipe-generator', name: 'AI Recipe Generator', engine: 'Ollama Culinary Optimization Pipeline', details: 'Recommends cooking recipes, nutrition estimates, and missing ingredient lists from available items.' },
-      { id: 'ai-code-reviewer', name: 'AI Code Reviewer', engine: 'Ollama Static Review Pipeline', details: 'Audits code structure for bugs, security weaknesses, performance, and best practices.' },
-      { id: 'ai-mind-mapper', name: 'AI Mind Mapper', engine: 'Ollama Hierarchical Layout Pipeline', details: 'Extracts concepts from topics to organize them into nested branches and outlines.' },
-      { id: 'domo-agent-hub', name: 'Domo Agent Hub', engine: 'Ollama Workspace File API', details: 'Mounts local directories using File System Access handles to edit files and direct AI coding runs offline.' },
-      { id: 'domo-selection', name: 'DomoDomo Selection Explainer', engine: 'Ollama Highlight Selector Pipeline', details: 'Provides inline segment highlighting and local file upload support, answered by the friendly DomoDomo mascot persona with custom markdown formatting.' }
-    ]
-  }
-};
 
 export const Documentation = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<SectionId>('intro');
   const [activeToolCategory, setActiveToolCategory] = useState<ToolCategory>('pdf');
+  const [expandedToolId, setExpandedToolId] = useState<string | null>(null);
+
+  const handleCategoryChange = (cat: ToolCategory) => {
+    setActiveToolCategory(cat);
+    setExpandedToolId(null);
+  };
 
   const menuItems = [
     { id: 'intro', label: 'Introduction', icon: BookOpen },
@@ -400,7 +231,7 @@ export const Documentation = () => {
                 {Object.entries(TOOLS_DOCS).map(([key, data]) => (
                   <button
                     key={key}
-                    onClick={() => setActiveToolCategory(key as ToolCategory)}
+                    onClick={() => handleCategoryChange(key as ToolCategory)}
                     className={`py-1.5 px-3 rounded-lg text-[11px] font-bold transition-all border ${
                       activeToolCategory === key
                         ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border-[#3C6B4D]/25'
@@ -420,19 +251,65 @@ export const Documentation = () => {
 
               {/* Tools Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                {TOOLS_DOCS[activeToolCategory].list.map((tool) => (
-                  <div key={tool.id} className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
-                    <div className="flex justify-between items-start gap-3">
-                      <span className="font-bold text-[#ECEBE9] text-xs font-mono">{tool.name}</span>
-                      <span className="px-2 py-0.5 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded text-[8px] font-mono shrink-0">
-                        {tool.engine}
-                      </span>
+                {TOOLS_DOCS[activeToolCategory].list.map((tool) => {
+                  const isExpanded = expandedToolId === tool.id;
+                  return (
+                    <div
+                      key={tool.id}
+                      className={`bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl flex flex-col gap-3 transition-all duration-300 ${
+                        isExpanded ? 'col-span-1 md:col-span-2 border-[#3C6B4D]/60 bg-[#141618]' : 'hover:border-[#2A2D30]/80'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start gap-3">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-bold text-[#ECEBE9] text-xs font-mono">{tool.name}</span>
+                          <span className="text-[10px] text-[#72706C] font-mono">ID: {tool.id}</span>
+                        </div>
+                        <span className="px-2 py-0.5 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded text-[8px] font-mono shrink-0">
+                          {tool.engine}
+                        </span>
+                      </div>
+                      
+                      <p className="text-[#A3A09B] text-[10px] leading-relaxed">
+                        {tool.details}
+                      </p>
+
+                      {isExpanded && (
+                        <div className="mt-2 pt-4 border-t border-[#2A2D30] flex flex-col gap-4">
+                          <div className="flex flex-col gap-1.5">
+                            <span className="text-[10px] uppercase tracking-wider text-[#3C6B4D] font-bold">Key Functionality</span>
+                            <p className="text-[11px] text-[#ECEBE9] leading-relaxed bg-[#111213] border border-[#2A2D30] p-3 rounded-xl">
+                              {tool.functionality}
+                            </p>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <span className="text-[10px] uppercase tracking-wider text-[#E29E2D] font-bold">How It Works (Under the Hood)</span>
+                            <p className="text-[11px] text-[#A3A09B] leading-relaxed bg-[#111213] border border-[#2A2D30] p-3 rounded-xl font-sans">
+                              {tool.howItWorks}
+                            </p>
+                          </div>
+                          {tool.technicalSpecs && (
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-[10px] uppercase tracking-wider text-[#72706C] font-bold">Technical Specifications & Constraints</span>
+                              <p className="text-[11px] text-[#72706C] leading-relaxed bg-[#111213] border border-[#2A2D30] p-3 rounded-xl font-mono">
+                                {tool.technicalSpecs}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      <button
+                        onClick={() => setExpandedToolId(isExpanded ? null : tool.id)}
+                        className={`text-left text-[10px] font-bold w-fit mt-1 flex items-center gap-1 transition-all ${
+                          isExpanded ? 'text-[#E29E2D] hover:text-[#E29E2D]/80' : 'text-[#3C6B4D] hover:text-[#3C6B4D]/80'
+                        }`}
+                      >
+                        <span>{isExpanded ? 'Collapse Details' : 'Expand Details & Mechanics'}</span>
+                      </button>
                     </div>
-                    <p className="text-[#A3A09B] text-[10px] leading-relaxed">
-                      {tool.details}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
