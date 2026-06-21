@@ -14,6 +14,7 @@ export const ImageResizerTool = () => {
   const [resizeMode, setResizeMode] = useState<'stretch' | 'pad'>('stretch');
   const [padColor, setPadColor] = useState('#000000');
 
+  const [previewUrl, setPreviewUrl] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -30,6 +31,52 @@ export const ImageResizerTool = () => {
       setHeight(720);
     }
   }, [preset]);
+
+  useEffect(() => {
+    if (!imageUrl) {
+      setPreviewUrl('');
+      return;
+    }
+    const c = canvasRef.current;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    if (!ctx) return;
+
+    const img = new Image();
+    img.onload = () => {
+      const targetW = width || 1;
+      const targetH = height || 1;
+      c.width = targetW;
+      c.height = targetH;
+
+      if (resizeMode === 'stretch') {
+        ctx.drawImage(img, 0, 0, targetW, targetH);
+      } else {
+        // Fit & Pad
+        ctx.fillStyle = padColor;
+        ctx.fillRect(0, 0, targetW, targetH);
+
+        const imgRatio = img.width / img.height;
+        const targetRatio = targetW / targetH;
+        let drawW = targetW;
+        let drawH = targetH;
+        let x = 0;
+        let y = 0;
+
+        if (imgRatio > targetRatio) {
+          drawH = targetW / imgRatio;
+          y = (targetH - drawH) / 2;
+        } else {
+          drawW = targetH * imgRatio;
+          x = (targetW - drawW) / 2;
+        }
+
+        ctx.drawImage(img, x, y, drawW, drawH);
+      }
+      setPreviewUrl(c.toDataURL('image/jpeg'));
+    };
+    img.src = imageUrl;
+  }, [imageUrl, width, height, resizeMode, padColor]);
 
   const handleUpload = (file: File) => {
     const url = URL.createObjectURL(file);
@@ -60,43 +107,9 @@ export const ImageResizerTool = () => {
   };
 
   const downloadResized = () => {
-    const c = canvasRef.current;
-    if (!c || !imageUrl) return;
-    const ctx = c.getContext('2d');
-    const img = new Image();
-    img.onload = () => {
-      c.width = width;
-      c.height = height;
-      if (!ctx) return;
-
-      if (resizeMode === 'stretch') {
-        ctx.drawImage(img, 0, 0, width, height);
-      } else {
-        // Fit & Pad
-        ctx.fillStyle = padColor;
-        ctx.fillRect(0, 0, width, height);
-
-        const imgRatio = img.width / img.height;
-        const targetRatio = width / height;
-        let drawW = width;
-        let drawH = height;
-        let x = 0;
-        let y = 0;
-
-        if (imgRatio > targetRatio) {
-          drawH = width / imgRatio;
-          y = (height - drawH) / 2;
-        } else {
-          drawW = height * imgRatio;
-          x = (width - drawW) / 2;
-        }
-
-        ctx.drawImage(img, x, y, drawW, drawH);
-      }
-
-      triggerDownload(c.toDataURL('image/jpeg'), 'resized.jpg');
-    };
-    img.src = imageUrl;
+    if (previewUrl) {
+      triggerDownload(previewUrl, 'resized.jpg');
+    }
   };
 
   return (
@@ -106,7 +119,11 @@ export const ImageResizerTool = () => {
           <FileUploadWrapper onUpload={handleUpload} />
         ) : (
           <div className="flex flex-col items-center">
-            <img src={imageUrl} className="max-h-[320px] w-auto rounded border border-slate-800" alt="Resize source" />
+            {previewUrl ? (
+              <img src={previewUrl} className="max-h-[320px] w-auto rounded border border-slate-800 shadow-lg object-contain bg-[#0F131E]" alt="Resize preview" />
+            ) : (
+              <div className="h-[320px] flex items-center justify-center text-xs text-slate-500">Processing...</div>
+            )}
             <div className="text-[10px] text-slate-500 font-mono mt-2">Target Dimensions: {width} x {height} px</div>
           </div>
         )}
