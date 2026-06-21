@@ -1264,9 +1264,20 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
           {/* Generated Artifacts Panel (Col 3) */}
           <div className="lg:col-span-3 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[500px]">
             <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-center pb-2 border-b border-[#2A2D30]">
+              <div className="flex justify-between items-center pb-2 border-b border-[#2A2D30] gap-2">
                 <span className="text-xs font-bold uppercase text-[#72706C] tracking-wider">Output Artifacts</span>
-                <span className="text-[10px] font-mono text-[#72706C]">Count: {artifacts.length}</span>
+                <button
+                  onClick={handleMountDirectory}
+                  className={`text-[9px] font-bold py-1 px-2 rounded-lg border transition-all flex items-center gap-1 ${
+                    dirHandle 
+                      ? 'bg-[#1E2022] text-emerald-500 border-[#3C6B4D]/35 hover:bg-[#3C6B4D]/10' 
+                      : 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/35 hover:bg-[#3C6B4D]/25'
+                  }`}
+                  title={dirHandle ? `Connected: ${dirHandle.name}` : 'Connect local workspace folder'}
+                >
+                  <Folder size={10} />
+                  <span>{dirHandle ? '📁 Connected' : '📁 Mount Folder'}</span>
+                </button>
               </div>
 
               {/* Artifacts list */}
