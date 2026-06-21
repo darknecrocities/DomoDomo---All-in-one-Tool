@@ -18,25 +18,7 @@ export const BackgroundRemoverTool = () => {
   const origCanvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
 
-  useEffect(() => {
-    if (!imageUrl) return;
-    const img = new Image();
-    img.onload = () => {
-      const c = canvasRef.current;
-      const oc = origCanvasRef.current;
-      if (!c || !oc) return;
-      c.width = img.width > 800 ? 800 : img.width;
-      c.height = (c.width / img.width) * img.height;
-      oc.width = c.width;
-      oc.height = c.height;
-      c.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
-      oc.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
-      applyChromaKey();
-    };
-    img.src = imageUrl;
-  }, [imageUrl]);
-
-  const applyChromaKey = () => {
+  const applyChromaKey = React.useCallback(() => {
     const c = canvasRef.current;
     const oc = origCanvasRef.current;
     if (!c || !oc) return;
@@ -84,11 +66,29 @@ export const BackgroundRemoverTool = () => {
     tempCanvas.height = c.height;
     tempCanvas.getContext('2d')?.putImageData(imgData, 0, 0);
     ctx.drawImage(tempCanvas, 0, 0);
-  };
+  }, [selectedColor, tolerance, bgMode, bgColor, bgImageUrl]);
+
+  useEffect(() => {
+    if (!imageUrl) return;
+    const img = new Image();
+    img.onload = () => {
+      const c = canvasRef.current;
+      const oc = origCanvasRef.current;
+      if (!c || !oc) return;
+      c.width = img.width > 800 ? 800 : img.width;
+      c.height = (c.width / img.width) * img.height;
+      oc.width = c.width;
+      oc.height = c.height;
+      c.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
+      oc.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
+      applyChromaKey();
+    };
+    img.src = imageUrl;
+  }, [imageUrl, applyChromaKey]);
 
   useEffect(() => {
     applyChromaKey();
-  }, [selectedColor, tolerance, bgMode, bgColor, bgImageUrl]);
+  }, [applyChromaKey]);
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (activeTool !== 'key') return;
