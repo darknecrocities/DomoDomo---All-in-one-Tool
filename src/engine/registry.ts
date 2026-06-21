@@ -96,6 +96,16 @@ import { APITesterTool } from '../tools/dev/APITester';
 import { URLEncoderTool } from '../tools/dev/URLEncoder';
 import { HTMLMinifierTool } from '../tools/dev/HTMLMinifier';
 import { ColorConverterTool } from '../tools/dev/ColorConverter';
+import { CronParserTool } from '../tools/dev/CronParser';
+import { SQLFormatterTool } from '../tools/dev/SQLFormatter';
+import { YamlJsonConverterTool } from '../tools/dev/YamlJsonConverter';
+import { MarkdownTableGeneratorTool } from '../tools/dev/MarkdownTableGenerator';
+import { DiffCheckerTool } from '../tools/dev/DiffChecker';
+import { KeycodeFinderTool } from '../tools/dev/KeycodeFinder';
+import { BoxShadowGeneratorTool } from '../tools/dev/BoxShadowGenerator';
+import { BaseConverterTool } from '../tools/dev/BaseConverter';
+import { GlassmorphismGeneratorTool } from '../tools/dev/GlassmorphismGenerator';
+import { ScreenInfoTool } from '../tools/dev/ScreenInfo';
 
 // AI Suite Imports
 import { LocalAIChatTool } from '../tools/ai/LocalAIChat';
@@ -205,7 +215,7 @@ export const TOOLS: Tool[] = [
   { id: 'podcast-editor', name: 'Podcast Editor', category: 'audio', description: 'Edit and compile multi-track audio podcasts.', icon: 'FileText', run: async (i) => i, component: PodcastEditorTool },
   { id: 'audio-visualizer', name: 'Audio Visualizer', category: 'audio', description: 'Render real-time sound frequency bars.', icon: 'FileText', run: async (i) => i, component: AudioVisualizerTool },
 
-  // Dev Tools (10)
+  // Dev Tools (20)
   { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'Beautify and validate JSON strings.', icon: 'Hammer', run: async (i) => i, component: JSONFormatterTool },
   { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads locally with zero data leaks.', icon: 'Hammer', run: async (i) => i, component: JWTDecoderTool },
   { id: 'dev-base64', name: 'Base64 Tool', category: 'dev', description: 'Encode or decode base64 strings.', icon: 'Hammer', run: async (i) => i, component: DevBase64Tool },
@@ -216,6 +226,16 @@ export const TOOLS: Tool[] = [
   { id: 'url-encoder', name: 'URL Encoder', category: 'dev', description: 'Encode or decode URL query paths.', icon: 'Hammer', run: async (i) => i, component: URLEncoderTool },
   { id: 'html-minify', name: 'HTML Minifier', category: 'dev', description: 'Minify code lines by stripping tags whitespaces.', icon: 'Hammer', run: async (i) => i, component: HTMLMinifierTool },
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', run: async (i) => i, component: ColorConverterTool },
+  { id: 'cron-parser', name: 'Cron Expression Parser', category: 'dev', description: 'Parse cron schedules or generate expressions interactively.', icon: 'Hammer', run: async (i) => i, component: CronParserTool },
+  { id: 'sql-formatter', name: 'SQL Formatter', category: 'dev', description: 'Format and beautify SQL queries with custom spacing.', icon: 'Hammer', run: async (i) => i, component: SQLFormatterTool },
+  { id: 'yaml-json', name: 'YAML ↔ JSON Converter', category: 'dev', description: 'Convert configuration structures between YAML and JSON.', icon: 'Hammer', run: async (i) => i, component: YamlJsonConverterTool },
+  { id: 'md-table-gen', name: 'Markdown Table Generator', category: 'dev', description: 'Interactive layout to design and generate Markdown tables.', icon: 'Hammer', run: async (i) => i, component: MarkdownTableGeneratorTool },
+  { id: 'diff-checker', name: 'Diff Checker', category: 'dev', description: 'Compare two text layers side-by-side to highlight differences.', icon: 'Hammer', run: async (i) => i, component: DiffCheckerTool },
+  { id: 'keycode-finder', name: 'Keyboard Keycode Finder', category: 'dev', description: 'Detect keyboard keys and view standard browser event values.', icon: 'Hammer', run: async (i) => i, component: KeycodeFinderTool },
+  { id: 'box-shadow-gen', name: 'Box Shadow Generator', category: 'dev', description: 'Visual parameters slider to configure CSS box shadow styles.', icon: 'Hammer', run: async (i) => i, component: BoxShadowGeneratorTool },
+  { id: 'base-converter', name: 'Base Converter', category: 'dev', description: 'Convert integers between decimal, binary, octal, and hex bases.', icon: 'Hammer', run: async (i) => i, component: BaseConverterTool },
+  { id: 'glassmorphism-gen', name: 'Glassmorphism Generator', category: 'dev', description: 'Visual backdrop-filter designer generating modern glass assets.', icon: 'Hammer', run: async (i) => i, component: GlassmorphismGeneratorTool },
+  { id: 'screen-info', name: 'Screen & Device Info', category: 'dev', description: 'Inspect hardware specs, viewport sizes, and client details.', icon: 'Hammer', run: async (i) => i, component: ScreenInfoTool },
 
   // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat locally with Domo assistant under absolute leak-free security.', icon: 'Hammer', run: async (i) => i, component: LocalAIChatTool },

@@ -113,7 +113,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'podcast-editor', name: 'Podcast Editor', category: 'audio', description: 'Edit and compile multi-track audio podcasts.', icon: 'FileText', status: 'functional' },
   { id: 'audio-visualizer', name: 'Audio Visualizer', category: 'audio', description: 'Render real-time sound frequency bars.', icon: 'FileText', status: 'functional' },
 
-  // Dev Tools (10)
+  // Dev Tools (20)
   { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'Beautify and validate JSON strings.', icon: 'Hammer', status: 'functional' },
   { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads offline.', icon: 'Hammer', status: 'functional' },
   { id: 'dev-base64', name: 'Base64 Tool', category: 'dev', description: 'Encode or decode base64 strings.', icon: 'Hammer', status: 'functional' },
@@ -124,6 +124,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'url-encoder', name: 'URL Encoder', category: 'dev', description: 'Encode or decode URL query paths.', icon: 'Hammer', status: 'functional' },
   { id: 'html-minify', name: 'HTML Minifier', category: 'dev', description: 'Minify code lines by stripping tags whitespaces.', icon: 'Hammer', status: 'functional' },
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', status: 'functional' },
+  { id: 'cron-parser', name: 'Cron Expression Parser', category: 'dev', description: 'Parse cron schedules or generate expressions interactively.', icon: 'Hammer', status: 'functional' },
+  { id: 'sql-formatter', name: 'SQL Formatter', category: 'dev', description: 'Format and beautify SQL queries with custom spacing.', icon: 'Hammer', status: 'functional' },
+  { id: 'yaml-json', name: 'YAML ↔ JSON Converter', category: 'dev', description: 'Convert configuration structures between YAML and JSON.', icon: 'Hammer', status: 'functional' },
+  { id: 'md-table-gen', name: 'Markdown Table Generator', category: 'dev', description: 'Interactive layout to design and generate Markdown tables.', icon: 'Hammer', status: 'functional' },
+  { id: 'diff-checker', name: 'Diff Checker', category: 'dev', description: 'Compare two text layers side-by-side to highlight differences.', icon: 'Hammer', status: 'functional' },
+  { id: 'keycode-finder', name: 'Keyboard Keycode Finder', category: 'dev', description: 'Detect keyboard keys and view standard browser event values.', icon: 'Hammer', status: 'functional' },
+  { id: 'box-shadow-gen', name: 'Box Shadow Generator', category: 'dev', description: 'Visual parameters slider to configure CSS box shadow styles.', icon: 'Hammer', status: 'functional' },
+  { id: 'base-converter', name: 'Base Converter', category: 'dev', description: 'Convert integers between decimal, binary, octal, and hex bases.', icon: 'Hammer', status: 'functional' },
+  { id: 'glassmorphism-gen', name: 'Glassmorphism Generator', category: 'dev', description: 'Visual backdrop-filter designer generating modern glass assets.', icon: 'Hammer', status: 'functional' },
+  { id: 'screen-info', name: 'Screen & Device Info', category: 'dev', description: 'Inspect hardware specs, viewport sizes, and client details.', icon: 'Hammer', status: 'functional' },
 
   // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat offline with local Domo assistant.', icon: 'Hammer', status: 'functional' },
