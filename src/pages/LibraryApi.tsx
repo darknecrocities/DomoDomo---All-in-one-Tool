@@ -8,452 +8,65 @@ import {
   Info,
   Layers,
   Shield,
-  FileCode,
   Globe,
   Radio,
   Bookmark,
+  ChevronLeft,
   ChevronRight,
   Database
 } from 'lucide-react';
+import PUBLIC_APIS_DATA from '../assets/public-apis.json';
 
 interface APIEntry {
   name: string;
   description: string;
   category: string;
-  auth: 'None' | 'API Key' | 'OAuth';
+  auth: string;
   https: boolean;
-  cors: 'yes' | 'no' | 'unknown';
+  cors: string;
   link: string;
-  endpoint: string;
-  details: string;
-  rateLimit?: string;
-  dataType: string;
-  sampleResponse?: string;
 }
-
-const PUBLIC_APIS_DATA: APIEntry[] = [
-  // Animals
-  {
-    name: 'Dog CEO',
-    description: 'The internet\'s biggest collection of open source dog pictures.',
-    category: 'Animals',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://dog.ceo/dog-api/',
-    endpoint: 'https://dog.ceo/api/breeds/image/random',
-    dataType: 'JSON',
-    rateLimit: 'Unlimited / Free',
-    details: 'Dog CEO API is a local-friendly free public API providing randomized dog photos sorted by breed names. Extremely reliable for front-end testing, UI mockups, or animal apps.',
-    sampleResponse: `{
-  "message": "https://images.dog.ceo/breeds/retriever-flatcoated/n02099712_279.jpg",
-  "status": "success"
-}`
-  },
-  {
-    name: 'Cat Facts',
-    description: 'Get random cat facts via simple REST endpoint.',
-    category: 'Animals',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://catfact.ninja/',
-    endpoint: 'https://catfact.ninja/fact',
-    dataType: 'JSON',
-    rateLimit: 'Unlimited / Free',
-    details: 'Cat Facts is a lightweight, zero-authentication API supplying structured cat-related trivia. Ideal for learning asynchronous data fetching and populating test components.',
-    sampleResponse: `{
-  "fact": "Cats have 30 teeth, while dogs have 42.",
-  "length": 38
-}`
-  },
-  // Anime
-  {
-    name: 'Jikan (MyAnimeList)',
-    description: 'The most active open-source MyAnimeList API.',
-    category: 'Anime',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://jikan.moe/',
-    endpoint: 'https://api.jikan.moe/v4/random/anime',
-    dataType: 'JSON',
-    rateLimit: '3 requests per second max',
-    details: 'Jikan parses the MyAnimeList portal to expose anime, manga, character reviews, and developer analytics without needing MAL official credentials. Very comprehensive dataset.',
-    sampleResponse: `{
-  "data": {
-    "mal_id": 1,
-    "url": "https://myanimelist.net/anime/1/Cowboy_Bebop",
-    "title": "Cowboy Bebop",
-    "episodes": 26,
-    "synopsis": "In the year 2071, humanity has colonized the rocky planets..."
-  }
-}`
-  },
-  {
-    name: 'Studio Ghibli API',
-    description: 'Resources from Studio Ghibli films, characters, and locations.',
-    category: 'Anime',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://ghibliapi.vercel.app/',
-    endpoint: 'https://ghibliapi.vercel.app/films',
-    dataType: 'JSON',
-    rateLimit: 'Free / Fair Use',
-    details: 'Exposes highly structured datasets detailing classic Ghibli films (Spirited Away, Totoro) with associated vehicles, characters, and settings details.',
-    sampleResponse: `[
-  {
-    "id": "2baf0bd3-4276-4fa6-97f5-18b4d02ee548",
-    "title": "Castle in the Sky",
-    "original_title": "天空の城ラピュタ",
-    "director": "Hayao Miyazaki",
-    "rt_score": "95"
-  }
-]`
-  },
-  // Cryptocurrency
-  {
-    name: 'CoinGecko',
-    description: 'Comprehensive cryptocurrency market data tracking prices and volumes.',
-    category: 'Cryptocurrency',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://www.coingecko.com/en/api',
-    endpoint: 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
-    dataType: 'JSON',
-    rateLimit: '30 requests/minute (Free Tier)',
-    details: 'CoinGecko is the gold standard for global crypto market metrics. Tracks thousands of tokens, exchange volumes, market caps, histories, and contract address details.',
-    sampleResponse: `{
-  "bitcoin": {
-    "usd": 67342.12
-  }
-}`
-  },
-  {
-    name: 'CoinDesk BPI',
-    description: 'Real-time updates of the Bitcoin Price Index.',
-    category: 'Cryptocurrency',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://www.coindesk.com/coindesk-api/',
-    endpoint: 'https://api.coindesk.com/v1/bpi/currentprice.json',
-    dataType: 'JSON',
-    rateLimit: 'Free / Fair Use',
-    details: 'A simple public stream mapping the Bitcoin Price Index (BPI) in USD, GBP, and EUR. Great for real-time tickers and clean dashboards.',
-    sampleResponse: `{
-  "time": { "updated": "Jun 21, 2026 12:40:00 UTC" },
-  "bpi": {
-    "USD": { "code": "USD", "rate": "67,342.12" }
-  }
-}`
-  },
-  // Books & Reading
-  {
-    name: 'Google Books API',
-    description: 'Search, browse, and retrieve full metadata for millions of books.',
-    category: 'Books',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://developers.google.com/books',
-    endpoint: 'https://www.googleapis.com/books/v1/volumes?q=isbn:9780132350884',
-    dataType: 'JSON',
-    rateLimit: '1,000 queries/day without key',
-    details: 'Google Books API allows developers to fetch publication dates, author arrays, page counts, preview links, and text snippet search tools across Google\'s massive digitized catalog.',
-    sampleResponse: `{
-  "kind": "books#volumes",
-  "items": [
-    {
-      "volumeInfo": {
-        "title": "Clean Code",
-        "authors": ["Robert C. Martin"],
-        "publisher": "Prentice Hall"
-      }
-    }
-  ]
-}`
-  },
-  {
-    name: 'Open Library',
-    description: 'Open, editable library catalog, building towards a web page for every book.',
-    category: 'Books',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://openlibrary.org/dev/docs/api/',
-    endpoint: 'https://openlibrary.org/api/books?bibkeys=ISBN:0451526538&format=json&jscmd=data',
-    dataType: 'JSON',
-    rateLimit: 'No strict limit / Fair Use',
-    details: 'Open Library API offers complete structural data on books, authors, publisher histories, covers, and subject categories. Completely free and open source.',
-    sampleResponse: `{
-  "ISBN:0451526538": {
-    "title": "The Adventures of Tom Sawyer",
-    "number_of_pages": 240,
-    "url": "https://openlibrary.org/books/OL6793156M"
-  }
-}`
-  },
-  // Development
-  {
-    name: 'JSONPlaceholder',
-    description: 'Free fake online REST API for testing and prototyping.',
-    category: 'Development',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://jsonplaceholder.typicode.com/',
-    endpoint: 'https://jsonplaceholder.typicode.com/posts/1',
-    dataType: 'JSON',
-    rateLimit: 'Unlimited / Free',
-    details: 'The ultimate prototyping mock-data API. Supports GET, POST, PUT, DELETE, and PATCH methods with zero setup. Mimics users, comments, albums, and todo lists.',
-    sampleResponse: `{
-  "userId": 1,
-  "id": 1,
-  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-  "body": "quia et suscipit\\nsuscipit recusandae..."
-}`
-  },
-  {
-    name: 'IPify',
-    description: 'A simple, reliable, and high-performance IP address API.',
-    category: 'Development',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://www.ipify.org/',
-    endpoint: 'https://api.ipify.org?format=json',
-    dataType: 'JSON',
-    rateLimit: 'Unlimited / Free',
-    details: 'Highly redundant, distributed infrastructure that resolves client IP addresses immediately. Supports IPv4 and IPv6 resolving with simple string formats.',
-    sampleResponse: `{
-  "ip": "203.0.113.195"
-}`
-  },
-  {
-    name: 'Httpbin',
-    description: 'A simple HTTP Request & Response Service.',
-    category: 'Development',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://httpbin.org/',
-    endpoint: 'https://httpbin.org/get',
-    dataType: 'JSON',
-    rateLimit: 'Free / Sandbox Use',
-    details: 'Allows clients to test headings, user agents, cookies, body post values, redirects, and authorization mechanisms. Returns input parameters directly back to the requester.',
-    sampleResponse: `{
-  "args": {},
-  "headers": {
-    "Host": "httpbin.org",
-    "User-Agent": "Mozilla/5.0..."
-  },
-  "origin": "203.0.113.195"
-}`
-  },
-  // Environment & Weather
-  {
-    name: 'Open-Meteo',
-    description: 'Free, local-friendly, and non-commercial weather forecast API.',
-    category: 'Environment & Weather',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://open-meteo.com/',
-    endpoint: 'https://api.open-meteo.com/v1/forecast?latitude=15.14&longitude=120.59&current_weather=true',
-    dataType: 'JSON',
-    rateLimit: '10,000 queries/day max',
-    details: 'Delivers rapid weather forecasts, historical data, and wind/temperature profiles globally. Requires absolutely no token registrations, making it the most developer-friendly weather API.',
-    sampleResponse: `{
-  "latitude": 15.14,
-  "longitude": 120.59,
-  "current_weather": {
-    "temperature": 29.5,
-    "windspeed": 12.3,
-    "time": "2026-06-21T20:00"
-  }
-}`
-  },
-  {
-    name: 'USGS Earthquake API',
-    description: 'Real-time seismic data feed provided by the USGS.',
-    category: 'Environment & Weather',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://earthquake.usgs.gov/fdsnws/event/1/',
-    endpoint: 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2026-06-01',
-    dataType: 'GeoJSON',
-    rateLimit: 'Free / Federal Open Data',
-    details: 'Exposes globally monitored seismic activities. Excellent source for mapping integrations, interactive charts, and planetary telemetry.',
-    sampleResponse: `{
-  "type": "FeatureCollection",
-  "metadata": { "title": "USGS Earthquakes" },
-  "features": []
-}`
-  },
-  // Finance
-  {
-    name: 'ExchangeRate-API',
-    description: 'Simple and reliable currency conversion rates for 160+ currencies.',
-    category: 'Finance',
-    auth: 'API Key',
-    https: true,
-    cors: 'yes',
-    link: 'https://www.exchangerate-api.com/',
-    endpoint: 'https://v6.exchangerate-api.com/v6/YOUR-KEY/latest/USD',
-    dataType: 'JSON',
-    rateLimit: '1,500 requests/month (Free Tier)',
-    details: 'Perfect for shopping carts, multi-currency wallets, and conversion apps. Offers up-to-date conversion lists and historical comparisons.',
-    sampleResponse: `{
-  "result": "success",
-  "base_code": "USD",
-  "conversion_rates": {
-    "EUR": 0.93,
-    "JPY": 158.42,
-    "PHP": 58.74
-  }
-}`
-  },
-  // Games
-  {
-    name: 'PokéAPI',
-    description: 'All the Pokémon data you\'ll ever need in one place.',
-    category: 'Games',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://pokeapi.co/',
-    endpoint: 'https://pokeapi.co/api/v2/pokemon/ditto',
-    dataType: 'JSON',
-    rateLimit: '100 requests per IP/minute',
-    details: 'PokéAPI parses metadata covering the complete history of Pokémon, moves, types, stats, items, abilities, and evolutions. Perfect for training, tutorials, and frontend portfolios.',
-    sampleResponse: `{
-  "id": 132,
-  "name": "ditto",
-  "base_experience": 101,
-  "height": 3,
-  "weight": 40
-}`
-  },
-  {
-    name: 'Open Trivia Database',
-    description: 'User-contributed trivia question database for game creation.',
-    category: 'Games',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://opentdb.com/',
-    endpoint: 'https://opentdb.com/api.php?amount=1&type=multiple',
-    dataType: 'JSON',
-    rateLimit: '1 request / 2 seconds max',
-    details: 'A clean database offering multiple-choice and true/false quiz questions sorted across specific categories like Science, Computers, Geography, History, and Pop Culture.',
-    sampleResponse: `{
-  "response_code": 0,
-  "results": [
-    {
-      "category": "Science: Computers",
-      "type": "multiple",
-      "question": "What does CPU stand for?",
-      "correct_answer": "Central Processing Unit",
-      "incorrect_answers": ["Central Process Unit", "Computer Processing Unit"]
-    }
-  ]
-}`
-  },
-  // Machine Learning
-  {
-    name: 'Hugging Face Inference API',
-    description: 'Run thousands of open-source models for NLP, Vision, and Audio.',
-    category: 'Machine Learning',
-    auth: 'API Key',
-    https: true,
-    cors: 'yes',
-    link: 'https://huggingface.co/docs/api-inference/index',
-    endpoint: 'https://api-inference.huggingface.co/models/gpt2',
-    dataType: 'JSON',
-    rateLimit: 'Varies / Generous Free Tier',
-    details: 'Deploy pipelines directly from Hugging Face model hub. Translate languages, extract text tables, generate summaries, and classify sentiments dynamically.',
-    sampleResponse: `[
-  {
-    "generated_text": "The Hugging Face models are incredibly powerful..."
-  }
-]`
-  },
-  // Music & Video
-  {
-    name: 'iTunes Search API',
-    description: 'Search content in the iTunes Store and Apple Books.',
-    category: 'Music & Video',
-    auth: 'None',
-    https: true,
-    cors: 'yes',
-    link: 'https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/',
-    endpoint: 'https://itunes.apple.com/search?term=jack+johnson',
-    dataType: 'JSON',
-    rateLimit: '20 calls/minute max',
-    details: 'Search content within the iTunes Store, including music, movies, audiobooks, podcasts, and digital books. Returns artwork, store links, preview clips, and genres.',
-    sampleResponse: `{
-  "resultCount": 1,
-  "results": [
-    {
-      "wrapperType": "track",
-      "artistName": "Jack Johnson",
-      "trackName": "Upside Down"
-    }
-  ]
-}`
-  },
-  // Science
-  {
-    name: 'NASA APOD API',
-    description: 'NASA\'s Astronomy Picture of the Day.',
-    category: 'Science',
-    auth: 'API Key',
-    https: true,
-    cors: 'yes',
-    link: 'https://api.nasa.gov/',
-    endpoint: 'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY',
-    dataType: 'JSON',
-    rateLimit: '50 requests/IP/day (DEMO_KEY)',
-    details: 'Retrieves astronomical photography, star mappings, and deep-space telemetry annotated by astrophysics experts. The DEMO_KEY is available instantly out-of-the-box.',
-    sampleResponse: `{
-  "date": "2026-06-21",
-  "explanation": "This cosmic view shows the center of the Milky Way...",
-  "hdurl": "https://apod.nasa.gov/apod/image/2606/milkyway_hd.jpg",
-  "media_type": "image",
-  "title": "Milky Way Hub"
-}`
-  }
-];
-
-const CATEGORIES = [
-  'All',
-  'Animals',
-  'Anime',
-  'Cryptocurrency',
-  'Books',
-  'Development',
-  'Environment & Weather',
-  'Finance',
-  'Games',
-  'Machine Learning',
-  'Music & Video',
-  'Science'
-];
 
 export const LibraryApi = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedAuth, setSelectedAuth] = useState<'All' | 'None' | 'API Key' | 'OAuth'>('All');
+  const [selectedAuth, setSelectedAuth] = useState('All');
   const [selectedApi, setSelectedApi] = useState<APIEntry | null>(null);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'js' | 'python' | 'curl'>('js');
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 32;
 
+  // Extract categories dynamically and sort alphabetically
+  const categories = useMemo(() => {
+    const uniqueCats = new Set<string>();
+    PUBLIC_APIS_DATA.forEach((api) => {
+      if (api.category) {
+        uniqueCats.add(api.category);
+      }
+    });
+    return ['All', ...Array.from(uniqueCats).sort()];
+  }, []);
+
+  // Extract auth types dynamically
+  const authTypes = useMemo(() => {
+    const uniqueAuths = new Set<string>();
+    PUBLIC_APIS_DATA.forEach((api) => {
+      if (api.auth) {
+        uniqueAuths.add(api.auth);
+      }
+    });
+    return ['All', ...Array.from(uniqueAuths).sort()];
+  }, []);
+
+  // Filter APIs
   const filteredApis = useMemo(() => {
-    return PUBLIC_APIS_DATA.filter((api) => {
+    // Reset page whenever filter changes
+    setCurrentPage(1);
+    
+    return (PUBLIC_APIS_DATA as APIEntry[]).filter((api) => {
       const matchesSearch =
         api.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         api.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -466,6 +79,14 @@ export const LibraryApi = () => {
     });
   }, [searchQuery, selectedCategory, selectedAuth]);
 
+  // Paginated APIs
+  const paginatedApis = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredApis.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredApis, currentPage]);
+
+  const totalPages = Math.ceil(filteredApis.length / itemsPerPage);
+
   const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
     setCopiedSnippet(type);
@@ -473,9 +94,15 @@ export const LibraryApi = () => {
   };
 
   const getCodeSnippet = (api: APIEntry, lang: 'js' | 'python' | 'curl') => {
+    // Format a nice mock endpoint URL from the website URL or a dummy
+    let endpoint = api.link;
+    if (!endpoint.startsWith('http')) {
+      endpoint = 'https://api.example.com';
+    }
+
     if (lang === 'js') {
       return `// JavaScript Fetch Example
-fetch("${api.endpoint}")
+fetch("${endpoint}")
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -492,7 +119,7 @@ fetch("${api.endpoint}")
       return `# Python requests Example
 import requests
 
-url = "${api.endpoint}"
+url = "${endpoint}"
 try:
     response = requests.get(url)
     response.raise_for_status()
@@ -502,7 +129,7 @@ except requests.exceptions.RequestException as e:
     print("Error fetching data:", e)`;
     } else {
       return `# cURL Terminal Command
-curl -X GET "${api.endpoint}" \\
+curl -X GET "${endpoint}" \\
   -H "Accept: application/json"`;
     }
   };
@@ -521,7 +148,7 @@ curl -X GET "${api.endpoint}" \\
             Library API Hub
           </h1>
           <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed">
-            Browse fully client-side compatible, verified public APIs from the open-source community repository. Use live testing endpoints, review authorization protocols, and generate integration snippets.
+            Browse through 1,400+ verified, free, and open-source public APIs across dozens of industries. Select APIs to check authentication models, CORS details, links, and code snippets.
           </p>
         </div>
       </div>
@@ -553,8 +180,8 @@ curl -X GET "${api.endpoint}" \\
               <Shield size={12} />
               <span>Auth Filter</span>
             </h3>
-            <div className="flex flex-col gap-1.5">
-              {(['All', 'None', 'API Key', 'OAuth'] as const).map((authType) => (
+            <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto scrollbar-none">
+              {authTypes.map((authType) => (
                 <button
                   key={authType}
                   onClick={() => setSelectedAuth(authType)}
@@ -564,7 +191,7 @@ curl -X GET "${api.endpoint}" \\
                       : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] border border-transparent'
                   }`}
                 >
-                  <span>{authType}</span>
+                  <span>{authType === '' ? 'None' : authType}</span>
                   {selectedAuth === authType && <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D]" />}
                 </button>
               ))}
@@ -577,8 +204,8 @@ curl -X GET "${api.endpoint}" \\
               <Layers size={12} />
               <span>Categories</span>
             </h3>
-            <div className="flex flex-col gap-1">
-              {CATEGORIES.map((cat) => {
+            <div className="flex flex-col gap-1 max-h-[450px] overflow-y-auto pr-1">
+              {categories.map((cat) => {
                 const count = cat === 'All' 
                   ? PUBLIC_APIS_DATA.length 
                   : PUBLIC_APIS_DATA.filter(a => a.category === cat).length;
@@ -593,8 +220,8 @@ curl -X GET "${api.endpoint}" \\
                         : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                     }`}
                   >
-                    <span className="truncate">{cat}</span>
-                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md ${
+                    <span className="truncate mr-2">{cat}</span>
+                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 ${
                       selectedCategory === cat ? 'bg-[#2E533B] text-[#ECEBE9]' : 'bg-[#111213] text-[#72706C]'
                     }`}>
                       {count}
@@ -623,57 +250,86 @@ curl -X GET "${api.endpoint}" \\
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredApis.map((api) => (
-                <div
-                  key={api.name}
-                  onClick={() => setSelectedApi(api)}
-                  className="glass-card glass-card-hover p-5 flex flex-col justify-between gap-4 cursor-pointer relative overflow-hidden group"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded-md">
-                          {api.category}
-                        </span>
-                        <h3 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors mt-1.5">
-                          {api.name}
-                        </h3>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {paginatedApis.map((api) => (
+                  <div
+                    key={`${api.name}-${api.category}`}
+                    onClick={() => setSelectedApi(api)}
+                    className="glass-card glass-card-hover p-5 flex flex-col justify-between gap-4 cursor-pointer relative overflow-hidden group"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded-md">
+                            {api.category}
+                          </span>
+                          <h3 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors mt-1.5">
+                            {api.name}
+                          </h3>
+                        </div>
+                        <ChevronRight size={16} className="text-[#72706C] group-hover:text-[#ECEBE9] transition-colors shrink-0" />
                       </div>
-                      <ChevronRight size={16} className="text-[#72706C] group-hover:text-[#ECEBE9] transition-colors shrink-0" />
+
+                      <p className="text-xs text-[#A3A09B] line-clamp-2 leading-relaxed">
+                        {api.description}
+                      </p>
                     </div>
 
-                    <p className="text-xs text-[#A3A09B] line-clamp-2 leading-relaxed">
-                      {api.description}
-                    </p>
+                    <div className="pt-2 border-t border-[#2A2D30]/50 flex flex-wrap gap-2 items-center text-[10px] font-mono text-[#72706C]">
+                      <span className="flex items-center gap-1">
+                        <Shield size={11} className={api.auth === 'No' || api.auth === 'none' ? 'text-[#3C6B4D]' : 'text-[#E29E2D]'} />
+                        Auth: {api.auth || 'None'}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Globe size={11} className="text-sky-500" />
+                        HTTPS: {api.https ? 'Yes' : 'No'}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Radio size={11} className="text-emerald-500" />
+                        CORS: {api.cors || 'unknown'}
+                      </span>
+                    </div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="pt-2 border-t border-[#2A2D30]/50 flex flex-wrap gap-2 items-center text-[10px] font-mono text-[#72706C]">
-                    <span className="flex items-center gap-1">
-                      <Shield size={11} className={api.auth === 'None' ? 'text-[#3C6B4D]' : 'text-[#E29E2D]'} />
-                      Auth: {api.auth}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Globe size={11} className="text-sky-500" />
-                      HTTPS: {api.https ? 'Yes' : 'No'}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Radio size={11} className="text-emerald-500" />
-                      CORS: {api.cors}
-                    </span>
-                  </div>
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-4 border-t border-[#2A2D30]">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft size={14} />
+                    <span>Previous</span>
+                  </button>
+                  
+                  <span className="text-xs font-mono text-[#A3A09B]">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                    className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <span>Next</span>
+                    <ChevronRight size={14} />
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>
 
       {/* Details Side-Drawer / Modal Overlay */}
       {selectedApi && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-end bg-black/60 backdrop-blur-sm transition-opacity">
+        <div className="fixed inset-0 z-[100] flex items-center justify-end bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setSelectedApi(null)}>
           <div
             className="w-full max-w-xl h-full bg-[#18191B] border-l border-[#2A2D30] p-6 md:p-8 flex flex-col justify-between overflow-y-auto space-y-6 shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
@@ -705,19 +361,19 @@ curl -X GET "${api.endpoint}" \\
               <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs">
                 <div className="space-y-1">
                   <span className="text-[#72706C] block">Authorization</span>
-                  <span className="font-mono font-bold text-[#ECEBE9]">{selectedApi.auth}</span>
+                  <span className="font-mono font-bold text-[#ECEBE9]">{selectedApi.auth || 'None'}</span>
                 </div>
                 <div className="space-y-1">
                   <span className="text-[#72706C] block">CORS Support</span>
-                  <span className="font-mono font-bold text-[#ECEBE9] uppercase">{selectedApi.cors}</span>
+                  <span className="font-mono font-bold text-[#ECEBE9] uppercase">{selectedApi.cors || 'UNKNOWN'}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[#72706C] block">Format</span>
-                  <span className="font-mono font-bold text-[#ECEBE9]">{selectedApi.dataType}</span>
+                  <span className="text-[#72706C] block">HTTPS Supported</span>
+                  <span className="font-mono font-bold text-[#ECEBE9]">{selectedApi.https ? 'Yes' : 'No'}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[#72706C] block">Rate Limit</span>
-                  <span className="font-mono font-bold text-[#ECEBE9]">{selectedApi.rateLimit || 'N/A'}</span>
+                  <span className="text-[#72706C] block">API Repository Category</span>
+                  <span className="font-mono font-bold text-[#ECEBE9]">{selectedApi.category}</span>
                 </div>
               </div>
 
@@ -725,11 +381,11 @@ curl -X GET "${api.endpoint}" \\
               <div className="space-y-2">
                 <h4 className="text-xs font-bold uppercase text-[#72706C] tracking-wider flex items-center gap-1.5">
                   <Globe size={12} />
-                  <span>Base GET Request Endpoint</span>
+                  <span>Website / Endpoint Link</span>
                 </h4>
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] font-mono text-[11px] text-emerald-500 overflow-x-auto scrollbar-none">
-                  <span className="text-[#ECEBE9] select-none">GET</span>
-                  <span className="truncate">{selectedApi.endpoint}</span>
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] font-mono text-[11px] text-[#3C6B4D] overflow-x-auto scrollbar-none">
+                  <span className="text-[#ECEBE9] select-none">URL</span>
+                  <span className="truncate">{selectedApi.link}</span>
                 </div>
               </div>
 
@@ -740,7 +396,7 @@ curl -X GET "${api.endpoint}" \\
                   <span>Integration Details & Analysis</span>
                 </h4>
                 <p className="text-xs text-[#A3A09B] leading-relaxed">
-                  {selectedApi.details}
+                  This public API allows integration with the {selectedApi.category} database catalog. It operates on standard JSON data structures and supports {selectedApi.https ? 'secure TLS/HTTPS queries' : 'unsecured requests'}. The API authorization model is {selectedApi.auth || 'unauthenticated / open-access'}.
                 </p>
               </div>
 
@@ -780,19 +436,6 @@ curl -X GET "${api.endpoint}" \\
                   </button>
                 </div>
               </div>
-
-              {/* Sample Response */}
-              {selectedApi.sampleResponse && (
-                <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase text-[#72706C] tracking-wider flex items-center gap-1.5">
-                    <FileCode size={12} />
-                    <span>Sample JSON Payload</span>
-                  </h4>
-                  <pre className="p-4 rounded-xl bg-[#111213] border border-[#2A2D30] text-[10px] font-mono text-[#3C6B4D] overflow-x-auto max-h-36 scrollbar-none">
-                    <code>{selectedApi.sampleResponse}</code>
-                  </pre>
-                </div>
-              )}
             </div>
 
             {/* Modal Action Buttons */}
@@ -804,7 +447,7 @@ curl -X GET "${api.endpoint}" \\
                 className="btn-primary flex-1 text-xs py-2.5"
               >
                 <Bookmark size={14} />
-                <span>Visit API Documentation</span>
+                <span>Visit API Website</span>
                 <ExternalLink size={12} />
               </a>
               <button
@@ -820,3 +463,4 @@ curl -X GET "${api.endpoint}" \\
     </div>
   );
 };
+export default LibraryApi;
