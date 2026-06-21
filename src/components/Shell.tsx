@@ -70,6 +70,16 @@ export const Shell = () => {
               >
                 About DomoDomo
               </NavLink>
+              <NavLink
+                to="/library-api"
+                className={({ isActive }) =>
+                  `text-xs font-bold tracking-wide transition-colors ${
+                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                  }`
+                }
+              >
+                Library API
+              </NavLink>
             </nav>
           </div>
 
