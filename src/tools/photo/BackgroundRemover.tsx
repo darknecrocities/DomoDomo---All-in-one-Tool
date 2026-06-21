@@ -121,18 +121,20 @@ export const BackgroundRemoverTool = () => {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       <div className="lg:col-span-8 glass-card p-6 flex flex-col justify-center min-h-[350px] relative overflow-hidden">
         <div className="absolute inset-0 bg-[#0B0F19]" style={{ backgroundImage: 'radial-gradient(#1e293b 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
-        {!imageUrl ? (
-          <FileUploadWrapper onUpload={(file) => { setImageUrl(URL.createObjectURL(file)); }} />
-        ) : (
-          <canvas
-            ref={canvasRef}
-            onClick={handleCanvasClick}
-            onMouseDown={(e) => { if (activeTool === 'eraser') { isDrawing.current = true; draw(e); } }}
-            onMouseMove={draw}
-            onMouseUp={() => { isDrawing.current = false; }}
-            className="z-10 max-w-full h-auto rounded border border-slate-800 shadow-xl cursor-crosshair mx-auto bg-checkered"
-          />
-        )}
+        <div className="relative z-10 w-full flex flex-col justify-center">
+          {!imageUrl ? (
+            <FileUploadWrapper onUpload={(file) => { setImageUrl(URL.createObjectURL(file)); }} />
+          ) : (
+            <canvas
+              ref={canvasRef}
+              onClick={handleCanvasClick}
+              onMouseDown={(e) => { if (activeTool === 'eraser') { isDrawing.current = true; draw(e); } }}
+              onMouseMove={draw}
+              onMouseUp={() => { isDrawing.current = false; }}
+              className="max-w-full h-auto rounded border border-slate-800 shadow-xl cursor-crosshair mx-auto bg-checkered"
+            />
+          )}
+        </div>
         <canvas ref={origCanvasRef} className="hidden" />
       </div>
 
