@@ -117,6 +117,19 @@ export const AIDomoAgentHub = () => {
   const [showNewFileHUD, setShowNewFileHUD] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const [agentActivity, setAgentActivity] = useState<{ id: string; type: 'read' | 'write' | 'create' | 'analyze' | 'success' | 'error'; text: string; timestamp: string }[]>([]);
+
+  const addActivityLog = (type: 'read' | 'write' | 'create' | 'analyze' | 'success' | 'error', text: string) => {
+    const timestamp = new Date().toTimeString().split(' ')[0];
+    const newLog = {
+      id: Math.random().toString(36).substring(7),
+      type,
+      text,
+      timestamp
+    };
+    setAgentActivity((prev) => [...prev, newLog]);
+  };
+
   const checkStatus = async () => {
     try {
       const res = await aiService.checkOllama();
@@ -293,12 +306,22 @@ export const AIDomoAgentHub = () => {
     setChatLog((prev) => [...prev, { role: 'user', text: userMessage }]);
     setIsThinking(true);
     setThinkingStatus('Domo is analyzing workspace...');
+    
+    setAgentActivity([]); // Clear logs for new command
+    addActivityLog('analyze', `Initializing prompt query: "${userMessage.substring(0, 45)}${userMessage.length > 45 ? '...' : ''}"`);
+    addActivityLog('read', `Scanning workspace node tree...`);
 
     // Collect workspace file structures
     const fileStructureList = getFileTreeNames(fileTree);
     const workspaceCtx = fileStructureList.length > 0
       ? `Workspace folders mounted. Listed files:\n- ${fileStructureList.join('\n- ')}`
       : 'No local folders mounted yet.';
+
+    if (fileStructureList.length > 0) {
+      addActivityLog('read', `Read workspace directory context. Loaded details for ${fileStructureList.length} files.`);
+    } else {
+      addActivityLog('read', `No workspace folder mounted. Running in mock sandbox environment.`);
+    }
 
     const systemPrompt = `You are DomoDomo, a brilliant, friendly coding agent.
 You speak with enthusiasm, using friendly emojis like 🚀, 💻, 🧠, 🪄, and 🛠️.
@@ -314,16 +337,19 @@ file_content
 Always write complete code files. DomoDomo handles the parsing and saves it locally.`;
 
     try {
+      addActivityLog('analyze', `Sending query stream to local model: "${selectedModel || 'default'}"...`);
       const responseText = await aiService.generateText(userMessage, 800, (status) => {
         setThinkingStatus(status);
       }, selectedModel || undefined, { systemPrompt, temperature: 0.5 });
 
+      addActivityLog('success', `Model response received. Processing instruction commands...`);
       setChatLog((prev) => [...prev, { role: 'agent', text: responseText }]);
       
       // Parse responseText for tool calls
       await parseAgentToolCalls(responseText);
 
     } catch (err: any) {
+      addActivityLog('error', `Ollama generation failed: ${err.message || err}`);
       setErrorMsg(err.message || 'Ollama query failed.');
     } finally {
       setIsThinking(false);
@@ -342,13 +368,21 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
   };
 
   const parseAgentToolCalls = async (text: string) => {
-    if (!dirHandle) return;
+    if (!dirHandle) {
+      addActivityLog('error', `Cannot modify workspace files. No workspace folder mounted.`);
+      return;
+    }
     const writeRegex = /\[WRITE_FILE:\s*([^\s\]]+)\]([\s\S]*?)\[END_WRITE_FILE\]/g;
     let match;
+    let foundCalls = false;
     
     while ((match = writeRegex.exec(text)) !== null) {
+      foundCalls = true;
       const filePath = match[1].trim();
       const codeContent = match[2]; // keep exact formatting
+      
+      addActivityLog('create', `Parsing target write instruction for: "${filePath}"`);
+      addActivityLog('write', `Writing bytes stream to workspace storage path: "${filePath}"...`);
       
       try {
         const parts = filePath.split('/');
@@ -363,6 +397,8 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
         await writable.write(codeContent);
         await writable.close();
 
+        addActivityLog('success', `Completed write operation for: "${filePath}" (${codeContent.length} chars)`);
+
         setChatLog((prev) => [
           ...prev,
           { role: 'system', text: `🛠️ DomoDomo automatically created/modified file: "${filePath}"` }
@@ -375,9 +411,14 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
           setActiveFile((prev) => prev ? { ...prev, content: codeContent } : null);
           setEditorContent(codeContent);
         }
-      } catch (e) {
+      } catch (e: any) {
+        addActivityLog('error', `Failed writing file "${filePath}": ${e.message || e}`);
         console.warn('Agent failed to write file:', filePath, e);
       }
+    }
+
+    if (!foundCalls) {
+      addActivityLog('success', `Completed query analysis. No filesystem write operations requested.`);
     }
   };
 
@@ -483,7 +524,7 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
               : 'border-transparent text-[#72706C] hover:text-[#A3A09B]'
           }`}
         >
-          OpenClaw Model Catalog
+          Domo Model Catalog
         </button>
         <button
           onClick={() => setActiveTab('setup')}
@@ -624,6 +665,42 @@ Always write complete code files. DomoDomo handles the parsing and saves it loca
                   </p>
                 </div>
               )}
+            </div>
+
+            {/* Terminal Console */}
+            <div className="mt-4 border-t border-[#2A2D30]/60 pt-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#72706C]">
+                <div className="flex items-center gap-1.5">
+                  <Terminal size={12} className="text-[#3C6B4D]" />
+                  <span className="font-bold uppercase tracking-wider">Domo Agent Terminal</span>
+                </div>
+                <span className="text-emerald-500/80 animate-pulse flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>Live Tracking</span>
+                </span>
+              </div>
+              <div className="bg-[#0A0B0C] border border-[#2A2D30]/75 rounded-xl p-3 h-28 overflow-y-auto font-mono text-[10px] text-[#A3A09B] space-y-1.5 text-left select-none">
+                {agentActivity.length === 0 ? (
+                  <span className="text-[#72706C] italic">No active operations. Ask Domo Agent to write/read code to start logging live events.</span>
+                ) : (
+                  agentActivity.map((log) => (
+                    <div key={log.id} className="flex gap-2 items-start leading-relaxed">
+                      <span className="text-[#72706C] shrink-0">[{log.timestamp}]</span>
+                      <span className={`font-bold shrink-0 ${
+                        log.type === 'read' ? 'text-blue-400' :
+                        log.type === 'write' ? 'text-amber-400' :
+                        log.type === 'create' ? 'text-purple-400' :
+                        log.type === 'analyze' ? 'text-teal-400' :
+                        log.type === 'success' ? 'text-emerald-400' :
+                        'text-rose-400'
+                      }`}>
+                        {log.type.toUpperCase()}
+                      </span>
+                      <span className="text-[#ECEBE9]">{log.text}</span>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
