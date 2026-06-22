@@ -44,7 +44,7 @@ export const Shell = () => {
   const [repoStatus, setRepoStatus] = useState<'synced' | 'update_available' | 'updating'>('synced');
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false);
   const [updaterLogs, setUpdaterLogs] = useState<string[]>([]);
-  const [simulatedCommit] = useState({
+  const [simulatedCommit, setSimulatedCommit] = useState({
     hash: 'a9d2f61',
     message: 'feat: add auto-update repo automation',
     author: 'darknecrocities',
@@ -52,14 +52,64 @@ export const Shell = () => {
   });
 
   useEffect(() => {
-    // Automatically trigger update available alert after 5s for demo/local trigger
-    const timer = setTimeout(() => {
-      if (repoStatus === 'synced') {
-        setRepoStatus('update_available');
+    const checkForUpdates = async () => {
+      // 1. Only check for updates if running on localhost / local environment
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (!isLocalhost) {
+        return; // Don't prompt online users for git updates
       }
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
+
+      try {
+        // 2. Fetch the latest commit from the remote GitHub repository
+        const remoteRes = await fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/main');
+        if (!remoteRes.ok) return;
+        const remoteData = await remoteRes.json();
+        const remoteSha = remoteData.sha;
+        const remoteShaShort = remoteSha ? remoteSha.substring(0, 7) : '';
+
+        // 3. Fetch the local commit SHA from the local MCP server
+        const mcpRes = await fetch('http://localhost:3001/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'tools/call',
+            params: {
+              name: 'execute_command',
+              arguments: { command: 'git rev-parse HEAD' }
+            },
+            id: 10
+          })
+        });
+
+        if (mcpRes.ok) {
+          const mcpData = await mcpRes.json();
+          if (!mcpData.result?.isError && mcpData.result?.content?.[0]?.text) {
+            const localSha = mcpData.result.content[0].text.trim();
+            
+            // 4. Compare remote and local commit SHAs
+            if (localSha && remoteSha && !localSha.startsWith(remoteSha) && !remoteSha.startsWith(localSha)) {
+              setSimulatedCommit({
+                hash: remoteShaShort,
+                message: remoteData.commit?.message?.split('\n')?.[0] || 'New updates available',
+                author: remoteData.commit?.author?.name || 'developer',
+                files: ['Repository files']
+              });
+              setRepoStatus('update_available');
+            } else {
+              setRepoStatus('synced');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Update check failed:', err);
+      }
+    };
+
+    checkForUpdates();
+    const interval = setInterval(checkForUpdates, 30000);
+    return () => clearInterval(interval);
+  }, [repoStatus]);
 
   const runAutoUpdater = async () => {
     setRepoStatus('updating');
