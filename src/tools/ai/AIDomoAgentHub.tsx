@@ -1154,6 +1154,7 @@ file_content
           activeArtifact={activeArtifact}
           setActiveArtifact={setActiveArtifact}
           dirHandle={dirHandle}
+          mcpConnected={mcpConnected}
           handleWriteArtifactToWorkspace={handleWriteArtifactToWorkspace}
           highlightCode={highlightCode}
         />

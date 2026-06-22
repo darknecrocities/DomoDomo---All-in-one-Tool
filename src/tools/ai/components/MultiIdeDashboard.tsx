@@ -33,6 +33,7 @@ interface MultiIdeDashboardProps {
   activeArtifact: { id: string; name: string; content: string; agentName: string } | null;
   setActiveArtifact: (art: any) => void;
   dirHandle: any;
+  mcpConnected: boolean;
   handleWriteArtifactToWorkspace: (art: any) => void;
   highlightCode: (code: string) => string;
 }
@@ -54,6 +55,7 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
   activeArtifact,
   setActiveArtifact,
   dirHandle,
+  mcpConnected,
   handleWriteArtifactToWorkspace,
   highlightCode
 }) => {
@@ -262,7 +264,7 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleWriteArtifactToWorkspace(activeArtifact)}
-                      disabled={!dirHandle}
+                      disabled={!dirHandle && !mcpConnected}
                       className="flex-1 py-1 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-[10px] font-bold rounded-lg disabled:opacity-40"
                     >
                       Write to Workspace
