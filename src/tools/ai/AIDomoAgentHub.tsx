@@ -148,6 +148,8 @@ const getCorrectedFilePath = (path: string) => {
   let cleaned = path.trim();
   cleaned = cleaned.replace(/^['"`\s]+|['"`\s]+$/g, '');
   cleaned = cleaned.replace(/\\/g, '/');
+  // Strip any leading slashes or "./" to keep it relative within the workspace
+  cleaned = cleaned.replace(/^(\.\/|\/)+/, '');
   if (cleaned.endsWith('.python')) cleaned = cleaned.slice(0, -7) + '.py';
   if (cleaned.endsWith('.javascript')) cleaned = cleaned.slice(0, -11) + '.js';
   if (cleaned.endsWith('.typescript')) cleaned = cleaned.slice(0, -11) + '.ts';
@@ -332,6 +334,160 @@ export const AIDomoAgentHub = () => {
     return data.result;
   };
 
+  interface ToolCall {
+    type: 'read_file' | 'write_file' | 'execute_command' | 'list_directory';
+    target: string;
+    content?: string;
+  }
+
+  const parseToolCalls = (text: string): ToolCall[] => {
+    const list: ToolCall[] = [];
+    
+    // 1. Bracketed WRITE_FILE: [WRITE_FILE: path] ... [END_WRITE_FILE] (or next block tag)
+    const writeBracketRegex = /\[WRITE_FILE:\s*([^\s\]]+)\]([\s\S]*?)(?:\[END_WRITE_FILE\]|(?=\[WRITE_FILE:)|(?=\[READ_FILE:)|(?=\[EXECUTE_COMMAND:)|$)/gi;
+    let match;
+    while ((match = writeBracketRegex.exec(text)) !== null) {
+      list.push({
+        type: 'write_file',
+        target: getCorrectedFilePath(match[1]),
+        content: cleanCodeContent(match[2])
+      });
+    }
+
+    // 2. Plain WRITE_FILE (if no bracketed write was found)
+    if (list.filter(c => c.type === 'write_file').length === 0) {
+      const writePlainRegex = /(?:^|\n)(?:WRITE_FILE|\[WRITE_FILE\])[:\s]*([^\s\n\]]+)\]?[\s\n]*([\s\S]*?)(?=(?:\n(?:WRITE_FILE|\[WRITE_FILE\]|READ_FILE|EXECUTE_COMMAND))|$)/gi;
+      while ((match = writePlainRegex.exec(text)) !== null) {
+        list.push({
+          type: 'write_file',
+          target: getCorrectedFilePath(match[1]),
+          content: cleanCodeContent(match[2])
+        });
+      }
+    }
+
+    // 3. READ_FILE
+    const readRegex = /(?:\[READ_FILE:\s*([^\s\]]+)\]|(?:\bREAD_FILE\b[:\s]+)([^\s\n]+))/gi;
+    while ((match = readRegex.exec(text)) !== null) {
+      const path = getCorrectedFilePath(match[1] || match[2]);
+      if (path) {
+        list.push({ type: 'read_file', target: path });
+      }
+    }
+
+    // 4. EXECUTE_COMMAND
+    const execRegex = /(?:\[EXECUTE_COMMAND:\s*([^\]]+)\]|(?:\bEXECUTE_COMMAND\b[:\s]+)([^\n]+))/gi;
+    while ((match = execRegex.exec(text)) !== null) {
+      const cmd = (match[1] || match[2]).trim();
+      if (cmd) {
+        list.push({ type: 'execute_command', target: cmd });
+      }
+    }
+
+    // 5. LIST_DIRECTORY
+    const listDirRegex = /(?:\[LIST_DIRECTORY\]|\bLIST_DIRECTORY\b)/gi;
+    if (listDirRegex.test(text)) {
+      list.push({ type: 'list_directory', target: '' });
+    }
+
+    return list;
+  };
+
+  const executeAgentTool = async (
+    type: 'read_file' | 'write_file' | 'execute_command' | 'list_directory',
+    target: string,
+    content = '',
+    agentName: string,
+    permissions: string[]
+  ): Promise<string> => {
+    if (type === 'read_file') {
+      const canRead = globalPermissions.read_files && permissions.includes('read_files');
+      if (!canRead) return `Error: Permission denied. Read permission not granted to agent ${agentName}.`;
+      
+      if (mcpConnected && mcpTools.some(t => t.name === 'read_file')) {
+        try {
+          const result = await callMcpTool('read_file', { path: target });
+          return result?.content?.[0]?.text || `Error: File is empty or read failed.`;
+        } catch (e: any) {
+          return `Error reading file via MCP: ${e.message}`;
+        }
+      }
+      return `Error: Read file tool requires MCP server to be active.`;
+    }
+
+    if (type === 'write_file') {
+      const canWrite = globalPermissions.write_files && permissions.includes('write_files');
+      if (!canWrite) return `Error: Permission denied. Write permission not granted to agent ${agentName}.`;
+
+      if (mcpConnected && mcpTools.some(t => t.name === 'write_file')) {
+        try {
+          await callMcpTool('write_file', { path: target, content });
+          addActivityLog('success', `[Agent Write] Wrote file successfully via MCP: "${target}"`);
+          return `Success: Successfully wrote content to ${target}`;
+        } catch (e: any) {
+          return `Error writing file via MCP: ${e.message}`;
+        }
+      }
+      if (dirHandle) {
+        try {
+          const newArtifact = { id: 'temp', name: target, content, agentName };
+          await handleWriteArtifactToWorkspace(newArtifact, true);
+          return `Success: Successfully wrote content to ${target} (via filesystem picker)`;
+        } catch (e: any) {
+          return `Error writing file via workspace picker: ${e.message}`;
+        }
+      }
+      return `Error: No workspace connected. Please connect the MCP server or mount a local folder.`;
+    }
+
+    if (type === 'execute_command') {
+      const canExec = globalPermissions.execute_commands && permissions.includes('execute_commands');
+      if (!canExec) return `Error: Permission denied. Execute Command permission is disabled or not granted to agent ${agentName}.`;
+
+      if (mcpConnected && mcpTools.some(t => t.name === 'execute_command')) {
+        try {
+          addActivityLog('info', `[Agent Command Exec] Running: "${target}"`);
+          const result = await callMcpTool('execute_command', { command: target });
+          if (result?.isError) {
+            return `Command execution failed:\n${result?.content?.[0]?.text || ''}`;
+          }
+          return `Command executed successfully. Output:\n${result?.content?.[0]?.text || ''}`;
+        } catch (e: any) {
+          return `Error executing command via MCP: ${e.message}`;
+        }
+      }
+      return `Error: Command execution requires MCP server to be active.`;
+    }
+
+    if (type === 'list_directory') {
+      const canRead = globalPermissions.read_files && permissions.includes('read_files');
+      if (!canRead) return `Error: Permission denied. Read/List directory permission not granted to agent ${agentName}.`;
+
+      if (mcpConnected && mcpTools.some(t => t.name === 'list_directory')) {
+        try {
+          const result = await callMcpTool('list_directory', {});
+          if (result?.content?.[0]?.text) {
+            const list = JSON.parse(result.content[0].text);
+            const formatNode = (nodes: FileNode[], depth = 0): string => {
+              let out = '';
+              for (const n of nodes) {
+                out += `${'  '.repeat(depth)}- ${n.name} (${n.kind})\n`;
+                if (n.children) out += formatNode(n.children, depth + 1);
+              }
+              return out;
+            };
+            return `Workspace files list:\n${formatNode(list)}`;
+          }
+        } catch (e: any) {
+          return `Error listing workspace via MCP: ${e.message}`;
+        }
+      }
+      return `Error: List directory requires MCP server to be active.`;
+    }
+
+    return `Error: Unknown tool type: ${type}`;
+  };
+
   // Multi-Agent pipeline executor (Multi-IDE layout)
   const handleOrchestrate = async () => {
     if (!orchestratorPrompt.trim() || isOrchestrating) return;
@@ -357,7 +513,7 @@ export const AIDomoAgentHub = () => {
       ]);
     };
 
-    logToBlackboard('System', `🚀 Starting Orchestrator (${orchestrationMode.toUpperCase()} mode)`, 'system');
+    logToBlackboard('System', `🚀 Starting Agentic Orchestrator (${orchestrationMode.toUpperCase()} mode)`, 'system');
 
     try {
       if (orchestrationMode === 'sequential' || orchestrationMode === 'hybrid') {
@@ -366,39 +522,94 @@ export const AIDomoAgentHub = () => {
         for (let i = 0; i < agents.length; i++) {
           const agent = agents[i];
           
-          setAgents(prev => prev.map(a => a.id === agent.id ? { ...a, isExecuting: true, ideContent: '// Processing prompt...\n// Synthesizing workspace...' } : a));
+          setAgents(prev => prev.map(a => a.id === agent.id ? { ...a, isExecuting: true, ideContent: '// Booting agent workspace and starting execution loop...' } : a));
           
           const agentModel = agent.model || selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b');
-          logToBlackboard('System', `⏱️ Running step on ${agent.name} (${agent.role}) using ${agentModel}...`, 'system');
+          logToBlackboard('System', `⏱️ Running agentic workspace loop on ${agent.name} (${agent.role}) using ${agentModel}...`, 'system');
           
-          const systemPrompt = `${agent.promptTemplate}\n\nStrictly abide by these rules: ${agent.permissions.join(', ')}. Keep outputs clean and professional.`;
-          const userPrompt = `Input Context:\n"""\n${currentContext}\n"""\n\nTask Goal: ${orchestratorPrompt}`;
+          const systemPrompt = `${agent.promptTemplate}
 
-          const startTime = Date.now();
-          const responseText = await aiService.generateText(userPrompt, 1000, () => {}, agentModel, { systemPrompt });
-          const endTime = Date.now();
-          
-          const stats = aiService.estimateCost(userPrompt, responseText, agentModel);
-          const duration = endTime - startTime;
+You have active access to the local workspace via these tool call tags:
+- To read a file: [READ_FILE: relative/path/to/file]
+- To write/create/update a file: [WRITE_FILE: relative/path/to/file]\n\`\`\`\ncontent\n\`\`\`
+- To list directory contents: [LIST_DIRECTORY]
+- To run a terminal command (compile, test, run scripts): [EXECUTE_COMMAND: command]
 
-          // Update agent's custom IDE with typing animation
-          animateAgentIDE(agent.id, responseText, duration, stats.tokens, stats.cost);
-          
-          logToBlackboard(agent.name, responseText, 'agent', agent.id);
-          currentContext = responseText;
+Examples of how to use tools:
+1. To write a file:
+[WRITE_FILE: src/index.html]
+<!DOCTYPE html>
+<html>
+  <body>Hello</body>
+</html>
+[END_WRITE_FILE]
 
-          // Check write permissions and perform write
-          const canWrite = globalPermissions.write_files && agent.permissions.includes('write_files');
-          if (canWrite) {
-            await extractOrchestratedArtifacts(responseText, agent.name);
-          } else if (responseText.includes('[WRITE_FILE:')) {
-            logToBlackboard('System', `❌ Blocked write action: ${agent.name} attempted to write files but lacked Write permission.`, 'system');
+2. To run a command:
+[EXECUTE_COMMAND: npm run build]
+
+You can invoke multiple tools in your output. The system will execute them for you and reply with the outputs. Proceed iteratively (e.g. read files, make edits, run tests, fix errors) until you are finished.
+When you are fully finished with your task (or if no tool calls are needed), output a final summary of your changes and do NOT make any further tool calls.`;
+
+          let initialUserPrompt = `Task Goal: ${orchestratorPrompt}\n\n`;
+          if (agent.id === 'agent-2') {
+            initialUserPrompt += `You are the Domo Developer. The Planner has designed the specifications and file list. You MUST now implement and write these files in the local workspace. Please create or update each file using the [WRITE_FILE: path] tool call format. Do NOT just output a summary of your actions; you must write the actual files.\n\nPlanner Specifications:\n"""\n${currentContext}\n"""`;
+          } else if (agent.id === 'agent-3') {
+            initialUserPrompt += `You are the Domo Auditor. Review the files generated by the Developer for security and compilation correctness. Run compiler commands, test commands or read files if needed. If fixes are required, write or update files using [WRITE_FILE: path].\n\nDeveloper Output / Code Context:\n"""\n${currentContext}\n"""`;
+          } else {
+            initialUserPrompt += `Context / Previous Agent Output:\n"""\n${currentContext}\n"""`;
           }
+
+          let agentHistory = [initialUserPrompt];
+
+          let loopCount = 0;
+          let agentFinished = false;
+          let lastResponseText = '';
+
+          while (!agentFinished && loopCount < 5) {
+            loopCount++;
+            const runStartTime = Date.now();
+            const historyPrompt = agentHistory.join('\n\n');
+            
+            const responseText = await aiService.generateText(historyPrompt, 1000, () => {}, agentModel, { systemPrompt });
+            const runEndTime = Date.now();
+            lastResponseText = responseText;
+
+            const stats = aiService.estimateCost(historyPrompt, responseText, agentModel);
+            const duration = runEndTime - runStartTime;
+
+            // Animate/show on IDE
+            animateAgentIDE(agent.id, responseText, duration, stats.tokens, stats.cost);
+            logToBlackboard(agent.name, responseText, 'agent', agent.id);
+
+            // Parse tool calls
+            const toolCalls = parseToolCalls(responseText);
+            if (toolCalls.length === 0) {
+              agentFinished = true;
+              break;
+            }
+
+            let toolOutputs = [];
+            for (const call of toolCalls) {
+              const toolResult = await executeAgentTool(call.type, call.target, call.content || '', agent.name, agent.permissions);
+              toolOutputs.push(`[TOOL RESULT: ${call.type.toUpperCase()} ${call.target || ''}]\n${toolResult}`);
+            }
+
+            const combinedToolOutput = toolOutputs.join('\n\n');
+            agentHistory.push(`Agent Output:\n${responseText}`);
+            agentHistory.push(`System Tool Output:\n${combinedToolOutput}\n\nPlease proceed based on the above tool results.`);
+            
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+
+          currentContext = lastResponseText;
+          
+          // Refresh tree & extract final artifacts list
+          await extractOrchestratedArtifacts(currentContext, agent.name);
           
           await new Promise((resolve) => setTimeout(resolve, 1500));
         }
       } else {
-        // Parallel mode
+        // Parallel mode (simultaneous single-step tool run)
         logToBlackboard('System', `⚡ Activating parallel pipelines...`, 'system');
 
         const promises = agents.map(async (agent) => {
@@ -418,10 +629,7 @@ export const AIDomoAgentHub = () => {
           animateAgentIDE(agent.id, responseText, duration, stats.tokens, stats.cost);
           logToBlackboard(agent.name, responseText, 'agent', agent.id);
           
-          const canWrite = globalPermissions.write_files && agent.permissions.includes('write_files');
-          if (canWrite) {
-            await extractOrchestratedArtifacts(responseText, agent.name);
-          }
+          await extractOrchestratedArtifacts(responseText, agent.name);
         });
 
         await Promise.all(promises);
@@ -462,13 +670,35 @@ export const AIDomoAgentHub = () => {
   };
 
   const extractOrchestratedArtifacts = async (text: string, agentName: string) => {
-    const writeRegex = /\[WRITE_FILE:\s*([^\s\]]+)\]([\s\S]*?)\[END_WRITE_FILE\]/g;
-    let match;
+    // Robust extraction supporting standard bracketed, non-bracketed, and codeblock-prefixed patterns
+    const bracketRegex = /\[WRITE_FILE:\s*([^\s\]]+)\]([\s\S]*?)(?:\[END_WRITE_FILE\]|(?=\[WRITE_FILE:)|$)/gi;
+    const plainRegex = /(?:^|\n)(?:WRITE_FILE|\[WRITE_FILE\])[:\s]*([^\s\n\]]+)\]?[\s\n]*([\s\S]*?)(?=(?:\n(?:WRITE_FILE|\[WRITE_FILE\]))|$)/gi;
 
-    while ((match = writeRegex.exec(text)) !== null) {
+    let match;
+    const foundFiles = new Map<string, string>();
+
+    // 1. Try bracketed format first
+    while ((match = bracketRegex.exec(text)) !== null) {
       const fileName = getCorrectedFilePath(match[1].trim());
       const content = cleanCodeContent(match[2]);
+      if (fileName && content.trim()) {
+        foundFiles.set(fileName, content);
+      }
+    }
 
+    // 2. If nothing found, try plain text format
+    if (foundFiles.size === 0) {
+      plainRegex.lastIndex = 0;
+      while ((match = plainRegex.exec(text)) !== null) {
+        const fileName = getCorrectedFilePath(match[1].trim());
+        const content = cleanCodeContent(match[2]);
+        if (fileName && content.trim()) {
+          foundFiles.set(fileName, content);
+        }
+      }
+    }
+
+    for (const [fileName, content] of foundFiles.entries()) {
       const newArtifact = {
         id: Math.random().toString(36).substring(7),
         name: fileName,
@@ -496,6 +726,11 @@ export const AIDomoAgentHub = () => {
           await handleWriteArtifactToWorkspace(newArtifact, true);
         }
       }
+    }
+
+    if (foundFiles.size > 0) {
+      // Refresh tree to display the new files immediately
+      await refreshFileTree();
     }
   };
 
@@ -628,6 +863,49 @@ export const AIDomoAgentHub = () => {
   useEffect(() => {
     checkStatus();
   }, []);
+
+  useEffect(() => {
+    let eventSource: EventSource | null = null;
+    const connectMcp = () => {
+      try {
+        eventSource = new EventSource(mcpServerUrl);
+        eventSource.onopen = async () => {
+          setMcpConnected(true);
+          try {
+            const msgUrl = mcpServerUrl.replace('/sse', '/message');
+            const res = await fetch(msgUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'tools/list',
+                id: 1
+              })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const toolsList = data.result?.tools || [];
+              setMcpTools(toolsList);
+            }
+          } catch (err) {
+            console.error('Error fetching initial MCP tools:', err);
+          }
+        };
+
+        eventSource.onerror = () => {
+          setMcpConnected(false);
+          if (eventSource) eventSource.close();
+        };
+      } catch (err) {
+        console.error('Error establishing initial MCP SSE link:', err);
+      }
+    };
+
+    connectMcp();
+    return () => {
+      if (eventSource) eventSource.close();
+    };
+  }, [mcpServerUrl]);
 
   useEffect(() => {
     if (mcpConnected) {
@@ -1027,7 +1305,7 @@ file_content
                 </div>
               )}
               <div className="space-y-1.5 overflow-y-auto max-h-[420px]">
-                {dirHandle ? renderTreeNode(fileTree) : (
+                {(dirHandle || (mcpConnected && fileTree.length > 0)) ? renderTreeNode(fileTree) : (
                   <div className="text-center py-12 space-y-4">
                     <Folder size={32} className="mx-auto text-[#72706C]" />
                     <button onClick={handleMountDirectory} className="btn-primary text-xs py-1.5 w-full">Mount Folder</button>
@@ -1035,7 +1313,7 @@ file_content
                 )}
               </div>
             </div>
-            {dirHandle && (
+            {(dirHandle || mcpConnected) && (
               <button onClick={handleMountDirectory} className="btn-secondary text-[11px] py-1.5 w-full flex items-center justify-center gap-1 mt-4">
                 <Folder size={12} />
                 <span>Switch Directory</span>
@@ -1157,6 +1435,7 @@ file_content
           mcpConnected={mcpConnected}
           handleWriteArtifactToWorkspace={handleWriteArtifactToWorkspace}
           highlightCode={highlightCode}
+          handleMountDirectory={handleMountDirectory}
         />
       )}
 

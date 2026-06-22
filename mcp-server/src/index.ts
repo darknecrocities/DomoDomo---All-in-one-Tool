@@ -113,8 +113,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'write_file': {
-        const relPath = (args as any).path;
+        let relPath = (args as any).path;
         const content = (args as any).content;
+        
+        // Strip leading slashes and relative path indicators to prevent resolving outside workspace
+        relPath = relPath.replace(/^(\.\/|\/)+/, '');
         const absPath = path.resolve(WORKSPACE_ROOT, relPath);
         
         // Ensure folder directory exists

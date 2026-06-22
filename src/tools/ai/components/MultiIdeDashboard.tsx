@@ -36,6 +36,7 @@ interface MultiIdeDashboardProps {
   mcpConnected: boolean;
   handleWriteArtifactToWorkspace: (art: any) => void;
   highlightCode: (code: string) => string;
+  handleMountDirectory: () => void;
 }
 
 export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
@@ -57,7 +58,8 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
   dirHandle,
   mcpConnected,
   handleWriteArtifactToWorkspace,
-  highlightCode
+  highlightCode,
+  handleMountDirectory
 }) => {
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -68,6 +70,40 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
             <span className="text-[10px] bg-[#3C6B4D]/10 text-emerald-500 border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full font-bold uppercase">Multi-Agent Pipeline</span>
             <h3 className="text-sm font-bold text-[#ECEBE9] mt-1">Multi-IDE Execution strategy</h3>
             <p className="text-xs text-[#A3A09B]">Collaborate sequential or parallel code builders with distinct sandboxed workspace terminals.</p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              {mcpConnected ? (
+                <div className="flex items-center gap-1.5 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Workspace Connected: Local MCP (Host filesystem auto-mounted)</span>
+                </div>
+              ) : dirHandle ? (
+                <div className="flex items-center gap-1.5 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Workspace Mounted: {dirHandle.name}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-0.5 rounded-full font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    <span>No Workspace Connected (Writes disabled)</span>
+                  </div>
+                  <button
+                    onClick={handleMountDirectory}
+                    className="px-2 py-0.5 bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/35 rounded hover:bg-[#3C6B4D]/25 text-[10px] font-bold transition-all"
+                  >
+                    Mount Folder
+                  </button>
+                </div>
+              )}
+              {(dirHandle || mcpConnected) && (
+                <button
+                  onClick={handleMountDirectory}
+                  className="text-[9px] text-[#72706C] hover:text-[#ECEBE9] underline transition-all font-mono"
+                >
+                  Switch Directory
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-1 flex gap-1">
