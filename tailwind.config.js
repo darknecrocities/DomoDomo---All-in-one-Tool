@@ -7,17 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#111213',
-        card: '#18191B',
+        background: 'var(--background)',
+        card: 'var(--card)',
         primary: {
-          DEFAULT: '#3C6B4D', // Forest Jade
-          hover: '#2E533B',
+          DEFAULT: 'var(--primary)',
+          hover: 'var(--primary-hover)',
         },
         secondary: {
-          DEFAULT: '#E29E2D', // Amber accent
-          hover: '#C28420',
+          DEFAULT: 'var(--secondary)',
+          hover: 'var(--secondary-hover)',
         },
-        accent: '#F59E0B',
+        accent: 'var(--accent)',
       },
       borderRadius: {
         card: '24px',

@@ -4,11 +4,51 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Light Mode - Monochrome Bamboo */
+  --background: #f9f9f9;
+  --card: #ffffff;
+  --text: #1a1c1c;
+  --text-secondary: #444748;
+  --text-tertiary: #747878;
+  --primary: #000000;
+  --primary-hover: #1c1b1b;
+  --primary-rgb: 0, 0, 0;
+  --secondary: #5e5e5e;
+  --secondary-hover: #636262;
+  --accent: #5f5e5e;
+  --border: #c4c7c7;
+  --surface-dim: #f3f3f3;
+  --surface-container: #eeeeee;
+  --primary-glow: rgba(0, 0, 0, 0.02);
+}
+
+:root:not(.light), .dark {
+  /* Dark Mode - Panda Charcoal (Default) */
+  --background: #0d0d0d;
+  --card: #18191B;
+  --text: #f9f9f9;
+  --text-secondary: #c7c6c6;
+  --text-tertiary: #858383;
+  --primary: #ffffff;
+  --primary-hover: #e5e2e1;
+  --primary-rgb: 255, 255, 255;
+  --secondary: #c7c6c6;
+  --secondary-hover: #e4e2e2;
+  --accent: #e5e2e1;
+  --border: #2A2D30;
+  --surface-dim: #111213;
+  --surface-container: #222325;
+  --primary-glow: rgba(255, 255, 255, 0.05);
+}
+
 @layer base {
   body {
-    @apply bg-[#111213] text-[#ECEBE9] font-sans antialiased overflow-x-hidden;
+    @apply font-sans antialiased overflow-x-hidden transition-colors duration-200;
+    background-color: var(--background);
+    color: var(--text);
     background-image: 
-      radial-gradient(at 50% 0%, rgba(60, 107, 77, 0.05) 0px, transparent 60%);
+      radial-gradient(at 50% 0%, var(--primary-glow) 0px, transparent 60%);
     background-attachment: fixed;
   }
 
@@ -22,47 +62,110 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #111213;
+    background: var(--background);
   }
   ::-webkit-scrollbar-thumb {
-    background: #2A2D30;
+    background: var(--border);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3C6B4D;
+    background: var(--primary);
   }
 }
 
 @layer components {
   /* Premium tactile cards replacing transparent glassmorphism */
   .glass-card {
-    @apply bg-[#18191B] border border-[#2A2D30] rounded-card transition-all duration-200 shadow-sm shadow-black/10;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    @apply rounded-card transition-all duration-200 shadow-sm shadow-black/10;
   }
 
   .glass-card-hover {
-    @apply hover:border-[#3C6B4D]/40 hover:bg-[#1B1D1F] hover:shadow-md hover:shadow-black/20 hover:-translate-y-0.5;
+    @apply hover:shadow-md hover:shadow-black/20 hover:-translate-y-0.5;
+    border-color: var(--border);
+  }
+  .glass-card-hover:hover {
+    border-color: rgba(var(--primary-rgb), 0.4) !important;
+    background-color: var(--card) !important;
   }
 
   .btn-primary {
-    @apply bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] font-semibold py-2 px-4 rounded-xl border border-[#4a845f]/20 shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+    background-color: var(--primary);
+    color: var(--background);
+    border: 1px solid rgba(var(--primary-rgb), 0.2);
+    @apply hover:opacity-90 font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+  }
+  .btn-primary:hover {
+    background-color: var(--primary-hover) !important;
+    color: var(--background) !important;
   }
 
   .btn-secondary {
-    @apply bg-[#1E2022] hover:bg-[#25282B] text-[#A3A09B] border border-[#2A2D30] font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+    background-color: var(--surface-dim);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    @apply hover:opacity-90 font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+  }
+  .btn-secondary:hover {
+    background-color: var(--surface-container) !important;
+    color: var(--text) !important;
   }
 
   /* Retained for backward compatibility/utilities */
   .btn-indigo {
-    @apply bg-[#1E2022] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+    background-color: var(--surface-dim);
+    color: var(--text);
+    border: 1px solid var(--border);
+    @apply hover:opacity-90 font-semibold py-2 px-4 rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
   .glow-text-teal {
-    @apply text-[#3C6B4D] font-bold;
+    color: var(--primary);
+    @apply font-bold;
   }
   
   .glow-text-indigo {
-    @apply text-[#E29E2D] font-bold;
+    color: var(--secondary);
+    @apply font-bold;
   }
+}
+
+@layer utilities {
+  /* Tailwind Static Hex Color Class Overrides to support dynamic dark/light swapping */
+  .bg-\[\#111213\] { background-color: var(--background) !important; }
+  .bg-\[\#0A0B0C\] { background-color: var(--background) !important; }
+  .bg-\[\#18191B\] { background-color: var(--card) !important; }
+  .bg-\[\#1E2022\] { background-color: var(--surface-dim) !important; }
+  .bg-\[\#151C2C\]\/60 { background-color: var(--surface-dim) !important; }
+  .bg-slate-950\/40 { background-color: rgba(var(--primary-rgb), 0.05) !important; }
+  .bg-slate-900 { background-color: var(--surface-dim) !important; }
+  
+  .text-\[\#ECEBE9\] { color: var(--text) !important; }
+  .text-\[\#A3A09B\] { color: var(--text-secondary) !important; }
+  .text-\[\#72706C\] { color: var(--text-tertiary) !important; }
+  .text-\[\#4E8E5E\] { color: var(--primary) !important; }
+  .text-\[\#3C6B4D\] { color: var(--primary) !important; }
+  .text-emerald-400 { color: var(--primary) !important; }
+  
+  .border-\[\#2A2D30\] { border-color: var(--border) !important; }
+  .border-\[\#3C6B4D\] { border-color: var(--primary) !important; }
+  .border-\[\#4E8E5E\] { border-color: var(--primary) !important; }
+  .focus\:border-\[\#4E8E5E\]:focus { border-color: var(--primary) !important; }
+  
+  .hover\:bg-\[\#2E533B\]:hover { background-color: var(--primary-hover) !important; }
+  .hover\:bg-\[\#25282B\]:hover { background-color: var(--surface-container) !important; }
+  .hover\:text-\[\#ECEBE9\]:hover { color: var(--text) !important; }
+  .hover\:border-\[\#3C6B4D\]\/40:hover { border-color: rgba(var(--primary-rgb), 0.4) !important; }
+  
+  .bg-\[\#3C6B4D\] { background-color: var(--primary) !important; }
+  .bg-\[\#3C6B4D\]\/10 { background-color: rgba(var(--primary-rgb), 0.1) !important; }
+  .bg-\[\#4E8E5E\] { background-color: var(--primary) !important; }
+  .bg-\[\#4E8E5E\]\/10 { background-color: rgba(var(--primary-rgb), 0.1) !important; }
+  .border-\[\#4a845f\]\/20 { border-color: rgba(var(--primary-rgb), 0.2) !important; }
+  
+  .text-\[\#E29E2D\] { color: var(--secondary) !important; }
+  .bg-\[\#E29E2D\] { background-color: var(--secondary) !important; }
 }
 
 /* Minimalist slow animation loop */
