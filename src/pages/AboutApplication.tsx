@@ -1,5 +1,4 @@
 import { Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap } from 'lucide-react';
-import { Logo } from '../components/Logo';
 import { BRAND_KIT } from '../utils/BrandKit';
 
 const stats = [
@@ -44,8 +43,17 @@ export const AboutApplication = () => {
           </p>
         </div>
         <div className="lg:col-span-4 z-10 flex justify-center lg:justify-end">
-          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-6">
-            <Logo size={128} showText={false} />
+          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-6 w-44 h-44 relative group/wink cursor-pointer flex items-center justify-center">
+            <img
+              src="/domodomo.png"
+              alt="Brand Logo"
+              className="absolute w-32 h-32 rounded-2xl border border-secondary/20 shadow-md transition-all duration-300 group-hover/wink:opacity-0 group-hover/wink:rotate-12 group-hover/wink:scale-105"
+            />
+            <img
+              src="/domodomo_wink.png"
+              alt="Brand Logo Wink"
+              className="absolute w-32 h-32 rounded-2xl border border-secondary/20 shadow-md transition-all duration-300 opacity-0 group-hover/wink:opacity-100 group-hover/wink:rotate-12 group-hover/wink:scale-105"
+            />
           </div>
         </div>
       </section>

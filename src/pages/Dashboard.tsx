@@ -305,26 +305,12 @@ export const Dashboard = () => {
               <span>100% Free & Open Source</span>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-5 mt-1">
-            <div className="relative group/wink cursor-pointer shrink-0 w-20 h-20">
-              <img
-                src="/domodomo.png"
-                alt="Brand Logo"
-                className="absolute inset-0 w-20 h-20 rounded-2xl border border-secondary/20 shadow-md transition-all duration-300 group-hover/wink:opacity-0 group-hover/wink:rotate-12 group-hover/wink:scale-105"
-              />
-              <img
-                src="/domodomo_wink.png"
-                alt="Brand Logo Wink"
-                className="absolute inset-0 w-20 h-20 rounded-2xl border border-secondary/20 shadow-md transition-all duration-300 opacity-0 group-hover/wink:opacity-100 group-hover/wink:rotate-12 group-hover/wink:scale-105"
-              />
-            </div>
-            <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight font-heading">
-              Your Local-First <br />
-              <span className="text-[#3C6B4D]">
-                Productivity Workshop.
-              </span>
-            </h1>
-          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
+            Your Local-First <br />
+            <span className="text-[#3C6B4D]">
+              Productivity Workshop.
+            </span>
+          </h1>
           <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-xl">
             DomoDomo is an open-source productivity workshop running entirely in your browser sandbox. Edit files, compress media, compile PDF modifications, and run local AI models. Your files never touch the cloud.
           </p>
