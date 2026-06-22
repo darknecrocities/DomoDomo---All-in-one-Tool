@@ -16,9 +16,9 @@ export const Logo = ({ className = '', size = 40, showText = true }: LogoProps) 
         alt="DomoDomo Logo"
       />
       {showText && (
-        <div className="flex flex-col">
-          <span className="font-extrabold text-2xl tracking-tight leading-none bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent font-sans">
-            Domo<span className="text-white font-semibold">Domo</span>
+        <div className="flex flex-col text-left">
+          <span className="font-extrabold text-2xl tracking-tight leading-none text-text font-sans">
+            Domo<span className="font-semibold">Domo</span>
           </span>
           <span className="text-[9px] uppercase tracking-[0.18em] text-[#72706C] font-bold leading-none mt-1">
             All-in-One Tool Hub
