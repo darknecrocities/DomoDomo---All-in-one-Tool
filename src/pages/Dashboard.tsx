@@ -316,47 +316,18 @@ export const Dashboard = () => {
           </p>
         </div>
 
-        {/* Right side mock status console */}
+        {/* Right side mascot illustration card */}
         <div className="lg:col-span-5 w-full z-10">
-          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30">
-            {/* Header console bar */}
-            <div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-              </div>
-              <span className="text-[10px] font-mono text-[#72706C] font-semibold">domodomo-terminal v1.0.0</span>
-              <div className="w-12" /> {/* spacer */}
-            </div>
-            
-            {/* Console specs grid */}
-            <div className="p-4 grid grid-cols-2 gap-3 text-left font-mono text-[10px] text-[#A3A09B]">
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">sandbox_host</span>
-                <span className="text-[#ECEBE9] font-bold">localhost</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">data_security</span>
-                <span className="text-white font-bold">100% client_side</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">system_threads</span>
-                <span className="text-[#ECEBE9] font-bold">{navigator.hardwareConcurrency || 4} available</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">wasm_runtime</span>
-                <span className="text-[#ECEBE9] font-bold">isolated_active</span>
-              </div>
-              <div className="col-span-2 bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex justify-between items-center">
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[#72706C] font-semibold">cloud_telemetry</span>
-                  <span className="text-[#ECEBE9] font-bold">disabled_no_servers</span>
-                </div>
-                <div className="px-2 py-0.5 rounded bg-white/5 text-[#ECEBE9] border border-[#2A2D30] font-bold uppercase tracking-wider text-[8px]">
-                  Secure
-                </div>
-              </div>
+          <div className="relative group rounded-2xl overflow-hidden border border-[#2A2D30] shadow-2xl shadow-black/40 aspect-[4/3] sm:aspect-square md:aspect-[16/10] lg:aspect-square bg-[#111213]">
+            <img 
+              src="/panda_workshop.png" 
+              alt="Panda Workshop Mascot" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111213]/90 via-[#111213]/20 to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-[10px] font-mono text-white/90">
+              <span className="bg-black/60 px-2.5 py-1 rounded-md border border-white/10 backdrop-blur-md">DOMO OS v2.0.0</span>
+              <span className="bg-white text-black px-2.5 py-1 rounded-md font-bold shadow-sm">100% Client-Side</span>
             </div>
           </div>
         </div>
