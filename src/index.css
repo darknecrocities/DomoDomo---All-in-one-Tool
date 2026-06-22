@@ -155,8 +155,12 @@
   
   .hover\:bg-\[\#2E533B\]:hover { background-color: var(--primary-hover) !important; }
   .hover\:bg-\[\#25282B\]:hover { background-color: var(--surface-container) !important; }
+  .hover\:bg-\[\#1C1D1F\]:hover { background-color: var(--surface-dim) !important; }
+  .hover\:bg-\[\#1E2022\]:hover { background-color: var(--surface-dim) !important; }
+  .hover\:bg-\[\#111213\]:hover { background-color: var(--surface-dim) !important; }
   .hover\:text-\[\#ECEBE9\]:hover { color: var(--text) !important; }
   .hover\:border-\[\#3C6B4D\]\/40:hover { border-color: rgba(var(--primary-rgb), 0.4) !important; }
+  .hover\:border-\[\#3C6B4D\]\/50:hover { border-color: rgba(var(--primary-rgb), 0.5) !important; }
   
   .bg-\[\#3C6B4D\] { 
     background-color: var(--primary) !important; 
