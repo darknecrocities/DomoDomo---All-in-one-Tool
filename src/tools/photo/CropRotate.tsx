@@ -203,20 +203,39 @@ export const CropRotateTool = () => {
               className="absolute border-2 border-emerald-400 bg-emerald-400/10 cursor-move z-20 group"
               onMouseDown={(e) => handleMouseDown(e, 'move')}
             >
+              {/* Edge Drag Handles */}
               <div 
-                className="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nwse-resize"
+                className="absolute -top-1.5 left-2 right-2 h-3 bg-transparent hover:bg-emerald-400/30 cursor-ns-resize z-25"
+                onMouseDown={(e) => handleMouseDown(e, 'top')}
+              />
+              <div 
+                className="absolute -bottom-1.5 left-2 right-2 h-3 bg-transparent hover:bg-emerald-400/30 cursor-ns-resize z-25"
+                onMouseDown={(e) => handleMouseDown(e, 'bottom')}
+              />
+              <div 
+                className="absolute -left-1.5 top-2 bottom-2 w-3 bg-transparent hover:bg-emerald-400/30 cursor-ew-resize z-25"
+                onMouseDown={(e) => handleMouseDown(e, 'left')}
+              />
+              <div 
+                className="absolute -right-1.5 top-2 bottom-2 w-3 bg-transparent hover:bg-emerald-400/30 cursor-ew-resize z-25"
+                onMouseDown={(e) => handleMouseDown(e, 'right')}
+              />
+
+              {/* Corner Handles */}
+              <div 
+                className="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nwse-resize z-30"
                 onMouseDown={(e) => handleMouseDown(e, 'top-left')}
               />
               <div 
-                className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nesw-resize"
+                className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nesw-resize z-30"
                 onMouseDown={(e) => handleMouseDown(e, 'top-right')}
               />
               <div 
-                className="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nesw-resize"
+                className="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nesw-resize z-30"
                 onMouseDown={(e) => handleMouseDown(e, 'bottom-left')}
               />
               <div 
-                className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nwse-resize"
+                className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-emerald-300 border border-emerald-600 rounded-full cursor-nwse-resize z-30"
                 onMouseDown={(e) => handleMouseDown(e, 'bottom-right')}
               />
             </div>
