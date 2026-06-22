@@ -158,9 +158,15 @@
   .hover\:text-\[\#ECEBE9\]:hover { color: var(--text) !important; }
   .hover\:border-\[\#3C6B4D\]\/40:hover { border-color: rgba(var(--primary-rgb), 0.4) !important; }
   
-  .bg-\[\#3C6B4D\] { background-color: var(--primary) !important; }
+  .bg-\[\#3C6B4D\] { 
+    background-color: var(--primary) !important; 
+    color: var(--background) !important;
+  }
   .bg-\[\#3C6B4D\]\/10 { background-color: rgba(var(--primary-rgb), 0.1) !important; }
-  .bg-\[\#4E8E5E\] { background-color: var(--primary) !important; }
+  .bg-\[\#4E8E5E\] { 
+    background-color: var(--primary) !important; 
+    color: var(--background) !important;
+  }
   .bg-\[\#4E8E5E\]\/10 { background-color: rgba(var(--primary-rgb), 0.1) !important; }
   .border-\[\#4a845f\]\/20 { border-color: rgba(var(--primary-rgb), 0.2) !important; }
   
