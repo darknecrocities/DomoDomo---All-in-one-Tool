@@ -349,7 +349,7 @@ curl -X GET "${endpoint}" \\
       {/* Details Side-Drawer / Modal Overlay */}
       {selectedApi && (
         <div
-          className={`fixed inset-0 z-[100] ${
+          className={`fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 ${
             drawerClosing ? 'animate-fade-out' : 'animate-fade-in'
           }`}
           onClick={closeDrawer}
@@ -357,10 +357,10 @@ curl -X GET "${endpoint}" \\
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-          {/* Drawer Panel - positioned below navbar */}
+          {/* Modal Panel - Centered */}
           <div
-            className={`absolute top-14 right-0 bottom-0 w-full max-w-xl flex flex-col bg-[#18191B] border-l border-t border-[#2A2D30] rounded-tl-2xl shadow-2xl ${
-              drawerClosing ? 'animate-slide-out-right' : 'animate-slide-in-right'
+            className={`relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-[#18191B] border border-[#2A2D30] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200 ${
+              drawerClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
             }`}
             onClick={(e) => e.stopPropagation()}
           >

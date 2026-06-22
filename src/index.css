@@ -172,6 +172,16 @@
   
   .text-\[\#E29E2D\] { color: var(--secondary) !important; }
   .bg-\[\#E29E2D\] { background-color: var(--secondary) !important; }
+
+  /* Gradient Overrides for dynamic banners */
+  .from-\[\#18191B\] {
+    --tw-gradient-from: var(--card) !important;
+    --tw-gradient-to: rgba(var(--primary-rgb), 0) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  }
+  .to-\[\#1E2022\] {
+    --tw-gradient-to: var(--surface-dim) !important;
+  }
 }
 
 /* Minimalist slow animation loop */
