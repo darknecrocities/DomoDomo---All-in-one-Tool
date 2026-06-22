@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search,
   ExternalLink,
@@ -347,7 +348,7 @@ curl -X GET "${endpoint}" \\
       </div>
 
       {/* Details Side-Drawer / Modal Overlay */}
-      {selectedApi && (
+      {selectedApi && createPortal(
         <div
           className={`fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 ${
             drawerClosing ? 'animate-fade-out' : 'animate-fade-in'
@@ -491,7 +492,8 @@ curl -X GET "${endpoint}" \\
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
