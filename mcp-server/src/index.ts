@@ -72,6 +72,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: 'list_directory',
+        description: 'List all files and subdirectories recursively in the local workspace.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
         name: 'stitch',
         description: 'Perform a seek-and-replace modification (stitch) to an existing file.',
         inputSchema: {
@@ -170,6 +178,51 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             { type: 'text', text: `Stitch completed successfully in ${relPath}. Target block replaced.` }
           ],
         };
+      }
+
+      case 'list_directory': {
+        const getFiles = (dir: string, baseDir: string = ''): any[] => {
+          const results: any[] = [];
+          if (!fs.existsSync(dir)) return [];
+          const list = fs.readdirSync(dir);
+          list.forEach((file) => {
+            const absPath = path.join(dir, file);
+            const relPath = baseDir ? `${baseDir}/${file}` : file;
+            
+            // Skip node_modules, .git, and build artifacts
+            if (file === 'node_modules' || file === '.git' || file === 'dist' || file === '.gemini' || file === 'build') {
+              return;
+            }
+            
+            try {
+              const stat = fs.statSync(absPath);
+              if (stat && stat.isDirectory()) {
+                results.push({
+                  name: file,
+                  path: relPath,
+                  kind: 'directory',
+                  children: getFiles(absPath, relPath)
+                });
+              } else {
+                results.push({
+                  name: file,
+                  path: relPath,
+                  kind: 'file'
+                });
+              }
+            } catch (err) {
+              // skip unreadable files/symlinks
+            }
+          });
+          return results;
+        };
+
+        try {
+          const files = getFiles(WORKSPACE_ROOT);
+          return { content: [{ type: 'text', text: JSON.stringify(files) }] };
+        } catch (e: any) {
+          return { content: [{ type: 'text', text: `Error: ${e.message}` }], isError: true };
+        }
       }
 
       default:

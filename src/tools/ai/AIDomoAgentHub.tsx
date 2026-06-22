@@ -100,8 +100,23 @@ const PREMADE_SKILLS: SkillDef[] = [
 
 const cleanCodeContent = (raw: string) => {
   let content = raw.trim();
+  
+  // Remove starting and ending markdown code block wrappers
   content = content.replace(/^```\w*\n/, '');
   content = content.replace(/\n```$/, '');
+  
+  // Strip off inner code fences if the model output them nested
+  if (content.startsWith('```')) {
+    const lines = content.split('\n');
+    if (lines[0].startsWith('```')) {
+      lines.shift();
+    }
+    if (lines[lines.length - 1] === '```') {
+      lines.pop();
+    }
+    content = lines.join('\n');
+  }
+  
   return content.trim();
 };
 
@@ -131,9 +146,13 @@ const highlightCode = (code: string) => {
 
 const getCorrectedFilePath = (path: string) => {
   let cleaned = path.trim();
+  cleaned = cleaned.replace(/^['"`\s]+|['"`\s]+$/g, '');
+  cleaned = cleaned.replace(/\\/g, '/');
   if (cleaned.endsWith('.python')) cleaned = cleaned.slice(0, -7) + '.py';
   if (cleaned.endsWith('.javascript')) cleaned = cleaned.slice(0, -11) + '.js';
   if (cleaned.endsWith('.typescript')) cleaned = cleaned.slice(0, -11) + '.ts';
+  if (cleaned.endsWith('.react')) cleaned = cleaned.slice(0, -6) + '.tsx';
+  if (cleaned.endsWith('.css.css')) cleaned = cleaned.slice(0, -4);
   return cleaned;
 };
 
@@ -210,7 +229,7 @@ export const AIDomoAgentHub = () => {
       name: 'Domo Developer',
       role: 'Fullstack Coder',
       model: '',
-      promptTemplate: 'You are the Domo Developer. Implement complete files based on structural specifications. Use the [WRITE_FILE: path] format.',
+      promptTemplate: 'You are the Domo Developer. Implement complete files based on structural specifications. Use the [WRITE_FILE: path] format. Place pure code inside the block without any markdown code block wrappers (like ```) or extra explanation comments/fillers.',
       permissions: ['read_files', 'write_files'],
       ideContent: '// Ready to build code...',
       ideFile: 'app.tsx',
@@ -538,11 +557,19 @@ export const AIDomoAgentHub = () => {
     }
     saveTimeoutRef.current = setTimeout(async () => {
       try {
-        const writable = await fileHandle.createWritable();
-        await writable.write(content);
-        await writable.close();
-        setActiveFile((prev) => prev && prev.path === path ? { ...prev, content } : prev);
-        addActivityLog('write', `Autosaved file: ${path}`);
+        if (mcpConnected && mcpTools.some(t => t.name === 'write_file')) {
+          await callMcpTool('write_file', { path, content });
+          setActiveFile((prev) => prev && prev.path === path ? { ...prev, content } : prev);
+          addActivityLog('write', `Autosaved file (MCP): ${path}`);
+          return;
+        }
+        if (fileHandle) {
+          const writable = await fileHandle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          setActiveFile((prev) => prev && prev.path === path ? { ...prev, content } : prev);
+          addActivityLog('write', `Autosaved file: ${path}`);
+        }
       } catch (err) {
         console.warn('Autosave failed:', err);
       }
@@ -602,6 +629,16 @@ export const AIDomoAgentHub = () => {
     checkStatus();
   }, []);
 
+  useEffect(() => {
+    if (mcpConnected) {
+      refreshFileTree();
+      setChatLog((prev) => [
+        ...prev,
+        { role: 'system', text: `🔌 Connected to local Domo MCP Server. Offline workspace auto-mounted.` }
+      ]);
+    }
+  }, [mcpConnected, mcpTools]);
+
   const handleMountDirectory = async () => {
     setErrorMsg(null);
     try {
@@ -628,6 +665,18 @@ export const AIDomoAgentHub = () => {
   };
 
   const refreshFileTree = async (handle = dirHandle) => {
+    if (mcpConnected && mcpTools.some(t => t.name === 'list_directory')) {
+      try {
+        const result = await callMcpTool('list_directory', {});
+        if (result && result.content?.[0]?.text) {
+          const tree = JSON.parse(result.content[0].text);
+          setFileTree(tree);
+          return;
+        }
+      } catch (err) {
+        console.warn('Failed listing directory via MCP:', err);
+      }
+    }
     if (!handle) return;
     const tree = await readDirectory(handle);
     setFileTree(tree);
@@ -652,7 +701,7 @@ export const AIDomoAgentHub = () => {
   const toggleFolder = async (node: FileNode) => {
     const isCurrentlyOpen = !!openFolders[node.path];
     setOpenFolders((prev) => ({ ...prev, [node.path]: !isCurrentlyOpen }));
-    if (!isCurrentlyOpen && (!node.children || node.children.length === 0)) {
+    if (!isCurrentlyOpen && (!node.children || node.children.length === 0) && node.handle) {
       const children = await readDirectory(node.handle, node.path);
       setFileTree((prevTree) => updateNodeChildren(prevTree, node.path, children));
     }
@@ -668,6 +717,15 @@ export const AIDomoAgentHub = () => {
 
   const handleSelectFile = async (node: FileNode) => {
     try {
+      if (mcpConnected && mcpTools.some(t => t.name === 'read_file')) {
+        const result = await callMcpTool('read_file', { path: node.path });
+        if (result && result.content?.[0]?.text) {
+          const content = result.content[0].text;
+          setActiveFile({ path: node.path, handle: node.handle || null, content });
+          setEditorContent(content);
+          return;
+        }
+      }
       const file = await node.handle.getFile();
       const content = await file.text();
       setActiveFile({ path: node.path, handle: node.handle, content });
@@ -680,6 +738,15 @@ export const AIDomoAgentHub = () => {
   const handleSaveFile = async () => {
     if (!activeFile) return;
     try {
+      if (mcpConnected && mcpTools.some(t => t.name === 'write_file')) {
+        await callMcpTool('write_file', { path: activeFile.path, content: editorContent });
+        setActiveFile((prev) => prev ? { ...prev, content: editorContent } : null);
+        setChatLog((prev) => [
+          ...prev,
+          { role: 'system', text: `💾 Saved changes to: ${activeFile.path} (via MCP)` }
+        ]);
+        return;
+      }
       const writable = await activeFile.handle.createWritable();
       await writable.write(editorContent);
       await writable.close();
@@ -695,9 +762,23 @@ export const AIDomoAgentHub = () => {
   };
 
   const handleCreateFile = async () => {
-    if (!dirHandle || !newFileName.trim()) return;
+    if (!newFileName.trim()) return;
     try {
-      const parts = newFileName.split('/');
+      const filePath = getCorrectedFilePath(newFileName);
+      if (mcpConnected && mcpTools.some(t => t.name === 'write_file')) {
+        await callMcpTool('write_file', { path: filePath, content: '' });
+        setNewFileName('');
+        setShowNewFileHUD(false);
+        await refreshFileTree();
+        setActiveFile({ path: filePath, handle: null, content: '' });
+        setEditorContent('');
+        return;
+      }
+      if (!dirHandle) {
+        setErrorMsg('Workspace directory not mounted.');
+        return;
+      }
+      const parts = filePath.split('/');
       let currentDir = dirHandle;
       for (let i = 0; i < parts.length - 1; i++) {
         currentDir = await currentDir.getDirectoryHandle(parts[i], { create: true });
@@ -709,7 +790,7 @@ export const AIDomoAgentHub = () => {
       setNewFileName('');
       setShowNewFileHUD(false);
       await refreshFileTree();
-      setActiveFile({ path: newFileName, handle: fileHandle, content: '' });
+      setActiveFile({ path: filePath, handle: fileHandle, content: '' });
       setEditorContent('');
     } catch (err) {
       setErrorMsg('Failed to create file.');
