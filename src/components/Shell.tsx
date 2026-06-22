@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon } from 'lucide-react';
 import { Logo } from './Logo';
 
 
@@ -23,6 +23,22 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
 export const Shell = () => {
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('domo-theme');
+    if (saved === 'light') return 'light';
+    return 'dark'; // default to dark mode
+  });
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    }
+    localStorage.setItem('domo-theme', theme);
+  }, [theme]);
 
   // Repository Auto-Update System State
   const [repoStatus, setRepoStatus] = useState<'synced' | 'update_available' | 'updating'>('synced');
@@ -173,6 +189,17 @@ export const Shell = () => {
 
             <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+              className="flex items-center justify-center p-2 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all"
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            >
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+            </button>
+
+            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
+
             <a
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
@@ -246,6 +273,13 @@ export const Shell = () => {
                   </>
                 )}
               </a>
+              <button
+                onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors flex items-center gap-2 text-left w-full"
+              >
+                {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+                <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+              </button>
             </nav>
           </div>
         )}
