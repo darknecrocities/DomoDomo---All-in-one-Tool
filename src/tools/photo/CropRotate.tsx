@@ -34,6 +34,7 @@ export const CropRotateTool = () => {
 
   const handleMouseDown = (e: React.MouseEvent, handle: string) => {
     e.preventDefault();
+    e.stopPropagation();
     isDragging.current = handle;
     dragStart.current = {
       x: e.clientX,
