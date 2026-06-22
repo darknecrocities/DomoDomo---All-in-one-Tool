@@ -67,11 +67,11 @@ export const Documentation = () => {
                 onClick={() => setActiveSection(item.id)}
                 className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center gap-3 transition-all ${
                   isActive
-                    ? 'bg-[#3C6B4D]/10 text-[#ECEBE9] border border-[#3C6B4D]/40'
+                    ? 'bg-white/10 text-[#ECEBE9] border border-white/20'
                     : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213] border border-transparent'
                 }`}
               >
-                <Icon size={16} className={isActive ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+                <Icon size={16} className={isActive ? 'text-white' : 'text-[#72706C]'} />
                 <span>{item.label}</span>
               </button>
             );
@@ -88,13 +88,13 @@ export const Documentation = () => {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
-                  <h3 className="text-[#3C6B4D] font-bold text-xs mb-1 uppercase tracking-wide">Device Privacy</h3>
+                  <h3 className="text-white font-bold text-xs mb-1 uppercase tracking-wide">Device Privacy</h3>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed">
                     Zero data packets representing your documents or input coordinates leave your local device. Work on sensitive company datasets or credentials with complete peace of mind.
                   </p>
                 </div>
                 <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
-                  <h3 className="text-[#3C6B4D] font-bold text-xs mb-1 uppercase tracking-wide">Offline Native</h3>
+                  <h3 className="text-white font-bold text-xs mb-1 uppercase tracking-wide">Offline Native</h3>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed">
                     The entire dashboard compiles down to client assets. Once cached, the application functions fully with no internet connections or router access.
                   </p>
@@ -123,17 +123,17 @@ export const Documentation = () => {
                   <text x="82" y="114" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">File / Image Blobs</text>
 
                   {/* Arrow 1 */}
-                  <path d="M127 105 H167" stroke="#3C6B4D" strokeWidth="2" markerEnd="url(#arrow)" />
+                  <path d="M127 105 H167" stroke="#ECEBE9" strokeWidth="2" markerEnd="url(#arrow)" />
 
                   {/* Memory Iframe Cache */}
-                  <rect x="167" y="60" width="220" height="90" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="167" y="60" width="220" height="90" rx="8" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="277" y="78" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">DomoDomo Engines</text>
-                  <text x="277" y="96" fill="#3C6B4D" fontSize="9" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">IndexedDB / Memory Cache</text>
+                  <text x="277" y="96" fill="#72706C" fontSize="9" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">IndexedDB / Memory Cache</text>
                   <text x="277" y="114" fill="#A3A09B" fontSize="9" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central">WASM Runtimes & Canvas</text>
                   <text x="277" y="132" fill="#E29E2D" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">WebGPU (LLM Queries)</text>
 
                   {/* Arrow 2 */}
-                  <path d="M387 105 H427" stroke="#3C6B4D" strokeWidth="2" markerEnd="url(#arrow)" />
+                  <path d="M387 105 H427" stroke="#ECEBE9" strokeWidth="2" markerEnd="url(#arrow)" />
 
                   {/* Local compilation output */}
                   <rect x="427" y="80" width="90" height="50" rx="8" fill="#111213" stroke="#2A2D30" />
@@ -141,10 +141,10 @@ export const Documentation = () => {
                   <text x="472" y="114" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">ArrayBuffer Stream</text>
 
                   {/* Arrow 3 */}
-                  <path d="M517 105 H543" stroke="#3C6B4D" strokeWidth="2" markerEnd="url(#arrow)" />
+                  <path d="M517 105 H543" stroke="#ECEBE9" strokeWidth="2" markerEnd="url(#arrow)" />
 
                   {/* Browser Download Node */}
-                  <circle cx="565" cy="105" r="18" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <circle cx="565" cy="105" r="18" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
                   <path d="M565 97 V107 M560 102 L565 107 L570 102 M559 111 H571" stroke="#ECEBE9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   <text x="565" y="138" fill="#ECEBE9" fontSize="9" fontFamily="sans-serif" textAnchor="middle" dominantBaseline="central" fontWeight="bold">Download</text>
                   <text x="565" y="153" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle" dominantBaseline="central">Local Save</text>
@@ -157,7 +157,7 @@ export const Documentation = () => {
                   {/* Markers definition */}
                   <defs>
                     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ECEBE9" />
                     </marker>
                   </defs>
                 </svg>
@@ -186,7 +186,7 @@ export const Documentation = () => {
                   <path d="M300 135 V170" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
 
                   {/* Step 3 */}
-                  <polygon points="300,170 420,195 300,220 180,195" fill="#18191B" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <polygon points="300,170 420,195 300,220 180,195" fill="#18191B" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="300" y="199" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">3. Network Call?</text>
                   
                   {/* Yes Branch */}
@@ -196,17 +196,17 @@ export const Documentation = () => {
                   <text x="500" y="266" fill="#E29E2D" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">Operation Blocked</text>
 
                   {/* No Branch */}
-                  <path d="M300 220 V260" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
-                  <text x="315" y="240" fill="#3C6B4D" fontSize="10" fontFamily="sans-serif" fontWeight="bold">No</text>
+                  <path d="M300 220 V260" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+                  <text x="315" y="240" fill="#72706C" fontSize="10" fontFamily="sans-serif" fontWeight="bold">No</text>
                   
                   {/* Step 4 */}
-                  <rect x="185" y="260" width="230" height="45" rx="8" fill="#18191B" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="185" y="260" width="230" height="45" rx="8" fill="#18191B" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="300" y="286" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">4. Sandboxed Compilation</text>
                   <path d="M300 305 V335" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
 
                   {/* Step 5 */}
-                  <rect x="200" y="335" width="200" height="45" rx="22" fill="#3C6B4D" />
-                  <text x="300" y="361" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">5. Local Download Triggered</text>
+                  <rect x="200" y="335" width="200" height="45" rx="22" fill="#ECEBE9" />
+                  <text x="300" y="361" fill="#111213" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">5. Local Download Triggered</text>
 
                   {/* Markers definition */}
                   <defs>
@@ -234,7 +234,7 @@ export const Documentation = () => {
                     onClick={() => handleCategoryChange(key as ToolCategory)}
                     className={`py-1.5 px-3 rounded-lg text-[11px] font-bold transition-all border ${
                       activeToolCategory === key
-                        ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border-[#3C6B4D]/25'
+                        ? 'bg-white/10 text-white border-white/20'
                         : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#A3A09B]'
                     }`}
                   >
@@ -257,7 +257,7 @@ export const Documentation = () => {
                     <div
                       key={tool.id}
                       className={`bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl flex flex-col gap-3 transition-all duration-300 ${
-                        isExpanded ? 'col-span-1 md:col-span-2 border-[#3C6B4D]/60 bg-[#141618]' : 'hover:border-[#2A2D30]/80'
+                        isExpanded ? 'col-span-1 md:col-span-2 border-white/30 bg-[#141618]' : 'hover:border-[#2A2D30]/80'
                       }`}
                     >
                       <div className="flex justify-between items-start gap-3">
@@ -265,7 +265,7 @@ export const Documentation = () => {
                           <span className="font-bold text-[#ECEBE9] text-xs font-mono">{tool.name}</span>
                           <span className="text-[10px] text-[#72706C] font-mono">ID: {tool.id}</span>
                         </div>
-                        <span className="px-2 py-0.5 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded text-[8px] font-mono shrink-0">
+                        <span className="px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded text-[8px] font-mono shrink-0">
                           {tool.engine}
                         </span>
                       </div>
@@ -277,7 +277,7 @@ export const Documentation = () => {
                       {isExpanded && (
                         <div className="mt-2 pt-4 border-t border-[#2A2D30] flex flex-col gap-4">
                           <div className="flex flex-col gap-1.5">
-                            <span className="text-[10px] uppercase tracking-wider text-[#3C6B4D] font-bold">Key Functionality</span>
+                            <span className="text-[10px] uppercase tracking-wider text-[#ECEBE9] font-bold">Key Functionality</span>
                             <p className="text-[11px] text-[#ECEBE9] leading-relaxed bg-[#111213] border border-[#2A2D30] p-3 rounded-xl">
                               {tool.functionality}
                             </p>
@@ -302,7 +302,7 @@ export const Documentation = () => {
                       <button
                         onClick={() => setExpandedToolId(isExpanded ? null : tool.id)}
                         className={`text-left text-[10px] font-bold w-fit mt-1 flex items-center gap-1 transition-all ${
-                          isExpanded ? 'text-[#E29E2D] hover:text-[#E29E2D]/80' : 'text-[#3C6B4D] hover:text-[#3C6B4D]/80'
+                          isExpanded ? 'text-[#E29E2D] hover:text-[#E29E2D]/80' : 'text-white hover:text-white/80'
                         }`}
                       >
                         <span>{isExpanded ? 'Collapse Details' : 'Expand Details & Mechanics'}</span>
@@ -325,7 +325,7 @@ export const Documentation = () => {
                 {/* Step 1 */}
                 <div className="flex flex-col gap-2">
                   <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">1</span>
+                    <span className="w-5 h-5 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xs font-mono">1</span>
                     <span>Clone & Install Dev Assets</span>
                   </h3>
                   <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
@@ -340,7 +340,7 @@ npm install`}
                 {/* Step 2 */}
                 <div className="flex flex-col gap-2 border-t border-[#2A2D30]/60 pt-4">
                   <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">2</span>
+                    <span className="w-5 h-5 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xs font-mono">2</span>
                     <span>Launch Local Dev Server</span>
                   </h3>
                   <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
@@ -353,11 +353,11 @@ npm install`}
                 {/* Step 3 */}
                 <div className="flex flex-col gap-2 border-t border-[#2A2D30]/60 pt-4">
                   <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">3</span>
+                    <span className="w-5 h-5 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xs font-mono">3</span>
                     <span>Configure Local Ollama AI Origins</span>
                   </h3>
                   <p className="text-[#A3A09B] text-xs leading-relaxed">
-                    By default, browsers block network traffic to local ports unless appropriate Cross-Origin Resource Sharing (CORS) headers are sent. Configure the environment variable <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> before launching Ollama:
+                    By default, browsers block network traffic to local ports unless appropriate Cross-Origin Resource Sharing (CORS) headers are sent. Configure the environment variable <code className="text-white font-mono bg-[#18191B] px-1 py-0.5 rounded">OLLAMA_ORIGINS="*"</code> before launching Ollama:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
@@ -388,7 +388,7 @@ npm install`}
               </p>
               <div className="flex flex-col gap-4 text-xs">
                 <div className="flex gap-4 p-4 bg-[#111213] rounded-2xl border border-[#2A2D30]">
-                  <div className="p-3 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded-xl shrink-0 h-fit">
+                  <div className="p-3 bg-white/5 text-white border border-white/10 rounded-xl shrink-0 h-fit">
                     <Cpu size={20} />
                   </div>
                   <div className="flex flex-col gap-1 text-left">
@@ -398,7 +398,7 @@ npm install`}
                 </div>
 
                 <div className="flex gap-4 p-4 bg-[#111213] rounded-2xl border border-[#2A2D30]">
-                  <div className="p-3 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded-xl shrink-0 h-fit">
+                  <div className="p-3 bg-white/5 text-white border border-white/10 rounded-xl shrink-0 h-fit">
                     <Settings size={20} />
                   </div>
                   <div className="flex flex-col gap-1 text-left">
@@ -424,8 +424,8 @@ npm install`}
             <div className="flex flex-col gap-5">
               <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">Security & Compliance</h2>
               
-              <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-4 rounded-xl flex items-start gap-3">
-                <Shield size={20} className="text-[#3C6B4D] shrink-0 mt-0.5" />
+              <div className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-start gap-3">
+                <Shield size={20} className="text-white shrink-0 mt-0.5" />
                 <div className="flex flex-col gap-1 text-left">
                   <span className="text-[#ECEBE9] font-bold text-sm">100% Zero-Telemetry Policy</span>
                   <p className="text-[#A3A09B] text-xs leading-relaxed">
@@ -440,7 +440,7 @@ npm install`}
 
               <div className="flex flex-col gap-3 p-4 bg-[#111213] rounded-2xl border border-[#2A2D30] text-xs text-left">
                 <h3 className="font-bold text-[#ECEBE9] flex items-center gap-2">
-                  <Server size={14} className="text-[#3C6B4D]" />
+                  <Server size={14} className="text-white" />
                   <span>Corporate Self-Hosting Deployments</span>
                 </h3>
                 <p className="text-[#A3A09B] leading-relaxed">

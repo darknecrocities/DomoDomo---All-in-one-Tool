@@ -8,7 +8,7 @@
   body {
     @apply bg-[#111213] text-[#ECEBE9] font-sans antialiased overflow-x-hidden;
     background-image: 
-      radial-gradient(at 50% 0%, rgba(60, 107, 77, 0.05) 0px, transparent 60%);
+      radial-gradient(at 50% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 60%);
     background-attachment: fixed;
   }
 
@@ -29,7 +29,7 @@
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3C6B4D;
+    background: #72706C;
   }
 }
 
@@ -40,11 +40,11 @@
   }
 
   .glass-card-hover {
-    @apply hover:border-[#3C6B4D]/40 hover:bg-[#1B1D1F] hover:shadow-md hover:shadow-black/20 hover:-translate-y-0.5;
+    @apply hover:border-[#72706C]/40 hover:bg-[#1B1D1F] hover:shadow-md hover:shadow-black/20 hover:-translate-y-0.5;
   }
 
   .btn-primary {
-    @apply bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] font-semibold py-2 px-4 rounded-xl border border-[#4a845f]/20 shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
+    @apply bg-[#ECEBE9] hover:bg-[#FFFFFF] text-[#111213] font-bold py-2 px-4 rounded-xl border border-white/10 shadow-sm transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
   .btn-secondary {
@@ -57,11 +57,11 @@
   }
 
   .glow-text-teal {
-    @apply text-[#3C6B4D] font-bold;
+    @apply text-[#ECEBE9] font-bold;
   }
   
   .glow-text-indigo {
-    @apply text-[#E29E2D] font-bold;
+    @apply text-[#A3A09B] font-bold;
   }
 }
 
