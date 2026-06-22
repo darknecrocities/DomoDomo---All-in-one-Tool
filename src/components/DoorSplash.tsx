@@ -61,7 +61,7 @@ export const DoorSplash = () => {
           {/* Top Label */}
           <div className="flex flex-col gap-1 text-left z-10">
             <span className="text-[10px] font-mono text-[#72706C] tracking-widest uppercase font-bold">Workshop Bay</span>
-            <span className="text-xs font-mono text-[#3C6B4D] font-bold">UNIT: 01 // CORE_MODULE</span>
+            <span className="text-xs font-mono text-[#ECEBE9] font-bold">UNIT: 01 // CORE_MODULE</span>
           </div>
 
           {/* Bottom Decals / Warning */}
@@ -108,7 +108,7 @@ export const DoorSplash = () => {
           <div className="flex flex-col gap-1 items-end text-right z-10">
             <span className="text-[10px] font-mono text-[#72706C] tracking-widest uppercase font-bold">Security State</span>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               <span className="text-xs font-mono text-[#ECEBE9] font-semibold">LOCAL_SANDBOX_SECURE</span>
             </div>
           </div>
@@ -143,12 +143,12 @@ export const DoorSplash = () => {
         <div className="relative flex flex-col items-center gap-6 p-10 rounded-3xl bg-[#111213]/90 border border-[#2A2D30] shadow-2xl backdrop-blur-md">
           {/* Logo container with pulse ring */}
           <div className="relative flex items-center justify-center">
-            <div className="absolute -inset-4 rounded-3xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 animate-ping opacity-60" style={{ animationDuration: '3s' }} />
+            <div className="absolute -inset-4 rounded-3xl bg-white/5 border border-white/10 animate-ping opacity-60" style={{ animationDuration: '3s' }} />
             <Logo size={140} showText={false} className="relative z-10 scale-105" />
           </div>
 
           <div className="flex flex-col items-center gap-2 mt-2">
-            <span className="font-extrabold text-3xl tracking-tight leading-none bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 bg-clip-text text-transparent font-heading">
+            <span className="font-extrabold text-3xl tracking-tight leading-none bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent font-heading">
               Domo<span className="text-[#ECEBE9] font-normal">Domo</span>
             </span>
             <span className="text-[10px] uppercase tracking-[0.2em] text-[#72706C] font-bold">
@@ -157,7 +157,7 @@ export const DoorSplash = () => {
           </div>
 
           <div className="flex items-center gap-2 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-pulse"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
             <span className="text-[10px] font-mono text-[#72706C] uppercase font-semibold tracking-wider">
               Unlocking Sandbox...
             </span>

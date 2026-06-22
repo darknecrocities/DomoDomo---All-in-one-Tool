@@ -5,41 +5,41 @@ export const BRAND_KIT = {
   
   colors: {
     primary: {
-      name: 'Domo Green',
-      hex: '#4E8E5E',
-      rgb: 'rgb(78, 142, 94)',
+      name: 'Domo Charcoal',
+      hex: '#1E2022',
+      rgb: 'rgb(30, 32, 34)',
       role: 'Action buttons, status highlights, main branding headers.'
     },
     secondary: {
-      name: 'Indigo Pulse',
-      hex: '#6366F1',
-      rgb: 'rgb(99, 102, 241)',
+      name: 'Silver Mist',
+      hex: '#ECEBE9',
+      rgb: 'rgb(236, 235, 233)',
       role: 'Accent borders and complementary elements.'
     },
     accent: {
-      name: 'Rose Sunset',
-      hex: '#F43F5E',
-      rgb: 'rgb(244, 63, 94)',
+      name: 'Dark Slate',
+      hex: '#2A2D30',
+      rgb: 'rgb(42, 45, 48)',
       role: 'Error states and warnings.'
     },
     background: {
-      name: 'Slate Deep Blue',
-      hex: '#0B0F19',
-      rgb: 'rgb(11, 15, 25)',
+      name: 'Pure Carbon',
+      hex: '#111213',
+      rgb: 'rgb(17, 18, 19)',
       role: 'Primary layout background.'
     },
     card: {
-      name: 'Slate Navy',
-      hex: '#151C2C',
-      rgb: 'rgb(21, 28, 44)',
+      name: 'Tactile Jet',
+      hex: '#18191B',
+      rgb: 'rgb(24, 25, 27)',
       role: 'Containers.'
     }
   },
 
   typography: {
-    primary: 'Outfit (Geometric sans-serif for headers and logo)',
+    primary: 'Sora / Space Grotesk (Geometric sans-serif for headers and logo)',
     secondary: 'Inter (High-readability sans-serif for body, inputs, and UI details)'
   },
 
-  logoUsage: 'Domo Avatar SVG with forest green backdrop, white silhouette, and round bamboo green eyes.'
+  logoUsage: 'Domo logo loaded from domodomo.png with monochrome dark palette and a cute pixelated panda companion.'
 };

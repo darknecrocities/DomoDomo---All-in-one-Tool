@@ -32,7 +32,7 @@ export const AboutApplication = () => {
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.12] pointer-events-none" />
         <div className="lg:col-span-8 z-10 flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold w-fit">
             <Shield size={12} />
             <span>About DomoDomo</span>
           </div>
@@ -53,7 +53,7 @@ export const AboutApplication = () => {
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map(({ label, value, detail, icon: Icon }) => (
           <div key={label} className="glass-card p-6 border-[#2A2D30] bg-[#18191B]">
-            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] w-fit">
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-white w-fit">
               <Icon size={22} />
             </div>
             <div className="mt-6">
@@ -67,7 +67,7 @@ export const AboutApplication = () => {
 
       {/* Recent Updates & Expansion Log */}
       <section className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold w-fit">
           <Sparkles size={12} />
           <span>Latest Release Updates</span>
         </div>
@@ -76,19 +76,19 @@ export const AboutApplication = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
-            <span className="text-[#3C6B4D] font-bold text-sm block">10 New Developer Utilities</span>
+            <span className="text-white font-bold text-sm block">10 New Developer Utilities</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               Added powerful local-first developer tools under the Dev suite, including Cron Expression Parser, SQL Formatter, YAML-JSON Converter, Markdown Table Builder, Side-by-Side Diff Checker, Keyboard Event Finder, CSS Box Shadow & Glassmorphism Designers, Number Base Converter, and Screen Telemetry diagnostics.
             </p>
           </div>
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
-            <span className="text-[#3C6B4D] font-bold text-sm block">Library API Hub (1,480+ Integrations)</span>
+            <span className="text-white font-bold text-sm block">Library API Hub (1,480+ Integrations)</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               A comprehensive directory of verified public APIs with dynamic client-side pagination, search indexing, category groupings, and immediate code generation (JavaScript fetch, Python, and cURL requests) for streamlined development.
             </p>
           </div>
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
-            <span className="text-[#3C6B4D] font-bold text-sm block">Domo Agent Hub & Explainer</span>
+            <span className="text-white font-bold text-sm block">Domo Agent Hub & Explainer</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               A local-first offline IDE with browser folder mounting, Multi-Agent sequential/parallel orchestration, file writing commands, Autosave, Live Coding simulation toggles, correct extension mapping, and custom markdown responses.
             </p>
@@ -98,7 +98,7 @@ export const AboutApplication = () => {
 
       <section className="glass-card p-8 border-[#2A2D30] bg-[#18191B]">
         <div className="max-w-3xl mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold w-fit mb-3">
             <Sparkles size={12} />
             <span>Mission & Core Purpose</span>
           </div>
@@ -116,7 +116,7 @@ export const AboutApplication = () => {
             ['All-in-One Utility Hub', 'Edit PDFs, compress media, build documents, scan QRs, and format code inside one cohesive system.', Zap]
           ].map(([title, detail, Icon]) => (
             <div key={title as string} className="flex gap-4">
-              <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] h-fit shrink-0">
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-white h-fit shrink-0">
                 <Icon size={20} />
               </div>
               <div className="flex flex-col gap-1">
@@ -131,7 +131,7 @@ export const AboutApplication = () => {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B]">
           <h2 className="font-bold text-lg text-[#ECEBE9] mb-4 flex items-center gap-2">
-            <Shield className="text-[#3C6B4D]" size={20} />
+            <Shield className="text-white" size={20} />
             <span>Why Local-First Processing Wins</span>
           </h2>
           <div className="flex flex-col gap-3 text-xs text-[#A3A09B]">
@@ -161,13 +161,13 @@ export const AboutApplication = () => {
       {/* How DomoDomo Works Offline */}
       <section className="glass-card p-6 flex flex-col gap-5 border-[#2A2D30] bg-[#18191B]">
         <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-          <Cpu className="text-[#3C6B4D]" size={20} />
+          <Cpu className="text-white" size={20} />
           <span>How DomoDomo Works Offline</span>
         </h2>
         
         <div className="flex flex-col gap-4 text-xs">
           <div className="flex gap-3 items-start">
-            <div className="w-6 h-6 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center font-bold shrink-0">1</div>
+            <div className="w-6 h-6 rounded-full bg-[#ECEBE9]/5 border border-[#2A2D30] text-[#ECEBE9] flex items-center justify-center font-bold shrink-0">1</div>
             <div className="flex flex-col gap-0.5">
               <span className="font-bold text-[#ECEBE9]">Local File Blob Loading</span>
               <span className="text-[#A3A09B] leading-relaxed">Your files are converted into browser-native File blobs. No packets are uploaded or cached on any remote servers.</span>
@@ -183,7 +183,7 @@ export const AboutApplication = () => {
           </div>
 
           <div className="flex gap-3 items-start border-t border-[#2A2D30] pt-3">
-            <div className="w-6 h-6 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center font-bold shrink-0">3</div>
+            <div className="w-6 h-6 rounded-full bg-[#ECEBE9]/5 border border-[#2A2D30] text-[#ECEBE9] flex items-center justify-center font-bold shrink-0">3</div>
             <div className="flex flex-col gap-0.5">
               <span className="font-bold text-[#ECEBE9]">Immediate Local Compilation</span>
               <span className="text-[#A3A09B] leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
@@ -195,7 +195,7 @@ export const AboutApplication = () => {
       {/* Enterprise Self-Hosting & Compliance */}
       <section className="glass-card p-6 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
         <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-          <Shield size={20} className="text-[#3C6B4D]" />
+          <Shield size={20} className="text-white" />
           <span>Enterprise Self-Hosting & Compliance</span>
         </h2>
         <p className="text-[#A3A09B] text-xs leading-relaxed">
@@ -205,7 +205,7 @@ export const AboutApplication = () => {
 
       <section className="glass-card p-8 border-[#2A2D30] bg-[#18191B]">
         <h2 className="text-2xl font-bold text-[#ECEBE9] tracking-tight mb-5 flex items-center gap-2">
-          <ShieldAlert size={22} className="text-[#3C6B4D]" />
+          <ShieldAlert size={22} className="text-white" />
           <span>Leak-Free Security Audit & Isolation Guarantee</span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -214,8 +214,8 @@ export const AboutApplication = () => {
             ['No Backend Endpoints', 'The tool suite is built as a client-side application without upload routes for file operations.'],
             ['Inspector Ready', 'Open DevTools Network while using file tools to verify that processing stays local.']
           ].map(([title, detail]) => (
-            <div key={title} className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] flex flex-col gap-2">
-              <span className="text-[#3C6B4D] font-bold text-sm">{title}</span>
+            <div key={title} className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2 text-left">
+              <span className="text-white font-bold text-sm">{title}</span>
               <span className="text-[11px] text-[#A3A09B] leading-relaxed">{detail}</span>
             </div>
           ))}
@@ -236,7 +236,7 @@ export const AboutApplication = () => {
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 glass-card p-6 border-[#2A2D30] bg-[#18191B]">
           <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-            <Globe size={20} className="text-[#3C6B4D]" />
+            <Globe size={20} className="text-white" />
             <span>Cloud SaaS vs. DomoDomo Local Matrix</span>
           </h2>
           <div className="overflow-x-auto mt-5">
@@ -245,7 +245,7 @@ export const AboutApplication = () => {
                 <tr className="border-b border-[#2A2D30] text-[#A3A09B]">
                   <th className="py-2.5 font-bold uppercase tracking-wider">Capability</th>
                   <th className="py-2.5 font-bold uppercase tracking-wider px-3">Traditional SaaS</th>
-                  <th className="py-2.5 font-bold uppercase tracking-wider text-[#3C6B4D] px-3">DomoDomo Local</th>
+                  <th className="py-2.5 font-bold uppercase tracking-wider text-white px-3">DomoDomo Local</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2A2D30]/60 text-[#A3A09B]">
@@ -259,7 +259,7 @@ export const AboutApplication = () => {
                   <tr key={capability}>
                     <td className="py-3 font-semibold text-[#ECEBE9]">{capability}</td>
                     <td className="py-3 px-3">{cloud}</td>
-                    <td className="py-3 text-[#3C6B4D] font-medium px-3">{local}</td>
+                    <td className="py-3 text-[#A3A09B] font-medium px-3">{local}</td>
                   </tr>
                 ))}
               </tbody>
@@ -286,10 +286,10 @@ export const AboutApplication = () => {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B]">
           <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-            <Terminal size={20} className="text-[#3C6B4D]" />
+            <Terminal size={20} className="text-white" />
             <span>Local Installation Guide</span>
           </h2>
-          <div className="flex flex-col gap-3 font-mono text-[11px] bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-[#3C6B4D] mt-5">
+          <div className="flex flex-col gap-3 font-mono text-[11px] bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-[#A3A09B] mt-5">
             <span className="text-[#72706C]"># 1. Clone the repository</span>
             <span>git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git</span>
             <span>cd DomoDomo---All-in-one-Tool</span>
@@ -304,7 +304,7 @@ export const AboutApplication = () => {
 
         <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B]">
           <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-            <ShieldAlert size={20} className="text-[#3C6B4D]" />
+            <ShieldAlert size={20} className="text-white" />
             <span>Frequently Asked Questions</span>
           </h2>
           <div className="flex flex-col gap-4 text-xs text-left mt-5">
