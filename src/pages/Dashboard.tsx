@@ -296,7 +296,7 @@ export const Dashboard = () => {
 
         <div className="lg:col-span-7 flex flex-col gap-4 text-left z-10">
           <div className="flex flex-wrap gap-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold w-fit">
               <Globe size={12} />
               <span>Sandbox Offline Web Utilities</span>
             </div>
@@ -307,7 +307,7 @@ export const Dashboard = () => {
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
             Your Local-First <br />
-            <span className="text-[#3C6B4D]">
+            <span className="bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent">
               Productivity Workshop.
             </span>
           </h1>
@@ -316,47 +316,18 @@ export const Dashboard = () => {
           </p>
         </div>
 
-        {/* Right side mock status console */}
+        {/* Right side mascot illustration card */}
         <div className="lg:col-span-5 w-full z-10">
-          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30">
-            {/* Header console bar */}
-            <div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-              </div>
-              <span className="text-[10px] font-mono text-[#72706C] font-semibold">domodomo-terminal v1.0.0</span>
-              <div className="w-12" /> {/* spacer */}
-            </div>
-            
-            {/* Console specs grid */}
-            <div className="p-4 grid grid-cols-2 gap-3 text-left font-mono text-[10px] text-[#A3A09B]">
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">sandbox_host</span>
-                <span className="text-[#ECEBE9] font-bold">localhost</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">data_security</span>
-                <span className="text-[#3C6B4D] font-bold">100% client_side</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">system_threads</span>
-                <span className="text-[#ECEBE9] font-bold">{navigator.hardwareConcurrency || 4} available</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">wasm_runtime</span>
-                <span className="text-[#ECEBE9] font-bold">isolated_active</span>
-              </div>
-              <div className="col-span-2 bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex justify-between items-center">
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[#72706C] font-semibold">cloud_telemetry</span>
-                  <span className="text-[#ECEBE9] font-bold">disabled_no_servers</span>
-                </div>
-                <div className="px-2 py-0.5 rounded bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/35 font-bold uppercase tracking-wider text-[8px]">
-                  Secure
-                </div>
-              </div>
+          <div className="relative group rounded-2xl overflow-hidden border border-[#2A2D30] shadow-2xl shadow-black/40 aspect-[4/3] sm:aspect-square md:aspect-[16/10] lg:aspect-square bg-[#111213]">
+            <img 
+              src="/panda_workshop.png" 
+              alt="Panda Workshop Mascot" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111213]/90 via-[#111213]/20 to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-[10px] font-mono text-white/90">
+              <span className="bg-black/60 px-2.5 py-1 rounded-md border border-white/10 backdrop-blur-md">DOMO OS v2.0.0</span>
+              <span className="bg-white text-black px-2.5 py-1 rounded-md font-bold shadow-sm">100% Client-Side</span>
             </div>
           </div>
         </div>
@@ -376,7 +347,7 @@ export const Dashboard = () => {
                 onClick={() => handleCategoryChange(cat.id)}
                 className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
                   activeCategory === cat.id
-                    ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm'
+                    ? 'bg-[#ECEBE9] text-[#111213] border-[#ECEBE9] shadow-sm font-bold'
                     : isUnavailable
                       ? 'bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]'
                       : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]'
@@ -391,14 +362,14 @@ export const Dashboard = () => {
 
         {/* Search Field with keybind hint */}
         <div className="relative shrink-0 w-full md:w-80 group">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-white transition-colors" />
           <input
             ref={searchInputRef}
             type="text"
             placeholder="Search local tools..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
+            className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#72706C] transition-all placeholder:text-[#72706C]"
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
             <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">⌘</kbd>
@@ -428,11 +399,11 @@ export const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
             <div className="flex flex-col gap-4">
               <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">1</span>
+                <span className="w-5 h-5 rounded-full bg-[#ECEBE9]/10 border border-[#2A2D30] text-[#ECEBE9] flex items-center justify-center text-xs font-mono">1</span>
                 <span>Host DomoDomo Locally</span>
               </h3>
               <p className="text-[#A3A09B] text-xs leading-relaxed">
-                Due to browser security protocols (CORS & Mixed Content), websites loaded over <code className="text-[#3C6B4D] font-mono">https://</code> cannot communicate with your local machine's ports. DomoDomo must be run locally:
+                Due to browser security protocols (CORS & Mixed Content), websites loaded over <code className="text-white font-mono bg-[#18191B] px-1 py-0.5 rounded">https://</code> cannot communicate with your local machine's ports. DomoDomo must be run locally:
               </p>
               <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">
@@ -446,7 +417,7 @@ npm run dev`}
 
             <div className="flex flex-col gap-4">
               <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">2</span>
+                <span className="w-5 h-5 rounded-full bg-[#ECEBE9]/10 border border-[#2A2D30] text-[#ECEBE9] flex items-center justify-center text-xs font-mono">2</span>
                 <span>Install & Start Ollama</span>
               </h3>
               <p className="text-[#A3A09B] text-xs leading-relaxed">
@@ -464,11 +435,11 @@ ollama run llama3`}
 
           <div className="flex flex-col gap-4 border-t border-[#2A2D30] pt-6 mt-2">
             <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">3</span>
+              <span className="w-5 h-5 rounded-full bg-[#ECEBE9]/10 border border-[#2A2D30] text-[#ECEBE9] flex items-center justify-center text-xs font-mono">3</span>
               <span>Enable Browser CORS Access</span>
             </h3>
             <p className="text-[#A3A09B] text-xs leading-relaxed">
-              Ollama blocks browser access by default. You must configure the environment variable <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> before starting the application:
+              Ollama blocks browser access by default. You must configure the environment variable <code className="text-white font-mono bg-[#18191B] px-1 py-0.5 rounded">OLLAMA_ORIGINS="*"</code> before starting the application:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
@@ -481,7 +452,7 @@ ollama run llama3`}
               <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
                 <span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">Windows</span>
                 <p className="text-[10px] text-[#A3A09B] mt-1 leading-relaxed">
-                  Add <code className="text-[#3C6B4D]">OLLAMA_ORIGINS</code> with value <code className="text-[#3C6B4D]">*</code> to System Environment Variables, then restart Ollama from the tray.
+                  Add <code className="text-white font-mono bg-[#18191B] px-1.5 py-0.5 rounded">OLLAMA_ORIGINS</code> with value <code className="text-white font-mono bg-[#18191B] px-1.5 py-0.5 rounded">*</code> to System Environment Variables, then restart Ollama from the tray.
                 </p>
               </div>
               <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
@@ -498,7 +469,7 @@ ollama run llama3`}
 
           <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4 mt-2">
             <div className="flex items-center gap-3 self-start sm:self-center">
-              <div className="animate-spin text-[#3C6B4D]">
+              <div className="animate-spin text-white">
                 <Cpu size={18} />
               </div>
               <div className="text-left">
@@ -521,7 +492,7 @@ ollama run llama3`}
         <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B]">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+                  <div className="p-3 bg-[#ECEBE9]/5 border border-[#2A2D30] text-[#ECEBE9] rounded-xl">
                     <Cpu size={24} className={downloadingModel ? "animate-spin" : ""} />
                   </div>
                   <div>
@@ -538,22 +509,22 @@ ollama run llama3`}
                   <div className="flex flex-wrap gap-4 text-xs font-semibold text-[#A3A09B] mt-0.5">
                     <div className="flex items-center gap-1">
                       <span className="text-[#72706C]">RAM:</span>
-                      <span className="text-[#3C6B4D]">{hardware.ram}</span>
+                      <span className="text-white">{hardware.ram}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-[#72706C]">Cores:</span>
-                      <span className="text-[#3C6B4D]">{hardware.cores} threads</span>
+                      <span className="text-white">{hardware.cores} threads</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-[#72706C]">WebGPU:</span>
-                      <span className={hardware.hasWebGPU ? "text-[#3C6B4D]" : "text-[#E29E2D]"}>
+                      <span className={hardware.hasWebGPU ? "text-white" : "text-[#E29E2D]"}>
                         {hardware.hasWebGPU ? "Supported" : "Not supported"}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
-                  <span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
+                <div className="bg-[#ECEBE9]/5 border border-[#2A2D30] p-3.5 rounded-xl max-w-sm">
+                  <span className="text-white font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
                     Based on your specs, we recommend running <strong className="text-white font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
                   </p>
@@ -566,15 +537,15 @@ ollama run llama3`}
                 {downloadingModel && (
                   <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col gap-3">
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-[#3C6B4D] flex items-center gap-2">
-                        <span className="animate-spin w-3 h-3 border-2 border-[#3C6B4D] border-t-transparent rounded-full"></span>
+                      <span className="text-white flex items-center gap-2">
+                        <span className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full"></span>
                         <span>Downloading {downloadingModel}...</span>
                       </span>
                       <span className="text-[#ECEBE9]">{downloadProgress}%</span>
                     </div>
                     <div className="w-full bg-[#18191B] rounded-full h-2 overflow-hidden border border-[#2A2D30]">
                       <div 
-                        className="bg-[#3C6B4D] h-full transition-all duration-300"
+                        className="bg-white h-full transition-all duration-300"
                         style={{ width: `${downloadProgress}%` }}
                       />
                     </div>
@@ -601,11 +572,11 @@ ollama run llama3`}
                       <div 
                         key={model.name}
                         className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${
-                          isRecommended ? 'border-[#3C6B4D]/40 bg-[#3C6B4D]/5' : 'border-[#2A2D30] hover:border-[#2E533B]/40'
+                          isRecommended ? 'border-white/40 bg-white/5' : 'border-[#2A2D30] hover:border-[#72706C]/40'
                         }`}
                       >
                         {isRecommended && (
-                          <span className="absolute -top-2.5 right-4 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
+                          <span className="absolute -top-2.5 right-4 bg-white/10 text-white border border-white/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
                             Recommended
                           </span>
                         )}
@@ -619,7 +590,7 @@ ollama run llama3`}
                           disabled={!!downloadingModel}
                           className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${
                             isRecommended 
-                              ? 'bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] disabled:opacity-40' 
+                              ? 'bg-[#ECEBE9] hover:bg-[#FFFFFF] text-[#111213] disabled:opacity-40' 
                               : 'bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#A3A09B] disabled:opacity-40'
                           }`}
                         >
@@ -637,14 +608,14 @@ ollama run llama3`}
             <div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+                      <div className="p-2 bg-[#ECEBE9]/5 border border-[#2A2D30] text-[#ECEBE9] rounded-xl">
                         <Cpu size={18} />
                       </div>
                       <div>
                         <span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">Active LLM Model</span>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-sm font-bold text-[#ECEBE9] font-mono">{selectedOllamaModel || 'None'}</span>
-                          <span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
+                          <span className="text-[9px] px-2 py-0.5 rounded bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30] font-bold uppercase tracking-wider">
                             Ollama Active
                           </span>
                         </div>
@@ -658,7 +629,7 @@ ollama run llama3`}
                           setSelectedOllamaModel(e.target.value);
                           aiService.setSelectedOllamaModel(e.target.value);
                         }}
-                        className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
+                        className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#72706C] w-full md:w-56"
                       >
                         {ollamaModels.map(m => (
                           <option key={m} value={m}>{m}</option>
@@ -681,7 +652,7 @@ ollama run llama3`}
                         <div>
                           <span className="text-[10px] text-[#72706C] uppercase font-semibold block">Hardware Recommendation System</span>
                           <span className="text-xs text-[#A3A09B] block mt-1">
-                            System RAM: <strong className="text-[#3C6B4D]">{hardware.ram}</strong> | CPU Cores: <strong className="text-[#3C6B4D]">{hardware.cores}</strong>
+                            System RAM: <strong className="text-white">{hardware.ram}</strong> | CPU Cores: <strong className="text-white">{hardware.cores}</strong>
                           </span>
                         </div>
                         <div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
@@ -692,11 +663,11 @@ ollama run llama3`}
                       {downloadingModel && (
                         <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
                           <div className="flex justify-between items-center text-xs font-semibold">
-                            <span className="text-[#3C6B4D]">Downloading {downloadingModel}...</span>
+                            <span className="text-white">Downloading {downloadingModel}...</span>
                             <span>{downloadProgress}%</span>
                           </div>
                           <div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
-                            <div className="bg-[#3C6B4D] h-full" style={{ width: `${downloadProgress}%` }} />
+                            <div className="bg-white h-full" style={{ width: `${downloadProgress}%` }} />
                           </div>
                         </div>
                       )}
@@ -728,7 +699,7 @@ ollama run llama3`}
                                 className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${
                                   alreadyInstalled
                                     ? 'bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]'
-                                    : 'bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20'
+                                    : 'bg-white/10 text-white border border-white/10 hover:bg-white/20'
                                 }`}
                               >
                                 {alreadyInstalled ? 'Installed' : downloadingModel === m.name ? 'Downloading' : 'Download'}
@@ -750,7 +721,7 @@ ollama run llama3`}
                 onClick={() => isReady && navigate(`/tool/${tool.id}`)}
                 className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
                   isReady
-                    ? 'cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50 hover:bg-[#1C1D1F] hover:-translate-y-0.5'
+                    ? 'cursor-pointer border-[#2A2D30] hover:border-white/30 hover:bg-[#1C1D1F] hover:-translate-y-0.5'
                     : 'opacity-50 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
                 } transition-all duration-200`}
               >
@@ -758,13 +729,13 @@ ollama run llama3`}
                   <div className="flex justify-between items-start">
                     <div className={`p-3 rounded-xl border ${
                       isReady 
-                        ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform' 
+                        ? 'bg-white/5 border-white/10 text-white group-hover:scale-[1.03] transition-transform' 
                         : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
                     }`}>
                       <DynamicIcon name={tool.icon} size={22} />
                     </div>
                     {isReady ? (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30]">
                         Ready
                       </span>
                     ) : (
@@ -775,7 +746,7 @@ ollama run llama3`}
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <h3 className="font-bold text-lg text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors">
+                    <h3 className="font-bold text-lg text-[#ECEBE9] group-hover:text-white transition-colors">
                       {tool.name}
                     </h3>
                     <p className="text-[#A3A09B] text-xs leading-relaxed">
@@ -791,7 +762,7 @@ ollama run llama3`}
                   </span>
                   
                   {isReady && (
-                    <span className="text-xs font-semibold text-[#3C6B4D] group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                    <span className="text-xs font-semibold text-[#ECEBE9] group-hover:translate-x-1 transition-transform flex items-center gap-1">
                       <span>Open</span>
                       <span>→</span>
                     </span>

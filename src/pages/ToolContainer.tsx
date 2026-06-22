@@ -34,7 +34,7 @@ export const ToolContainer = () => {
           <div className="flex items-center gap-2 text-xs font-semibold text-[#72706C] uppercase tracking-wider">
             <button
               onClick={() => navigate('/')}
-              className="hover:text-[#3C6B4D] flex items-center gap-1 transition-colors"
+              className="hover:text-white flex items-center gap-1 transition-colors"
             >
               <Home size={12} />
               <span>Dashboard</span>
@@ -44,7 +44,7 @@ export const ToolContainer = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-1">
-            <div className="p-2.5 bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#3C6B4D] rounded-xl">
+            <div className="p-2.5 bg-white/5 border border-white/10 text-white rounded-xl">
               <DynamicIcon name={tool.icon} size={20} />
             </div>
             <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight">

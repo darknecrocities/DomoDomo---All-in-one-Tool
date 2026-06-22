@@ -138,7 +138,7 @@ export const Shell = () => {
                 end
                 className={({ isActive }) =>
                   `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                    isActive ? 'text-[#ECEBE9] border-b-2 border-[#ECEBE9] pb-0.5' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
@@ -149,7 +149,7 @@ export const Shell = () => {
                 to="/about"
                 className={({ isActive }) =>
                   `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                    isActive ? 'text-[#ECEBE9] border-b-2 border-[#ECEBE9] pb-0.5' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
@@ -160,7 +160,7 @@ export const Shell = () => {
                 to="/library-api"
                 className={({ isActive }) =>
                   `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                    isActive ? 'text-[#ECEBE9] border-b-2 border-[#ECEBE9] pb-0.5' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
@@ -171,7 +171,7 @@ export const Shell = () => {
                 to="/docs"
                 className={({ isActive }) =>
                   `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                    isActive ? 'text-[#ECEBE9] border-b-2 border-[#ECEBE9] pb-0.5' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                   }`
                 }
               >
@@ -182,8 +182,8 @@ export const Shell = () => {
             <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
             {/* Status indicator */}
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
-              <ShieldAlert size={13} className="shrink-0" />
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#ECEBE9]/5 text-[#ECEBE9] border border-[#2A2D30] text-[11px] font-bold uppercase tracking-wider">
+              <ShieldAlert size={13} className="shrink-0 text-[#A3A09B]" />
               <span>Sandbox Local</span>
             </div>
 
@@ -204,11 +204,11 @@ export const Shell = () => {
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#72706C]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
               title="GitHub Repository"
             >
               <GithubIcon size={14} />
-              <div className="h-3 w-[1px] bg-[#2A2D30] group-hover:bg-[#3C6B4D]/30" />
+              <div className="h-3 w-[1px] bg-[#2A2D30] group-hover:bg-[#72706C]/30" />
               <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
               <span className="text-[10px] font-mono leading-none">{stars !== null ? stars : '—'}</span>
             </a>
@@ -234,7 +234,7 @@ export const Shell = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    isActive ? 'text-[#ECEBE9] bg-[#2A2D30]/40' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
@@ -245,7 +245,7 @@ export const Shell = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    isActive ? 'text-[#ECEBE9] bg-[#2A2D30]/40' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
@@ -288,14 +288,14 @@ export const Shell = () => {
       {/* Auto-Update Repository Notification Banner */}
       {repoStatus === 'update_available' && (
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 mt-4">
-          <div className="p-4 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#ECEBE9] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md animate-fadeIn">
+          <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md animate-fadeIn">
             <div className="space-y-1 text-left">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
-                <Zap size={14} className="animate-bounce" />
+              <div className="flex items-center gap-2 text-white font-bold text-xs">
+                <Zap size={14} className="animate-bounce text-gray-300" />
                 <span>Auto-Push Detected on GitHub Remote!</span>
               </div>
               <p className="text-[11px] text-[#A3A09B]">
-                New release commit <code className="bg-[#111213] px-1 py-0.5 rounded text-emerald-400 font-bold font-mono text-[10px]">{simulatedCommit.hash}</code> by <span className="font-bold text-[#ECEBE9]">{simulatedCommit.author}</span>: "{simulatedCommit.message}" (Updated files: {simulatedCommit.files.join(', ')}).
+                New release commit <code className="bg-[#111213] px-1 py-0.5 rounded text-white font-bold font-mono text-[10px]">{simulatedCommit.hash}</code> by <span className="font-bold text-[#ECEBE9]">{simulatedCommit.author}</span>: "{simulatedCommit.message}" (Updated files: {simulatedCommit.files.join(', ')}).
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -307,7 +307,7 @@ export const Shell = () => {
               </button>
               <button
                 onClick={runAutoUpdater}
-                className="px-4 py-1.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+                className="px-4 py-1.5 bg-[#ECEBE9] hover:bg-[#FFFFFF] text-[#111213] text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-1.5"
               >
                 <Download size={13} />
                 <span>Update App</span>
