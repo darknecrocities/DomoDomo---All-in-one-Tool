@@ -240,8 +240,18 @@ app.use(express.json());
 
 let sseTransport: SSEServerTransport | null = null;
 
-app.get('/sse', (req, res) => {
+app.get('/sse', async (req, res) => {
   console.log('🔌 Client requested SSE transport connection...');
+  try {
+    if (sseTransport) {
+      await sseTransport.close();
+      sseTransport = null;
+    }
+    await server.close();
+  } catch (err) {
+    // Ignore inactive connection close errors
+  }
+
   // SSEServerTransport receives:
   // 1. Endpoint path to route messages back (POST endpoint)
   // 2. HTTP response object to establish the EventStream stream
@@ -250,6 +260,9 @@ app.get('/sse', (req, res) => {
     console.log('✅ SSE Transport connection established.');
   }).catch((err) => {
     console.error('Failed to establish SSE transport connection:', err);
+    if (!res.headersSent) {
+      res.status(500).send(`Failed to establish connection: ${err.message}`);
+    }
   });
 });
 
