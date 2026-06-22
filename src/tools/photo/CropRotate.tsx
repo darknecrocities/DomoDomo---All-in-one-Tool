@@ -5,7 +5,9 @@ import { Download, RotateCcw, RotateCw, RefreshCw, FlipHorizontal, FlipVertical 
 export const CropRotateTool = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [rotate, setRotate] = useState<number>(0);
-  const [aspect, setAspect] = useState<'free' | '1:1' | '16:9' | '4:3'>('free');
+  const [aspect, setAspect] = useState<'free' | '1:1' | '16:9' | '4:3' | 'custom'>('free');
+  const [customRatioW, setCustomRatioW] = useState<number>(2);
+  const [customRatioH, setCustomRatioH] = useState<number>(3);
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
   
@@ -18,7 +20,7 @@ export const CropRotateTool = () => {
   // Handle aspect ratio constraint updates
   useEffect(() => {
     if (aspect === 'free') return;
-    const ratio = aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : 4 / 3;
+    const ratio = aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
     setCrop((prev) => {
       let newW = prev.w;
       let newH = newW / ratio;
@@ -28,7 +30,7 @@ export const CropRotateTool = () => {
       }
       return { ...prev, w: Math.min(100, newW), h: Math.min(100, newH) };
     });
-  }, [aspect]);
+  }, [aspect, customRatioW, customRatioH]);
 
   const handleMouseDown = (e: React.MouseEvent, handle: string) => {
     e.preventDefault();
@@ -61,7 +63,7 @@ export const CropRotateTool = () => {
         nx = Math.max(0, Math.min(100 - cw, cx + dx));
         ny = Math.max(0, Math.min(100 - ch, cy + dy));
       } else {
-        const ratio = aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : null;
+        const ratio = aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : aspect === 'custom' ? customRatioW / customRatioH : null;
 
         if (currentDrag.includes('right')) {
           nw = Math.max(10, Math.min(100 - cx, cw + dx));
@@ -116,7 +118,7 @@ export const CropRotateTool = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [crop, aspect]);
+  }, [crop, aspect, customRatioW, customRatioH]);
 
   const handleReset = () => {
     setRotate(0);
@@ -253,8 +255,8 @@ export const CropRotateTool = () => {
           </div>
 
           <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">Aspect Ratios</span>
-          <div className="grid grid-cols-2 gap-2">
-            {(['free', '1:1', '16:9', '4:3'] as const).map((r) => (
+          <div className="grid grid-cols-3 gap-2">
+            {(['free', '1:1', '16:9', '4:3', 'custom'] as const).map((r) => (
               <button 
                 key={r}
                 onClick={() => setAspect(r)}
@@ -263,6 +265,106 @@ export const CropRotateTool = () => {
                 {r.toUpperCase()}
               </button>
             ))}
+          </div>
+
+          {aspect === 'custom' && (
+            <div className="flex gap-2 items-center text-xs mt-1">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-slate-400">Ratio W</label>
+                <input 
+                  type="number" 
+                  min={1} 
+                  value={customRatioW} 
+                  onChange={(e) => setCustomRatioW(Math.max(1, Number(e.target.value)))}
+                  className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none"
+                />
+              </div>
+              <span className="pt-4 text-slate-400">:</span>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-slate-400">Ratio H</label>
+                <input 
+                  type="number" 
+                  min={1} 
+                  value={customRatioH} 
+                  onChange={(e) => setCustomRatioH(Math.max(1, Number(e.target.value)))}
+                  className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none"
+                />
+              </div>
+            </div>
+          )}
+
+          <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">Precise Crop Bounds (%)</span>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="flex flex-col gap-1">
+              <label className="text-slate-400">Left (X)</label>
+              <input 
+                type="number" 
+                min={0} 
+                max={100 - crop.w} 
+                value={Math.round(crop.x)} 
+                onChange={(e) => {
+                  const val = Math.max(0, Math.min(100 - crop.w, Number(e.target.value)));
+                  setCrop(prev => ({ ...prev, x: val }));
+                }}
+                className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-slate-450">Top (Y)</label>
+              <input 
+                type="number" 
+                min={0} 
+                max={100 - crop.h} 
+                value={Math.round(crop.y)} 
+                onChange={(e) => {
+                  const val = Math.max(0, Math.min(100 - crop.h, Number(e.target.value)));
+                  setCrop(prev => ({ ...prev, y: val }));
+                }}
+                className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-slate-450">Width</label>
+              <input 
+                type="number" 
+                min={10} 
+                max={100 - crop.x} 
+                value={Math.round(crop.w)} 
+                onChange={(e) => {
+                  const val = Math.max(10, Math.min(100 - crop.x, Number(e.target.value)));
+                  setCrop(prev => {
+                    const ratio = aspect === 'free' ? null : aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
+                    if (ratio) {
+                      const newH = Math.min(100 - prev.y, val / ratio);
+                      return { ...prev, w: newH * ratio, h: newH };
+                    }
+                    return { ...prev, w: val };
+                  });
+                }}
+                className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-slate-450">Height</label>
+              <input 
+                type="number" 
+                min={10} 
+                max={100 - crop.y} 
+                value={Math.round(crop.h)} 
+                onChange={(e) => {
+                  const val = Math.max(10, Math.min(100 - crop.y, Number(e.target.value)));
+                  setCrop(prev => {
+                    const ratio = aspect === 'free' ? null : aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
+                    if (ratio) {
+                      const newW = Math.min(100 - prev.x, val * ratio);
+                      return { ...prev, w: newW, h: newW / ratio };
+                    }
+                    return { ...prev, h: val };
+                  });
+                }}
+                className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
           </div>
 
           {imageUrl && (
