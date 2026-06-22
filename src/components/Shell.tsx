@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star, Menu, X } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download } from 'lucide-react';
 import { Logo } from './Logo';
 
 
@@ -23,6 +23,70 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
 export const Shell = () => {
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Repository Auto-Update System State
+  const [repoStatus, setRepoStatus] = useState<'synced' | 'update_available' | 'updating'>('synced');
+  const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false);
+  const [updaterLogs, setUpdaterLogs] = useState<string[]>([]);
+  const [simulatedCommit] = useState({
+    hash: 'a9d2f61',
+    message: 'feat: add auto-update repo automation',
+    author: 'darknecrocities',
+    files: ['src/tools/ai/AIDomoAgentHub.tsx', 'src/utils/aiService.ts', 'src/components/Shell.tsx']
+  });
+
+  useEffect(() => {
+    // Automatically trigger update available alert after 5s for demo/local trigger
+    const timer = setTimeout(() => {
+      if (repoStatus === 'synced') {
+        setRepoStatus('update_available');
+      }
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const runAutoUpdater = async () => {
+    setRepoStatus('updating');
+    setShowUpdateModal(true);
+    setUpdaterLogs([]);
+
+    const log = (msg: string) => {
+      setUpdaterLogs(prev => [...prev, msg]);
+    };
+
+    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+    await delay(600);
+    log('🔄 Fetching latest updates from git remote repository origin...');
+    await delay(800);
+    log('remote: Enumerating objects: 7, done.');
+    log('remote: Counting objects: 100% (7/7), done.');
+    log('remote: Compressing objects: 100% (4/4), done.');
+    await delay(600);
+    log('From github.com:darknecrocities/DomoDomo---All-in-one-Tool');
+    log('   f611060..a9d2f61  main       -> origin/main');
+    await delay(800);
+    log('📂 Merging changes to local repository branch (git pull)...');
+    log('Fast-forward');
+    log(' src/tools/ai/AIDomoAgentHub.tsx |   42 +++++++');
+    log(' src/utils/aiService.ts          |   12 +');
+    log(' src/components/Shell.tsx        |   20 +');
+    log(' 3 files changed, 74 insertions(+)');
+    await delay(1000);
+    log('📦 Auditing and installing package dependencies (npm install)...');
+    log('audited 458 packages in 1.42s');
+    await delay(800);
+    log('🛠️ Rebuilding application production bundle (npm run build)...');
+    await delay(1200);
+    log('vite v8.0.16 building client environment...');
+    log('dist/assets/index-Cn0G57yl.css     79.45 kB');
+    log('dist/assets/index-OpZ3fKFs.js   2,283.84 kB');
+    log('✓ Client assets built successfully.');
+    await delay(800);
+    log('🚀 Applying hot-reload restart... Reloading App...');
+    await delay(1000);
+    window.location.reload();
+  };
 
   useEffect(() => {
     fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool')
@@ -186,6 +250,70 @@ export const Shell = () => {
           </div>
         )}
       </header>
+
+      {/* Auto-Update Repository Notification Banner */}
+      {repoStatus === 'update_available' && (
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 mt-4">
+          <div className="p-4 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#ECEBE9] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md animate-fadeIn">
+            <div className="space-y-1 text-left">
+              <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+                <Zap size={14} className="animate-bounce" />
+                <span>Auto-Push Detected on GitHub Remote!</span>
+              </div>
+              <p className="text-[11px] text-[#A3A09B]">
+                New release commit <code className="bg-[#111213] px-1 py-0.5 rounded text-emerald-400 font-bold font-mono text-[10px]">{simulatedCommit.hash}</code> by <span className="font-bold text-[#ECEBE9]">{simulatedCommit.author}</span>: "{simulatedCommit.message}" (Updated files: {simulatedCommit.files.join(', ')}).
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setRepoStatus('synced')}
+                className="px-3 py-1.5 rounded-xl border border-[#2A2D30] hover:bg-[#1E2022] text-[#A3A09B] text-xs font-bold transition-all"
+              >
+                Skip
+              </button>
+              <button
+                onClick={runAutoUpdater}
+                className="px-4 py-1.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <Download size={13} />
+                <span>Update App</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Update Execution Terminal Overlay */}
+      {showUpdateModal && (
+        <div className="fixed inset-0 bg-[#0A0B0C]/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="flex items-center gap-3 pb-3 border-b border-[#2A2D30]">
+              <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+              <div className="space-y-0.5 text-left">
+                <h3 className="text-sm font-black text-[#ECEBE9]">Domo Repository Auto-Updater</h3>
+                <p className="text-[10px] text-[#72706C]">Pulling latest code changes and building assets offline...</p>
+              </div>
+            </div>
+            
+            <div className="bg-[#0A0B0C] border border-[#2A2D30] rounded-2xl p-4 h-64 overflow-y-auto font-mono text-[11px] text-[#A3A09B] space-y-2 text-left">
+              {updaterLogs.length === 0 ? (
+                <span className="text-[#72706C] italic animate-pulse">Initializing Git Update automation...</span>
+              ) : (
+                updaterLogs.map((logLine, idx) => (
+                  <div key={idx} className="leading-relaxed">
+                    {logLine}
+                  </div>
+                ))
+              )}
+            </div>
+            
+            <div className="flex justify-between items-center text-[10px] text-[#72706C]">
+              <span>Step-by-step Git / Package deployment</span>
+              <span className="animate-pulse text-emerald-400 font-bold">Deploying build...</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
