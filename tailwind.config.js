@@ -9,6 +9,16 @@ export default {
       colors: {
         background: 'var(--background)',
         card: 'var(--card)',
+        text: {
+          DEFAULT: 'var(--text)',
+          secondary: 'var(--text-secondary)',
+          tertiary: 'var(--text-tertiary)',
+        },
+        border: 'var(--border)',
+        surface: {
+          dim: 'var(--surface-dim)',
+          container: 'var(--surface-container)',
+        },
         primary: {
           DEFAULT: 'var(--primary)',
           hover: 'var(--primary-hover)',
