@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare } from 'lucide-react';
 import { Logo } from './Logo';
 
 
@@ -362,6 +362,19 @@ export const Shell = () => {
             <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
             <a
+              href="https://forms.gle/ahQXtFoietABJZpg8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E29E2D]/10 border border-[#E29E2D]/35 hover:border-[#E29E2D]/60 hover:bg-[#E29E2D]/25 text-[#E29E2D] hover:text-[#ECEBE9] transition-all text-[11px] font-bold"
+              title="Submit Feedback or Report Issue"
+            >
+              <MessageSquare size={13} className="shrink-0" />
+              <span>Feedback Report</span>
+            </a>
+
+            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
+
+            <a
               href="https://www.facebook.com/profile.php?id=61590872807465"
               target="_blank"
               rel="noopener noreferrer"
@@ -453,6 +466,15 @@ export const Shell = () => {
               >
                 <FacebookIcon size={16} />
                 <span>Follow Facebook Page</span>
+              </a>
+              <a
+                href="https://forms.gle/ahQXtFoietABJZpg8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#E29E2D] hover:text-[#ECEBE9] hover:bg-[#E29E2D]/10 transition-colors flex items-center gap-2"
+              >
+                <MessageSquare size={16} />
+                <span>Feedback Report</span>
               </a>
               <button
                 onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
@@ -561,6 +583,16 @@ export const Shell = () => {
           </div>
 
           <div className="flex items-center gap-3 text-[11px] text-[#72706C] font-semibold">
+            <a
+              href="https://forms.gle/ahQXtFoietABJZpg8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
+            >
+              <MessageSquare size={12} />
+              <span>Feedback Report</span>
+            </a>
+            <span>•</span>
             <span className="flex items-center gap-1">
               <ServerCrash size={12} />
               <span>Zero-Server Architecture</span>
