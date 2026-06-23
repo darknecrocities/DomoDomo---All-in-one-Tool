@@ -274,10 +274,14 @@ app.post('/message', async (req, res) => {
     try {
       await sseTransport.handlePostMessage(req, res, req.body);
     } catch (err: any) {
-      res.status(500).send(err.message);
+      if (!res.headersSent) {
+        res.status(500).send(err.message);
+      }
     }
   } else {
-    res.status(400).send('No active SSE transport connection');
+    if (!res.headersSent) {
+      res.status(400).send('No active SSE transport connection');
+    }
   }
 });
 
