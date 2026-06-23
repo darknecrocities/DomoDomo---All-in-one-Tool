@@ -168,7 +168,7 @@ curl -X GET "${endpoint}" \\
             Library API Hub
           </h1>
           <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed">
-            Browse through 1,400+ verified, free, and open-source public APIs across dozens of industries. Select APIs to check authentication models, CORS details, links, and code snippets.
+            Browse through 1,900+ verified, free, and open-source public APIs across dozens of industries. Select APIs to check authentication models, CORS details, links, and code snippets.
           </p>
         </div>
       </div>

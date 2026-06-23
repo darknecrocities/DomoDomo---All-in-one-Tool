@@ -90,7 +90,7 @@ export const AboutApplication = () => {
             </p>
           </div>
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
-            <span className="text-[#3C6B4D] font-bold text-sm block">Library API Hub (1,480+ Integrations)</span>
+            <span className="text-[#3C6B4D] font-bold text-sm block">Library API Hub (1,900+ Integrations)</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               A comprehensive directory of verified public APIs with dynamic client-side pagination, search indexing, category groupings, and immediate code generation (JavaScript fetch, Python, and cURL requests) for streamlined development.
             </p>
