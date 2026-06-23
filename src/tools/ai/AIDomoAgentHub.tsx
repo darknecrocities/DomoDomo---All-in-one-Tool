@@ -446,7 +446,7 @@ export const AIDomoAgentHub = () => {
 
       if (mcpConnected && mcpTools.some(t => t.name === 'execute_command')) {
         try {
-          addActivityLog('info', `[Agent Command Exec] Running: "${target}"`);
+          addActivityLog('analyze', `[Agent Command Exec] Running: "${target}"`);
           const result = await callMcpTool('execute_command', { command: target });
           if (result?.isError) {
             return `Command execution failed:\n${result?.content?.[0]?.text || ''}`;
