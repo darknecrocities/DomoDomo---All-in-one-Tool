@@ -74,7 +74,7 @@ export const LibraryApi = () => {
   const authTypes = useMemo(() => {
     const uniqueAuths = new Set<string>();
     PUBLIC_APIS_DATA.forEach((api) => {
-      if (api.auth) {
+      if (api.auth && api.auth.trim().toLowerCase() !== 'all') {
         uniqueAuths.add(api.auth);
       }
     });
