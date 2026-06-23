@@ -1,3 +1,5 @@
+import domodomoLogo from '../assets/domodomo.png';
+
 interface LogoProps {
   className?: string;
   size?: number;
@@ -8,7 +10,7 @@ export const Logo = ({ className = '', size = 40, showText = true }: LogoProps) 
   return (
     <div className={`flex items-center gap-3 select-none ${className}`}>
       <img
-        src="/domodomo.png"
+        src={domodomoLogo}
         width={size}
         height={size}
         className="transform transition-transform duration-300 hover:scale-105 cursor-pointer rounded-xl overflow-hidden shadow-md border border-secondary/20"

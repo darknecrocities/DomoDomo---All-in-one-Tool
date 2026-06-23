@@ -1,5 +1,7 @@
 import { Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap } from 'lucide-react';
 import { BRAND_KIT } from '../utils/BrandKit';
+import domodomoLogo from '../assets/domodomo.png';
+import domodomoWinkLogo from '../assets/domodomo_wink.png';
 
 const stats = [
   { label: 'Web Utilities', value: '100+', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
@@ -45,12 +47,12 @@ export const AboutApplication = () => {
         <div className="lg:col-span-4 z-10 flex justify-center lg:justify-end">
           <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-6 w-44 h-44 relative group/wink cursor-pointer flex items-center justify-center">
             <img
-              src="/domodomo.png"
+              src={domodomoLogo}
               alt="Brand Logo"
               className="absolute w-32 h-32 rounded-2xl border border-secondary/20 shadow-md transition-all duration-300 group-hover/wink:opacity-0 group-hover/wink:rotate-12 group-hover/wink:scale-105"
             />
             <img
-              src="/domodomo_wink.png"
+              src={domodomoWinkLogo}
               alt="Brand Logo Wink"
               className="absolute w-32 h-32 rounded-2xl border border-secondary/20 shadow-md transition-all duration-300 opacity-0 group-hover/wink:opacity-100 group-hover/wink:rotate-12 group-hover/wink:scale-105"
             />
