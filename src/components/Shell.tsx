@@ -20,6 +20,21 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
+const FacebookIcon = ({ size = 18 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+);
+
 export const Shell = () => {
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -347,6 +362,17 @@ export const Shell = () => {
             <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
 
             <a
+              href="https://www.facebook.com/profile.php?id=61590872807465"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 hover:border-[#3C6B4D]/60 hover:bg-[#3C6B4D]/25 text-[#3C6B4D] hover:text-[#ECEBE9] transition-all text-[11px] font-bold"
+              title="Follow Facebook Page"
+            >
+              <FacebookIcon size={13} />
+              <span>Follow</span>
+            </a>
+
+            <a
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
@@ -418,6 +444,15 @@ export const Shell = () => {
                     <span className="text-[10px] font-mono">{stars}</span>
                   </>
                 )}
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61590872807465"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#3C6B4D] hover:text-[#ECEBE9] hover:bg-[#3C6B4D]/10 transition-colors flex items-center gap-2"
+              >
+                <FacebookIcon size={16} />
+                <span>Follow Facebook Page</span>
               </a>
               <button
                 onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
