@@ -75,18 +75,19 @@ export const Shell = () => {
       }
 
       try {
-        // 2. Fetch the latest commit from the remote GitHub repository
-        const remoteRes = await fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/main');
-        if (!remoteRes.ok) return;
-        const remoteData = await remoteRes.json();
-        const remoteSha = remoteData.sha;
-        const remoteShaShort = remoteSha ? remoteSha.substring(0, 7) : '';
-
-        // 3. Fetch the local commit SHA from the Vite dev server API
+        // 2. Fetch the local commit SHA and active branch from the Vite dev server API
         const shaRes = await fetch('/api/git-sha');
         if (shaRes.ok) {
           const shaData = await shaRes.json();
           const localSha = shaData.sha;
+          const branch = shaData.branch || 'main';
+
+          // 3. Fetch the latest commit for that specific branch from the remote GitHub repository
+          const remoteRes = await fetch(`https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/${branch}`);
+          if (!remoteRes.ok) return;
+          const remoteData = await remoteRes.json();
+          const remoteSha = remoteData.sha;
+          const remoteShaShort = remoteSha ? remoteSha.substring(0, 7) : '';
           
           // 4. Compare remote and local commit SHAs
           if (localSha && remoteSha && !localSha.startsWith(remoteSha) && !remoteSha.startsWith(localSha)) {
