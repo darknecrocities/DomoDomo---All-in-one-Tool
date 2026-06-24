@@ -750,7 +750,7 @@ ollama run llama3`}
                 onClick={() => isReady && navigate(`/tool/${tool.id}`)}
                 className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
                   isReady
-                    ? 'cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50 hover:bg-[#1C1D1F] hover:-translate-y-0.5'
+                    ? 'glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50'
                     : 'opacity-50 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
                 } transition-all duration-200`}
               >
