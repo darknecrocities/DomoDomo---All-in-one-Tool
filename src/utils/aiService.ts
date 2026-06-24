@@ -1,4 +1,5 @@
 // Shared Offline & Cloud Hybrid AI Service
+import { localMemory } from './localMemory';
 let transformersModule: any = null;
 
 // Progress callback interface
@@ -284,18 +285,25 @@ export const aiService = {
     const apiKey = this.getApiKey(provider.id);
     const endpoint = this.getCustomEndpoint(provider.id);
 
+    // Log the interaction
+    localMemory.logActivity('AI Chat Inquiry', 'Local AI', prompt.slice(0, 60) + (prompt.length > 60 ? '...' : ''));
+
+    // Inject local memory context
+    const memoryContext = localMemory.getActivityContextString();
+    const augmentedPrompt = memoryContext ? `${memoryContext}\n\nUser Request:\n${prompt}` : prompt;
+
     try {
       if (provider.type === 'local') {
         if (provider.id === 'ollama') {
-          const res = await this.generateTextOllama(model, prompt, maxTokens, options?.systemPrompt, options);
+          const res = await this.generateTextOllama(model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
           return res;
         } else if (provider.id === 'lm_studio' || provider.id === 'vllm') {
           // OpenAI-compatible endpoint
-          const res = await this.callOpenAICompatible(endpoint, apiKey, model, prompt, maxTokens, options?.systemPrompt, options);
+          const res = await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
           return res;
         } else if (provider.id === 'llamacpp') {
           // llama.cpp simple completion format
-          const res = await this.callLlamaCpp(endpoint, prompt, maxTokens, options?.systemPrompt);
+          const res = await this.callLlamaCpp(endpoint, augmentedPrompt, maxTokens, options?.systemPrompt);
           return res;
         }
       } else {
@@ -305,11 +313,11 @@ export const aiService = {
         }
 
         if (provider.id === 'openai' || provider.id === 'groq' || provider.id === 'together' || provider.id === 'openrouter') {
-          return await this.callOpenAICompatible(endpoint, apiKey, model, prompt, maxTokens, options?.systemPrompt, options);
+          return await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
         } else if (provider.id === 'gemini') {
-          return await this.callGemini(endpoint, apiKey, model, prompt, maxTokens, options?.systemPrompt);
+          return await this.callGemini(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
         } else if (provider.id === 'anthropic') {
-          return await this.callAnthropic(endpoint, apiKey, model, prompt, maxTokens, options?.systemPrompt);
+          return await this.callAnthropic(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
         }
       }
     } catch (err: any) {

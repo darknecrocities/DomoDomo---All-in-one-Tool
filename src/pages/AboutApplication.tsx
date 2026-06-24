@@ -210,7 +210,7 @@ export const AboutApplication = () => {
             <div className="w-6 h-6 rounded-full bg-[#E29E2D]/15 border border-[#E29E2D]/30 text-[#E29E2D] flex items-center justify-center font-bold shrink-0">4</div>
             <div className="flex flex-col gap-0.5">
               <span className="font-bold text-[#ECEBE9]">Continuous Local Learning Loop</span>
-              <span className="text-[#A3A09B] leading-relaxed">Interactions and tool execution metrics are logged to a client-side vector database, providing Ollama models with contextually-relevant read/write knowledge dynamically.</span>
+              <span className="text-[#A3A09B] leading-relaxed">Interactions and tool execution metrics are logged securely to a client-side local memory storage (localStorage), providing Ollama models with contextually-relevant read/write knowledge dynamically.</span>
             </div>
           </div>
         </div>

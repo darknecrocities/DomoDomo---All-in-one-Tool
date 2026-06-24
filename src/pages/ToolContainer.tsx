@@ -1,12 +1,20 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Home } from 'lucide-react';
 import { getToolById } from '../engine/registry';
 import { DynamicIcon } from '../components/DynamicIcon';
+import { localMemory } from '../utils/localMemory';
 
 export const ToolContainer = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const tool = id ? getToolById(id) : undefined;
+
+  useEffect(() => {
+    if (tool) {
+      localMemory.logActivity('Opened Tool', tool.category, tool.name);
+    }
+  }, [tool]);
 
   if (!tool) {
     return (

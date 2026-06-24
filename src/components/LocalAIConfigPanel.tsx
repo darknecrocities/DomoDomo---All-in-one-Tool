@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Cpu, Settings, Sliders, ChevronDown, ChevronUp, AlertCircle, Info, Sparkles } from 'lucide-react';
+import { Cpu, Settings, Sliders, ChevronDown, ChevronUp, AlertCircle, Info, Sparkles, Brain, Trash2, History } from 'lucide-react';
 import { aiService } from '../utils/aiService';
+import { localMemory, type MemoryEvent } from '../utils/localMemory';
 
 export interface AIConfigOptions {
   model: string;
@@ -35,6 +36,25 @@ export const LocalAIConfigPanel = ({
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
   const [hasOllama, setHasOllama] = useState(false);
   const [hardware, setHardware] = useState<any>(null);
+  const [memoryEnabled, setMemoryEnabled] = useState(localMemory.isEnabled());
+  const [memoryEvents, setMemoryEvents] = useState<MemoryEvent[]>(localMemory.getEvents());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setMemoryEnabled(localMemory.isEnabled());
+      setMemoryEvents(localMemory.getEvents());
+    };
+    window.addEventListener('domodomo_memory_updated', handleUpdate);
+    return () => window.removeEventListener('domodomo_memory_updated', handleUpdate);
+  }, []);
+
+  const handleToggleMemory = () => {
+    localMemory.setEnabled(!memoryEnabled);
+  };
+
+  const handleClearMemory = () => {
+    localMemory.clearMemory();
+  };
 
   // Load Ollama status on mount
   useEffect(() => {
@@ -222,6 +242,83 @@ export const LocalAIConfigPanel = ({
               />
             </div>
           )}
+
+          {/* Continuous Local Memory Section */}
+          <div className="flex flex-col gap-3 border-t border-slate-850 pt-3.5">
+            <div className="flex items-center justify-between">
+              <label className="font-semibold text-slate-400 flex items-center gap-1.5">
+                <Brain size={13} className="text-amber-400" />
+                <span>Continuous Local AI Memory</span>
+              </label>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500">
+                  {memoryEnabled ? 'Active' : 'Disabled'}
+                </span>
+                <button
+                  onClick={handleToggleMemory}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none ${
+                    memoryEnabled ? 'bg-teal-500' : 'bg-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200 ${
+                      memoryEnabled ? 'translate-x-4.5' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
+            <p className="text-[10px] text-slate-500 leading-snug">
+              Automatically captures your tools utilization history locally in browser storage, allowing local AI models to recall what tools you were recently running.
+            </p>
+
+            {memoryEnabled && (
+              <div className="bg-slate-900/50 border border-slate-850 rounded-lg p-2.5 flex flex-col gap-2">
+                <div className="flex items-center justify-between pb-1.5 border-b border-slate-850/60">
+                  <span className="text-[10px] text-slate-450 font-semibold flex items-center gap-1">
+                    <History size={11} className="text-teal-400" />
+                    <span>Logged Workspace Context ({memoryEvents.length} events)</span>
+                  </span>
+                  {memoryEvents.length > 0 && (
+                    <button
+                      onClick={handleClearMemory}
+                      className="text-rose-400 hover:text-rose-350 transition-colors flex items-center gap-0.5 text-[9px] font-bold font-sans"
+                    >
+                      <Trash2 size={10} />
+                      <span>Wipe Logs</span>
+                    </button>
+                  )}
+                </div>
+
+                {memoryEvents.length > 0 ? (
+                  <div className="max-h-24 overflow-y-auto font-mono text-[9px] text-slate-400 space-y-1">
+                    {memoryEvents.map((e, idx) => {
+                      const t = new Date(e.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                      return (
+                        <div key={idx} className="flex gap-1.5 py-0.5 hover:bg-slate-850/30 px-1 rounded transition-colors text-left">
+                          <span className="text-teal-500 font-bold shrink-0">[{t}]</span>
+                          <span className="text-slate-350">{e.action}</span>
+                          <span className="text-slate-550">&gt;</span>
+                          <span className="text-amber-450 font-medium">{e.category}</span>
+                          {e.detail && (
+                            <>
+                              <span className="text-slate-600">/</span>
+                              <span className="text-slate-300 italic truncate max-w-[150px]">{e.detail}</span>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className="text-[10px] text-slate-500 italic py-1 text-center">
+                    Memory is clean. Start visiting tools to build context!
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
