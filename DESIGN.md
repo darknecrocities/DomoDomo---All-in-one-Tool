@@ -48,6 +48,7 @@ interface Tool {
 }
 ```
 
+
 ### B. Continuous Local Memory Loop
 To give local LLMs context memory without cloud trackers, the app implements a secure local log loop:
 1. **Activity Logger**: Log events (e.g. visiting tools, running conversions) are captured inside `localStorage`.
