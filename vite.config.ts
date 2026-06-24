@@ -46,8 +46,9 @@ export default defineConfig({
           } else if (req.url === '/api/git-sha' && req.method === 'GET') {
             try {
               const sha = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+              const branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf-8' }).trim();
               res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ sha }));
+              res.end(JSON.stringify({ sha, branch }));
             } catch (err: any) {
               res.writeHead(500, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ error: err.message }));
