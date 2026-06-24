@@ -1,6 +1,6 @@
 import { triggerTextDownload } from '../../utils/sharedHelpers';
 import { useState, useEffect } from 'react';
-import { FileText, Download, Plus, Trash2, Printer, Globe, DollarSign } from 'lucide-react';
+import { FileText, Download, Plus, Trash2, Printer, Globe, DollarSign, Image, Upload } from 'lucide-react';
 import domodomoLogo from '../../assets/domodomo.png';
 
 interface InvoiceItem {
@@ -29,6 +29,19 @@ const CURRENCIES: Currency[] = [
 
 export const InvoiceGeneratorTool = () => {
   const [invoiceId, setInvoiceId] = useState('INV-2026-001');
+  const [logoUrl, setLogoUrl] = useState<string>(domodomoLogo);
+  
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const [company, setCompany] = useState('DomoDomo Tech Labs');
   const [companyAddress, setCompanyAddress] = useState('123 Bamboo Lane, Manila, Philippines');
   const [companyEmail, setCompanyEmail] = useState('billing@domodomo.io');
@@ -191,6 +204,30 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
               <div className="flex flex-col gap-1.5">
                 <label className="text-[9px] text-slate-500">Email Address</label>
                 <input type="email" value={companyEmail} onChange={(e) => setCompanyEmail(e.target.value)} className="bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[9px] text-slate-500">Company Logo</label>
+                <div className="flex items-center gap-3 bg-[#111213] border border-[#2A2D30] rounded-xl p-2">
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Logo Preview" className="w-10 h-10 object-contain rounded border border-[#2A2D30] bg-white" />
+                  ) : (
+                    <div className="w-10 h-10 rounded border border-dashed border-[#2A2D30] flex items-center justify-center text-slate-500">
+                      <Image size={16} />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-1 flex-1">
+                    <label className="cursor-pointer bg-[#2A2D30] hover:bg-[#3A3D40] text-slate-200 px-2 py-1 rounded text-[10px] text-center font-semibold transition-all flex items-center justify-center gap-1">
+                      <Upload size={10} />
+                      <span>Upload Logo</span>
+                      <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+                    </label>
+                    {logoUrl && (
+                      <button type="button" onClick={() => setLogoUrl('')} className="text-rose-400 hover:text-rose-300 text-[9px] text-left transition-all">
+                        Remove Logo
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -365,7 +402,13 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
               {/* Top Banner Row */}
               <div className="flex justify-between items-start border-b border-slate-100 pb-5">
                 <div className="flex items-center gap-3">
-                  <img src={domodomoLogo} alt="Logo" className="w-10 h-10 rounded-xl overflow-hidden shadow border border-slate-200" />
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Logo" className="w-10 h-10 rounded-xl object-contain overflow-hidden shadow border border-slate-200 bg-white" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 bg-slate-50 font-bold text-lg select-none">
+                      {company ? company.charAt(0).toUpperCase() : 'I'}
+                    </div>
+                  )}
                   <div className="text-left">
                     <span className="font-extrabold text-base text-slate-900 block">{company}</span>
                     <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">{companyEmail}</span>
