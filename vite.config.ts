@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import * as fs from 'fs';
 import * as path from 'path';
+import { exec, execSync } from 'child_process';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -42,6 +43,46 @@ export default defineConfig({
               res.writeHead(500, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ error: err.message }));
             }
+          } else if (req.url === '/api/git-sha' && req.method === 'GET') {
+            try {
+              const sha = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ sha }));
+            } catch (err: any) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: err.message }));
+            }
+          } else if (req.url === '/api/git-update' && req.method === 'POST') {
+            res.writeHead(200, {
+              'Content-Type': 'text/plain',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive'
+            });
+            const runCmd = (cmd: string): Promise<string> => {
+              return new Promise((resolve, reject) => {
+                res.write(`⚙️ Running: ${cmd}...\n`);
+                exec(cmd, (error, stdout, stderr) => {
+                  if (stdout) res.write(stdout);
+                  if (stderr) res.write(stderr);
+                  if (error) {
+                    reject(error);
+                  } else {
+                    resolve(stdout);
+                  }
+                });
+              });
+            };
+            (async () => {
+              try {
+                await runCmd('git pull');
+                await runCmd('npm install');
+                res.write('\n✅ Update completed successfully! Reloading app...');
+                res.end();
+              } catch (e: any) {
+                res.write(`\n❌ Update failed: ${e.message}\n`);
+                res.end();
+              }
+            })();
           } else {
             next();
           }

@@ -82,38 +82,23 @@ export const Shell = () => {
         const remoteSha = remoteData.sha;
         const remoteShaShort = remoteSha ? remoteSha.substring(0, 7) : '';
 
-        // 3. Fetch the local commit SHA from the local MCP server
-        const mcpRes = await fetch('http://localhost:3001/message', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            method: 'tools/call',
-            params: {
-              name: 'execute_command',
-              arguments: { command: 'git rev-parse HEAD' }
-            },
-            id: 10
-          })
-        });
-
-        if (mcpRes.ok) {
-          const mcpData = await mcpRes.json();
-          if (!mcpData.result?.isError && mcpData.result?.content?.[0]?.text) {
-            const localSha = mcpData.result.content[0].text.trim();
-            
-            // 4. Compare remote and local commit SHAs
-            if (localSha && remoteSha && !localSha.startsWith(remoteSha) && !remoteSha.startsWith(localSha)) {
-              setSimulatedCommit({
-                hash: remoteShaShort,
-                message: remoteData.commit?.message?.split('\n')?.[0] || 'New updates available',
-                author: remoteData.commit?.author?.name || 'developer',
-                files: ['Repository files']
-              });
-              setRepoStatus('update_available');
-            } else {
-              setRepoStatus('synced');
-            }
+        // 3. Fetch the local commit SHA from the Vite dev server API
+        const shaRes = await fetch('/api/git-sha');
+        if (shaRes.ok) {
+          const shaData = await shaRes.json();
+          const localSha = shaData.sha;
+          
+          // 4. Compare remote and local commit SHAs
+          if (localSha && remoteSha && !localSha.startsWith(remoteSha) && !remoteSha.startsWith(localSha)) {
+            setSimulatedCommit({
+              hash: remoteShaShort,
+              message: remoteData.commit?.message?.split('\n')?.[0] || 'New updates available',
+              author: remoteData.commit?.author?.name || 'developer',
+              files: ['Repository files']
+            });
+            setRepoStatus('update_available');
+          } else {
+            setRepoStatus('synced');
           }
         }
       } catch (err) {
@@ -135,133 +120,48 @@ export const Shell = () => {
       setUpdaterLogs(prev => [...prev, msg]);
     };
 
-    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
     try {
-      log('🔌 Connecting to local Domo MCP Server...');
-      const checkRes = await fetch('http://localhost:3001/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/list',
-          id: 1
-        })
-      });
-
-      if (!checkRes.ok) {
-        throw new Error('Local MCP Server returned non-OK response.');
+      log('🔌 Connecting to local update service...');
+      const res = await fetch('/api/git-update', { method: 'POST' });
+      if (!res.ok) {
+        throw new Error('Local update service returned an error.');
       }
 
-      log('✅ Connected to local MCP Server.');
-      await delay(500);
-
-      log('🔄 Fetching latest updates from git remote repository origin (git pull)...');
-      const gitRes = await fetch('http://localhost:3001/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/call',
-          params: {
-            name: 'execute_command',
-            arguments: { command: 'git pull origin main' }
-          },
-          id: 2
-        })
-      });
-      const gitData = await gitRes.json();
-      if (gitData.result?.isError || gitData.error) {
-        const errorText = gitData.result?.content?.[0]?.text || gitData.error?.message || JSON.stringify(gitData);
-        log(`❌ Git pull failed:\n${errorText}`);
-        return;
+      const reader = res.body?.getReader();
+      if (!reader) {
+        throw new Error('Stream reading not supported');
       }
-      log(`📥 Git pull output:\n${gitData.result?.content?.[0]?.text}`);
-      await delay(500);
 
-      log('📦 Auditing and installing package dependencies (npm install)...');
-      const npmRes = await fetch('http://localhost:3001/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/call',
-          params: {
-            name: 'execute_command',
-            arguments: { command: 'npm install' }
-          },
-          id: 3
-        })
-      });
-      const npmData = await npmRes.json();
-      if (npmData.result?.isError || npmData.error) {
-        const errorText = npmData.result?.content?.[0]?.text || npmData.error?.message || JSON.stringify(npmData);
-        log(`❌ npm install failed:\n${errorText}`);
-        return;
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.trim()) {
+            log(line);
+          }
+        }
       }
-      log(`📥 npm install output:\n${npmData.result?.content?.[0]?.text}`);
-      await delay(500);
 
-      log('🛠️ Rebuilding application production bundle (npm run build)...');
-      const buildRes = await fetch('http://localhost:3001/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/call',
-          params: {
-            name: 'execute_command',
-            arguments: { command: 'npm run build' }
-          },
-          id: 4
-        })
-      });
-      const buildData = await buildRes.json();
-      if (buildData.result?.isError || buildData.error) {
-        const errorText = buildData.result?.content?.[0]?.text || buildData.error?.message || JSON.stringify(buildData);
-        log(`❌ npm run build failed:\n${errorText}`);
-        return;
+      // Handle any trailing data
+      if (buffer.trim()) {
+        log(buffer);
       }
-      log(`📥 npm run build output:\n${buildData.result?.content?.[0]?.text}`);
-      await delay(500);
 
-      log('🚀 Applying hot-reload restart... Reloading App...');
-      await delay(1000);
-      window.location.reload();
+      log('\n🔄 Finished processing! Reloading page in 2 seconds...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
 
     } catch (err: any) {
-      log(`⚠️ Local MCP Server offline or unreachable (${err.message}).`);
-      log('🔄 Falling back to offline simulation mode...');
-      await delay(600);
-      log('🔄 Fetching latest updates from git remote repository origin...');
-      await delay(800);
-      log('remote: Enumerating objects: 7, done.');
-      log('remote: Counting objects: 100% (7/7), done.');
-      log('remote: Compressing objects: 100% (4/4), done.');
-      await delay(600);
-      log('From github.com:darknecrocities/DomoDomo---All-in-one-Tool');
-      log('   f611060..a9d2f61  main       -> origin/main');
-      await delay(800);
-      log('📂 Merging changes to local repository branch (git pull)...');
-      log('Fast-forward');
-      log(' src/tools/ai/AIDomoAgentHub.tsx |   42 +++++++');
-      log(' src/utils/aiService.ts          |   12 +');
-      log(' src/components/Shell.tsx        |   20 +');
-      log(' 3 files changed, 74 insertions(+)');
-      await delay(1000);
-      log('📦 Auditing and installing package dependencies (npm install)...');
-      log('audited 458 packages in 1.42s');
-      await delay(800);
-      log('🛠️ Rebuilding application production bundle (npm run build)...');
-      await delay(1200);
-      log('vite v8.0.16 building client environment...');
-      log('dist/assets/index-Cn0G57yl.css     79.45 kB');
-      log('dist/assets/index-OpZ3fKFs.js   2,283.84 kB');
-      log('✓ Client assets built successfully.');
-      await delay(800);
-      log('🚀 Applying hot-reload restart... Reloading App...');
-      await delay(1000);
-      window.location.reload();
+      log(`❌ Update failed: ${err.message}`);
     }
   };
 
