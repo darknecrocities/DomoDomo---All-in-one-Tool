@@ -474,6 +474,9 @@ export const VideoFaceBlurTool = () => {
     setIsPlaying(false);
     v.pause();
 
+    let audioCtx: AudioContext | null = null;
+    let src: MediaElementAudioSourceNode | null = null;
+
     try {
       const renderCanvas = document.createElement('canvas');
       renderCanvas.width = v.videoWidth;
@@ -482,13 +485,27 @@ export const VideoFaceBlurTool = () => {
 
       const stream = renderCanvas.captureStream(30);
 
-      // Record audio
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const dest = audioCtx.createMediaStreamDestination();
-      const src = audioCtx.createMediaElementSource(v);
-      src.connect(dest);
-      src.connect(audioCtx.destination);
-      stream.addTrack(dest.stream.getAudioTracks()[0] || dest.stream.getVideoTracks()[0]);
+      // Try to capture audio from the video element
+      try {
+        audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const dest = audioCtx.createMediaStreamDestination();
+        src = audioCtx.createMediaElementSource(v);
+        src.connect(dest);
+        src.connect(audioCtx.destination);
+        
+        const audioTrack = dest.stream.getAudioTracks()[0];
+        if (audioTrack) {
+          stream.addTrack(audioTrack);
+          v.muted = false; // Unmute to capture audio
+        }
+      } catch (audioErr) {
+        console.warn("Audio capture failed or blocked by policy. Exporting video-only.", audioErr);
+        v.muted = true; // Stay muted to ensure playback is never blocked
+        if (audioCtx) {
+          audioCtx.close();
+          audioCtx = null;
+        }
+      }
 
       const chunks: BlobPart[] = [];
       const mr = new MediaRecorder(stream, {
@@ -599,27 +616,37 @@ export const VideoFaceBlurTool = () => {
 
       mr.onstart = () => {
         v.currentTime = 0;
-        v.play();
+        const playPromise = v.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            console.warn("Autoplay block detected, muting video to proceed:", err);
+            v.muted = true;
+            v.play();
+          });
+        }
         renderLoop();
       };
 
       mr.onstop = () => {
         cancelAnimationFrame(animationId);
         v.pause();
+        v.muted = true; // Mute again for preview cleanliness
         const blob = new Blob(chunks, { type: 'video/webm' });
         const baseName = file.name.replace(/\.[^.]+$/, '');
         triggerBlobDownload(blob, `${baseName}_blurred.webm`);
         setRendering(false);
         setRenderProgress(0);
-        src.disconnect();
-        audioCtx.close();
+        if (src) src.disconnect();
+        if (audioCtx) audioCtx.close();
       };
 
       mr.start(200);
 
     } catch (err) {
       console.error(err);
+      v.muted = true;
       setRendering(false);
+      if (audioCtx) audioCtx.close();
     }
   };
 
@@ -886,6 +913,8 @@ export const VideoFaceBlurTool = () => {
               className="hidden"
               loop
               preload="auto"
+              playsInline
+              muted
             />
           )}
 
