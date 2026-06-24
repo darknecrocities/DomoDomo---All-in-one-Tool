@@ -485,7 +485,6 @@ export const VideoFaceBlurTool = () => {
 
       const stream = renderCanvas.captureStream(30);
 
-      // Try to capture audio from the video element
       try {
         audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
         const dest = audioCtx.createMediaStreamDestination();
@@ -507,9 +506,21 @@ export const VideoFaceBlurTool = () => {
         }
       }
 
+      // Determine browser-compatible MIME type (crucial for Safari/macOS support)
+      let mimeType = 'video/webm';
+      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+        mimeType = 'video/webm;codecs=vp9,opus';
+      } else if (MediaRecorder.isTypeSupported('video/webm')) {
+        mimeType = 'video/webm';
+      } else if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1.42E01E,mp4a.40.2')) {
+        mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
+      } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+        mimeType = 'video/mp4';
+      }
+
       const chunks: BlobPart[] = [];
       const mr = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm',
+        mimeType,
         videoBitsPerSecond: bitrate,
       });
 
@@ -614,36 +625,37 @@ export const VideoFaceBlurTool = () => {
         animationId = requestAnimationFrame(renderLoop);
       };
 
-      mr.onstart = () => {
-        v.currentTime = 0;
-        const playPromise = v.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(err => {
-            console.warn("Autoplay block detected, muting video to proceed:", err);
-            v.muted = true;
-            v.play();
-          });
-        }
-        renderLoop();
-      };
-
       mr.onstop = () => {
         cancelAnimationFrame(animationId);
         v.pause();
         v.muted = true; // Mute again for preview cleanliness
-        const blob = new Blob(chunks, { type: 'video/webm' });
+        const blob = new Blob(chunks, { type: mimeType });
         const baseName = file.name.replace(/\.[^.]+$/, '');
-        triggerBlobDownload(blob, `${baseName}_blurred.webm`);
+        const extension = mimeType.includes('mp4') ? 'mp4' : 'webm';
+        triggerBlobDownload(blob, `${baseName}_blurred.${extension}`);
         setRendering(false);
         setRenderProgress(0);
         if (src) src.disconnect();
         if (audioCtx) audioCtx.close();
       };
 
-      mr.start(200);
+      // Play the video first, and start recording only when playback actually begins
+      v.currentTime = 0;
+      const startRecording = () => {
+        mr.start(200);
+        renderLoop();
+      };
+
+      v.play()
+        .then(startRecording)
+        .catch(err => {
+          console.warn("Autoplay block on export, falling back to muted recording:", err);
+          v.muted = true;
+          v.play().then(startRecording);
+        });
 
     } catch (err) {
-      console.error(err);
+      console.error("Export failure:", err);
       v.muted = true;
       setRendering(false);
       if (audioCtx) audioCtx.close();
