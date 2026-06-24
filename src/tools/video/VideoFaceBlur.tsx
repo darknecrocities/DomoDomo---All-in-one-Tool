@@ -88,75 +88,11 @@ export const VideoFaceBlurTool = () => {
     }
   };
 
-  // Auto Skin-Tone Face Detector (Downsampled scan for high performance)
-  const runSkinToneDetection = useCallback((source: HTMLVideoElement | HTMLCanvasElement) => {
-    if (!autoDetect) return null;
-
-    try {
-      const srcW = 'videoWidth' in source ? source.videoWidth : source.width;
-      const srcH = 'videoHeight' in source ? source.videoHeight : source.height;
-      if (srcW === 0 || srcH === 0) return null;
-
-      // Downsample frames for real-time analysis
-      const scanW = 40;
-      const scanH = 30;
-      const scanCanvas = document.createElement('canvas');
-      scanCanvas.width = scanW;
-      scanCanvas.height = scanH;
-      const scanCtx = scanCanvas.getContext('2d')!;
-      scanCtx.drawImage(source, 0, 0, scanW, scanH);
-
-      const imgData = scanCtx.getImageData(0, 0, scanW, scanH);
-      const data = imgData.data;
-
-      let sumX = 0;
-      let sumY = 0;
-      let skinCount = 0;
-
-      for (let y = 0; y < scanH; y++) {
-        for (let x = 0; x < scanW; x++) {
-          const idx = (y * scanW + x) * 4;
-          const r = data[idx];
-          const g = data[idx + 1];
-          const b = data[idx + 2];
-
-          // Normalized skin tone ranges in RGB space
-          const isSkin =
-            r > 95 &&
-            g > 40 &&
-            b > 20 &&
-            r > g &&
-            r > b &&
-            Math.max(r, g, b) - Math.min(r, g, b) > 15 &&
-            Math.abs(r - g) > 15;
-
-          if (isSkin) {
-            sumX += x;
-            sumY += y;
-            skinCount++;
-          }
-        }
-      }
-
-      if (skinCount > 15) {
-        // Average coordinates mapping back to full canvas size
-        const avgX = (sumX / skinCount) / scanW;
-        const avgY = (sumY / skinCount) / scanH;
-        return { x: avgX, y: avgY, w: 0.16, h: 0.20 };
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    return null;
-  }, [autoDetect]);
-
   // Run real Viola-Jones face detection on the raw frame (capped dimension for max speed)
   const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement): { x: number; y: number; w: number; h: number }[] => {
     // @ts-ignore
     if (!window.tracking || !window.tracking.ViolaJones || !window.tracking.ViolaJones.classifiers || !window.tracking.ViolaJones.classifiers.face) {
-      // Fall back to skin-tone contour heuristics if tracking.js has not finished loading from CDN
-      const skinFace = runSkinToneDetection(source);
-      return skinFace ? [skinFace] : [];
+      return [];
     }
 
     try {
@@ -205,10 +141,8 @@ export const VideoFaceBlurTool = () => {
     } catch (e) {
       console.error('Viola-Jones detection error:', e);
     }
-    // Fall back to skin-tone
-    const skinFace = runSkinToneDetection(source);
-    return skinFace ? [skinFace] : [];
-  }, [autoDetect, runSkinToneDetection]);
+    return [];
+  }, []);
 
   // Run face detection asynchronously in the background loop to prevent render thread lagging
   useEffect(() => {
