@@ -84,7 +84,7 @@ export const AboutApplication = () => {
         <h2 className="text-xl md:text-2xl font-extrabold text-[#ECEBE9] tracking-tight">
           What's New in DomoDomo
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
             <span className="text-[#3C6B4D] font-bold text-sm block">10 New Developer Utilities</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
@@ -101,6 +101,12 @@ export const AboutApplication = () => {
             <span className="text-[#3C6B4D] font-bold text-sm block">Domo Agent Hub & Explainer</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               A local-first offline IDE with browser folder mounting, Multi-Agent sequential/parallel orchestration, file writing commands, Autosave, Live Coding simulation toggles, correct extension mapping, and custom markdown responses.
+            </p>
+          </div>
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
+            <span className="text-[#3C6B4D] font-bold text-sm block">Local AI Knowledge Loop</span>
+            <p className="text-xs text-[#A3A09B] leading-relaxed">
+              Implemented a secure offline read/write knowledge system enabling local Ollama/LM Studio models to query past session interactions and learn continuously from your local logs.
             </p>
           </div>
         </div>
@@ -197,6 +203,14 @@ export const AboutApplication = () => {
             <div className="flex flex-col gap-0.5">
               <span className="font-bold text-[#ECEBE9]">Immediate Local Compilation</span>
               <span className="text-[#A3A09B] leading-relaxed">The browser bundles the output bytes and triggers an immediate local download directly to your downloads folder.</span>
+            </div>
+          </div>
+
+          <div className="flex gap-3 items-start border-t border-[#2A2D30] pt-3">
+            <div className="w-6 h-6 rounded-full bg-[#E29E2D]/15 border border-[#E29E2D]/30 text-[#E29E2D] flex items-center justify-center font-bold shrink-0">4</div>
+            <div className="flex flex-col gap-0.5">
+              <span className="font-bold text-[#ECEBE9]">Continuous Local Learning Loop</span>
+              <span className="text-[#A3A09B] leading-relaxed">Interactions and tool execution metrics are logged to a client-side vector database, providing Ollama models with contextually-relevant read/write knowledge dynamically.</span>
             </div>
           </div>
         </div>
