@@ -30,39 +30,57 @@ export const VideoFaceBlurTool = () => {
   const [selectedZoneId, setSelectedZoneId] = useState<string>('');
   const [rendering, setRendering] = useState(false);
   const [renderProgress, setRenderProgress] = useState(0);
-  const [bitrate, setBitrate] = useState(4000000);
+  const [bitrate, setBitrate] = useState(12000000);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
   const dragStartRef = useRef<{ x: number; y: number; zoneX: number; zoneY: number } | null>(null);
 
+  // Cached persistent offscreen canvases to avoid massive garbage collection layout lag
+  const blurCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pixelateCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
   // Decoupled caching for smooth, high-fps face tracking
   const trackedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
   const animatedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
   const framesSinceLastDetectRef = useRef<number>(0);
+  const detectorRef = useRef<any>(null);
+  const [detectorLoading, setDetectorLoading] = useState(true);
 
-  // Dynamic tracking.js script injection for local facial recognition
+  // Initialize MediaPipe Tasks FaceDetector
   useEffect(() => {
-    const script1 = document.createElement('script');
-    script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js';
-    script1.async = true;
-
-    const script2 = document.createElement('script');
-    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js';
-    script2.async = true;
-
-    script1.onload = () => {
-      document.body.appendChild(script2);
+    let active = true;
+    const initMediaPipe = async () => {
+      try {
+        // @ts-ignore
+        const { FaceDetector, FilesetResolver } = await import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs");
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
+        );
+        const detector = await FaceDetector.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+            delegate: "GPU"
+          },
+          runningMode: "VIDEO"
+        });
+        if (active) {
+          detectorRef.current = detector;
+          setDetectorLoading(false);
+          console.log("MediaPipe FaceDetector loaded successfully!");
+        }
+      } catch (err) {
+        console.error("Failed to initialize MediaPipe FaceDetector:", err);
+      }
     };
-
-    document.body.appendChild(script1);
-
+    initMediaPipe();
     return () => {
-      if (document.body.contains(script1)) document.body.removeChild(script1);
-      if (document.body.contains(script2)) document.body.removeChild(script2);
+      active = false;
     };
   }, []);
+
+
 
   // Load video file
   useEffect(() => {
@@ -91,102 +109,6 @@ export const VideoFaceBlurTool = () => {
     }
   };
 
-  // Run real Viola-Jones face detection on the raw frame (capped dimension for max speed)
-  const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement, maxDim = 240): { x: number; y: number; w: number; h: number }[] => {
-    // @ts-ignore
-    if (!window.tracking || !window.tracking.ViolaJones || !window.tracking.ViolaJones.classifiers || !window.tracking.ViolaJones.classifiers.face) {
-      return [];
-    }
-
-    try {
-      const srcW = 'videoWidth' in source ? source.videoWidth : source.width;
-      const srcH = 'videoHeight' in source ? source.videoHeight : source.height;
-      if (srcW === 0 || srcH === 0) return [];
-
-      // Downsample to maxDim to ensure ultra-smooth tracking
-      let scale = 1;
-      if (srcW > maxDim || srcH > maxDim) {
-        scale = maxDim / Math.max(srcW, srcH);
-      }
-      const scanW = Math.round(srcW * scale);
-      const scanH = Math.round(srcH * scale);
-      
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = scanW;
-      tempCanvas.height = scanH;
-      const tempCtx = tempCanvas.getContext('2d')!;
-      tempCtx.drawImage(source, 0, 0, scanW, scanH);
-
-      const imgData = tempCtx.getImageData(0, 0, scanW, scanH);
-      
-      // @ts-ignore
-      const results = window.tracking.ViolaJones.detect(
-        imgData.data,
-        scanW,
-        scanH,
-        2.2, // initialScale (larger value is much faster during export)
-        1.25, // scaleFactor
-        2, // stepSize
-        0.1, // edgesDensity
-        // @ts-ignore
-        window.tracking.ViolaJones.classifiers.face
-      );
-
-      if (results && results.length > 0) {
-        return results.map((r: any) => ({
-          x: (r.x + r.width / 2) / scanW, // Map to relative center coordinates
-          y: (r.y + r.height / 2) / scanH,
-          w: r.width / scanW,
-          h: r.height / scanH
-        }));
-      }
-    } catch (e) {
-      console.error('Viola-Jones detection error:', e);
-    }
-    return [];
-  }, []);
-
-  // Run face detection asynchronously in the background loop to prevent render thread lagging
-  useEffect(() => {
-    if (!file || !autoDetect || rendering) return;
-
-    let active = true;
-    const runLoop = async () => {
-      const v = videoRef.current;
-      if (!v || v.paused || v.ended) {
-        if (active) setTimeout(runLoop, 150);
-        return;
-      }
-
-      try {
-        const detected = detectFaces(v, 240); // 240px detail for live preview
-        if (detected.length > 0) {
-          trackedFacesRef.current = detected;
-          framesSinceLastDetectRef.current = 0;
-        } else {
-          framesSinceLastDetectRef.current += 1;
-          // Clear tracked faces if no face is detected for 6 consecutive scans (approx 500ms)
-          if (framesSinceLastDetectRef.current > 6) {
-            trackedFacesRef.current = [];
-            animatedFacesRef.current = [];
-          }
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-      if (active) {
-        setTimeout(runLoop, 80); // 80ms intervals (approx 12 scans per second) for highly reactive tracking
-      }
-    };
-
-    runLoop();
-
-    return () => {
-      active = false;
-    };
-  }, [file, autoDetect, rendering, detectFaces]);
-
   // Main canvas renderer
   const renderFrame = useCallback(() => {
     const v = videoRef.current;
@@ -195,8 +117,10 @@ export const VideoFaceBlurTool = () => {
 
     const ctx = c.getContext('2d')!;
     if (v.readyState >= 2) {
-      c.width = v.videoWidth;
-      c.height = v.videoHeight;
+      if (c.width !== v.videoWidth || c.height !== v.videoHeight) {
+        c.width = v.videoWidth;
+        c.height = v.videoHeight;
+      }
 
       // Draw original frame
       ctx.drawImage(v, 0, 0, c.width, c.height);
@@ -210,10 +134,10 @@ export const VideoFaceBlurTool = () => {
           const target = targetFaces[idx];
           if (!target) return f;
           return {
-            x: f.x + (target.x - f.x) * 0.35, // Faster interpolation ease speed for immediate locking
-            y: f.y + (target.y - f.y) * 0.35,
-            w: f.w + (target.w - f.w) * 0.35,
-            h: f.h + (target.h - f.h) * 0.35
+            x: f.x + (target.x - f.x) * 0.4, // Smooth lock-on LERP factor
+            y: f.y + (target.y - f.y) * 0.4,
+            w: f.w + (target.w - f.w) * 0.4,
+            h: f.h + (target.h - f.h) * 0.4
           };
         });
       }
@@ -236,14 +160,21 @@ export const VideoFaceBlurTool = () => {
         });
       }
 
-      // Create a single full-frame downscaled blurred canvas to avoid local bounding box boundaries or artifacts
+      // Create/reuse a single full-frame downscaled blurred canvas to avoid local bounding box boundaries or artifacts
       let blurCanvas: HTMLCanvasElement | null = null;
       const scale = 0.2;
       const hasBlurZone = activeZones.some(z => z.type === 'blur');
       if (activeZones.length > 0 && hasBlurZone) {
-        blurCanvas = document.createElement('canvas');
-        blurCanvas.width = Math.max(1, c.width * scale);
-        blurCanvas.height = Math.max(1, c.height * scale);
+        if (!blurCanvasRef.current) {
+          blurCanvasRef.current = document.createElement('canvas');
+        }
+        blurCanvas = blurCanvasRef.current;
+        const targetW = Math.max(1, Math.floor(c.width * scale));
+        const targetH = Math.max(1, Math.floor(c.height * scale));
+        if (blurCanvas.width !== targetW || blurCanvas.height !== targetH) {
+          blurCanvas.width = targetW;
+          blurCanvas.height = targetH;
+        }
         const blurCtx = blurCanvas.getContext('2d')!;
         blurCtx.drawImage(c, 0, 0, blurCanvas.width, blurCanvas.height);
         
@@ -278,9 +209,16 @@ export const VideoFaceBlurTool = () => {
           // Disable smooth rendering
           ctx.imageSmoothingEnabled = false;
           const pixelSize = Math.max(2, 60 - z.intensity);
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = Math.max(1, zW / pixelSize);
-          tempCanvas.height = Math.max(1, zH / pixelSize);
+          if (!pixelateCanvasRef.current) {
+            pixelateCanvasRef.current = document.createElement('canvas');
+          }
+          const tempCanvas = pixelateCanvasRef.current;
+          const targetW = Math.max(1, Math.floor(zW / pixelSize));
+          const targetH = Math.max(1, Math.floor(zH / pixelSize));
+          if (tempCanvas.width !== targetW || tempCanvas.height !== targetH) {
+            tempCanvas.width = targetW;
+            tempCanvas.height = targetH;
+          }
           const tempCtx = tempCanvas.getContext('2d')!;
 
           tempCtx.drawImage(c, zX, zY, zW, zH, 0, 0, tempCanvas.width, tempCanvas.height);
@@ -326,6 +264,80 @@ export const VideoFaceBlurTool = () => {
       animationFrameRef.current = requestAnimationFrame(renderFrame);
     }
   }, [autoDetect, isPlaying, rendering, blurType, blurIntensity, faceCoverage, zones, selectedZoneId]);
+
+  // Run MediaPipe BlazeFace detection on the frame (directly on raw canvas/video via WebGL/GPU for speed)
+  const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement, timestamp = performance.now()): { x: number; y: number; w: number; h: number }[] => {
+    const detector = detectorRef.current;
+    if (!detector) return [];
+
+    try {
+      const srcW = 'videoWidth' in source ? source.videoWidth : source.width;
+      const srcH = 'videoHeight' in source ? source.videoHeight : source.height;
+      if (srcW === 0 || srcH === 0) return [];
+
+      const results = detector.detectForVideo(source, timestamp);
+
+      if (results && results.detections && results.detections.length > 0) {
+        return results.detections.map((d: any) => {
+          const bbox = d.boundingBox;
+          if (!bbox) return null;
+          return {
+            x: (bbox.originX + bbox.width / 2) / srcW, // Map to relative center coordinates
+            y: (bbox.originY + bbox.height / 2) / srcH,
+            w: bbox.width / srcW,
+            h: bbox.height / srcH
+          };
+        }).filter(Boolean);
+      }
+    } catch (e) {
+      console.error('MediaPipe FaceDetector error:', e);
+    }
+    return [];
+  }, []);
+
+  // Run face detection asynchronously in the background loop to prevent render thread lagging
+  useEffect(() => {
+    if (!file || !autoDetect || rendering) return;
+
+    let active = true;
+    const runLoop = async () => {
+      const v = videoRef.current;
+      if (!v || v.ended || v.readyState < 2) {
+        if (active) setTimeout(runLoop, 300);
+        return;
+      }
+
+      try {
+        const detected = detectFaces(v, performance.now());
+        if (detected.length > 0) {
+          trackedFacesRef.current = detected;
+          framesSinceLastDetectRef.current = 0;
+        } else {
+          framesSinceLastDetectRef.current += 1;
+          // Clear tracked faces if no face is detected for 6 consecutive scans (approx 500ms)
+          if (framesSinceLastDetectRef.current > 6) {
+            trackedFacesRef.current = [];
+            animatedFacesRef.current = [];
+          }
+        }
+        // Force canvas redraw immediately to show the updated face tracking overlay (even when paused)
+        renderFrame();
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (active) {
+        // Scan less frequently if paused (300ms) vs playing (60ms) to conserve CPU
+        setTimeout(runLoop, v.paused ? 300 : 60);
+      }
+    };
+
+    runLoop();
+
+    return () => {
+      active = false;
+    };
+  }, [file, autoDetect, rendering, detectFaces, renderFrame]);
 
   // Handle Play/Pause
   const togglePlay = () => {
@@ -472,9 +484,12 @@ export const VideoFaceBlurTool = () => {
     setRenderProgress(0);
     setIsPlaying(false);
     v.pause();
+    v.muted = true; // Stay silent during background export rendering
+    v.loop = false; // Disable loop so ended event triggers correctly
 
     let audioCtx: AudioContext | null = null;
     let src: MediaElementAudioSourceNode | null = null;
+    const usePlaybackRate = 1.0; // Always export at 1.0x original speed to prevent fast-forward speed manipulation
 
     try {
       const renderCanvas = document.createElement('canvas');
@@ -484,38 +499,59 @@ export const VideoFaceBlurTool = () => {
 
       const stream = renderCanvas.captureStream(30);
 
-      // Try to capture audio from the video element
+      // Try capturing audio from the video element directly using captureStream() first (best, no stalling)
+      let audioTrack: MediaStreamTrack | null = null;
       try {
-        audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const dest = audioCtx.createMediaStreamDestination();
-        src = audioCtx.createMediaElementSource(v);
-        src.connect(dest);
-        src.connect(audioCtx.destination);
-        
-        const audioTrack = dest.stream.getAudioTracks()[0];
-        if (audioTrack) {
-          stream.addTrack(audioTrack);
-          v.muted = false; // Unmute to capture audio
+        // @ts-ignore
+        const vStream = v.captureStream ? v.captureStream() : (v.mozCaptureStream ? v.mozCaptureStream() : null);
+        if (vStream) {
+          audioTrack = vStream.getAudioTracks()[0];
         }
-      } catch (audioErr) {
-        console.warn("Audio capture failed or blocked by policy. Exporting video-only.", audioErr);
-        v.muted = true; // Stay muted to ensure playback is never blocked
-        if (audioCtx) {
-          audioCtx.close();
-          audioCtx = null;
+      } catch (e) {
+        console.warn("Direct captureStream audio capture failed, trying Web Audio API:", e);
+      }
+
+      if (audioTrack) {
+        stream.addTrack(audioTrack);
+      } else {
+        // Web Audio fallback if direct capture stream is unavailable
+        try {
+          audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+          }
+          const dest = audioCtx.createMediaStreamDestination();
+          src = audioCtx.createMediaElementSource(v);
+          src.connect(dest);
+          src.connect(audioCtx.destination);
+          
+          const audioCtxTrack = dest.stream.getAudioTracks()[0];
+          if (audioCtxTrack) {
+            stream.addTrack(audioCtxTrack);
+            v.muted = false;
+          }
+        } catch (audioErr) {
+          console.warn("Audio capture failed. Exporting video-only.", audioErr);
+          v.muted = true;
+          if (audioCtx) {
+            audioCtx.close();
+            audioCtx = null;
+          }
         }
       }
 
-      // Determine browser-compatible MIME type (crucial for Safari/macOS support)
-      let mimeType = 'video/webm';
-      if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
-        mimeType = 'video/webm;codecs=vp9,opus';
-      } else if (MediaRecorder.isTypeSupported('video/webm')) {
-        mimeType = 'video/webm';
+      // Determine browser-compatible MIME type (prioritizing the original file format if supported)
+      let mimeType = '';
+      if (file.type && MediaRecorder.isTypeSupported(file.type)) {
+        mimeType = file.type;
       } else if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1.42E01E,mp4a.40.2')) {
         mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
       } else if (MediaRecorder.isTypeSupported('video/mp4')) {
         mimeType = 'video/mp4';
+      } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+        mimeType = 'video/webm;codecs=vp9,opus';
+      } else {
+        mimeType = 'video/webm';
       }
 
       const chunks: BlobPart[] = [];
@@ -533,7 +569,7 @@ export const VideoFaceBlurTool = () => {
 
       let animationId: number;
       const renderLoop = () => {
-        if (v.ended) {
+        if (v.ended || v.currentTime >= duration - 0.05) {
           mr.stop();
           return;
         }
@@ -543,11 +579,10 @@ export const VideoFaceBlurTool = () => {
         // Run face detection on export at a moderate step to prevent export slowdown
         if (autoDetect) {
           exportFrameCount++;
-          // Scan every 12 frames (approx once per 400ms) for high speed during export
-          if (exportFrameCount >= 12 || cachedExportFaces.length === 0) {
+          // Scan every 3 frames for perfect accuracy and high speed during export
+          if (exportFrameCount >= 3 || cachedExportFaces.length === 0) {
             exportFrameCount = 0;
-            // Downsample to max 140px for ultra-fast Viola-Jones scan during export
-            cachedExportFaces = detectFaces(renderCanvas, 140);
+            cachedExportFaces = detectFaces(renderCanvas, performance.now());
           }
         } else {
           cachedExportFaces = [];
@@ -570,14 +605,21 @@ export const VideoFaceBlurTool = () => {
           });
         }
 
-        // Apply blur on export
+        // Apply blur on export (reuse offscreen canvas)
         let exportBlurCanvas: HTMLCanvasElement | null = null;
         const scale = 0.2;
         const hasBlurZone = activeZones.some(z => z.type === 'blur');
         if (activeZones.length > 0 && hasBlurZone) {
-          exportBlurCanvas = document.createElement('canvas');
-          exportBlurCanvas.width = Math.max(1, renderCanvas.width * scale);
-          exportBlurCanvas.height = Math.max(1, renderCanvas.height * scale);
+          if (!blurCanvasRef.current) {
+            blurCanvasRef.current = document.createElement('canvas');
+          }
+          exportBlurCanvas = blurCanvasRef.current;
+          const targetW = Math.max(1, Math.floor(renderCanvas.width * scale));
+          const targetH = Math.max(1, Math.floor(renderCanvas.height * scale));
+          if (exportBlurCanvas.width !== targetW || exportBlurCanvas.height !== targetH) {
+            exportBlurCanvas.width = targetW;
+            exportBlurCanvas.height = targetH;
+          }
           const exportBlurCtx = exportBlurCanvas.getContext('2d')!;
           exportBlurCtx.drawImage(renderCanvas, 0, 0, exportBlurCanvas.width, exportBlurCanvas.height);
           
@@ -606,9 +648,16 @@ export const VideoFaceBlurTool = () => {
           } else if (z.type === 'pixelate') {
             ctx.imageSmoothingEnabled = false;
             const pixelSize = Math.max(2, 60 - z.intensity);
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = Math.max(1, zW / pixelSize);
-            tempCanvas.height = Math.max(1, zH / pixelSize);
+            if (!pixelateCanvasRef.current) {
+              pixelateCanvasRef.current = document.createElement('canvas');
+            }
+            const tempCanvas = pixelateCanvasRef.current;
+            const targetW = Math.max(1, Math.floor(zW / pixelSize));
+            const targetH = Math.max(1, Math.floor(zH / pixelSize));
+            if (tempCanvas.width !== targetW || tempCanvas.height !== targetH) {
+              tempCanvas.width = targetW;
+              tempCanvas.height = targetH;
+            }
             const tempCtx = tempCanvas.getContext('2d')!;
             tempCtx.drawImage(renderCanvas, zX, zY, zW, zH, 0, 0, tempCanvas.width, tempCanvas.height);
             ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, zX, zY, zW, zH);
@@ -631,7 +680,8 @@ export const VideoFaceBlurTool = () => {
         cancelAnimationFrame(animationId);
         v.pause();
         v.playbackRate = 1.0; // Reset playback rate
-        v.muted = true; // Mute again for preview cleanliness
+        v.muted = false; // Restore audio for preview
+        v.loop = true; // Restore loop for preview
         const blob = new Blob(chunks, { type: mimeType });
         const baseName = file.name.replace(/\.[^.]+$/, '');
         const extension = mimeType.includes('mp4') ? 'mp4' : 'webm';
@@ -642,9 +692,9 @@ export const VideoFaceBlurTool = () => {
         if (audioCtx) audioCtx.close();
       };
 
-      // Play the video at double-speed, and start recording only when playback actually begins
+      // Play the video and start recording only when playback actually begins
       v.currentTime = 0;
-      v.playbackRate = 2.0; // Double rendering speed to make the download fast
+      v.playbackRate = usePlaybackRate; // Sped up if no Web Audio node to stall it, otherwise 1.0x for sync
       
       const startRecording = () => {
         mr.start(200);
@@ -697,7 +747,9 @@ export const VideoFaceBlurTool = () => {
                 <div className="flex items-center justify-between bg-[#111213] border border-[#2A2D30] rounded-xl p-3">
                   <div className="flex flex-col">
                     <span className="text-xs text-slate-200 font-semibold">Auto Face Detection</span>
-                    <span className="text-[10px] text-slate-500">Automatically tracks and blurs face regions</span>
+                    <span className="text-[10px] text-slate-500">
+                      {detectorLoading ? 'Loading MediaPipe AI Engine...' : 'Automatically tracks and blurs face regions'}
+                    </span>
                   </div>
                   <button
                     onClick={() => setAutoDetect(!autoDetect)}
@@ -902,6 +954,8 @@ export const VideoFaceBlurTool = () => {
                   <option value={1500000}>Standard Definition (1.5 Mbps)</option>
                   <option value={4000000}>High Definition (4 Mbps)</option>
                   <option value={8000000}>Ultra High Quality (8 Mbps)</option>
+                  <option value={12000000}>Original High Quality (12 Mbps)</option>
+                  <option value={16000000}>Maximum Quality (16 Mbps)</option>
                 </select>
               </div>
             </>
@@ -928,11 +982,11 @@ export const VideoFaceBlurTool = () => {
               src={videoUrl}
               onLoadedMetadata={handleLoadedMetadata}
               onTimeUpdate={handleTimeUpdate}
-              className="hidden"
+              style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: '1px', height: '1px', overflow: 'hidden' }}
               loop
               preload="auto"
               playsInline
-              muted
+              muted={false}
             />
           )}
 
