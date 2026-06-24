@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
-import { Upload, Download, Film, Sliders, Play, Pause, Shield } from 'lucide-react';
+import { Upload, Trash2, Download, Film, Sliders, Play, Pause, Shield } from 'lucide-react';
 
 interface TrackedZone {
   id: string;
@@ -26,6 +26,8 @@ export const VideoFaceBlurTool = () => {
   const [blurType, setBlurType] = useState<'blur' | 'pixelate' | 'blackout'>('blur');
   const [blurIntensity, setBlurIntensity] = useState<number>(25);
   const [faceCoverage, setFaceCoverage] = useState<number>(1.85); // Generous default coverage multiplier for the entire face/head
+  const [zones, setZones] = useState<TrackedZone[]>([]);
+  const [selectedZoneId, setSelectedZoneId] = useState<string>('');
   const [rendering, setRendering] = useState(false);
   const [renderProgress, setRenderProgress] = useState(0);
   const [bitrate, setBitrate] = useState(4000000);
@@ -33,6 +35,7 @@ export const VideoFaceBlurTool = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
+  const dragStartRef = useRef<{ x: number; y: number; zoneX: number; zoneY: number } | null>(null);
 
   // Decoupled caching for smooth, high-fps face tracking
   const trackedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
@@ -216,8 +219,8 @@ export const VideoFaceBlurTool = () => {
         });
       }
 
-      // Compile temporary active list (animated auto-detected face zones if enabled)
-      let activeZones: TrackedZone[] = [];
+      // Compile temporary active list (manual zones + animated auto-detected face zones if enabled)
+      let activeZones: TrackedZone[] = [...zones];
       if (autoDetect && animatedFacesRef.current.length > 0) {
         animatedFacesRef.current.forEach((face, idx) => {
           activeZones.push({
@@ -237,7 +240,8 @@ export const VideoFaceBlurTool = () => {
       // Create a single full-frame downscaled blurred canvas to avoid local bounding box boundaries or artifacts
       let blurCanvas: HTMLCanvasElement | null = null;
       const scale = 0.2;
-      if (activeZones.length > 0 && blurType === 'blur') {
+      const hasBlurZone = activeZones.some(z => z.type === 'blur');
+      if (activeZones.length > 0 && hasBlurZone) {
         blurCanvas = document.createElement('canvas');
         blurCanvas.width = Math.max(1, c.width * scale);
         blurCanvas.height = Math.max(1, c.height * scale);
@@ -258,7 +262,7 @@ export const VideoFaceBlurTool = () => {
 
         ctx.save();
 
-        // 1. Create shape mask clipping (perfectly circular, no rect outline)
+        // 1. Create shape mask clipping (perfectly circular or rect)
         ctx.beginPath();
         if (z.shape === 'circle') {
           ctx.arc(zX + zW / 2, zY + zH / 2, Math.min(zW, zH) / 2, 0, 2 * Math.PI);
@@ -293,13 +297,36 @@ export const VideoFaceBlurTool = () => {
         }
 
         ctx.restore();
+
+        // 3. Draw dashed border overlay if selected, not exporting, and it is a manual zone
+        if (selectedZoneId === z.id && !rendering && !z.id.startsWith('auto-')) {
+          ctx.save();
+          ctx.strokeStyle = '#3C6B4D';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([6, 4]);
+          
+          ctx.beginPath();
+          if (z.shape === 'circle') {
+            ctx.arc(zX + zW / 2, zY + zH / 2, Math.min(zW, zH) / 2, 0, 2 * Math.PI);
+          } else {
+            ctx.rect(zX, zY, zW, zH);
+          }
+          ctx.stroke();
+          ctx.restore();
+          
+          ctx.fillStyle = '#3C6B4D';
+          ctx.fillRect(zX, zY - 24, Math.min(zW, 130), 24);
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillText(z.name.length > 18 ? z.name.substring(0, 15) + '...' : z.name, zX + 8, zY - 8);
+        }
       });
     }
 
     if (isPlaying) {
       animationFrameRef.current = requestAnimationFrame(renderFrame);
     }
-  }, [autoDetect, isPlaying, rendering, blurType, blurIntensity, faceCoverage]);
+  }, [autoDetect, isPlaying, rendering, blurType, blurIntensity, faceCoverage, zones, selectedZoneId]);
 
   // Handle Play/Pause
   const togglePlay = () => {
@@ -329,7 +356,112 @@ export const VideoFaceBlurTool = () => {
   // Trigger manual render when zones update offline
   useEffect(() => {
     renderFrame();
-  }, [currentTime, autoDetect, renderFrame, blurType, blurIntensity, faceCoverage]);
+  }, [currentTime, autoDetect, renderFrame, blurType, blurIntensity, faceCoverage, zones, selectedZoneId]);
+
+  // Bounding box dragging utilities for manual zones
+  const getMousePos = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height
+    };
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const pos = getMousePos(e);
+    // Find if clicked inside any manual zone
+    const clickedZone = zones.find(z => {
+      return (
+        pos.x >= z.x - z.w / 2 &&
+        pos.x <= z.x + z.w / 2 &&
+        pos.y >= z.y - z.h / 2 &&
+        pos.y <= z.y + z.h / 2
+      );
+    });
+
+    if (clickedZone) {
+      setSelectedZoneId(clickedZone.id);
+      dragStartRef.current = {
+        x: pos.x,
+        y: pos.y,
+        zoneX: clickedZone.x,
+        zoneY: clickedZone.y
+      };
+    } else {
+      // Click empty space to spawn a new manual circular zone
+      const newId = `zone-${Math.random()}`;
+      const newZone: TrackedZone = {
+        id: newId,
+        x: pos.x,
+        y: pos.y,
+        w: 0.16,
+        h: 0.16,
+        shape: 'circle',
+        type: 'blur',
+        intensity: 25,
+        name: `Custom Zone ${zones.length + 1}`
+      };
+      setZones(prev => [...prev, newZone]);
+      setSelectedZoneId(newId);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const dragStart = dragStartRef.current;
+    if (!dragStart || !selectedZoneId) return;
+    const pos = getMousePos(e);
+    const dx = pos.x - dragStart.x;
+    const dy = pos.y - dragStart.y;
+    const targetX = dragStart.zoneX + dx;
+    const targetY = dragStart.zoneY + dy;
+
+    setZones(prev => prev.map(z => {
+      if (z.id === selectedZoneId) {
+        return {
+          ...z,
+          x: Math.max(z.w / 2, Math.min(1 - z.w / 2, targetX)),
+          y: Math.max(z.h / 2, Math.min(1 - z.h / 2, targetY))
+        };
+      }
+      return z;
+    }));
+  };
+
+  const handleMouseUp = () => {
+    dragStartRef.current = null;
+  };
+
+  const handleAddZone = () => {
+    const newId = `zone-${Math.random()}`;
+    setZones(prev => [
+      ...prev,
+      {
+        id: newId,
+        x: 0.5,
+        y: 0.5,
+        w: 0.16,
+        h: 0.16,
+        shape: 'circle',
+        type: 'blur',
+        intensity: 25,
+        name: `Custom Zone ${prev.length + 1}`
+      }
+    ]);
+    setSelectedZoneId(newId);
+  };
+
+  const handleRemoveZone = (id: string) => {
+    setZones(prev => prev.filter(z => z.id !== id));
+    if (selectedZoneId === id) {
+      setSelectedZoneId('');
+    }
+  };
+
+  const handleUpdateZone = (id: string, field: keyof TrackedZone, val: any) => {
+    setZones(prev => prev.map(z => z.id === id ? { ...z, [field]: val } : z));
+  };
 
   // Export blurred video using MediaRecorder canvas streaming
   const handleExport = async () => {
@@ -391,7 +523,7 @@ export const VideoFaceBlurTool = () => {
           cachedExportFaces = [];
         }
 
-        let activeZones: TrackedZone[] = [];
+        let activeZones: TrackedZone[] = [...zones];
         if (autoDetect && cachedExportFaces.length > 0) {
           cachedExportFaces.forEach((face, idx) => {
             activeZones.push({
@@ -403,9 +535,24 @@ export const VideoFaceBlurTool = () => {
               shape: 'circle',
               type: blurType,
               intensity: blurIntensity,
-              name: `Auto ${idx + 1}`
+              name: `Auto Face ${idx + 1}`
             });
           });
+        }
+
+        // Apply blur on export
+        let exportBlurCanvas: HTMLCanvasElement | null = null;
+        const scale = 0.2;
+        const hasBlurZone = activeZones.some(z => z.type === 'blur');
+        if (activeZones.length > 0 && hasBlurZone) {
+          exportBlurCanvas = document.createElement('canvas');
+          exportBlurCanvas.width = Math.max(1, renderCanvas.width * scale);
+          exportBlurCanvas.height = Math.max(1, renderCanvas.height * scale);
+          const exportBlurCtx = exportBlurCanvas.getContext('2d')!;
+          exportBlurCtx.drawImage(renderCanvas, 0, 0, exportBlurCanvas.width, exportBlurCanvas.height);
+          
+          exportBlurCtx.filter = `blur(${Math.max(1, blurIntensity * scale)}px)`;
+          exportBlurCtx.drawImage(exportBlurCanvas, 0, 0);
         }
 
         activeZones.forEach(z => {
@@ -436,22 +583,12 @@ export const VideoFaceBlurTool = () => {
             tempCtx.drawImage(renderCanvas, zX, zY, zW, zH, 0, 0, tempCanvas.width, tempCanvas.height);
             ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, zX, zY, zW, zH);
             ctx.imageSmoothingEnabled = true;
-          } else {
-            // Standard Canvas Gaussian Blur - Optimized to only blur the bounding box region using an offscreen canvas
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = Math.max(1, zW);
-            tempCanvas.height = Math.max(1, zH);
-            const tempCtx = tempCanvas.getContext('2d')!;
-            
-            // Draw just the sub-region from the render canvas
-            tempCtx.drawImage(renderCanvas, zX, zY, zW, zH, 0, 0, zW, zH);
-            
-            // Blur just this small temp canvas
-            tempCtx.filter = `blur(${z.intensity}px)`;
-            tempCtx.drawImage(tempCanvas, 0, 0);
-            
-            // Draw the blurred sub-region back
-            ctx.drawImage(tempCanvas, zX, zY, zW, zH);
+          } else if (exportBlurCanvas) {
+            ctx.drawImage(
+              exportBlurCanvas,
+              zX * scale, zY * scale, zW * scale, zH * scale,
+              zX, zY, zW, zH
+            );
           }
           ctx.restore();
         });
@@ -486,6 +623,8 @@ export const VideoFaceBlurTool = () => {
     }
   };
 
+  const selectedZone = zones.find(z => z.id === selectedZoneId);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       {/* Left panel options */}
@@ -494,7 +633,7 @@ export const VideoFaceBlurTool = () => {
           <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
             <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2">
               <Shield className="text-[#3C6B4D]" size={22} />
-              <span>Auto Face Blur Settings</span>
+              <span>Face Blur Settings</span>
             </h2>
           </div>
 
@@ -530,7 +669,7 @@ export const VideoFaceBlurTool = () => {
 
               {/* Blur Configuration Controls */}
               <div className="flex flex-col gap-4 border-t border-[#2A2D30]/65 pt-3.5 bg-[#111213]/25 p-3 rounded-2xl border border-[#2A2D30]/40">
-                <span className="text-[10px] text-slate-400 font-bold uppercase border-b border-[#2A2D30]/50 pb-2">Blur Filter Config</span>
+                <span className="text-[10px] text-slate-400 font-bold uppercase border-b border-[#2A2D30]/50 pb-2">Auto Blur Config</span>
 
                 {/* Filter Type */}
                 <div className="flex flex-col gap-1.5">
@@ -586,6 +725,127 @@ export const VideoFaceBlurTool = () => {
                 )}
               </div>
 
+              {/* Custom Blur Zones List */}
+              <div className="flex flex-col gap-3 border-t border-[#2A2D30]/65 pt-3.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Custom Blur Zones</span>
+                  <button
+                    onClick={handleAddZone}
+                    className="py-1 px-3 bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded-xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#3C6B4D]/30"
+                  >
+                    <span>+ Add Zone</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-2 max-h-[120px] overflow-y-auto pr-1">
+                  {zones.map((z) => (
+                    <div
+                      key={z.id}
+                      onClick={() => setSelectedZoneId(z.id)}
+                      className={`flex justify-between items-center p-2 rounded-xl border text-xs cursor-pointer transition-all ${
+                        selectedZoneId === z.id
+                          ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/40 text-[#3C6B4D]'
+                          : 'bg-[#111213]/40 border-[#2A2D30]/60 text-slate-300 hover:border-[#2A2D30]'
+                      }`}
+                    >
+                      <span className="font-semibold">{z.name} ({z.shape})</span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleRemoveZone(z.id); }}
+                        className="p-1 hover:bg-rose-950/20 text-rose-400 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  ))}
+                  {zones.length === 0 && (
+                    <span className="text-xs text-slate-500 text-center italic py-2">No manual zones configured. Click the video workspace preview to draw and resize a custom circle.</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Selected Custom Zone Configurator */}
+              {selectedZone && (
+                <div className="flex flex-col gap-3 border-t border-[#2A2D30]/65 pt-3.5 bg-[#111213]/25 p-3 rounded-2xl border border-[#2A2D30]/40">
+                  <div className="flex items-center justify-between border-b border-[#2A2D30]/50 pb-2">
+                    <span className="text-[9px] text-slate-400 font-bold uppercase">Configure Custom Zone</span>
+                    <input
+                      type="text"
+                      value={selectedZone.name}
+                      onChange={(e) => handleUpdateZone(selectedZone.id, 'name', e.target.value)}
+                      className="bg-transparent border-b border-slate-700 text-xs text-slate-200 px-1 py-0.5 text-right max-w-[120px] focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                  </div>
+
+                  {/* Width & Height Resizers */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] text-slate-500">Circle Width Size</label>
+                      <input
+                        type="range"
+                        min="0.05"
+                        max="0.6"
+                        step="0.01"
+                        value={selectedZone.w}
+                        onChange={(e) => handleUpdateZone(selectedZone.id, 'w', parseFloat(e.target.value))}
+                        className="w-full accent-[#3C6B4D]"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] text-slate-500">Circle Height Size</label>
+                      <input
+                        type="range"
+                        min="0.05"
+                        max="0.6"
+                        step="0.01"
+                        value={selectedZone.h}
+                        onChange={(e) => handleUpdateZone(selectedZone.id, 'h', parseFloat(e.target.value))}
+                        className="w-full accent-[#3C6B4D]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Shape Switcher */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[9px] text-slate-500">Zone Shape</label>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {(['circle', 'rect'] as const).map(shape => (
+                        <button
+                          key={shape}
+                          onClick={() => handleUpdateZone(selectedZone.id, 'shape', shape)}
+                          className={`py-1 rounded-lg text-[9px] font-bold border transition-all capitalize ${
+                            selectedZone.shape === shape
+                              ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/40'
+                              : 'bg-[#111213] text-slate-400 border-[#2A2D30] hover:text-slate-200'
+                          }`}
+                        >
+                          {shape === 'circle' ? 'Circle' : 'Rectangle'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Filter Type */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[9px] text-slate-500">Zone Type</label>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {(['blur', 'pixelate', 'blackout'] as const).map(type => (
+                        <button
+                          key={type}
+                          onClick={() => handleUpdateZone(selectedZone.id, 'type', type)}
+                          className={`py-1 rounded-lg text-[9px] font-bold border transition-all capitalize ${
+                            selectedZone.type === type
+                              ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/40'
+                              : 'bg-[#111213] text-slate-400 border-[#2A2D30] hover:text-slate-200'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Bitrate Selection */}
               <div className="flex flex-col gap-1.5 border-t border-[#2A2D30]/65 pt-3.5">
                 <label className="text-[9px] text-slate-500 font-bold uppercase">Export Quality (Bitrate)</label>
@@ -634,7 +894,11 @@ export const VideoFaceBlurTool = () => {
             {file ? (
               <canvas
                 ref={canvasRef}
-                className="w-full h-full object-contain"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                className="w-full h-full object-contain cursor-crosshair"
                 style={{ maxHeight: '420px' }}
               />
             ) : (
