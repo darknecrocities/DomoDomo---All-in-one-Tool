@@ -89,10 +89,14 @@ export const VideoFaceBlurTool = () => {
   };
 
   // Auto Skin-Tone Face Detector (Downsampled scan for high performance)
-  const runSkinToneDetection = useCallback((ctx: CanvasRenderingContext2D) => {
+  const runSkinToneDetection = useCallback((source: HTMLVideoElement | HTMLCanvasElement) => {
     if (!autoDetect) return null;
 
     try {
+      const srcW = 'videoWidth' in source ? source.videoWidth : source.width;
+      const srcH = 'videoHeight' in source ? source.videoHeight : source.height;
+      if (srcW === 0 || srcH === 0) return null;
+
       // Downsample frames for real-time analysis
       const scanW = 40;
       const scanH = 30;
@@ -100,7 +104,7 @@ export const VideoFaceBlurTool = () => {
       scanCanvas.width = scanW;
       scanCanvas.height = scanH;
       const scanCtx = scanCanvas.getContext('2d')!;
-      scanCtx.drawImage(ctx.canvas, 0, 0, scanW, scanH);
+      scanCtx.drawImage(source, 0, 0, scanW, scanH);
 
       const imgData = scanCtx.getImageData(0, 0, scanW, scanH);
       const data = imgData.data;
@@ -146,30 +150,34 @@ export const VideoFaceBlurTool = () => {
     return null;
   }, [autoDetect]);
 
-  // Run real Viola-Jones face detection on a downsampled canvas (capped dimension for max speed)
-  const detectFacesOnCanvas = useCallback((canvas: HTMLCanvasElement): { x: number; y: number; w: number; h: number }[] => {
+  // Run real Viola-Jones face detection on the raw frame (capped dimension for max speed)
+  const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement): { x: number; y: number; w: number; h: number }[] => {
     // @ts-ignore
     if (!window.tracking || !window.tracking.ViolaJones || !window.tracking.ViolaJones.classifiers || !window.tracking.ViolaJones.classifiers.face) {
       // Fall back to skin-tone contour heuristics if tracking.js has not finished loading from CDN
-      const skinFace = runSkinToneDetection(canvas.getContext('2d')!);
+      const skinFace = runSkinToneDetection(source);
       return skinFace ? [skinFace] : [];
     }
 
     try {
+      const srcW = 'videoWidth' in source ? source.videoWidth : source.width;
+      const srcH = 'videoHeight' in source ? source.videoHeight : source.height;
+      if (srcW === 0 || srcH === 0) return [];
+
       // Downsample to max 240px to ensure ultra-smooth 60fps tracking
       const maxDim = 240;
       let scale = 1;
-      if (canvas.width > maxDim || canvas.height > maxDim) {
-        scale = maxDim / Math.max(canvas.width, canvas.height);
+      if (srcW > maxDim || srcH > maxDim) {
+        scale = maxDim / Math.max(srcW, srcH);
       }
-      const scanW = Math.round(canvas.width * scale);
-      const scanH = Math.round(canvas.height * scale);
+      const scanW = Math.round(srcW * scale);
+      const scanH = Math.round(srcH * scale);
       
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = scanW;
       tempCanvas.height = scanH;
       const tempCtx = tempCanvas.getContext('2d')!;
-      tempCtx.drawImage(canvas, 0, 0, scanW, scanH);
+      tempCtx.drawImage(source, 0, 0, scanW, scanH);
 
       const imgData = tempCtx.getImageData(0, 0, scanW, scanH);
       
@@ -198,7 +206,7 @@ export const VideoFaceBlurTool = () => {
       console.error('Viola-Jones detection error:', e);
     }
     // Fall back to skin-tone
-    const skinFace = runSkinToneDetection(canvas.getContext('2d')!);
+    const skinFace = runSkinToneDetection(source);
     return skinFace ? [skinFace] : [];
   }, [autoDetect, runSkinToneDetection]);
 
@@ -209,14 +217,13 @@ export const VideoFaceBlurTool = () => {
     let active = true;
     const runLoop = async () => {
       const v = videoRef.current;
-      const c = canvasRef.current;
-      if (!v || !c || v.paused || v.ended) {
+      if (!v || v.paused || v.ended) {
         if (active) setTimeout(runLoop, 150);
         return;
       }
 
       try {
-        const detected = detectFacesOnCanvas(c);
+        const detected = detectFaces(v);
         if (detected.length > 0) {
           trackedFacesRef.current = detected;
           framesSinceLastDetectRef.current = 0;
@@ -242,7 +249,7 @@ export const VideoFaceBlurTool = () => {
     return () => {
       active = false;
     };
-  }, [file, autoDetect, rendering, detectFacesOnCanvas]);
+  }, [file, autoDetect, rendering, detectFaces]);
 
   // Main canvas renderer
   const renderFrame = useCallback(() => {
@@ -444,7 +451,7 @@ export const VideoFaceBlurTool = () => {
           exportFrameCount++;
           if (exportFrameCount >= 8 || cachedExportFaces.length === 0) {
             exportFrameCount = 0;
-            cachedExportFaces = detectFacesOnCanvas(renderCanvas);
+            cachedExportFaces = detectFaces(renderCanvas);
           }
         } else {
           cachedExportFaces = [];
