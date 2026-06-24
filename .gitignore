@@ -13,6 +13,7 @@ dist-ssr
 *.local
 *.env
 .env
+domodomo_knowledge.json
 
 # Editor directories and files
 .vscode/*

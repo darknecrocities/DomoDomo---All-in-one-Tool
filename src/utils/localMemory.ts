@@ -28,7 +28,7 @@ export const localMemory = {
     }
   },
 
-  logActivity(action: string, category: string, detail?: string) {
+  async logActivity(action: string, category: string, detail?: string) {
     if (!this.isEnabled()) return;
 
     const events = this.getEvents();
@@ -43,11 +43,77 @@ export const localMemory = {
     const updated = [newEvent, ...events].slice(0, MAX_EVENTS);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     window.dispatchEvent(new Event('domodomo_memory_updated'));
+
+    // Sync to workspace file if on localhost
+    await this.saveToWorkspace(updated);
   },
 
-  clearMemory() {
+  async clearMemory() {
     localStorage.removeItem(STORAGE_KEY);
     window.dispatchEvent(new Event('domodomo_memory_updated'));
+    await this.saveToWorkspace([]);
+  },
+
+  async saveToWorkspace(events: MemoryEvent[]) {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocalhost) return;
+
+    try {
+      await fetch('http://localhost:3001/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'write_file',
+            arguments: {
+              path: 'domodomo_knowledge.json',
+              content: JSON.stringify(events, null, 2)
+            }
+          },
+          id: 99
+        })
+      });
+    } catch (e) {
+      console.warn('Failed to back up local memory to workspace file:', e);
+    }
+  },
+
+  async loadFromWorkspace() {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (!isLocalhost) return;
+
+    try {
+      const res = await fetch('http://localhost:3001/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'tools/call',
+          params: {
+            name: 'read_file',
+            arguments: {
+              path: 'domodomo_knowledge.json'
+            }
+          },
+          id: 98
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (!data.result?.isError && data.result?.content?.[0]?.text) {
+          const text = data.result.content[0].text;
+          const events = JSON.parse(text);
+          if (Array.isArray(events)) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+            window.dispatchEvent(new Event('domodomo_memory_updated'));
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load local memory from workspace file:', e);
+    }
   },
 
   getActivityContextString(): string {
@@ -71,3 +137,6 @@ ${formattedEvents}
 [END OF WORKSPACE MEMORY]`;
   }
 };
+
+// Auto-initialize by loading from workspace backup
+localMemory.loadFromWorkspace();
