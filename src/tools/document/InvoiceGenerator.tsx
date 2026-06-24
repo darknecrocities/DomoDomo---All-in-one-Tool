@@ -30,6 +30,7 @@ const CURRENCIES: Currency[] = [
 export const InvoiceGeneratorTool = () => {
   const [invoiceId, setInvoiceId] = useState('INV-2026-001');
   const [logoUrl, setLogoUrl] = useState<string>(domodomoLogo);
+  const [template, setTemplate] = useState<'modern' | 'midnight' | 'classic' | 'bold'>('modern');
   
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -155,6 +156,65 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
     const text = compileReceiptText();
     triggerTextDownload(text, `invoice_${invoiceId.toLowerCase()}.txt`);
   };
+
+  const theme = {
+    modern: {
+      card: 'bg-white border-slate-200 text-slate-800 font-sans',
+      accentText: 'text-[#3C6B4D]',
+      primaryText: 'text-slate-900',
+      secondaryText: 'text-slate-500',
+      labelText: 'text-slate-400',
+      border: 'border-slate-100',
+      divide: 'divide-slate-50',
+      badge: 'bg-emerald-50/50 border-emerald-100/50 text-emerald-800',
+      badgeBorder: 'border-emerald-100/40',
+      badgeTotal: 'text-[#3C6B4D]',
+      fallbackLogo: 'bg-slate-50 border-slate-300 text-slate-400',
+      highlightTotal: 'text-[#3C6B4D]'
+    },
+    midnight: {
+      card: 'bg-slate-950 border-slate-800 text-slate-350 font-mono',
+      accentText: 'text-amber-500',
+      primaryText: 'text-white',
+      secondaryText: 'text-slate-400',
+      labelText: 'text-slate-500',
+      border: 'border-slate-900',
+      divide: 'divide-slate-900',
+      badge: 'bg-amber-950/20 border-amber-900/30 text-amber-400',
+      badgeBorder: 'border-amber-900/25',
+      badgeTotal: 'text-amber-400',
+      fallbackLogo: 'bg-slate-900 border-slate-805 text-amber-500',
+      highlightTotal: 'text-amber-500'
+    },
+    classic: {
+      card: 'bg-[#FAF6EE] border-amber-900/10 text-stone-800 font-serif',
+      accentText: 'text-indigo-900',
+      primaryText: 'text-stone-900',
+      secondaryText: 'text-stone-600',
+      labelText: 'text-stone-400 uppercase tracking-widest',
+      border: 'border-stone-200',
+      divide: 'divide-stone-200/60',
+      badge: 'bg-indigo-50/70 border-indigo-100/60 text-indigo-900 font-sans',
+      badgeBorder: 'border-indigo-100/40',
+      badgeTotal: 'text-indigo-900',
+      fallbackLogo: 'bg-stone-100 border-stone-300 text-stone-500',
+      highlightTotal: 'text-indigo-900 font-bold'
+    },
+    bold: {
+      card: 'bg-white border-2 border-black text-black font-sans font-medium',
+      accentText: 'text-rose-600',
+      primaryText: 'text-black font-extrabold',
+      secondaryText: 'text-neutral-700',
+      labelText: 'text-neutral-500 font-bold uppercase tracking-wider',
+      border: 'border-black border-t-2 border-b-2',
+      divide: 'divide-neutral-200',
+      badge: 'bg-rose-50 border-2 border-rose-600 text-rose-700 font-sans',
+      badgeBorder: 'border-rose-200',
+      badgeTotal: 'text-rose-700 font-bold',
+      fallbackLogo: 'bg-black text-white border-black',
+      highlightTotal: 'text-rose-600 font-black'
+    }
+  }[template];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
@@ -368,6 +428,27 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
             </div>
           </div>
 
+          {/* Design Template Customization */}
+          <div className="flex flex-col gap-2 border-t border-[#2A2D30]/65 pt-3.5">
+            <label className="text-[10px] text-slate-500 font-bold uppercase">Invoice Design Template</label>
+            <div className="grid grid-cols-4 gap-2">
+              {(['modern', 'midnight', 'classic', 'bold'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTemplate(t)}
+                  className={`py-1.5 px-1 rounded-xl text-[10px] font-bold border transition-all capitalize ${
+                    template === t
+                      ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/45'
+                      : 'bg-[#111213] text-slate-400 border-[#2A2D30] hover:text-slate-200'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Notes Customization */}
           <div className="flex flex-col gap-1.5 border-t border-[#2A2D30]/65 pt-3.5">
             <label className="text-[10px] text-slate-500 font-bold uppercase">Invoice Notes & Terms</label>
@@ -396,72 +477,72 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
           </div>
 
           {/* Styled Document Template */}
-          <div className="flex-1 bg-white p-6 md:p-8 rounded-2xl border border-slate-200 overflow-y-auto leading-relaxed text-xs text-slate-800 shadow-inner">
-            <div className="flex flex-col gap-6 font-sans">
+          <div className={`flex-1 p-6 md:p-8 rounded-2xl border overflow-y-auto leading-relaxed text-xs shadow-inner transition-all duration-300 ${theme.card}`}>
+            <div className="flex flex-col gap-6">
               
               {/* Top Banner Row */}
-              <div className="flex justify-between items-start border-b border-slate-100 pb-5">
+              <div className={`flex justify-between items-start border-b pb-5 ${theme.border}`}>
                 <div className="flex items-center gap-3">
                   {logoUrl ? (
                     <img src={logoUrl} alt="Logo" className="w-10 h-10 rounded-xl object-contain overflow-hidden shadow border border-slate-200 bg-white" />
                   ) : (
-                    <div className="w-10 h-10 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 bg-slate-50 font-bold text-lg select-none">
+                    <div className={`w-10 h-10 rounded-xl border border-dashed flex items-center justify-center font-bold text-lg select-none ${theme.fallbackLogo}`}>
                       {company ? company.charAt(0).toUpperCase() : 'I'}
                     </div>
                   )}
                   <div className="text-left">
-                    <span className="font-extrabold text-base text-slate-900 block">{company}</span>
-                    <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">{companyEmail}</span>
+                    <span className={`font-extrabold text-base block ${theme.primaryText}`}>{company}</span>
+                    <span className={`text-[10px] font-mono mt-0.5 block ${theme.secondaryText}`}>{companyEmail}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-black text-[#3C6B4D] tracking-widest block uppercase">INVOICE</span>
-                  <span className="font-mono font-bold text-slate-500 mt-1 block">{invoiceId}</span>
+                  <span className={`text-xs font-black tracking-widest block uppercase ${theme.accentText}`}>INVOICE</span>
+                  <span className={`font-mono font-bold mt-1 block ${theme.secondaryText}`}>{invoiceId}</span>
                 </div>
               </div>
 
               {/* Addresses Grid */}
-              <div className="grid grid-cols-2 gap-4 text-left border-b border-slate-100 pb-5">
+              <div className={`grid grid-cols-2 gap-4 text-left border-b pb-5 ${theme.border}`}>
                 <div className="space-y-1">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">From</span>
-                  <span className="font-semibold text-slate-800 block">{company}</span>
-                  <span className="text-slate-500 text-[10px] block leading-tight">{companyAddress}</span>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider block ${theme.labelText}`}>From</span>
+                  <span className={`font-semibold block ${theme.primaryText}`}>{company}</span>
+                  <span className={`text-[10px] block leading-tight ${theme.secondaryText}`}>{companyAddress}</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Bill To</span>
-                  <span className="font-semibold text-slate-800 block">{client}</span>
-                  <span className="text-slate-500 text-[10px] block leading-tight">{clientAddress}</span>
-                  <span className="text-slate-400 text-[9px] font-mono block mt-1">{clientEmail}</span>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider block ${theme.labelText}`}>Bill To</span>
+                  <span className={`font-semibold block ${theme.primaryText}`}>{client}</span>
+                  <span className={`text-[10px] block leading-tight ${theme.secondaryText}`}>{clientAddress}</span>
+                  <span className={`text-[9px] font-mono block mt-1 ${theme.labelText}`}>{clientEmail}</span>
                 </div>
               </div>
 
               {/* Dates Row */}
-              <div className="grid grid-cols-2 gap-4 text-left border-b border-slate-100 pb-4 text-[10px] font-mono">
+              <div className={`grid grid-cols-2 gap-4 text-left border-b pb-4 text-[10px] font-mono ${theme.border}`}>
                 <div>
-                  <span className="text-slate-400">Date of Issue:</span>
-                  <span className="text-slate-700 font-bold ml-1.5">{date}</span>
+                  <span className={theme.labelText}>Date of Issue:</span>
+                  <span className={`font-bold ml-1.5 ${theme.primaryText}`}>{date}</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-slate-400">Due Date:</span>
+                  <span className={theme.labelText}>Due Date:</span>
                   <span className="text-rose-500 font-bold ml-1.5">{dueDate}</span>
                 </div>
               </div>
 
               {/* Table Header */}
               <div className="flex flex-col gap-2 pt-2 text-left">
-                <div className="grid grid-cols-12 font-bold text-[9px] uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2">
+                <div className={`grid grid-cols-12 font-bold text-[9px] uppercase tracking-wider border-b pb-2 ${theme.labelText} ${theme.border}`}>
                   <div className="col-span-7">Description</div>
                   <div className="col-span-2 text-center">Qty</div>
                   <div className="col-span-3 text-right">Amount</div>
                 </div>
 
                 {/* Table Rows */}
-                <div className="divide-y divide-slate-50">
+                <div className={`divide-y ${theme.divide}`}>
                   {items.map((item, idx) => (
                     <div key={item.id} className="grid grid-cols-12 py-2.5 items-center text-[10px]">
-                      <div className="col-span-7 font-medium text-slate-700 truncate">{idx + 1}. {item.desc}</div>
-                      <div className="col-span-2 text-center font-mono text-slate-500">{item.qty}</div>
-                      <div className="col-span-3 text-right font-mono text-slate-700">
+                      <div className={`col-span-7 font-medium truncate ${theme.secondaryText}`}>{idx + 1}. {item.desc}</div>
+                      <div className={`col-span-2 text-center font-mono ${theme.secondaryText}`}>{item.qty}</div>
+                      <div className={`col-span-3 text-right font-mono ${theme.primaryText}`}>
                         {baseCurrency.symbol}{(item.qty * item.price).toFixed(2)}
                       </div>
                     </div>
@@ -470,26 +551,26 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
               </div>
 
               {/* Summary Calculation Block */}
-              <div className="border-t border-slate-100 pt-4 flex flex-col gap-2 font-mono text-[10px] text-slate-650">
+              <div className={`border-t pt-4 flex flex-col gap-2 font-mono text-[10px] ${theme.border} ${theme.secondaryText}`}>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Subtotal:</span>
+                  <span className={theme.labelText}>Subtotal:</span>
                   <span>{baseCurrency.symbol}{subtotal.toFixed(2)}</span>
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Tax VAT ({taxRate}%):</span>
+                  <span className={theme.labelText}>Tax VAT ({taxRate}%):</span>
                   <span>{baseCurrency.symbol}{taxAmount.toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between border-t border-slate-100 pt-2.5 font-bold text-slate-900 text-xs font-sans">
+                <div className={`flex justify-between border-t pt-2.5 font-bold text-xs font-sans ${theme.border} ${theme.primaryText}`}>
                   <span>Grand Total ({baseCurrencyCode}):</span>
-                  <span className="text-[#3C6B4D] font-mono">{baseCurrency.symbol}{grandTotal.toFixed(2)}</span>
+                  <span className={`font-mono ${theme.highlightTotal}`}>{baseCurrency.symbol}{grandTotal.toFixed(2)}</span>
                 </div>
 
                 {/* FX Converted Output Highlight */}
                 {enableFX && (
-                  <div className="bg-emerald-50/50 border border-emerald-100/50 rounded-xl p-3.5 mt-2 flex flex-col gap-1.5 text-left font-sans text-[10px] text-slate-800 animate-fadeIn">
-                    <div className="flex items-center justify-between pb-1 border-b border-emerald-100/40 text-emerald-800 font-bold uppercase tracking-wider text-[9px]">
+                  <div className={`border rounded-xl p-3.5 mt-2 flex flex-col gap-1.5 text-left font-sans text-[10px] animate-fadeIn ${theme.badge}`}>
+                    <div className={`flex items-center justify-between pb-1 border-b font-bold uppercase tracking-wider text-[9px] ${theme.badgeBorder} ${theme.badgeTotal}`}>
                       <span className="flex items-center gap-1">
                         <DollarSign size={10} />
                         <span>FX Conversion ({targetCurrencyCode})</span>
@@ -497,14 +578,14 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
                       <span>1 {baseCurrencyCode} = {exchangeRate} {targetCurrencyCode}</span>
                     </div>
                     <div className="flex justify-between font-mono">
-                      <span className="text-slate-400">Subtotal:</span>
+                      <span className={theme.labelText}>Subtotal:</span>
                       <span>{targetCurrency.symbol}{convSubtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between font-mono">
-                      <span className="text-slate-400">Tax Amount:</span>
+                      <span className={theme.labelText}>Tax Amount:</span>
                       <span>{targetCurrency.symbol}{convTaxAmount.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between font-bold text-emerald-800 border-t border-emerald-100/40 pt-1.5 text-xs">
+                    <div className={`flex justify-between font-bold border-t pt-1.5 text-xs ${theme.badgeBorder} ${theme.badgeTotal}`}>
                       <span>Total Due ({targetCurrencyCode}):</span>
                       <span className="font-mono">{targetCurrency.symbol}{convGrandTotal.toFixed(2)}</span>
                     </div>
@@ -514,9 +595,9 @@ GRAND TOTAL (${targetCurrencyCode}): ${targetCurrency.symbol}${convGrandTotal.to
 
               {/* Notes display */}
               {notes && (
-                <div className="border-t border-slate-100 pt-4 text-left">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase block tracking-wider mb-1">Notes / Terms</span>
-                  <p className="text-slate-500 text-[10px] leading-snug whitespace-pre-wrap">{notes}</p>
+                <div className={`border-t pt-4 text-left ${theme.border}`}>
+                  <span className={`text-[9px] font-bold uppercase block tracking-wider mb-1 ${theme.labelText}`}>Notes / Terms</span>
+                  <p className={`text-[10px] leading-snug whitespace-pre-wrap ${theme.secondaryText}`}>{notes}</p>
                 </div>
               )}
             </div>
