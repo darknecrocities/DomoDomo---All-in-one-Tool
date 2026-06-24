@@ -265,7 +265,7 @@ export const VideoFaceBlurTool = () => {
         // 1. Create shape mask clipping (perfectly circular or rect)
         ctx.beginPath();
         if (z.shape === 'circle') {
-          ctx.arc(zX + zW / 2, zY + zH / 2, Math.min(zW, zH) / 2, 0, 2 * Math.PI);
+          ctx.ellipse(zX + zW / 2, zY + zH / 2, zW / 2, zH / 2, 0, 0, 2 * Math.PI);
         } else {
           ctx.rect(zX, zY, zW, zH);
         }
@@ -307,7 +307,7 @@ export const VideoFaceBlurTool = () => {
           
           ctx.beginPath();
           if (z.shape === 'circle') {
-            ctx.arc(zX + zW / 2, zY + zH / 2, Math.min(zW, zH) / 2, 0, 2 * Math.PI);
+            ctx.ellipse(zX + zW / 2, zY + zH / 2, zW / 2, zH / 2, 0, 0, 2 * Math.PI);
           } else {
             ctx.rect(zX, zY, zW, zH);
           }
@@ -564,7 +564,7 @@ export const VideoFaceBlurTool = () => {
           ctx.save();
           ctx.beginPath();
           if (z.shape === 'circle') {
-            ctx.arc(zX + zW / 2, zY + zH / 2, Math.min(zW, zH) / 2, 0, 2 * Math.PI);
+            ctx.ellipse(zX + zW / 2, zY + zH / 2, zW / 2, zH / 2, 0, 0, 2 * Math.PI);
           } else {
             ctx.rect(zX, zY, zW, zH);
           }
@@ -783,7 +783,7 @@ export const VideoFaceBlurTool = () => {
                       <input
                         type="range"
                         min="0.05"
-                        max="0.6"
+                        max="0.85"
                         step="0.01"
                         value={selectedZone.w}
                         onChange={(e) => handleUpdateZone(selectedZone.id, 'w', parseFloat(e.target.value))}
@@ -795,7 +795,7 @@ export const VideoFaceBlurTool = () => {
                       <input
                         type="range"
                         min="0.05"
-                        max="0.6"
+                        max="0.85"
                         step="0.01"
                         value={selectedZone.h}
                         onChange={(e) => handleUpdateZone(selectedZone.id, 'h', parseFloat(e.target.value))}
