@@ -284,6 +284,21 @@ export const VideoFaceBlurTool = () => {
         });
       }
 
+      // Create a single full-frame downscaled blurred canvas to avoid local bounding box boundaries or artifacts
+      let blurCanvas: HTMLCanvasElement | null = null;
+      const scale = 0.2;
+      if (activeZones.length > 0 && blurType === 'blur') {
+        blurCanvas = document.createElement('canvas');
+        blurCanvas.width = Math.max(1, c.width * scale);
+        blurCanvas.height = Math.max(1, c.height * scale);
+        const blurCtx = blurCanvas.getContext('2d')!;
+        blurCtx.drawImage(c, 0, 0, blurCanvas.width, blurCanvas.height);
+        
+        // Apply the filter to the entire downscaled canvas
+        blurCtx.filter = `blur(${Math.max(1, blurIntensity * scale)}px)`;
+        blurCtx.drawImage(blurCanvas, 0, 0);
+      }
+
       // Apply blur zones
       activeZones.forEach(z => {
         const zX = (z.x - z.w / 2) * c.width;
@@ -293,7 +308,7 @@ export const VideoFaceBlurTool = () => {
 
         ctx.save();
 
-        // 1. Create shape mask clipping
+        // 1. Create shape mask clipping (perfectly circular, no rect outline)
         ctx.beginPath();
         if (z.shape === 'circle') {
           ctx.arc(zX + zW / 2, zY + zH / 2, Math.min(zW, zH) / 2, 0, 2 * Math.PI);
@@ -318,22 +333,13 @@ export const VideoFaceBlurTool = () => {
           tempCtx.drawImage(c, zX, zY, zW, zH, 0, 0, tempCanvas.width, tempCanvas.height);
           ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, zX, zY, zW, zH);
           ctx.imageSmoothingEnabled = true;
-        } else {
-          // Standard Canvas Gaussian Blur - Optimized to only blur the bounding box region using an offscreen canvas
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = Math.max(1, zW);
-          tempCanvas.height = Math.max(1, zH);
-          const tempCtx = tempCanvas.getContext('2d')!;
-          
-          // Draw just the sub-region from the main canvas
-          tempCtx.drawImage(c, zX, zY, zW, zH, 0, 0, zW, zH);
-          
-          // Blur just this small temp canvas
-          tempCtx.filter = `blur(${z.intensity}px)`;
-          tempCtx.drawImage(tempCanvas, 0, 0);
-          
-          // Draw the blurred sub-region back
-          ctx.drawImage(tempCanvas, zX, zY, zW, zH);
+        } else if (blurCanvas) {
+          // Draw the blurred region from the blurred full frame (flawless, borderless result)
+          ctx.drawImage(
+            blurCanvas,
+            zX * scale, zY * scale, zW * scale, zH * scale,
+            zX, zY, zW, zH
+          );
         }
 
         ctx.restore();
