@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee } from 'lucide-react';
 import { Logo } from './Logo';
 
 
@@ -88,7 +88,7 @@ export const Shell = () => {
           const remoteData = await remoteRes.json();
           const remoteSha = remoteData.sha;
           const remoteShaShort = remoteSha ? remoteSha.substring(0, 7) : '';
-          
+
           // 4. Compare remote and local commit SHAs
           if (localSha && remoteSha && !localSha.startsWith(remoteSha) && !remoteSha.startsWith(localSha)) {
             setSimulatedCommit({
@@ -188,109 +188,95 @@ export const Shell = () => {
       {/* Top Navbar */}
       <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50 px-4 sm:px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="hover:opacity-95 transition-opacity">
+          <Link to="/" className="hover:opacity-95 transition-opacity shrink-0">
             <Logo />
           </Link>
 
-          <div className="flex items-center gap-4">
-            {/* Desktop nav links */}
-            <nav className="hidden md:flex items-center gap-4 text-xs font-bold">
-              <NavLink
-                to="/"
-                end
-                className={({ isActive }) =>
-                  `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                  }`
-                }
-              >
-                Tools
-              </NavLink>
-              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                  }`
-                }
-              >
-                About DomoDomo
-              </NavLink>
-              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
-              <NavLink
-                to="/library-api"
-                className={({ isActive }) =>
-                  `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                  }`
-                }
-              >
-                Library API
-              </NavLink>
-              <span className="text-[#2A2D30] text-[10px] select-none">|</span>
-              <NavLink
-                to="/docs"
-                className={({ isActive }) =>
-                  `tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                  }`
-                }
-              >
-                Documentation
-              </NavLink>
-            </nav>
-
-            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
-
-            {/* Status indicator */}
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-[11px] font-bold uppercase tracking-wider">
-              <ShieldAlert size={13} className="shrink-0" />
-              <span>Sandbox Local</span>
-            </div>
-
-            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-              className="flex items-center justify-center p-2 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all"
-              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          {/* Desktop nav links */}
+          <nav className="hidden md:flex flex-1 justify-center items-center gap-6 text-xs font-bold mx-4">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                }`
+              }
             >
-              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
-            </button>
+              Tools
+            </NavLink>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                }`
+              }
+            >
+              About
+            </NavLink>
+            <NavLink
+              to="/library-api"
+              className={({ isActive }) =>
+                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                }`
+              }
+            >
+              API Library
+            </NavLink>
+            <NavLink
+              to="/docs"
+              className={({ isActive }) =>
+                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                }`
+              }
+            >
+              Docs
+            </NavLink>
+          </nav>
 
-            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
-
+          <div className="flex items-center gap-2">
             <a
               href="https://forms.gle/ahQXtFoietABJZpg8"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#E29E2D]/10 border border-[#E29E2D]/35 hover:border-[#E29E2D]/60 hover:bg-[#E29E2D]/25 text-[#E29E2D] hover:text-[#ECEBE9] transition-all text-[11px] font-bold"
+              className="hidden md:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#E29E2D]/10 border border-[#E29E2D]/35 hover:border-[#E29E2D]/60 hover:bg-[#E29E2D]/25 text-[#E29E2D] hover:text-[#ECEBE9] transition-all text-[11px] font-bold"
               title="Submit Feedback or Report Issue"
             >
               <MessageSquare size={13} className="shrink-0" />
               <span>Feedback Report</span>
             </a>
 
-            <div className="hidden md:block h-4 w-[1px] bg-[#2A2D30]" />
+            <div 
+              className="hidden sm:flex items-center justify-center h-8 w-8 rounded-lg bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#3C6B4D] cursor-help transition-colors"
+              title="Sandbox Local Environment"
+            >
+              <ShieldAlert size={14} />
+            </div>
 
             <a
               href="https://www.facebook.com/profile.php?id=61590872807465"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 hover:border-[#3C6B4D]/60 hover:bg-[#3C6B4D]/25 text-[#3C6B4D] hover:text-[#ECEBE9] transition-all text-[11px] font-bold"
+              className="hidden md:flex items-center justify-center h-8 w-8 rounded-lg bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 hover:border-[#3C6B4D]/60 hover:bg-[#3C6B4D]/25 text-[#3C6B4D] hover:text-[#ECEBE9] transition-all"
               title="Follow Facebook Page"
             >
-              <FacebookIcon size={13} />
-              <span>Follow</span>
+              <FacebookIcon size={14} />
+            </a>
+
+            <a
+              href="https://ko-fi.com/domodomoo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center justify-center h-8 w-8 rounded-lg bg-[#FF5E5B]/10 border border-[#FF5E5B]/35 hover:border-[#FF5E5B]/60 hover:bg-[#FF5E5B]/25 text-[#FF5E5B] hover:text-[#ECEBE9] transition-all"
+              title="Buy me Ko-fi"
+            >
+              <Coffee size={14} />
             </a>
 
             <a
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
+              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
               title="GitHub Repository"
             >
               <GithubIcon size={14} />
@@ -298,6 +284,15 @@ export const Shell = () => {
               <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
               <span className="text-[10px] font-mono leading-none">{stars !== null ? stars : '—'}</span>
             </a>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
+              className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all"
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            >
+              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+            </button>
 
             {/* Hamburger button - mobile only */}
             <button
@@ -319,8 +314,7 @@ export const Shell = () => {
                 end
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
@@ -330,19 +324,18 @@ export const Shell = () => {
                 to="/about"
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
-                About DomoDomo
+                About
               </NavLink>
               <Link
                 to="/docs"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
               >
-                Documentation
+                Docs
               </Link>
               <a
                 href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
@@ -367,6 +360,15 @@ export const Shell = () => {
               >
                 <FacebookIcon size={16} />
                 <span>Follow Facebook Page</span>
+              </a>
+              <a
+                href="https://ko-fi.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#FF5E5B] hover:text-[#ECEBE9] hover:bg-[#FF5E5B]/10 transition-colors flex items-center gap-2"
+              >
+                <Coffee size={16} />
+                <span>Buy me Ko-fi</span>
               </a>
               <a
                 href="https://forms.gle/ahQXtFoietABJZpg8"
@@ -432,7 +434,7 @@ export const Shell = () => {
                 <p className="text-[10px] text-[#72706C]">Pulling latest code changes and building assets offline...</p>
               </div>
             </div>
-            
+
             <div className="bg-[#0A0B0C] border border-[#2A2D30] rounded-2xl p-4 h-64 overflow-y-auto font-mono text-[11px] text-[#A3A09B] space-y-2 text-left">
               {updaterLogs.length === 0 ? (
                 <span className="text-[#72706C] italic animate-pulse">Initializing Git Update automation...</span>
@@ -444,7 +446,7 @@ export const Shell = () => {
                 ))
               )}
             </div>
-            
+
             <div className="flex justify-between items-center text-[10px] text-[#72706C]">
               <span>Step-by-step Git / Package deployment</span>
               <span className="animate-pulse text-emerald-400 font-bold">Deploying build...</span>
@@ -462,11 +464,11 @@ export const Shell = () => {
       <div className="max-w-7xl w-full mx-auto px-6 mb-4 flex justify-center">
         <div className="w-full max-w-[728px] overflow-hidden opacity-75 hover:opacity-100 transition-opacity">
           <ins className="adsbygoogle"
-               style={{ display: 'block' }}
-               data-ad-client="ca-pub-7800058547773500"
-               data-ad-slot="3689718163"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
+            style={{ display: 'block' }}
+            data-ad-client="ca-pub-7800058547773500"
+            data-ad-slot="3689718163"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
         </div>
       </div>
 
