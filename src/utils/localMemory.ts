@@ -55,25 +55,11 @@ export const localMemory = {
   },
 
   async saveToWorkspace(events: MemoryEvent[]) {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    if (!isLocalhost) return;
-
     try {
-      await fetch('http://localhost:3001/message', {
+      await fetch('/api/memory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/call',
-          params: {
-            name: 'write_file',
-            arguments: {
-              path: 'domodomo_knowledge.json',
-              content: JSON.stringify(events, null, 2)
-            }
-          },
-          id: 99
-        })
+        body: JSON.stringify({ events })
       });
     } catch (e) {
       console.warn('Failed to back up local memory to workspace file:', e);
@@ -81,34 +67,13 @@ export const localMemory = {
   },
 
   async loadFromWorkspace() {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    if (!isLocalhost) return;
-
     try {
-      const res = await fetch('http://localhost:3001/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/call',
-          params: {
-            name: 'read_file',
-            arguments: {
-              path: 'domodomo_knowledge.json'
-            }
-          },
-          id: 98
-        })
-      });
+      const res = await fetch('/api/memory');
       if (res.ok) {
         const data = await res.json();
-        if (!data.result?.isError && data.result?.content?.[0]?.text) {
-          const text = data.result.content[0].text;
-          const events = JSON.parse(text);
-          if (Array.isArray(events)) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-            window.dispatchEvent(new Event('domodomo_memory_updated'));
-          }
+        if (data.events && Array.isArray(data.events)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.events));
+          window.dispatchEvent(new Event('domodomo_memory_updated'));
         }
       }
     } catch (e) {
