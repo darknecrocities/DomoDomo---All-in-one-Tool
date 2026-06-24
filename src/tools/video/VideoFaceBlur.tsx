@@ -46,6 +46,11 @@ export const VideoFaceBlurTool = () => {
   const animationFrameRef = useRef<number>(0);
   const dragStartRef = useRef<{ x: number; y: number; zoneX: number; zoneY: number } | null>(null);
 
+  // Decoupled caching for smooth, high-fps face tracking
+  const trackedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
+  const animatedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
+  const detectFrameThrottleRef = useRef<number>(0);
+
   // Dynamic tracking.js script injection for local facial recognition
   useEffect(() => {
     const script1 = document.createElement('script');
@@ -219,13 +224,41 @@ export const VideoFaceBlurTool = () => {
       // Draw original frame
       ctx.drawImage(v, 0, 0, c.width, c.height);
 
-      // Fetch auto detection targets if enabled
-      const detectedFaces = autoDetect ? detectFacesOnCanvas(c) : [];
+      // Decouple face detection throttle (run every 12 frames -> approx 2-3 times per second)
+      if (autoDetect) {
+        detectFrameThrottleRef.current++;
+        if (detectFrameThrottleRef.current >= 12 || trackedFacesRef.current.length === 0) {
+          detectFrameThrottleRef.current = 0;
+          const detected = detectFacesOnCanvas(c);
+          if (detected.length > 0) {
+            trackedFacesRef.current = detected;
+          }
+        }
+      } else {
+        trackedFacesRef.current = [];
+      }
 
-      // Compile temporary active list (User manual zones + detected face zones if toggled)
+      // Smoothly animate/Lerp the tracked face positions for high-fps visual ease
+      const targetFaces = trackedFacesRef.current;
+      if (animatedFacesRef.current.length !== targetFaces.length) {
+        animatedFacesRef.current = targetFaces.map(f => ({ ...f }));
+      } else {
+        animatedFacesRef.current = animatedFacesRef.current.map((f, idx) => {
+          const target = targetFaces[idx];
+          if (!target) return f;
+          return {
+            x: f.x + (target.x - f.x) * 0.15, // Smooth interpolation ease speed
+            y: f.y + (target.y - f.y) * 0.15,
+            w: f.w + (target.w - f.w) * 0.15,
+            h: f.h + (target.h - f.h) * 0.15
+          };
+        });
+      }
+
+      // Compile temporary active list (User manual zones + animated auto-detected face zones if toggled)
       let activeZones = [...zones];
-      if (autoDetect && detectedFaces.length > 0) {
-        detectedFaces.forEach((face, idx) => {
+      if (autoDetect && animatedFacesRef.current.length > 0) {
+        animatedFacesRef.current.forEach((face, idx) => {
           activeZones.push({
             id: `auto-face-${idx}`,
             x: face.x,
@@ -383,17 +416,20 @@ export const VideoFaceBlurTool = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!dragStartRef.current || !selectedZoneId) return;
+    const dragStart = dragStartRef.current;
+    if (!dragStart || !selectedZoneId) return;
     const pos = getMousePos(e);
-    const dx = pos.x - dragStartRef.current.x;
-    const dy = pos.y - dragStartRef.current.y;
+    const dx = pos.x - dragStart.x;
+    const dy = pos.y - dragStart.y;
+    const targetX = dragStart.zoneX + dx;
+    const targetY = dragStart.zoneY + dy;
 
     setZones(prev => prev.map(z => {
       if (z.id === selectedZoneId) {
         return {
           ...z,
-          x: Math.max(z.w / 2, Math.min(1 - z.w / 2, dragStartRef.current!.zoneX + dx)),
-          y: Math.max(z.h / 2, Math.min(1 - z.h / 2, dragStartRef.current!.zoneY + dy))
+          x: Math.max(z.w / 2, Math.min(1 - z.w / 2, targetX)),
+          y: Math.max(z.h / 2, Math.min(1 - z.h / 2, targetY))
         };
       }
       return z;
@@ -474,6 +510,9 @@ export const VideoFaceBlurTool = () => {
         if (e.data.size > 0) chunks.push(e.data);
       };
 
+      let exportFrameCount = 0;
+      let cachedExportFaces: any[] = [];
+
       let animationId: number;
       const renderLoop = () => {
         if (v.ended) {
@@ -483,11 +522,20 @@ export const VideoFaceBlurTool = () => {
 
         ctx.drawImage(v, 0, 0, renderCanvas.width, renderCanvas.height);
 
-        // Apply real-time face detection or users zones
-        const detectedFaces = autoDetect ? detectFacesOnCanvas(renderCanvas) : [];
+        // Run face detection on export at a moderate step to prevent export slowdown
+        if (autoDetect) {
+          exportFrameCount++;
+          if (exportFrameCount >= 8 || cachedExportFaces.length === 0) {
+            exportFrameCount = 0;
+            cachedExportFaces = detectFacesOnCanvas(renderCanvas);
+          }
+        } else {
+          cachedExportFaces = [];
+        }
+
         let activeZones = [...zones];
-        if (autoDetect && detectedFaces.length > 0) {
-          detectedFaces.forEach((face, idx) => {
+        if (autoDetect && cachedExportFaces.length > 0) {
+          cachedExportFaces.forEach((face, idx) => {
             activeZones.push({
               id: `auto-face-${idx}`,
               x: face.x,
@@ -781,7 +829,7 @@ export const VideoFaceBlurTool = () => {
           </div>
 
           {/* Hidden HTML5 Video node */}
-          {file && (
+          {file && videoUrl && (
             <video
               ref={videoRef}
               src={videoUrl}
