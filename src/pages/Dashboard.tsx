@@ -100,6 +100,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'crop-video', name: 'Crop Video', category: 'video', description: 'Crop frames to square or wide dimensions.', icon: 'Image', status: 'functional' },
   { id: 'gif-maker', name: 'GIF Maker', category: 'video', description: 'Export video loops into animated GIF files.', icon: 'Image', status: 'functional' },
   { id: 'thumbnail-gen', name: 'Thumbnail Generator', category: 'video', description: 'Capture custom frames from videos as JPEG thumbnails.', icon: 'Image', status: 'functional' },
+  { id: 'face-blur', name: 'Face Blur', category: 'video', description: 'Locally detect and blur human face coordinates in video frames.', icon: 'Shield', status: 'functional' },
 
   // Audio (10)
   { id: 'audio-cutter', name: 'Audio Cutter', category: 'audio', description: 'Trim start and end offsets of audio tracks.', icon: 'FileText', status: 'functional' },

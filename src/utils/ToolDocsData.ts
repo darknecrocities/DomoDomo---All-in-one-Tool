@@ -584,6 +584,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Extracts still frames from videos. Image format customizer and timeline sliders.',
         howItWorks: '1. Binds video to browser players. 2. Seeks to target timelines coordinates. 3. Draws frames to canvas. 4. Saves images.',
         technicalSpecs: 'Grabs screenshots at frame accuracy.'
+      },
+      {
+        id: 'face-blur',
+        name: 'Face Blur',
+        engine: 'Canvas2D + Skin Tone Detection Algorithm',
+        details: 'Downsamples video frames to run a lightweight skin-tone color contour analysis in-browser, finding face regions and applying real-time filters (Gaussian Blur, Pixelation, or Solid Blackout) onto a canvas recording stream.',
+        functionality: 'Allows users to hide faces in video files locally. Features automatic skin-tone face detection, multiple manual customizable blur zones with draggable coordinates, shape controls (Circle/Rectangle), blur types (Blur/Pixelate/Solid), and WebM rendering exports.',
+        howItWorks: '1. Reads uploaded video. 2. Plays it through a hidden HTML5 video element mapped to a rendering canvas. 3. Identifies skin-color coordinate areas using HSV/YCbCr color boundary filters and overlays manual user-defined target zones. 4. Uses MediaRecorder on canvas captures to compile the processed streams into WebM downloads.',
+        technicalSpecs: 'Fully local processing. Bitrates up to 8 Mbps. Does not upload files to remote servers.'
       }
     ]
   },
