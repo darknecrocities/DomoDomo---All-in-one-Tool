@@ -76,14 +76,14 @@ export const Shell = () => {
 
       try {
         // 2. Fetch the local commit SHA and active branch from the Vite dev server API
-        const shaRes = await fetch('/api/git-sha');
+        const shaRes = await fetch(`/api/git-sha?t=${Date.now()}`);
         if (shaRes.ok) {
           const shaData = await shaRes.json();
           const localSha = shaData.sha;
           const branch = shaData.branch || 'main';
 
           // 3. Fetch the latest commit for that specific branch from the remote GitHub repository
-          const remoteRes = await fetch(`https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/${branch}`);
+          const remoteRes = await fetch(`https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/${branch}?t=${Date.now()}`);
           if (!remoteRes.ok) return;
           const remoteData = await remoteRes.json();
           const remoteSha = remoteData.sha;
