@@ -37,6 +37,7 @@ export const VideoFaceBlurTool = () => {
   // Decoupled caching for smooth, high-fps face tracking
   const trackedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
   const animatedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
+  const framesSinceLastDetectRef = useRef<number>(0);
 
   // Dynamic tracking.js script injection for local facial recognition
   useEffect(() => {
@@ -177,9 +178,9 @@ export const VideoFaceBlurTool = () => {
         imgData.data,
         scanW,
         scanH,
-        4.5, // initialScale (larger values make detection much faster)
+        2.0, // initialScale (lower value e.g. 2.0 is highly thorough and robust for medium/smaller faces)
         1.25, // scaleFactor
-        3, // stepSize (higher values scan fewer pixels, running faster)
+        2, // stepSize (smaller step size e.g. 2 scans more pixels, resulting in much higher tracking lock accuracy)
         0.1, // edgesDensity
         // @ts-ignore
         window.tracking.ViolaJones.classifiers.face
@@ -218,13 +219,21 @@ export const VideoFaceBlurTool = () => {
         const detected = detectFacesOnCanvas(c);
         if (detected.length > 0) {
           trackedFacesRef.current = detected;
+          framesSinceLastDetectRef.current = 0;
+        } else {
+          framesSinceLastDetectRef.current += 1;
+          // Clear tracked faces if no face is detected for 6 consecutive scans (approx 500ms)
+          if (framesSinceLastDetectRef.current > 6) {
+            trackedFacesRef.current = [];
+            animatedFacesRef.current = [];
+          }
         }
       } catch (e) {
         console.error(e);
       }
 
       if (active) {
-        setTimeout(runLoop, 100); // 100ms intervals (approx 10 scans per second) is perfect for smooth Lerping
+        setTimeout(runLoop, 80); // 80ms intervals (approx 12 scans per second) for highly reactive tracking
       }
     };
 
@@ -258,10 +267,10 @@ export const VideoFaceBlurTool = () => {
           const target = targetFaces[idx];
           if (!target) return f;
           return {
-            x: f.x + (target.x - f.x) * 0.2, // Smooth interpolation ease speed
-            y: f.y + (target.y - f.y) * 0.2,
-            w: f.w + (target.w - f.w) * 0.2,
-            h: f.h + (target.h - f.h) * 0.2
+            x: f.x + (target.x - f.x) * 0.35, // Faster interpolation ease speed for immediate locking
+            y: f.y + (target.y - f.y) * 0.35,
+            w: f.w + (target.w - f.w) * 0.35,
+            h: f.h + (target.h - f.h) * 0.35
           };
         });
       }
