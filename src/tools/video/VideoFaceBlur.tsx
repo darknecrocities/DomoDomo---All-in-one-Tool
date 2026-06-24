@@ -92,7 +92,7 @@ export const VideoFaceBlurTool = () => {
   };
 
   // Run real Viola-Jones face detection on the raw frame (capped dimension for max speed)
-  const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement): { x: number; y: number; w: number; h: number }[] => {
+  const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement, maxDim = 240): { x: number; y: number; w: number; h: number }[] => {
     // @ts-ignore
     if (!window.tracking || !window.tracking.ViolaJones || !window.tracking.ViolaJones.classifiers || !window.tracking.ViolaJones.classifiers.face) {
       return [];
@@ -103,8 +103,7 @@ export const VideoFaceBlurTool = () => {
       const srcH = 'videoHeight' in source ? source.videoHeight : source.height;
       if (srcW === 0 || srcH === 0) return [];
 
-      // Downsample to max 240px to ensure ultra-smooth 60fps tracking
-      const maxDim = 240;
+      // Downsample to maxDim to ensure ultra-smooth tracking
       let scale = 1;
       if (srcW > maxDim || srcH > maxDim) {
         scale = maxDim / Math.max(srcW, srcH);
@@ -125,9 +124,9 @@ export const VideoFaceBlurTool = () => {
         imgData.data,
         scanW,
         scanH,
-        2.0, // initialScale (lower value e.g. 2.0 is highly thorough and robust for medium/smaller faces)
+        2.2, // initialScale (larger value is much faster during export)
         1.25, // scaleFactor
-        2, // stepSize (smaller step size e.g. 2 scans more pixels, resulting in much higher tracking lock accuracy)
+        2, // stepSize
         0.1, // edgesDensity
         // @ts-ignore
         window.tracking.ViolaJones.classifiers.face
@@ -160,7 +159,7 @@ export const VideoFaceBlurTool = () => {
       }
 
       try {
-        const detected = detectFaces(v);
+        const detected = detectFaces(v, 240); // 240px detail for live preview
         if (detected.length > 0) {
           trackedFacesRef.current = detected;
           framesSinceLastDetectRef.current = 0;
@@ -485,6 +484,7 @@ export const VideoFaceBlurTool = () => {
 
       const stream = renderCanvas.captureStream(30);
 
+      // Try to capture audio from the video element
       try {
         audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
         const dest = audioCtx.createMediaStreamDestination();
@@ -543,9 +543,11 @@ export const VideoFaceBlurTool = () => {
         // Run face detection on export at a moderate step to prevent export slowdown
         if (autoDetect) {
           exportFrameCount++;
-          if (exportFrameCount >= 8 || cachedExportFaces.length === 0) {
+          // Scan every 12 frames (approx once per 400ms) for high speed during export
+          if (exportFrameCount >= 12 || cachedExportFaces.length === 0) {
             exportFrameCount = 0;
-            cachedExportFaces = detectFaces(renderCanvas);
+            // Downsample to max 140px for ultra-fast Viola-Jones scan during export
+            cachedExportFaces = detectFaces(renderCanvas, 140);
           }
         } else {
           cachedExportFaces = [];
@@ -628,6 +630,7 @@ export const VideoFaceBlurTool = () => {
       mr.onstop = () => {
         cancelAnimationFrame(animationId);
         v.pause();
+        v.playbackRate = 1.0; // Reset playback rate
         v.muted = true; // Mute again for preview cleanliness
         const blob = new Blob(chunks, { type: mimeType });
         const baseName = file.name.replace(/\.[^.]+$/, '');
@@ -639,8 +642,10 @@ export const VideoFaceBlurTool = () => {
         if (audioCtx) audioCtx.close();
       };
 
-      // Play the video first, and start recording only when playback actually begins
+      // Play the video at double-speed, and start recording only when playback actually begins
       v.currentTime = 0;
+      v.playbackRate = 2.0; // Double rendering speed to make the download fast
+      
       const startRecording = () => {
         mr.start(200);
         renderLoop();
@@ -656,6 +661,7 @@ export const VideoFaceBlurTool = () => {
 
     } catch (err) {
       console.error("Export failure:", err);
+      v.playbackRate = 1.0;
       v.muted = true;
       setRendering(false);
       if (audioCtx) audioCtx.close();
