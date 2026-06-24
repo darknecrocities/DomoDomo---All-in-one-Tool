@@ -46,6 +46,28 @@ export const VideoFaceBlurTool = () => {
   const animationFrameRef = useRef<number>(0);
   const dragStartRef = useRef<{ x: number; y: number; zoneX: number; zoneY: number } | null>(null);
 
+  // Dynamic tracking.js script injection for local facial recognition
+  useEffect(() => {
+    const script1 = document.createElement('script');
+    script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js';
+    script1.async = true;
+
+    const script2 = document.createElement('script');
+    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js';
+    script2.async = true;
+
+    script1.onload = () => {
+      document.body.appendChild(script2);
+    };
+
+    document.body.appendChild(script1);
+
+    return () => {
+      if (document.body.contains(script1)) document.body.removeChild(script1);
+      if (document.body.contains(script2)) document.body.removeChild(script2);
+    };
+  }, []);
+
   // Load video file
   useEffect(() => {
     if (file) {
@@ -123,13 +145,65 @@ export const VideoFaceBlurTool = () => {
         // Average coordinates mapping back to full canvas size
         const avgX = (sumX / skinCount) / scanW;
         const avgY = (sumY / skinCount) / scanH;
-        return { x: avgX, y: avgY };
+        return { x: avgX, y: avgY, w: 0.16, h: 0.20 };
       }
     } catch (e) {
       console.error(e);
     }
     return null;
   }, [autoDetect]);
+
+  // Run real Viola-Jones face detection on a downsampled canvas
+  const detectFacesOnCanvas = useCallback((canvas: HTMLCanvasElement): { x: number; y: number; w: number; h: number }[] => {
+    // @ts-ignore
+    if (!window.tracking || !window.tracking.ViolaJones || !window.tracking.ViolaJones.classifiers || !window.tracking.ViolaJones.classifiers.face) {
+      // Fall back to skin-tone contour heuristics if tracking.js has not finished loading from CDN
+      const skinFace = runSkinToneDetection(canvas.getContext('2d')!);
+      return skinFace ? [skinFace] : [];
+    }
+
+    try {
+      // Downsample for fast execution (keeps framerate high)
+      const scale = 0.5;
+      const scanW = Math.round(canvas.width * scale);
+      const scanH = Math.round(canvas.height * scale);
+      
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = scanW;
+      tempCanvas.height = scanH;
+      const tempCtx = tempCanvas.getContext('2d')!;
+      tempCtx.drawImage(canvas, 0, 0, scanW, scanH);
+
+      const imgData = tempCtx.getImageData(0, 0, scanW, scanH);
+      
+      // @ts-ignore
+      const results = window.tracking.ViolaJones.detect(
+        imgData.data,
+        scanW,
+        scanH,
+        4, // initialScale
+        1.25, // scaleFactor
+        2, // stepSize
+        0.1, // edgesDensity
+        // @ts-ignore
+        window.tracking.ViolaJones.classifiers.face
+      );
+
+      if (results && results.length > 0) {
+        return results.map((r: any) => ({
+          x: (r.x + r.width / 2) / scanW, // Map to relative center coordinates
+          y: (r.y + r.height / 2) / scanH,
+          w: r.width / scanW,
+          h: r.height / scanH
+        }));
+      }
+    } catch (e) {
+      console.error('Viola-Jones detection error:', e);
+    }
+    // Fall back to skin-tone
+    const skinFace = runSkinToneDetection(canvas.getContext('2d')!);
+    return skinFace ? [skinFace] : [];
+  }, [autoDetect, runSkinToneDetection]);
 
   // Main canvas renderer
   const renderFrame = useCallback(() => {
@@ -145,22 +219,24 @@ export const VideoFaceBlurTool = () => {
       // Draw original frame
       ctx.drawImage(v, 0, 0, c.width, c.height);
 
-      // Fetch auto detection target if enabled
-      const detectedFace = runSkinToneDetection(ctx);
+      // Fetch auto detection targets if enabled
+      const detectedFaces = autoDetect ? detectFacesOnCanvas(c) : [];
 
-      // Compile temporary active list (User manual zones + detected face zone if toggled)
+      // Compile temporary active list (User manual zones + detected face zones if toggled)
       let activeZones = [...zones];
-      if (autoDetect && detectedFace) {
-        activeZones.push({
-          id: 'auto-face-id',
-          x: detectedFace.x,
-          y: detectedFace.y,
-          w: 0.16,
-          h: 0.20,
-          shape: 'circle',
-          type: 'blur',
-          intensity: 22,
-          name: '🔍 Auto Detected Face'
+      if (autoDetect && detectedFaces.length > 0) {
+        detectedFaces.forEach((face, idx) => {
+          activeZones.push({
+            id: `auto-face-${idx}`,
+            x: face.x,
+            y: face.y,
+            w: face.w * 1.25, // Add a bit of padding to cover the full face
+            h: face.h * 1.25,
+            shape: 'circle',
+            type: 'blur',
+            intensity: 22,
+            name: `🔍 Auto Face ${idx + 1}`
+          });
         });
       }
 
@@ -407,20 +483,22 @@ export const VideoFaceBlurTool = () => {
 
         ctx.drawImage(v, 0, 0, renderCanvas.width, renderCanvas.height);
 
-        // Apply skin tone auto detection or users zones
-        const detectedFace = runSkinToneDetection(ctx);
+        // Apply real-time face detection or users zones
+        const detectedFaces = autoDetect ? detectFacesOnCanvas(renderCanvas) : [];
         let activeZones = [...zones];
-        if (autoDetect && detectedFace) {
-          activeZones.push({
-            id: 'auto-face-id',
-            x: detectedFace.x,
-            y: detectedFace.y,
-            w: 0.16,
-            h: 0.20,
-            shape: 'circle',
-            type: 'blur',
-            intensity: 22,
-            name: 'Auto'
+        if (autoDetect && detectedFaces.length > 0) {
+          detectedFaces.forEach((face, idx) => {
+            activeZones.push({
+              id: `auto-face-${idx}`,
+              x: face.x,
+              y: face.y,
+              w: face.w * 1.25,
+              h: face.h * 1.25,
+              shape: 'circle',
+              type: 'blur',
+              intensity: 22,
+              name: `Auto ${idx + 1}`
+            });
           });
         }
 
