@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
-import { Upload, Trash2, Download, Film, Sliders, Play, Pause, Plus, Shield } from 'lucide-react';
+import { Upload, Download, Film, Sliders, Play, Pause, Shield } from 'lucide-react';
 
-interface BlurZone {
+interface TrackedZone {
   id: string;
   x: number; // 0 to 1 relative position
   y: number; // 0 to 1 relative position
-  w: number; // relative width (0.05 to 0.5)
-  h: number; // relative height (0.05 to 0.5)
+  w: number; // relative width
+  h: number; // relative height
   shape: 'circle' | 'rect';
   type: 'blur' | 'pixelate' | 'blackout';
-  intensity: number; // 1 to 50
+  intensity: number;
   name: string;
 }
 
@@ -22,21 +22,10 @@ export const VideoFaceBlurTool = () => {
   const [duration, setDuration] = useState(0);
   
   // Controls
-  const [zones, setZones] = useState<BlurZone[]>([
-    {
-      id: 'default-1',
-      x: 0.5,
-      y: 0.4,
-      w: 0.15,
-      h: 0.18,
-      shape: 'circle',
-      type: 'blur',
-      intensity: 20,
-      name: 'Blur Zone 1'
-    }
-  ]);
-  const [selectedZoneId, setSelectedZoneId] = useState<string>('default-1');
-  const [autoDetect, setAutoDetect] = useState(false);
+  const [autoDetect, setAutoDetect] = useState(true);
+  const [blurType, setBlurType] = useState<'blur' | 'pixelate' | 'blackout'>('blur');
+  const [blurIntensity, setBlurIntensity] = useState<number>(25);
+  const [faceCoverage, setFaceCoverage] = useState<number>(1.85); // Generous default coverage multiplier for the entire face/head
   const [rendering, setRendering] = useState(false);
   const [renderProgress, setRenderProgress] = useState(0);
   const [bitrate, setBitrate] = useState(4000000);
@@ -44,12 +33,10 @@ export const VideoFaceBlurTool = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
-  const dragStartRef = useRef<{ x: number; y: number; zoneX: number; zoneY: number } | null>(null);
 
   // Decoupled caching for smooth, high-fps face tracking
   const trackedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
   const animatedFacesRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
-  const detectFrameThrottleRef = useRef<number>(0);
 
   // Dynamic tracking.js script injection for local facial recognition
   useEffect(() => {
@@ -158,7 +145,7 @@ export const VideoFaceBlurTool = () => {
     return null;
   }, [autoDetect]);
 
-  // Run real Viola-Jones face detection on a downsampled canvas
+  // Run real Viola-Jones face detection on a downsampled canvas (capped dimension for max speed)
   const detectFacesOnCanvas = useCallback((canvas: HTMLCanvasElement): { x: number; y: number; w: number; h: number }[] => {
     // @ts-ignore
     if (!window.tracking || !window.tracking.ViolaJones || !window.tracking.ViolaJones.classifiers || !window.tracking.ViolaJones.classifiers.face) {
@@ -168,8 +155,12 @@ export const VideoFaceBlurTool = () => {
     }
 
     try {
-      // Downsample for fast execution (keeps framerate high)
-      const scale = 0.5;
+      // Downsample to max 240px to ensure ultra-smooth 60fps tracking
+      const maxDim = 240;
+      let scale = 1;
+      if (canvas.width > maxDim || canvas.height > maxDim) {
+        scale = maxDim / Math.max(canvas.width, canvas.height);
+      }
       const scanW = Math.round(canvas.width * scale);
       const scanH = Math.round(canvas.height * scale);
       
@@ -186,9 +177,9 @@ export const VideoFaceBlurTool = () => {
         imgData.data,
         scanW,
         scanH,
-        4, // initialScale
+        4.5, // initialScale (larger values make detection much faster)
         1.25, // scaleFactor
-        2, // stepSize
+        3, // stepSize (higher values scan fewer pixels, running faster)
         0.1, // edgesDensity
         // @ts-ignore
         window.tracking.ViolaJones.classifiers.face
@@ -210,6 +201,40 @@ export const VideoFaceBlurTool = () => {
     return skinFace ? [skinFace] : [];
   }, [autoDetect, runSkinToneDetection]);
 
+  // Run face detection asynchronously in the background loop to prevent render thread lagging
+  useEffect(() => {
+    if (!file || !autoDetect || rendering) return;
+
+    let active = true;
+    const runLoop = async () => {
+      const v = videoRef.current;
+      const c = canvasRef.current;
+      if (!v || !c || v.paused || v.ended) {
+        if (active) setTimeout(runLoop, 150);
+        return;
+      }
+
+      try {
+        const detected = detectFacesOnCanvas(c);
+        if (detected.length > 0) {
+          trackedFacesRef.current = detected;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (active) {
+        setTimeout(runLoop, 100); // 100ms intervals (approx 10 scans per second) is perfect for smooth Lerping
+      }
+    };
+
+    runLoop();
+
+    return () => {
+      active = false;
+    };
+  }, [file, autoDetect, rendering, detectFacesOnCanvas]);
+
   // Main canvas renderer
   const renderFrame = useCallback(() => {
     const v = videoRef.current;
@@ -224,20 +249,6 @@ export const VideoFaceBlurTool = () => {
       // Draw original frame
       ctx.drawImage(v, 0, 0, c.width, c.height);
 
-      // Decouple face detection throttle (run every 12 frames -> approx 2-3 times per second)
-      if (autoDetect) {
-        detectFrameThrottleRef.current++;
-        if (detectFrameThrottleRef.current >= 12 || trackedFacesRef.current.length === 0) {
-          detectFrameThrottleRef.current = 0;
-          const detected = detectFacesOnCanvas(c);
-          if (detected.length > 0) {
-            trackedFacesRef.current = detected;
-          }
-        }
-      } else {
-        trackedFacesRef.current = [];
-      }
-
       // Smoothly animate/Lerp the tracked face positions for high-fps visual ease
       const targetFaces = trackedFacesRef.current;
       if (animatedFacesRef.current.length !== targetFaces.length) {
@@ -247,27 +258,27 @@ export const VideoFaceBlurTool = () => {
           const target = targetFaces[idx];
           if (!target) return f;
           return {
-            x: f.x + (target.x - f.x) * 0.15, // Smooth interpolation ease speed
-            y: f.y + (target.y - f.y) * 0.15,
-            w: f.w + (target.w - f.w) * 0.15,
-            h: f.h + (target.h - f.h) * 0.15
+            x: f.x + (target.x - f.x) * 0.2, // Smooth interpolation ease speed
+            y: f.y + (target.y - f.y) * 0.2,
+            w: f.w + (target.w - f.w) * 0.2,
+            h: f.h + (target.h - f.h) * 0.2
           };
         });
       }
 
-      // Compile temporary active list (User manual zones + animated auto-detected face zones if toggled)
-      let activeZones = [...zones];
+      // Compile temporary active list (animated auto-detected face zones if enabled)
+      let activeZones: TrackedZone[] = [];
       if (autoDetect && animatedFacesRef.current.length > 0) {
         animatedFacesRef.current.forEach((face, idx) => {
           activeZones.push({
             id: `auto-face-${idx}`,
             x: face.x,
-            y: face.y,
-            w: face.w * 1.25, // Add a bit of padding to cover the full face
-            h: face.h * 1.25,
+            y: face.y - face.h * 0.18, // Shift up to cover full forehead/hair
+            w: face.w * faceCoverage, // Expanded width for whole face coverage
+            h: face.h * (faceCoverage * 1.1), // Expanded height for whole head coverage
             shape: 'circle',
-            type: 'blur',
-            intensity: 22,
+            type: blurType,
+            intensity: blurIntensity,
             name: `🔍 Auto Face ${idx + 1}`
           });
         });
@@ -300,40 +311,39 @@ export const VideoFaceBlurTool = () => {
           ctx.imageSmoothingEnabled = false;
           const pixelSize = Math.max(2, 60 - z.intensity);
           const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = zW / pixelSize;
-          tempCanvas.height = zH / pixelSize;
+          tempCanvas.width = Math.max(1, zW / pixelSize);
+          tempCanvas.height = Math.max(1, zH / pixelSize);
           const tempCtx = tempCanvas.getContext('2d')!;
 
           tempCtx.drawImage(c, zX, zY, zW, zH, 0, 0, tempCanvas.width, tempCanvas.height);
           ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, zX, zY, zW, zH);
           ctx.imageSmoothingEnabled = true;
         } else {
-          // Standard Canvas Gaussian Blur
-          ctx.filter = `blur(${z.intensity}px)`;
-          ctx.drawImage(v, 0, 0, c.width, c.height);
+          // Standard Canvas Gaussian Blur - Optimized to only blur the bounding box region using an offscreen canvas
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = Math.max(1, zW);
+          tempCanvas.height = Math.max(1, zH);
+          const tempCtx = tempCanvas.getContext('2d')!;
+          
+          // Draw just the sub-region from the main canvas
+          tempCtx.drawImage(c, zX, zY, zW, zH, 0, 0, zW, zH);
+          
+          // Blur just this small temp canvas
+          tempCtx.filter = `blur(${z.intensity}px)`;
+          tempCtx.drawImage(tempCanvas, 0, 0);
+          
+          // Draw the blurred sub-region back
+          ctx.drawImage(tempCanvas, zX, zY, zW, zH);
         }
 
         ctx.restore();
-
-        // 3. Draw dashed border overlay if selected and not exporting
-        if (selectedZoneId === z.id && !rendering) {
-          ctx.strokeStyle = '#3C6B4D';
-          ctx.lineWidth = 4;
-          ctx.setLineDash([8, 6]);
-          ctx.strokeRect(zX, zY, zW, zH);
-          ctx.fillStyle = '#3C6B4D';
-          ctx.fillRect(zX, zY - 24, 110, 24);
-          ctx.fillStyle = 'white';
-          ctx.font = 'bold 12px sans-serif';
-          ctx.fillText(z.name, zX + 8, zY - 8);
-        }
       });
     }
 
     if (isPlaying) {
       animationFrameRef.current = requestAnimationFrame(renderFrame);
     }
-  }, [zones, selectedZoneId, autoDetect, isPlaying, rendering, runSkinToneDetection]);
+  }, [autoDetect, isPlaying, rendering, blurType, blurIntensity, faceCoverage]);
 
   // Handle Play/Pause
   const togglePlay = () => {
@@ -363,115 +373,7 @@ export const VideoFaceBlurTool = () => {
   // Trigger manual render when zones update offline
   useEffect(() => {
     renderFrame();
-  }, [zones, selectedZoneId, currentTime, autoDetect, renderFrame]);
-
-  // Bounding box dragging utilities
-  const getMousePos = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height
-    };
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const pos = getMousePos(e);
-    // Find if clicked inside any zone
-    const clickedZone = zones.find(z => {
-      return (
-        pos.x >= z.x - z.w / 2 &&
-        pos.x <= z.x + z.w / 2 &&
-        pos.y >= z.y - z.h / 2 &&
-        pos.y <= z.y + z.h / 2
-      );
-    });
-
-    if (clickedZone) {
-      setSelectedZoneId(clickedZone.id);
-      dragStartRef.current = {
-        x: pos.x,
-        y: pos.y,
-        zoneX: clickedZone.x,
-        zoneY: clickedZone.y
-      };
-    } else {
-      // Click empty space to spawn new zone
-      const newId = `zone-${Math.random()}`;
-      const newZone: BlurZone = {
-        id: newId,
-        x: pos.x,
-        y: pos.y,
-        w: 0.15,
-        h: 0.15,
-        shape: 'circle',
-        type: 'blur',
-        intensity: 20,
-        name: `Blur Zone ${zones.length + 1}`
-      };
-      setZones(prev => [...prev, newZone]);
-      setSelectedZoneId(newId);
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const dragStart = dragStartRef.current;
-    if (!dragStart || !selectedZoneId) return;
-    const pos = getMousePos(e);
-    const dx = pos.x - dragStart.x;
-    const dy = pos.y - dragStart.y;
-    const targetX = dragStart.zoneX + dx;
-    const targetY = dragStart.zoneY + dy;
-
-    setZones(prev => prev.map(z => {
-      if (z.id === selectedZoneId) {
-        return {
-          ...z,
-          x: Math.max(z.w / 2, Math.min(1 - z.w / 2, targetX)),
-          y: Math.max(z.h / 2, Math.min(1 - z.h / 2, targetY))
-        };
-      }
-      return z;
-    }));
-  };
-
-  const handleMouseUp = () => {
-    dragStartRef.current = null;
-  };
-
-  // Add new zone button helper
-  const handleAddZone = () => {
-    const newId = `zone-${Math.random()}`;
-    setZones(prev => [
-      ...prev,
-      {
-        id: newId,
-        x: 0.5,
-        y: 0.5,
-        w: 0.15,
-        h: 0.15,
-        shape: 'circle',
-        type: 'blur',
-        intensity: 20,
-        name: `Blur Zone ${prev.length + 1}`
-      }
-    ]);
-    setSelectedZoneId(newId);
-  };
-
-  // Remove zone
-  const handleRemoveZone = (id: string) => {
-    setZones(prev => prev.filter(z => z.id !== id));
-    if (selectedZoneId === id) {
-      setSelectedZoneId('');
-    }
-  };
-
-  // Update specific zone properties
-  const handleUpdateZone = (id: string, field: keyof BlurZone, val: any) => {
-    setZones(prev => prev.map(z => z.id === id ? { ...z, [field]: val } : z));
-  };
+  }, [currentTime, autoDetect, renderFrame, blurType, blurIntensity, faceCoverage]);
 
   // Export blurred video using MediaRecorder canvas streaming
   const handleExport = async () => {
@@ -533,18 +435,18 @@ export const VideoFaceBlurTool = () => {
           cachedExportFaces = [];
         }
 
-        let activeZones = [...zones];
+        let activeZones: TrackedZone[] = [];
         if (autoDetect && cachedExportFaces.length > 0) {
           cachedExportFaces.forEach((face, idx) => {
             activeZones.push({
               id: `auto-face-${idx}`,
               x: face.x,
-              y: face.y,
-              w: face.w * 1.25,
-              h: face.h * 1.25,
+              y: face.y - face.h * 0.18, // Shift up slightly to cover full forehead/hair
+              w: face.w * faceCoverage, // Expanded width
+              h: face.h * (faceCoverage * 1.1), // Expanded height
               shape: 'circle',
-              type: 'blur',
-              intensity: 22,
+              type: blurType,
+              intensity: blurIntensity,
               name: `Auto ${idx + 1}`
             });
           });
@@ -572,15 +474,28 @@ export const VideoFaceBlurTool = () => {
             ctx.imageSmoothingEnabled = false;
             const pixelSize = Math.max(2, 60 - z.intensity);
             const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = zW / pixelSize;
-            tempCanvas.height = zH / pixelSize;
+            tempCanvas.width = Math.max(1, zW / pixelSize);
+            tempCanvas.height = Math.max(1, zH / pixelSize);
             const tempCtx = tempCanvas.getContext('2d')!;
             tempCtx.drawImage(renderCanvas, zX, zY, zW, zH, 0, 0, tempCanvas.width, tempCanvas.height);
             ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, zX, zY, zW, zH);
             ctx.imageSmoothingEnabled = true;
           } else {
-            ctx.filter = `blur(${z.intensity}px)`;
-            ctx.drawImage(v, 0, 0, renderCanvas.width, renderCanvas.height);
+            // Standard Canvas Gaussian Blur - Optimized to only blur the bounding box region using an offscreen canvas
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = Math.max(1, zW);
+            tempCanvas.height = Math.max(1, zH);
+            const tempCtx = tempCanvas.getContext('2d')!;
+            
+            // Draw just the sub-region from the render canvas
+            tempCtx.drawImage(renderCanvas, zX, zY, zW, zH, 0, 0, zW, zH);
+            
+            // Blur just this small temp canvas
+            tempCtx.filter = `blur(${z.intensity}px)`;
+            tempCtx.drawImage(tempCanvas, 0, 0);
+            
+            // Draw the blurred sub-region back
+            ctx.drawImage(tempCanvas, zX, zY, zW, zH);
           }
           ctx.restore();
         });
@@ -615,8 +530,6 @@ export const VideoFaceBlurTool = () => {
     }
   };
 
-  const selectedZone = zones.find(z => z.id === selectedZoneId);
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       {/* Left panel options */}
@@ -625,7 +538,7 @@ export const VideoFaceBlurTool = () => {
           <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
             <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center gap-2">
               <Shield className="text-[#3C6B4D]" size={22} />
-              <span>Face Blur Settings</span>
+              <span>Auto Face Blur Settings</span>
             </h2>
           </div>
 
@@ -638,13 +551,13 @@ export const VideoFaceBlurTool = () => {
             </label>
           ) : (
             <>
-              {/* Tracker Mode */}
+              {/* Tracker Mode Toggle */}
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Recognition Mode</label>
                 <div className="flex items-center justify-between bg-[#111213] border border-[#2A2D30] rounded-xl p-3">
                   <div className="flex flex-col">
-                    <span className="text-xs text-slate-200 font-semibold">Auto Skin-Tone Face Detector</span>
-                    <span className="text-[10px] text-slate-500">Automatically tracks face color contours</span>
+                    <span className="text-xs text-slate-200 font-semibold">Auto Face Detection</span>
+                    <span className="text-[10px] text-slate-500">Automatically tracks and blurs face regions</span>
                   </div>
                   <button
                     onClick={() => setAutoDetect(!autoDetect)}
@@ -659,144 +572,63 @@ export const VideoFaceBlurTool = () => {
                 </div>
               </div>
 
-              {/* Blur Zones Grid */}
-              <div className="flex flex-col gap-3 border-t border-[#2A2D30]/65 pt-3.5">
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Blur Zones</span>
-                  <button
-                    onClick={handleAddZone}
-                    className="py-1 px-3 bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded-xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#3C6B4D]/30"
-                  >
-                    <Plus size={10} />
-                    <span>Add Zone</span>
-                  </button>
+              {/* Blur Configuration Controls */}
+              <div className="flex flex-col gap-4 border-t border-[#2A2D30]/65 pt-3.5 bg-[#111213]/25 p-3 rounded-2xl border border-[#2A2D30]/40">
+                <span className="text-[10px] text-slate-400 font-bold uppercase border-b border-[#2A2D30]/50 pb-2">Blur Filter Config</span>
+
+                {/* Filter Type */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[9px] text-slate-500">Blur Type</label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {(['blur', 'pixelate', 'blackout'] as const).map(type => (
+                      <button
+                        key={type}
+                        onClick={() => setBlurType(type)}
+                        className={`py-1 rounded-lg text-[10px] font-bold border transition-all capitalize ${
+                          blurType === type
+                            ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/40'
+                            : 'bg-[#111213] text-slate-400 border-[#2A2D30] hover:text-slate-200'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-2 max-h-[140px] overflow-y-auto pr-1">
-                  {zones.map((z) => (
-                    <div
-                      key={z.id}
-                      onClick={() => setSelectedZoneId(z.id)}
-                      className={`flex justify-between items-center p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                        selectedZoneId === z.id
-                          ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/40 text-[#3C6B4D]'
-                          : 'bg-[#111213]/40 border-[#2A2D30]/60 text-slate-300 hover:border-[#2A2D30]'
-                      }`}
-                    >
-                      <span className="font-semibold">{z.name} ({z.shape})</span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleRemoveZone(z.id); }}
-                          className="p-1 hover:bg-rose-950/20 text-rose-400 rounded-lg transition-colors"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  {zones.length === 0 && (
-                    <span className="text-xs text-slate-500 text-center italic py-2">No manual blur zones configured. Click the video canvas to draw one.</span>
-                  )}
+                {/* Face Coverage Expansion Slider */}
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center text-[9px] text-slate-500">
+                    <span>Face Coverage Area</span>
+                    <span className="font-mono text-[#3C6B4D] font-bold">{faceCoverage.toFixed(2)}x</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.0"
+                    max="2.5"
+                    step="0.05"
+                    value={faceCoverage}
+                    onChange={(e) => setFaceCoverage(parseFloat(e.target.value))}
+                    className="w-full accent-[#3C6B4D]"
+                  />
+                  <span className="text-[8px] text-slate-500">Increase coverage to ensure the entire head/hair/neck is blurred.</span>
                 </div>
-              </div>
 
-              {/* Selected Zone Customizer Controls */}
-              {selectedZone && (
-                <div className="flex flex-col gap-3.5 border-t border-[#2A2D30]/65 pt-3.5 bg-[#111213]/25 p-3 rounded-2xl border border-[#2A2D30]/40">
-                  <div className="flex items-center justify-between border-b border-[#2A2D30]/50 pb-2">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase">Configure: {selectedZone.name}</span>
+                {/* Intensity slider (only for blur / pixelate) */}
+                {blurType !== 'blackout' && (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[9px] text-slate-500">Filter Intensity ({blurIntensity})</label>
                     <input
-                      type="text"
-                      value={selectedZone.name}
-                      onChange={(e) => handleUpdateZone(selectedZone.id, 'name', e.target.value)}
-                      className="bg-transparent border-b border-slate-700 text-xs text-slate-200 px-1 py-0.5 text-right max-w-[120px] focus:outline-none focus:border-[#3C6B4D]"
+                      type="range"
+                      min="5"
+                      max="50"
+                      value={blurIntensity}
+                      onChange={(e) => setBlurIntensity(parseInt(e.target.value) || 5)}
+                      className="w-full accent-[#3C6B4D]"
                     />
                   </div>
-
-                  {/* Filter Type */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] text-slate-500">Blur Type</label>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {(['blur', 'pixelate', 'blackout'] as const).map(type => (
-                        <button
-                          key={type}
-                          onClick={() => handleUpdateZone(selectedZone.id, 'type', type)}
-                          className={`py-1 rounded-lg text-[10px] font-bold border transition-all capitalize ${
-                            selectedZone.type === type
-                              ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/40'
-                              : 'bg-[#111213] text-slate-400 border-[#2A2D30] hover:text-slate-200'
-                          }`}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Shape */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] text-slate-500">Blur Shape</label>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {(['circle', 'rect'] as const).map(shape => (
-                        <button
-                          key={shape}
-                          onClick={() => handleUpdateZone(selectedZone.id, 'shape', shape)}
-                          className={`py-1 rounded-lg text-[10px] font-bold border transition-all capitalize ${
-                            selectedZone.shape === shape
-                              ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/40'
-                              : 'bg-[#111213] text-slate-400 border-[#2A2D30] hover:text-slate-200'
-                          }`}
-                        >
-                          {shape === 'circle' ? 'Circle (Face)' : 'Rectangle'}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Width & Height size sliders */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[9px] text-slate-500">Width Size</label>
-                      <input
-                        type="range"
-                        min="0.05"
-                        max="0.4"
-                        step="0.01"
-                        value={selectedZone.w}
-                        onChange={(e) => handleUpdateZone(selectedZone.id, 'w', parseFloat(e.target.value))}
-                        className="w-full accent-[#3C6B4D]"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[9px] text-slate-500">Height Size</label>
-                      <input
-                        type="range"
-                        min="0.05"
-                        max="0.4"
-                        step="0.01"
-                        value={selectedZone.h}
-                        onChange={(e) => handleUpdateZone(selectedZone.id, 'h', parseFloat(e.target.value))}
-                        className="w-full accent-[#3C6B4D]"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Intensity slider (only for blur / pixelate) */}
-                  {selectedZone.type !== 'blackout' && (
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[9px] text-slate-500">Filter Intensity ({selectedZone.intensity})</label>
-                      <input
-                        type="range"
-                        min="5"
-                        max="40"
-                        value={selectedZone.intensity}
-                        onChange={(e) => handleUpdateZone(selectedZone.id, 'intensity', parseInt(e.target.value) || 5)}
-                        className="w-full accent-[#3C6B4D]"
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Bitrate Selection */}
               <div className="flex flex-col gap-1.5 border-t border-[#2A2D30]/65 pt-3.5">
@@ -846,11 +678,7 @@ export const VideoFaceBlurTool = () => {
             {file ? (
               <canvas
                 ref={canvasRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-                className="w-full h-full object-contain cursor-crosshair"
+                className="w-full h-full object-contain"
                 style={{ maxHeight: '420px' }}
               />
             ) : (
