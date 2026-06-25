@@ -1172,7 +1172,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ollama-library',
-        name: 'Ollama Model Library',
+        name: 'Domo Model Library',
         engine: 'Ollama Registry REST Stream',
         details: 'Integrates with local Ollama service endpoints to monitor connection, query installed models list, and stream pulling chunks to update progress bars.',
         functionality: 'Browse LLMs models, review VRAM requirements, see dynamic hardware advisor, download models directly, and copy terminal execution code logs.',
