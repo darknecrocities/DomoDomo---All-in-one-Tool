@@ -469,8 +469,8 @@ export const Dashboard = () => {
               </p>
               <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">
-{`git clone https://github.com/darknecrocities/DomoDomo.git
-cd DomoDomo
+{`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+cd DomoDomo---All-in-one-Tool
 npm install
 npm run dev`}
                 </pre>
