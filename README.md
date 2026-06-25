@@ -65,6 +65,19 @@ The suite includes the original 10 offline AI utilities (Chat, Summarizer, Capti
 - **AI Code Reviewer**: Audit code structure for security issues, bugs, and performance optimization.
 - **AI Mind Mapper**: Organizes topics into visual indented hierarchy trees and outlines.
 
+### 🛠️ Developer Tools Suite (30 Tools Total)
+DomoDomo includes a comprehensive suite of offline developer utilities (beautifiers, encoders, generators, testers), plus **10 brand-new advanced tools** added to the line-up:
+- **JWT Generator & Signer**: Create, sign, and verify JWT tokens locally using WebCrypto HS256.
+- **Text Case Converter**: Convert text identifier cases between camel, Pascal, snake, kebab, CONSTANT, title, sentence, slug, toggle, and dot styles.
+- **URL & Query String Parser**: Parse, edit query parameters, and validate URL paths in real-time.
+- **CSS Flexbox & Grid Playground**: Interactive layout simulator to build and customize CSS flexbox/grid containers.
+- **JS Code Sandbox & Console**: Run ES6 scripts in a sandboxed execution context with performance benchmarking.
+- **Docker Compose Builder**: Visually configure service images, port/volume mappings, and download yml configurations.
+- **SVG Optimizer & Editor**: Compress vector graphics size, override stroke/fill colors, and preview XML updates.
+- **HTTP Header Inspector**: Analyze HTTP headers, audit security headers compliance scores, and compile CORS rules.
+- **CIDR Subnet & Socket Calculator**: IPv4 subnet mask address calculator, binary bits viewer, and port socket database lookup.
+- **Viewport & User-Agent Tester**: Simulate device screen views, check responsive breakpoints, and calculate download speeds.
+
 ### Direct Downloader & Stream Reader
 When running locally, DomoDomo detects your system specifications (CPU threads and system RAM) using browser detection APIs to recommend the optimal LLM (e.g., `llama3.2:1b` for medium setups, `qwen2.5:0.5b` for low specs). You can download these models with a single click in the UI via the Fetch Stream Reader API which updates a live progress bar.
 
