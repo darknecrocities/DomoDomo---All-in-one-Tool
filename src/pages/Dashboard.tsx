@@ -231,7 +231,7 @@ export const Dashboard = () => {
     let interval: NodeJS.Timeout;
     const checkStatus = async () => {
       const res = await aiService.checkOllama();
-      setHasOllama(res.status && res.models.length > 0);
+      setHasOllama(res.status);
       if (res.status) {
         setOllamaModels(res.models);
         if (res.models.length > 0 && !selectedOllamaModel) {
@@ -542,7 +542,7 @@ ollama run llama3`}
             <button 
               onClick={async () => {
                 const res = await aiService.checkOllama();
-                setHasOllama(res.status && res.models.length > 0);
+                setHasOllama(res.status);
               }}
               className="btn-secondary py-1.5 px-4 text-xs font-semibold shrink-0"
             >
