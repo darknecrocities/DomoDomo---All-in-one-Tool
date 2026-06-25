@@ -108,6 +108,18 @@ import { BaseConverterTool } from '../tools/dev/BaseConverter';
 import { GlassmorphismGeneratorTool } from '../tools/dev/GlassmorphismGenerator';
 import { ScreenInfoTool } from '../tools/dev/ScreenInfo';
 
+// Additional Dev Tools Imports
+import { JWTGeneratorTool } from '../tools/dev/additional/JWTGenerator';
+import { CaseConverterTool } from '../tools/dev/additional/CaseConverter';
+import { URLParserTool } from '../tools/dev/additional/URLParser';
+import { FlexboxGridPlaygroundTool } from '../tools/dev/additional/FlexboxGridPlayground';
+import { SandboxConsoleTool } from '../tools/dev/additional/SandboxConsole';
+import { DockerBuilderTool } from '../tools/dev/additional/DockerBuilder';
+import { SVGOptimizerTool } from '../tools/dev/additional/SVGOptimizer';
+import { HeaderInspectorTool } from '../tools/dev/additional/HeaderInspector';
+import { IPSubnetterTool } from '../tools/dev/additional/IPSubnetter';
+import { ViewportTesterTool } from '../tools/dev/additional/ViewportTester';
+
 // AI Suite Imports
 import { LocalAIChatTool } from '../tools/ai/LocalAIChat';
 import { AISummarizerTool } from '../tools/ai/AISummarizer';
@@ -240,6 +252,18 @@ export const TOOLS: Tool[] = [
   { id: 'base-converter', name: 'Base Converter', category: 'dev', description: 'Convert integers between decimal, binary, octal, and hex bases.', icon: 'Hammer', run: async (i) => i, component: BaseConverterTool },
   { id: 'glassmorphism-gen', name: 'Glassmorphism Generator', category: 'dev', description: 'Visual backdrop-filter designer generating modern glass assets.', icon: 'Hammer', run: async (i) => i, component: GlassmorphismGeneratorTool },
   { id: 'screen-info', name: 'Screen & Device Info', category: 'dev', description: 'Inspect hardware specs, viewport sizes, and client details.', icon: 'Hammer', run: async (i) => i, component: ScreenInfoTool },
+  
+  // Additional Dev Tools (10)
+  { id: 'jwt-gen', name: 'JWT Generator & Signer', category: 'dev', description: 'Generate, sign, and verify JWT tokens locally using WebCrypto HS256.', icon: 'Hammer', run: async (i) => i, component: JWTGeneratorTool },
+  { id: 'case-convert', name: 'Text Case Converter', category: 'dev', description: 'Convert text identifier cases between camel, Pascal, snake, kebab, and slug styles.', icon: 'Hammer', run: async (i) => i, component: CaseConverterTool },
+  { id: 'url-parse', name: 'URL & Query String Parser', category: 'dev', description: 'Parse, edit parameters, and validate URL query strings in real-time.', icon: 'Hammer', run: async (i) => i, component: URLParserTool },
+  { id: 'flexbox-grid-playground', name: 'CSS Flexbox & Grid Playground', category: 'dev', description: 'Interactive visual simulator to build and customize CSS Flexbox and Grid layouts.', icon: 'Hammer', run: async (i) => i, component: FlexboxGridPlaygroundTool },
+  { id: 'js-sandbox-console', name: 'JS Code Sandbox & Console', category: 'dev', description: 'Execute ES6 JavaScript scripts in a sandboxed console window with speed benchmarking.', icon: 'Hammer', run: async (i) => i, component: SandboxConsoleTool },
+  { id: 'docker-compose-builder', name: 'Docker Compose Builder', category: 'dev', description: 'Visually configure multi-container Docker services and export compose configurations.', icon: 'Hammer', run: async (i) => i, component: DockerBuilderTool },
+  { id: 'svg-optimizer', name: 'SVG Optimizer & Editor', category: 'dev', description: 'Clean up vector paths, override stroke/fill attributes, and optimize file sizes.', icon: 'Hammer', run: async (i) => i, component: SVGOptimizerTool },
+  { id: 'http-header-inspector', name: 'HTTP Header Inspector', category: 'dev', description: 'Parse header logs, validate security compliance scores, and generate CORS rules.', icon: 'Hammer', run: async (i) => i, component: HeaderInspectorTool },
+  { id: 'ip-subnetter', name: 'CIDR Subnet & Socket Calculator', category: 'dev', description: 'Calculate IP subnet mask addresses, usable host scopes, and lookup network ports.', icon: 'Hammer', run: async (i) => i, component: IPSubnetterTool },
+  { id: 'viewport-ua-tester', name: 'Viewport & User-Agent Tester', category: 'dev', description: 'Simulate screen sizes responsive grids, rotate view orientations, and check network speeds.', icon: 'Hammer', run: async (i) => i, component: ViewportTesterTool },
 
   // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat locally with Domo assistant under absolute leak-free security.', icon: 'Hammer', run: async (i) => i, component: LocalAIChatTool },
