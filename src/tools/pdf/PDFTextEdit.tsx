@@ -182,13 +182,23 @@ export const PDFTextEditTool = () => {
 
   const currentPageItems = allTextItems[currentPage - 1] || [];
 
+  const estimateWidth = (text: string, fontSize: number, fontFamily: string) => {
+    const charRatio = fontFamily === 'Courier' ? 0.6 : 0.52;
+    return text.length * fontSize * charRatio;
+  };
+
   // Update text item value
   const handleTextChange = (id: string, newText: string) => {
     const pageIndex = currentPage - 1;
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.id === id) {
-          return { ...item, text: newText };
+          const nextWidth = estimateWidth(newText, item.fontSize, item.fontFamily);
+          return { 
+            ...item, 
+            text: newText,
+            width: Math.max(item.width, nextWidth)
+          };
         }
         return item;
       });
@@ -202,7 +212,12 @@ export const PDFTextEditTool = () => {
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.id === id) {
-          return { ...item, fontFamily: font };
+          const nextWidth = estimateWidth(item.text, item.fontSize, font);
+          return { 
+            ...item, 
+            fontFamily: font,
+            width: nextWidth
+          };
         }
         return item;
       });
@@ -216,7 +231,12 @@ export const PDFTextEditTool = () => {
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.id === id) {
-          return { ...item, fontSize: size };
+          const nextWidth = estimateWidth(item.text, size, item.fontFamily);
+          return { 
+            ...item, 
+            fontSize: size,
+            width: nextWidth
+          };
         }
         return item;
       });
