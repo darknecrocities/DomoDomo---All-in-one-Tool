@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Home } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { getToolById } from '../engine/registry';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { localMemory } from '../utils/localMemory';
@@ -32,9 +33,20 @@ export const ToolContainer = () => {
   }
 
   const ToolComponent = tool.component;
+  const seoTitle = `${tool.name} - Free Local Web Utility | DomoDomo`;
+  const seoDesc = `Use ${tool.name} completely locally and privately in your browser tab. Category: ${tool.category}. ${tool.description}`;
 
   return (
     <div className="flex flex-col gap-8">
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDesc} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDesc} />
+        <meta property="twitter:title" content={seoTitle} />
+        <meta property="twitter:description" content={seoDesc} />
+      </Helmet>
+
       {/* Tool Header Breadcrumb */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#2A2D30]">
         <div className="flex flex-col gap-2">
