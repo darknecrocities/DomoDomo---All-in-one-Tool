@@ -32,6 +32,11 @@ export const VideoFaceBlurTool = () => {
   const [renderProgress, setRenderProgress] = useState(0);
   const [bitrate, setBitrate] = useState(12000000);
 
+  // Background analysis state/refs
+  const [analysisProgress, setAnalysisProgress] = useState<number | null>(null);
+  const faceTimelineRef = useRef<{ time: number; faces: { x: number; y: number; w: number; h: number }[] }[]>([]);
+  const analysisAborterRef = useRef<(() => void) | null>(null);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
@@ -93,6 +98,57 @@ export const VideoFaceBlurTool = () => {
     }
   }, [file]);
 
+
+  // Interpolate face positions frame-by-frame for smooth, lag-free playback
+  const getInterpolatedFaces = useCallback((time: number): { x: number; y: number; w: number; h: number }[] => {
+    const timeline = faceTimelineRef.current;
+    if (timeline.length === 0) return [];
+    
+    let prevFrame = null;
+    let nextFrame = null;
+    
+    for (let i = 0; i < timeline.length; i++) {
+      const f = timeline[i];
+      if (f.time <= time) {
+        if (!prevFrame || f.time > prevFrame.time) {
+          prevFrame = f;
+        }
+      }
+      if (f.time >= time) {
+        if (!nextFrame || f.time < nextFrame.time) {
+          nextFrame = f;
+        }
+      }
+    }
+    
+    if (!prevFrame && !nextFrame) return [];
+    if (!prevFrame && nextFrame) return nextFrame.faces;
+    if (!nextFrame && prevFrame) return prevFrame.faces;
+    if (!prevFrame || !nextFrame) return [];
+    
+    const pf = prevFrame;
+    const nf = nextFrame;
+    
+    if (nf.time - pf.time > 0.5) {
+      return Math.abs(time - pf.time) < Math.abs(time - nf.time) ? pf.faces : nf.faces;
+    }
+    
+    const span = nf.time - pf.time;
+    if (span === 0) return pf.faces;
+    
+    const alpha = (time - pf.time) / span;
+    
+    return pf.faces.map((face, idx) => {
+      const targetFace = nf.faces[idx] || face;
+      return {
+        x: face.x + (targetFace.x - face.x) * alpha,
+        y: face.y + (targetFace.y - face.y) * alpha,
+        w: face.w + (targetFace.w - face.w) * alpha,
+        h: face.h + (targetFace.h - face.h) * alpha
+      };
+    });
+  }, []);
+
   // Handle video metadata loaded
   const handleLoadedMetadata = () => {
     const v = videoRef.current;
@@ -144,20 +200,27 @@ export const VideoFaceBlurTool = () => {
 
       // Compile temporary active list (manual zones + animated auto-detected face zones if enabled)
       let activeZones: TrackedZone[] = [...zones];
-      if (autoDetect && animatedFacesRef.current.length > 0) {
-        animatedFacesRef.current.forEach((face, idx) => {
-          activeZones.push({
-            id: `auto-face-${idx}`,
-            x: face.x,
-            y: face.y - face.h * 0.18, // Shift up to cover full forehead/hair
-            w: face.w * faceCoverage, // Expanded width for whole face coverage
-            h: face.h * (faceCoverage * 1.1), // Expanded height for whole head coverage
-            shape: 'circle',
-            type: blurType,
-            intensity: blurIntensity,
-            name: `🔍 Auto Face ${idx + 1}`
+      if (autoDetect) {
+        const analysisComplete = analysisProgress === 100;
+        const faces = (analysisComplete && faceTimelineRef.current.length > 0)
+          ? getInterpolatedFaces(v.currentTime)
+          : animatedFacesRef.current;
+
+        if (faces.length > 0) {
+          faces.forEach((face, idx) => {
+            activeZones.push({
+              id: `auto-face-${idx}`,
+              x: face.x,
+              y: face.y - face.h * 0.18, // Shift up to cover full forehead/hair
+              w: face.w * faceCoverage, // Expanded width for whole face coverage
+              h: face.h * (faceCoverage * 1.1), // Expanded height for whole head coverage
+              shape: 'circle',
+              type: blurType,
+              intensity: blurIntensity,
+              name: `🔍 Auto Face ${idx + 1}`
+            });
           });
-        });
+        }
       }
 
       // Create/reuse a single full-frame downscaled blurred canvas to avoid local bounding box boundaries or artifacts
@@ -263,7 +326,7 @@ export const VideoFaceBlurTool = () => {
     if (isPlaying) {
       animationFrameRef.current = requestAnimationFrame(renderFrame);
     }
-  }, [autoDetect, isPlaying, rendering, blurType, blurIntensity, faceCoverage, zones, selectedZoneId]);
+  }, [autoDetect, isPlaying, rendering, blurType, blurIntensity, faceCoverage, zones, selectedZoneId, analysisProgress, getInterpolatedFaces]);
 
   // Run MediaPipe BlazeFace detection on the frame (directly on raw canvas/video via WebGL/GPU for speed)
   const detectFaces = useCallback((source: HTMLVideoElement | HTMLCanvasElement, timestamp = performance.now()): { x: number; y: number; w: number; h: number }[] => {
@@ -295,9 +358,105 @@ export const VideoFaceBlurTool = () => {
     return [];
   }, []);
 
+
+  // Background Face Tracking Pre-Analysis Pass
+  useEffect(() => {
+    if (!videoUrl || !autoDetect || detectorLoading) {
+      setAnalysisProgress(null);
+      faceTimelineRef.current = [];
+      return;
+    }
+
+    let active = true;
+    const currentAborter = () => {
+      active = false;
+    };
+    analysisAborterRef.current = currentAborter;
+
+    const runAnalysis = async () => {
+      setAnalysisProgress(0);
+      faceTimelineRef.current = [];
+
+      try {
+        const tempVideo = document.createElement('video');
+        tempVideo.src = videoUrl;
+        tempVideo.muted = true;
+        tempVideo.playsInline = true;
+        tempVideo.preload = 'auto';
+
+        await new Promise<void>((resolve, reject) => {
+          tempVideo.onloadedmetadata = () => resolve();
+          tempVideo.onerror = (e) => reject(e);
+        });
+
+        const duration = tempVideo.duration;
+        if (!duration || !active) return;
+
+        tempVideo.playbackRate = 2.0; // Moderate speed to ensure detector captures frames accurately
+        tempVideo.play();
+
+        const timeline: { time: number; faces: any[] }[] = [];
+
+        const processFrame = () => {
+          if (!active) {
+            tempVideo.pause();
+            return;
+          }
+
+          if (tempVideo.ended || tempVideo.currentTime >= duration - 0.05) {
+            if (active) {
+              faceTimelineRef.current = timeline;
+              setAnalysisProgress(100);
+              console.log("Background face tracking analysis completed!", timeline.length, "frames tracked.");
+            }
+            return;
+          }
+
+          const currentTime = tempVideo.currentTime;
+          const faces = detectFaces(tempVideo, currentTime * 1000);
+          timeline.push({ time: currentTime, faces });
+
+          setAnalysisProgress(Math.min(99, (currentTime / duration) * 100));
+
+          if ('requestVideoFrameCallback' in tempVideo) {
+            // @ts-ignore
+            tempVideo.requestVideoFrameCallback(processFrame);
+          } else {
+            setTimeout(processFrame, 30);
+          }
+        };
+
+        if ('requestVideoFrameCallback' in tempVideo) {
+          // @ts-ignore
+          tempVideo.requestVideoFrameCallback(processFrame);
+        } else {
+          setTimeout(processFrame, 30);
+        }
+
+      } catch (err) {
+        console.error("Background face tracking analysis failed:", err);
+        if (active) {
+          setAnalysisProgress(null);
+        }
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (active) runAnalysis();
+    }, 500);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+      if (analysisAborterRef.current === currentAborter) {
+        analysisAborterRef.current = null;
+      }
+    };
+  }, [videoUrl, autoDetect, detectorLoading, detectFaces]);
+
   // Run face detection asynchronously in the background loop to prevent render thread lagging
   useEffect(() => {
-    if (!file || !autoDetect || rendering) return;
+    if (!file || !autoDetect || rendering || analysisProgress === 100) return;
 
     let active = true;
     const runLoop = async () => {
@@ -337,7 +496,7 @@ export const VideoFaceBlurTool = () => {
     return () => {
       active = false;
     };
-  }, [file, autoDetect, rendering, detectFaces, renderFrame]);
+  }, [file, autoDetect, rendering, detectFaces, renderFrame, analysisProgress]);
 
   // Handle Play/Pause
   const togglePlay = () => {
@@ -480,6 +639,11 @@ export const VideoFaceBlurTool = () => {
     const c = canvasRef.current;
     if (!v || !c || !file) return;
 
+    if (autoDetect && analysisProgress !== 100) {
+      alert("Face analysis is still in progress. Please wait a moment until it reaches 100% before exporting.");
+      return;
+    }
+
     setRendering(true);
     setRenderProgress(0);
     setIsPlaying(false);
@@ -564,9 +728,6 @@ export const VideoFaceBlurTool = () => {
         if (e.data.size > 0) chunks.push(e.data);
       };
 
-      let exportFrameCount = 0;
-      let cachedExportFaces: any[] = [];
-
       let animationId: number;
       const renderLoop = () => {
         if (v.ended || v.currentTime >= duration - 0.05) {
@@ -576,17 +737,8 @@ export const VideoFaceBlurTool = () => {
 
         ctx.drawImage(v, 0, 0, renderCanvas.width, renderCanvas.height);
 
-        // Run face detection on export at a moderate step to prevent export slowdown
-        if (autoDetect) {
-          exportFrameCount++;
-          // Scan every 3 frames for perfect accuracy and high speed during export
-          if (exportFrameCount >= 3 || cachedExportFaces.length === 0) {
-            exportFrameCount = 0;
-            cachedExportFaces = detectFaces(renderCanvas, performance.now());
-          }
-        } else {
-          cachedExportFaces = [];
-        }
+        // Retrieve face coordinates from the pre-tracked timeline
+        const cachedExportFaces = autoDetect ? getInterpolatedFaces(v.currentTime) : [];
 
         let activeZones: TrackedZone[] = [...zones];
         if (autoDetect && cachedExportFaces.length > 0) {
@@ -1010,6 +1162,19 @@ export const VideoFaceBlurTool = () => {
             )}
           </div>
 
+          {/* Background Face Tracking Analysis Progress */}
+          {analysisProgress !== null && analysisProgress < 100 && (
+            <div className="flex flex-col gap-2 bg-[#111213]/40 border border-[#2A2D30]/60 p-4 rounded-xl animate-fadeIn">
+              <div className="flex justify-between text-xs font-semibold">
+                <span className="text-slate-350">Analyzing video faces for instant lag-free playback...</span>
+                <span className="text-[#3C6B4D]">{analysisProgress.toFixed(0)}%</span>
+              </div>
+              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-full bg-[#3C6B4D]/60 transition-all duration-150" style={{ width: `${analysisProgress}%` }} />
+              </div>
+            </div>
+          )}
+
           {/* Render Progress Overlay */}
           {rendering && (
             <div className="flex flex-col gap-2 bg-[#111213] border border-[#2A2D30] p-4 rounded-xl animate-fadeIn">
@@ -1037,11 +1202,17 @@ export const VideoFaceBlurTool = () => {
 
               <button
                 onClick={handleExport}
-                disabled={rendering}
+                disabled={rendering || (autoDetect && analysisProgress !== null && analysisProgress < 100)}
                 className="btn-primary flex-1 py-3 flex items-center justify-center gap-2 text-xs font-bold disabled:opacity-50"
               >
                 {rendering ? <Film size={14} className="animate-spin" /> : <Download size={14} />}
-                <span>{rendering ? `Processing Export... ${renderProgress.toFixed(0)}%` : 'Export Face-Blurred Video'}</span>
+                <span>
+                  {rendering 
+                    ? `Processing Export... ${renderProgress.toFixed(0)}%` 
+                    : (autoDetect && analysisProgress !== null && analysisProgress < 100)
+                      ? `Analyzing Faces... ${analysisProgress.toFixed(0)}%`
+                      : 'Export Face-Blurred Video'}
+                </span>
               </button>
             </div>
           )}
