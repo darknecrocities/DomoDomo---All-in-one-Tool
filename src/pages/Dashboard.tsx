@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
 
@@ -178,6 +178,7 @@ export const Dashboard = () => {
   const [showManageModels, setShowManageModels] = useState(false);
   
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -368,28 +369,57 @@ export const Dashboard = () => {
       {/* Unified Command Bar Panel */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl">
         {/* Categories Tabs */}
-        <div className="flex gap-1 overflow-x-auto pb-2 -mb-2 md:pb-0 md:mb-0 scrollbar-none pr-4 shrink-1">
-          {CATEGORIES.map((cat) => {
-            const isAICat = cat.id === 'ai';
-            const isUnavailable = isAICat && (!isLocal || !hasOllama);
-            const displayName = isUnavailable ? 'Local AI (Unavailable)' : cat.name;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => handleCategoryChange(cat.id)}
-                className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
-                  activeCategory === cat.id
-                    ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm'
-                    : isUnavailable
-                      ? 'bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]'
-                      : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]'
-                }`}
-              >
-                {isUnavailable && <Lock size={12} className="text-[#E29E2D] animate-pulse" />}
-                <span>{displayName}</span>
-              </button>
-            );
-          })}
+        <div className="flex items-center gap-1.5 min-w-0 flex-1 relative overflow-hidden">
+          <button
+            onClick={() => {
+              if (categoryScrollRef.current) {
+                categoryScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+              }
+            }}
+            className="p-1.5 bg-[#111213] hover:bg-[#1E2022] border border-[#2A2D30] rounded-xl text-[#72706C] hover:text-[#ECEBE9] transition-colors shrink-0 shadow-md"
+            title="Scroll Left"
+          >
+            <ChevronLeft size={14} />
+          </button>
+
+          <div 
+            ref={categoryScrollRef}
+            className="flex-1 flex gap-1 overflow-x-auto pb-2 -mb-2 md:pb-0 md:mb-0 scrollbar-none scroll-smooth pr-1"
+          >
+            {CATEGORIES.map((cat) => {
+              const isAICat = cat.id === 'ai';
+              const isUnavailable = isAICat && (!isLocal || !hasOllama);
+              const displayName = isUnavailable ? 'Local AI (Unavailable)' : cat.name;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCategoryChange(cat.id)}
+                  className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
+                    activeCategory === cat.id
+                      ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm'
+                      : isUnavailable
+                        ? 'bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]'
+                        : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]'
+                  }`}
+                >
+                  {isUnavailable && <Lock size={12} className="text-[#E29E2D] animate-pulse" />}
+                  <span>{displayName}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => {
+              if (categoryScrollRef.current) {
+                categoryScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+              }
+            }}
+            className="p-1.5 bg-[#111213] hover:bg-[#1E2022] border border-[#2A2D30] rounded-xl text-[#72706C] hover:text-[#ECEBE9] transition-colors shrink-0 shadow-md"
+            title="Scroll Right"
+          >
+            <ChevronRight size={14} />
+          </button>
         </div>
 
         {/* Search Field with keybind hint */}

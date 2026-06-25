@@ -1,84 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sliders, Download, Upload, BookOpen, Trash2, 
-  Info, FileText, Check, Sparkles, AlertCircle 
+  Info, FileText, Check, Sparkles, AlertCircle,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 
-export interface SkillDef {
-  name: string;
-  description: string;
-  tools: string[];
-  permissions: string[];
-  rules: string[];
-  systemInstructions: string;
-}
-
-const PREMADE_SKILLS: SkillDef[] = [
-  {
-    name: 'React Developer',
-    description: 'Builds modern React components using TSX and CSS.',
-    tools: ['file_editor', 'code_analyzer'],
-    permissions: ['read_files', 'write_files'],
-    rules: ['Prefer TypeScript', 'Follow accessibility standards', 'Generate responsive layouts'],
-    systemInstructions: 'You are a Senior Frontend Engineer specialized in React. Generate high-quality clean React code components.'
-  },
-  {
-    name: 'Python Engineer',
-    description: 'Writes efficient, PEP-8 compliant Python scripts and data logic.',
-    tools: ['file_editor', 'terminal_runner'],
-    permissions: ['read_files', 'write_files', 'execute_commands'],
-    rules: ['Follow PEP-8 styling', 'Include docstrings and type hints', 'Write robust error handling'],
-    systemInstructions: 'You are a Principal Python Architect. Provide clean, performant, and commented python scripts.'
-  },
-  {
-    name: 'Security Auditor',
-    description: 'Scans and audits codebase files for common security flaws and OWASP vulnerabilities.',
-    tools: ['code_analyzer', 'vulnerability_scanner'],
-    permissions: ['read_files'],
-    rules: ['Identify OWASP Top 10 vulnerabilities', 'Suggest secure alternatives', 'Never output credentials or raw secrets'],
-    systemInstructions: 'You are an elite Security Analyst. Inspect files carefully and report potential exposures, CVEs, or security flaws.'
-  },
-  {
-    name: 'Data Analyst',
-    description: 'Processes csv data and generates clear summaries or interactive graphs.',
-    tools: ['data_plotter', 'file_reader'],
-    permissions: ['read_files', 'write_files'],
-    rules: ['Focus on quantitative trends', 'Clean dirty input data', 'Provide markdown summaries of statistics'],
-    systemInstructions: 'You are a Senior Data Analyst. Analyze patterns and synthesize clear statistical observations.'
-  },
-  {
-    name: 'Research Assistant',
-    description: 'Gathers context, queries topics, and compiles well-referenced synthesis drafts.',
-    tools: ['web_search', 'citation_builder'],
-    permissions: ['external_apis'],
-    rules: ['Provide links for all references', 'Use unbiased professional language', 'Synthesize key bullet points'],
-    systemInstructions: 'You are a detailed Research Specialist. Collect information, structure it logically, and cite references.'
-  },
-  {
-    name: 'Technical Writer',
-    description: 'Generates user guides, README.md files, and clean developer documentation.',
-    tools: ['file_editor'],
-    permissions: ['read_files', 'write_files'],
-    rules: ['Use clear markdown heading structures', 'Include code examples', 'Prefer active voice'],
-    systemInstructions: 'You are a Technical Writer. Explain complex concepts in readable, clean markdown documentation.'
-  },
-  {
-    name: 'DevOps Engineer',
-    description: 'Creates dockerfiles, github actions pipelines, and environment configs.',
-    tools: ['file_editor', 'terminal_runner'],
-    permissions: ['read_files', 'write_files', 'execute_commands'],
-    rules: ['Optimize Docker layers', 'Use secure base images', 'Document all env variables'],
-    systemInstructions: 'You are a DevOps Architect. Automate CI/CD pipelines and infrastructure scripting.'
-  },
-  {
-    name: 'Product Manager',
-    description: 'Designs product specifications, feature roadmaps, and sprint plans.',
-    tools: ['roadmap_planner'],
-    permissions: [],
-    rules: ['Define clear acceptance criteria', 'Prioritize features by impact', 'Identify target user personas'],
-    systemInstructions: 'You are a Product Owner. Author structured specification guides and milestone plans.'
-  }
-];
+import { PREMADE_SKILLS } from './data/premadeSkills';
+import type { SkillDef } from './data/premadeSkills';
 
 export const DomoSkillCreatorTool = () => {
   const [skillForm, setSkillForm] = useState<SkillDef>({
@@ -93,6 +21,15 @@ export const DomoSkillCreatorTool = () => {
   const [customSkills, setCustomSkills] = useState<SkillDef[]>([]);
   const [activePresetTab, setActivePresetTab] = useState<'premade' | 'custom'>('premade');
   const [alertMsg, setAlertMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [expandedSkillNames, setExpandedSkillNames] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (name: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedSkillNames(prev => ({
+      ...prev,
+      [name]: !prev[name]
+    }));
+  };
 
   // Load custom skills from localStorage
   useEffect(() => {
@@ -445,24 +382,56 @@ ${skillForm.systemInstructions}
             <div className="flex-1 overflow-y-auto space-y-2.5 max-h-[360px] pr-1">
               {activePresetTab === 'premade' ? (
                 PREMADE_SKILLS.map((preset) => (
-                  <button
+                  <div
                     key={preset.name}
-                    onClick={() => setSkillForm(preset)}
-                    className="w-full text-left bg-[#111213] hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/40 p-3.5 rounded-xl transition-all space-y-1.5 group"
+                    className="w-full text-left bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 p-3.5 rounded-xl transition-all space-y-1.5 group relative"
                   >
-                    <div className="flex justify-between items-center">
-                      <h4 className="text-xs font-bold text-[#ECEBE9] group-hover:text-emerald-400 transition-colors">{preset.name}</h4>
-                      <span className="text-[8px] bg-[#3C6B4D]/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold uppercase">Premade</span>
+                    <div className="flex justify-between items-start">
+                      <div className="cursor-pointer flex-1" onClick={() => setSkillForm(preset)}>
+                        <h4 className="text-xs font-bold text-[#ECEBE9] group-hover:text-emerald-400 transition-colors">{preset.name}</h4>
+                        <p className="text-[10px] text-[#A3A09B] leading-relaxed mt-0.5">{preset.description}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 ml-2 shrink-0">
+                        <span className="text-[8px] bg-[#3C6B4D]/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold uppercase">Premade</span>
+                        <button
+                          onClick={(e) => toggleExpand(preset.name, e)}
+                          className="p-1 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-lg text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                          title={expandedSkillNames[preset.name] ? "Collapse Instructions" : "Expand Instructions"}
+                        >
+                          {expandedSkillNames[preset.name] ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                        </button>
+                      </div>
                     </div>
-                    <p className="text-[10px] text-[#A3A09B] leading-relaxed">{preset.description}</p>
-                    <div className="flex gap-1.5 pt-1 flex-wrap">
-                      {preset.tools.map(t => (
-                        <span key={t} className="text-[8px] bg-[#18191B] text-[#72706C] border border-[#2A2D30] px-1.5 py-0.5 rounded uppercase font-bold">
-                          {t.replace('_', ' ')}
-                        </span>
-                      ))}
+
+                    <div className="cursor-pointer" onClick={() => setSkillForm(preset)}>
+                      <div className="flex gap-1.5 pt-1 flex-wrap">
+                        {preset.tools.map(t => (
+                          <span key={t} className="text-[8px] bg-[#18191B] text-[#72706C] border border-[#2A2D30] px-1.5 py-0.5 rounded uppercase font-bold">
+                            {t.replace('_', ' ')}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </button>
+
+                    {expandedSkillNames[preset.name] && (
+                      <div className="mt-2.5 pt-2.5 border-t border-[#2A2D30]/60 space-y-2 text-[10px] text-[#A3A09B] animate-fadeIn">
+                        {preset.rules && preset.rules.length > 0 && (
+                          <div>
+                            <span className="font-bold text-[#ECEBE9] block mb-0.5 text-[9px] uppercase tracking-wider text-[#72706C]">Rules & Quality Constraints</span>
+                            <ul className="list-disc pl-3.5 space-y-0.5">
+                              {preset.rules.map((r, idx) => <li key={idx}>{r}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                        <div>
+                          <span className="font-bold text-[#ECEBE9] block mb-0.5 text-[9px] uppercase tracking-wider text-[#72706C]">Agent System Instructions</span>
+                          <pre className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg text-[9px] font-mono text-[#ECEBE9] whitespace-pre-wrap leading-normal overflow-x-auto max-h-[150px] overflow-y-auto">
+                            {preset.systemInstructions}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ))
               ) : customSkills.length === 0 ? (
                 <div className="text-center py-12 space-y-2">
@@ -477,12 +446,33 @@ ${skillForm.systemInstructions}
                     key={custom.name}
                     className="relative text-left bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 p-3.5 rounded-xl transition-all space-y-1.5 group"
                   >
-                    <button
-                      onClick={() => setSkillForm(custom)}
-                      className="w-full text-left space-y-1.5"
-                    >
-                      <h4 className="text-xs font-bold text-[#ECEBE9] group-hover:text-emerald-400 transition-colors">{custom.name}</h4>
-                      <p className="text-[10px] text-[#A3A09B] leading-relaxed pr-6">{custom.description}</p>
+                    <div className="flex justify-between items-start">
+                      <div className="cursor-pointer flex-1" onClick={() => setSkillForm(custom)}>
+                        <h4 className="text-xs font-bold text-[#ECEBE9] group-hover:text-emerald-400 transition-colors">{custom.name}</h4>
+                        <p className="text-[10px] text-[#A3A09B] leading-relaxed mt-0.5 pr-14">{custom.description}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={(e) => toggleExpand(custom.name, e)}
+                          className="p-1 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-lg text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                          title={expandedSkillNames[custom.name] ? "Collapse Instructions" : "Expand Instructions"}
+                        >
+                          {expandedSkillNames[custom.name] ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteSkill(custom.name);
+                          }}
+                          className="p-1 bg-[#18191B] border border-[#2A2D30] hover:border-rose-500/40 text-[#72706C] hover:text-rose-400 rounded-lg transition-colors"
+                          title="Delete Skill"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="cursor-pointer" onClick={() => setSkillForm(custom)}>
                       <div className="flex gap-1.5 pt-1 flex-wrap">
                         {custom.tools.map(t => (
                           <span key={t} className="text-[8px] bg-[#18191B] text-[#72706C] border border-[#2A2D30] px-1.5 py-0.5 rounded uppercase font-bold">
@@ -490,17 +480,26 @@ ${skillForm.systemInstructions}
                           </span>
                         ))}
                       </div>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteSkill(custom.name);
-                      }}
-                      className="absolute top-2.5 right-2.5 p-1 bg-[#18191B] border border-[#2A2D30] hover:border-rose-500/40 text-[#72706C] hover:text-rose-400 rounded-lg transition-colors"
-                      title="Delete Skill"
-                    >
-                      <Trash2 size={12} />
-                    </button>
+                    </div>
+
+                    {expandedSkillNames[custom.name] && (
+                      <div className="mt-2.5 pt-2.5 border-t border-[#2A2D30]/60 space-y-2 text-[10px] text-[#A3A09B] animate-fadeIn">
+                        {custom.rules && custom.rules.length > 0 && (
+                          <div>
+                            <span className="font-bold text-[#ECEBE9] block mb-0.5 text-[9px] uppercase tracking-wider text-[#72706C]">Rules & Quality Constraints</span>
+                            <ul className="list-disc pl-3.5 space-y-0.5">
+                              {custom.rules.map((r, idx) => <li key={idx}>{r}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                        <div>
+                          <span className="font-bold text-[#ECEBE9] block mb-0.5 text-[9px] uppercase tracking-wider text-[#72706C]">Agent System Instructions</span>
+                          <pre className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg text-[9px] font-mono text-[#ECEBE9] whitespace-pre-wrap leading-normal overflow-x-auto max-h-[150px] overflow-y-auto">
+                            {custom.systemInstructions}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))
               )}

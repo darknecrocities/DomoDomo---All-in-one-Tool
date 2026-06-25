@@ -17,7 +17,8 @@ import {
 import { aiService, PROVIDERS } from '../../utils/aiService';
 
 // Extracted Sub-Components
-import type { SkillDef } from './DomoSkillCreator';
+import { PREMADE_SKILLS } from './data/premadeSkills';
+import type { SkillDef } from './data/premadeSkills';
 import { AgentPermissionsManager } from './components/AgentPermissionsManager';
 import { MultiIdeDashboard } from './components/MultiIdeDashboard';
 import { McpConnectionManager } from './components/McpConnectionManager';
@@ -29,73 +30,6 @@ interface FileNode {
   handle: any;
   children?: FileNode[];
 }
-
-const PREMADE_SKILLS: SkillDef[] = [
-  {
-    name: 'React Developer',
-    description: 'Builds modern React components using TSX and CSS.',
-    tools: ['file_editor', 'code_analyzer'],
-    permissions: ['read_files', 'write_files'],
-    rules: ['Prefer TypeScript', 'Follow accessibility standards', 'Generate responsive layouts'],
-    systemInstructions: 'You are a Senior Frontend Engineer specialized in React. Generate high-quality clean React code components.'
-  },
-  {
-    name: 'Python Engineer',
-    description: 'Writes efficient, PEP-8 compliant Python scripts and data logic.',
-    tools: ['file_editor', 'terminal_runner'],
-    permissions: ['read_files', 'write_files', 'execute_commands'],
-    rules: ['Follow PEP-8 styling', 'Include docstrings and type hints', 'Write robust error handling'],
-    systemInstructions: 'You are a Principal Python Architect. Provide clean, performant, and commented python scripts.'
-  },
-  {
-    name: 'Security Auditor',
-    description: 'Scans and audits codebase files for common security flaws and OWASP vulnerabilities.',
-    tools: ['code_analyzer', 'vulnerability_scanner'],
-    permissions: ['read_files'],
-    rules: ['Identify OWASP Top 10 vulnerabilities', 'Suggest secure alternatives', 'Never output credentials or raw secrets'],
-    systemInstructions: 'You are an elite Security Analyst. Inspect files carefully and report potential exposures, CVEs, or security flaws.'
-  },
-  {
-    name: 'Data Analyst',
-    description: 'Processes csv data and generates clear summaries or interactive graphs.',
-    tools: ['data_plotter', 'file_reader'],
-    permissions: ['read_files', 'write_files'],
-    rules: ['Focus on quantitative trends', 'Clean dirty input data', 'Provide markdown summaries of statistics'],
-    systemInstructions: 'You are a Senior Data Analyst. Analyze patterns and synthesize clear statistical observations.'
-  },
-  {
-    name: 'Research Assistant',
-    description: 'Gathers context, queries topics, and compiles well-referenced synthesis drafts.',
-    tools: ['web_search', 'citation_builder'],
-    permissions: ['external_apis'],
-    rules: ['Provide links for all references', 'Use unbiased professional language', 'Synthesize key bullet points'],
-    systemInstructions: 'You are a detailed Research Specialist. Collect information, structure it logically, and cite references.'
-  },
-  {
-    name: 'Technical Writer',
-    description: 'Generates user guides, README.md files, and clean developer documentation.',
-    tools: ['file_editor'],
-    permissions: ['read_files', 'write_files'],
-    rules: ['Use clear markdown heading structures', 'Include code examples', 'Prefer active voice'],
-    systemInstructions: 'You are a Technical Writer. Explain complex concepts in readable, clean markdown documentation.'
-  },
-  {
-    name: 'DevOps Engineer',
-    description: 'Creates dockerfiles, github actions pipelines, and environment configs.',
-    tools: ['file_editor', 'terminal_runner'],
-    permissions: ['read_files', 'write_files', 'execute_commands'],
-    rules: ['Optimize Docker layers', 'Use secure base images', 'Document all env variables'],
-    systemInstructions: 'You are a DevOps Architect. Automate CI/CD pipelines and infrastructure scripting.'
-  },
-  {
-    name: 'Product Manager',
-    description: 'Designs product specifications, feature roadmaps, and sprint plans.',
-    tools: ['roadmap_planner'],
-    permissions: [],
-    rules: ['Define clear acceptance criteria', 'Prioritize features by impact', 'Identify target user personas'],
-    systemInstructions: 'You are a Product Owner. Author structured specification guides and milestone plans.'
-  }
-];
 
 const cleanCodeContent = (raw: string) => {
   let content = raw.trim();
@@ -272,6 +206,14 @@ export const AIDomoAgentHub = () => {
   const [orchestratorPrompt, setOrchestratorPrompt] = useState<string>('');
   const [isOrchestrating, setIsOrchestrating] = useState<boolean>(false);
   const [orchestrationMode, setOrchestrationMode] = useState<'sequential' | 'simultaneous' | 'hybrid'>('sequential');
+  const [unifiedMemory, setUnifiedMemory] = useState<string>(() => {
+    return localStorage.getItem('domodomo_unified_memory') || 
+      'Project Context:\n- Target application is DomoDomo All-in-one Tool.\n- Maintain clean design guidelines and TypeScript standards.';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('domodomo_unified_memory', unifiedMemory);
+  }, [unifiedMemory]);
   
   // Shared memory blackboard log: dialogs between agents
   const [blackboardLogs, setBlackboardLogs] = useState<{ agentName: string; text: string; role: 'system' | 'agent'; timestamp: string; agentId?: string }[]>([]);
@@ -549,6 +491,11 @@ export const AIDomoAgentHub = () => {
 
           const systemPrompt = `${agent.promptTemplate}
 
+Unified Memory (Shared Team Facts/Memory):
+"""
+${unifiedMemory || 'No shared team memory set.'}
+"""
+
 ${skillInstructions}
 ${skillRules}
 
@@ -648,7 +595,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
             }
           }
 
-          const systemPrompt = `${agent.promptTemplate}${skillInstructions}${skillRules}\n\nTask context: Parallel solver.`;
+          const systemPrompt = `${agent.promptTemplate}\n\nUnified Memory (Shared Team Facts/Memory):\n"""\n${unifiedMemory || 'No shared team memory set.'}\n"""\n\n${skillInstructions}${skillRules}\n\nTask context: Parallel solver.`;
           const userPrompt = `Goal Task: ${orchestratorPrompt}`;
 
           const startTime = Date.now();
@@ -1469,6 +1416,8 @@ file_content
           handleMountDirectory={handleMountDirectory}
           customSkills={customSkills}
           premadeSkills={PREMADE_SKILLS}
+          unifiedMemory={unifiedMemory}
+          setUnifiedMemory={setUnifiedMemory}
         />
       )}
 

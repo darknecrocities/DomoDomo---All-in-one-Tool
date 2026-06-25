@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, Play, FileCode, DollarSign } from 'lucide-react';
-import type { SkillDef } from '../DomoSkillCreator';
+import type { SkillDef } from '../data/premadeSkills';
 
 interface AgentConfig {
   id: string;
@@ -41,6 +41,8 @@ interface MultiIdeDashboardProps {
   handleMountDirectory: () => void;
   customSkills: SkillDef[];
   premadeSkills: SkillDef[];
+  unifiedMemory: string;
+  setUnifiedMemory: (val: string) => void;
 }
 
 export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
@@ -65,7 +67,9 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
   highlightCode,
   handleMountDirectory,
   customSkills,
-  premadeSkills
+  premadeSkills,
+  unifiedMemory,
+  setUnifiedMemory
 }) => {
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -296,13 +300,29 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Blackboard and Artifact outputs */}
+      </div>      {/* Blackboard, Unified Memory, and Artifact outputs */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[300px]">
-          <h4 className="text-xs font-bold text-[#ECEBE9] pb-2 border-b border-[#2A2D30]">Pipeline Conversation Board</h4>
-          <div className="bg-[#0A0B0C] border border-[#2A2D30] rounded-xl p-3 h-64 overflow-y-auto font-mono text-[10px] space-y-3 mt-3">
+        {/* Unified Memory Panel */}
+        <div className="lg:col-span-4 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[300px]">
+          <div className="pb-2 border-b border-[#2A2D30] flex justify-between items-center">
+            <h4 className="text-xs font-bold text-[#ECEBE9]">Unified Memory</h4>
+            <span className="text-[8px] bg-[#3C6B4D]/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold uppercase">Shared Team Context</span>
+          </div>
+          <div className="flex-1 flex flex-col gap-2 mt-3 text-left">
+            <label className="text-[9px] uppercase font-bold text-[#72706C] block">Write facts/context to keep in memory:</label>
+            <textarea
+              value={unifiedMemory}
+              onChange={(e) => setUnifiedMemory(e.target.value)}
+              placeholder="e.g. Target frameworks, design tokens, staging DB hosts, credentials to mock, or specific code formatting guidelines that all agents will remember."
+              className="flex-1 w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 font-mono text-[10px] text-[#ECEBE9] resize-none h-60 focus:outline-none focus:border-[#3C6B4D] leading-relaxed"
+            />
+          </div>
+        </div>
+
+        {/* Blackboard Logs Panel */}
+        <div className="lg:col-span-5 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[300px]">
+          <h4 className="text-xs font-bold text-[#ECEBE9] pb-2 border-b border-[#2A2D30] text-left">Pipeline Conversation Board</h4>
+          <div className="bg-[#0A0B0C] border border-[#2A2D30] rounded-xl p-3 h-60 overflow-y-auto font-mono text-[10px] space-y-3 mt-3">
             {blackboardLogs.length === 0 ? (
               <span className="text-[#72706C] italic block text-center py-20">Blackboard currently empty. Start orchestration.</span>
             ) : blackboardLogs.map((log, i) => (
@@ -317,10 +337,11 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
           </div>
         </div>
 
-        <div className="lg:col-span-4 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[300px]">
-          <h4 className="text-xs font-bold text-[#ECEBE9] pb-2 border-b border-[#2A2D30]">Generated Artifacts</h4>
+        {/* Generated Artifacts Panel */}
+        <div className="lg:col-span-3 glass-card bg-[#18191B] p-4 flex flex-col justify-between min-h-[300px]">
+          <h4 className="text-xs font-bold text-[#ECEBE9] pb-2 border-b border-[#2A2D30] text-left">Generated Artifacts</h4>
           <div className="flex-1 flex flex-col gap-3 mt-3">
-            <div className="flex flex-col gap-1.5 max-h-32 overflow-y-auto">
+            <div className="flex flex-col gap-1.5 max-h-24 overflow-y-auto">
               {artifacts.map((art) => (
                 <button
                   key={art.id}
@@ -346,7 +367,7 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
                   <div className="flex-1 overflow-auto max-h-[80px] font-mono text-[9px] text-[#A3A09B] bg-[#0A0B0C] p-2 rounded border border-[#2A2D30] my-1">
                     <pre dangerouslySetInnerHTML={{ __html: highlightCode(activeArtifact.content) }} />
                   </div>
-
+ 
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleWriteArtifactToWorkspace(activeArtifact)}
