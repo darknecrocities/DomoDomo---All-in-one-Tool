@@ -48,6 +48,19 @@ interface DrawStroke {
   size: number;
 }
 
+const estimateWidth = (text: string, fontSize: number, fontFamily: string, fontStyle?: string) => {
+  const isCourier = fontFamily === 'Courier';
+  const isBold = fontStyle === 'bold' || fontStyle === 'bold-italic';
+  const isItalic = fontStyle === 'italic' || fontStyle === 'bold-italic';
+  
+  let charRatio = isCourier ? 0.6 : 0.53;
+  if (isBold) charRatio += 0.05;
+  if (isItalic) charRatio += 0.02;
+  
+  // Add extra padding boundary to prevent horizontal cutoffs completely
+  return (text.length * fontSize * charRatio) + 22;
+};
+
 export const PDFTextEditTool = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -249,7 +262,7 @@ export const PDFTextEditTool = () => {
             x: transform[4],
             y: transform[5],
             fontSize: fontSize || 11,
-            width: item.width || 60,
+            width: Math.max(item.width || 0, estimateWidth(item.str, fontSize || 11, fontFamily, fontStyle)),
             height: item.height || fontSize || 12,
             fontName: item.fontName || 'Helvetica',
             fontFamily,
@@ -272,18 +285,7 @@ export const PDFTextEditTool = () => {
 
   const currentPageItems = allTextItems[currentPage - 1] || [];
 
-  const estimateWidth = (text: string, fontSize: number, fontFamily: string, fontStyle?: string) => {
-    const isCourier = fontFamily === 'Courier';
-    const isBold = fontStyle === 'bold' || fontStyle === 'bold-italic';
-    const isItalic = fontStyle === 'italic' || fontStyle === 'bold-italic';
-    
-    let charRatio = isCourier ? 0.6 : 0.53;
-    if (isBold) charRatio += 0.05;
-    if (isItalic) charRatio += 0.02;
-    
-    // Add extra padding boundary to prevent horizontal cutoffs completely
-    return (text.length * fontSize * charRatio) + 22;
-  };
+
 
   // Update text item value
   const handleTextChange = (id: string, newText: string) => {
@@ -705,10 +707,10 @@ export const PDFTextEditTool = () => {
           if (isChanged || item.isNew) {
             if (!item.isNew && item.originalText.trim().length > 0) {
               page.drawRectangle({
-                x: item.x - 2,
-                y: item.y - 2,
-                width: item.width + 4,
-                height: item.fontSize * 1.25,
+                x: item.x - 4,
+                y: item.y - 3,
+                width: item.width + 8,
+                height: item.fontSize * 1.35,
                 color: rgb(1, 1, 1),
                 rotate: degrees(item.rotation || 0)
               });
