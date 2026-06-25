@@ -144,6 +144,15 @@ export const PDFTextEditTool = () => {
         const items: TextItem[] = textContent.items.map((item: any, idx: number) => {
           const transform = item.transform;
           const fontSize = Math.abs(transform[3]);
+          
+          let fontFamily: 'Helvetica' | 'Times-Roman' | 'Courier' = 'Helvetica';
+          const fontLower = (item.fontName || '').toLowerCase();
+          if (fontLower.includes('times') || fontLower.includes('serif') || fontLower.includes('roman') || fontLower.includes('georgia')) {
+            fontFamily = 'Times-Roman';
+          } else if (fontLower.includes('courier') || fontLower.includes('mono') || fontLower.includes('consolas') || fontLower.includes('code')) {
+            fontFamily = 'Courier';
+          }
+
           return {
             id: `text-${pageIndex}-${idx}`,
             pageIndex,
@@ -155,7 +164,7 @@ export const PDFTextEditTool = () => {
             width: item.width || 60,
             height: item.height || fontSize || 12,
             fontName: item.fontName || 'Helvetica',
-            fontFamily: 'Helvetica'
+            fontFamily
           };
         });
 
@@ -245,8 +254,51 @@ export const PDFTextEditTool = () => {
       const page = await pdfjsDoc.getPage(currentPage);
       const viewport = page.getViewport({ scale });
       const [pdfX, pdfY] = viewport.convertToPdfPoint(clickX, clickY);
-
       const pageIndex = currentPage - 1;
+
+      // Smart proximity check: auto-select nearest text block or match style
+      const items = allTextItems[pageIndex] || [];
+      let closestItem: TextItem | null = null;
+      let minDistance = Infinity;
+
+      for (const item of items) {
+        // Pad boundaries slightly to make selection feel natural
+        const padX = Math.max(item.width * 0.1, 10);
+        const padY = Math.max(item.fontSize * 0.5, 8);
+        
+        const inX = pdfX >= (item.x - padX) && pdfX <= (item.x + item.width + padX);
+        const inY = pdfY >= (item.y - padY) && pdfY <= (item.y + item.fontSize + padY);
+
+        // Distance from click point to item starting point
+        const dist = Math.hypot(pdfX - item.x, pdfY - item.y);
+        
+        if (inX && inY) {
+          closestItem = item;
+          minDistance = 0;
+          break;
+        } else if (dist < minDistance) {
+          minDistance = dist;
+          closestItem = item;
+        }
+      }
+
+      // 1. Auto-select existing block if click is directly inside or extremely close
+      if (closestItem && minDistance <= 18) {
+        setActiveItemId(closestItem.id);
+        return;
+      }
+
+      // 2. Otherwise match the style of the nearest block (within 100 points) and create a new block
+      let finalFontSize = customFontSize;
+      let finalFontFamily = customFontFamily;
+      if (closestItem && minDistance <= 100) {
+        finalFontSize = closestItem.fontSize;
+        finalFontFamily = closestItem.fontFamily;
+        // Optionally update the toolbar/settings state too
+        setCustomFontSize(closestItem.fontSize);
+        setCustomFontFamily(closestItem.fontFamily);
+      }
+
       const newItem: TextItem = {
         id: `custom-${pageIndex}-${Date.now()}`,
         pageIndex,
@@ -254,11 +306,11 @@ export const PDFTextEditTool = () => {
         originalText: '',
         x: pdfX,
         y: pdfY,
-        fontSize: customFontSize,
-        width: customText.length * (customFontSize * 0.65),
-        height: customFontSize * 1.2,
+        fontSize: finalFontSize,
+        width: customText.length * (finalFontSize * 0.65),
+        height: finalFontSize * 1.2,
         fontName: 'Helvetica',
-        fontFamily: customFontFamily,
+        fontFamily: finalFontFamily,
         isNew: true
       };
 
