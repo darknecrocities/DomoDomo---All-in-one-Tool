@@ -1178,6 +1178,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Browse LLMs models, review VRAM requirements, see dynamic hardware advisor, download models directly, and copy terminal execution code logs.',
         howItWorks: '1. Verifies localhost CORS connection. 2. Compares offline tags to catalog targets. 3. Submits stream requests to pull models. 4. Visualizes loading percentages.',
         technicalSpecs: 'Connects directly to port 11434 (changeable endpoint). Requires proper CORS headers configuration to override browser cross-origin limits.'
+      },
+      {
+        id: 'domo-skill-creator',
+        name: 'Domo Skill Creator',
+        engine: 'Local Skill Schema Builder',
+        details: 'Visual designer to define capabilities, permissions, rules, and system prompts to export/import as portable markdown skill files.',
+        functionality: 'Save visual creations to localStorage, edit tools and rules, download skillsets, and import MD configs.',
+        howItWorks: '1. Configures attributes visually. 2. Stores settings locally in localStorage. 3. Exports markdown files.',
+        technicalSpecs: 'Outputs YAML frontmatter-delimited Markdown skillsets.'
       }
     ]
   }
