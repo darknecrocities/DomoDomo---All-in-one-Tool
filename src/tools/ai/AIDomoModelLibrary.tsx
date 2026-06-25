@@ -263,7 +263,7 @@ const MODELS_CATALOG: ModelInfo[] = [
 export const AIDomoModelLibrary = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'troubleshoot'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'diagnostics' | 'troubleshoot'>('catalog');
   
   // Connection states
   const [isOllamaOnline, setIsOllamaOnline] = useState<boolean | null>(null);
@@ -509,6 +509,17 @@ export const AIDomoModelLibrary = () => {
 
   const matrixTiers = getMatrixTiers();
 
+  // Find the exact recommended model object from our catalog
+  const getRecommendedModelObject = () => {
+    if (!hardwareInfo) return null;
+    const recId = hardwareInfo.recommendedModel;
+    return MODELS_CATALOG.find(m => m.id === recId) || MODELS_CATALOG[1]; // fallback to Meta 3B
+  };
+
+  const recommendedModelObj = getRecommendedModelObject();
+  const isRecInstalled = recommendedModelObj ? installedModels.some(m => m.startsWith(recommendedModelObj.id) || recommendedModelObj.id.startsWith(m.split(':')[0])) : false;
+  const isRecPulling = recommendedModelObj ? activePullId === recommendedModelObj.id : false;
+
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-6 text-left">
       {/* Title Header */}
@@ -572,6 +583,16 @@ export const AIDomoModelLibrary = () => {
           📚 Model Catalog
         </button>
         <button
+          onClick={() => setActiveTab('diagnostics')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+            activeTab === 'diagnostics'
+              ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border-[#3C6B4D]/40 shadow-sm'
+              : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9]'
+          }`}
+        >
+          💻 Hardware Diagnostics
+        </button>
+        <button
           onClick={() => setActiveTab('troubleshoot')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
             activeTab === 'troubleshoot'
@@ -583,76 +604,9 @@ export const AIDomoModelLibrary = () => {
         </button>
       </div>
 
-      {activeTab === 'catalog' ? (
+      {/* View switching based on active tab */}
+      {activeTab === 'catalog' && (
         <>
-          {/* Hardware Diagnostics & Matrix */}
-          {hardwareInfo && (
-            <div className="flex flex-col gap-4">
-              {/* Dynamic Hardware Advisor HUD */}
-              <div className="glass-card p-5 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                <div className="md:col-span-2 space-y-2">
-                  <div className="flex items-center gap-2 text-[#3C6B4D] font-bold text-sm">
-                    <Cpu size={16} className="animate-pulse" />
-                    <span>Domo System Hardware Diagnostics</span>
-                  </div>
-                  <p className="text-[11px] text-[#A3A09B] leading-relaxed font-sans">
-                    Your local computer metrics are scanned: Estimated system RAM at{' '}
-                    <strong className="text-[#ECEBE9] font-mono">{hardwareInfo.ram}</strong> running with{' '}
-                    <strong className="text-[#ECEBE9] font-mono">{hardwareInfo.cores} CPU threads</strong>.{' '}
-                    {hardwareInfo.hasWebGPU ? (
-                      <span className="text-[#3C6B4D] font-bold">Accelerated WebGPU context detected.</span>
-                    ) : (
-                      <span className="text-[#72706C]">WebGPU hardware context is not detected.</span>
-                    )}
-                  </p>
-                  <div className="flex flex-wrap gap-2 pt-1 font-mono text-[10px]">
-                    <span className="bg-[#111213] px-2.5 py-0.5 rounded border border-[#2A2D30] text-[#A3A09B]">
-                      Hardware Level: <strong className="text-[#3C6B4D]">{hardwareInfo.tier.toUpperCase()}</strong>
-                    </span>
-                    <span className="bg-[#111213] px-2.5 py-0.5 rounded border border-[#2A2D30] text-[#A3A09B]">
-                      Recommended Model: <strong className="text-[#3C6B4D]">{hardwareInfo.recommendedModel}</strong>
-                    </span>
-                  </div>
-                </div>
-                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-1.5 text-[11px]">
-                  <div className="flex items-center gap-1.5 font-bold text-[#ECEBE9] font-mono">
-                    <Info size={12} className="text-[#3C6B4D]" />
-                    <span>Advisor Recommendation</span>
-                  </div>
-                  <p className="text-[#A3A09B] text-[10px] italic leading-snug font-sans">
-                    "{hardwareInfo.explanation}"
-                  </p>
-                </div>
-              </div>
-
-              {/* Hardware Compatibility Matrix Grid */}
-              <div className="glass-card p-5 space-y-3">
-                <div className="text-[11px] font-bold font-mono text-[#ECEBE9] uppercase tracking-wider">
-                  Hardware Compatibility Matrix
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {matrixTiers.map((tierData, idx) => (
-                    <div 
-                      key={idx} 
-                      className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3.5 flex flex-col gap-2 relative overflow-hidden"
-                    >
-                      <div className="font-extrabold text-[11px] text-[#ECEBE9] font-mono">
-                        {tierData.tier}
-                      </div>
-                      <div className="space-y-0.5 text-[9px] text-[#A3A09B] font-mono">
-                        <div>Memory: {tierData.ram}</div>
-                        <div>CPU: {tierData.cores}</div>
-                      </div>
-                      <div className={`mt-auto text-[9px] font-mono font-bold px-2 py-1 rounded border text-center ${tierData.style}`}>
-                        {tierData.status}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono">
             {/* Category tabs */}
@@ -887,7 +841,193 @@ export const AIDomoModelLibrary = () => {
             )}
           </div>
         </>
-      ) : (
+      )}
+
+      {activeTab === 'diagnostics' && (
+        <div className="space-y-6">
+          {/* Dynamic Hardware Advisor HUD */}
+          {hardwareInfo && (
+            <div className="glass-card p-5 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              <div className="md:col-span-2 space-y-2">
+                <div className="flex items-center gap-2 text-[#3C6B4D] font-bold text-sm font-mono">
+                  <Cpu size={16} className="animate-pulse" />
+                  <span>Domo System Hardware Diagnostics</span>
+                </div>
+                <p className="text-[11px] text-[#A3A09B] leading-relaxed font-sans">
+                  We analyzed your local system benchmarks: Estimated system memory (RAM) is at{' '}
+                  <strong className="text-[#ECEBE9] font-mono">{hardwareInfo.ram}</strong> running with{' '}
+                  <strong className="text-[#ECEBE9] font-mono">{hardwareInfo.cores} CPU threads</strong>.{' '}
+                  {hardwareInfo.hasWebGPU ? (
+                    <span className="text-[#3C6B4D] font-bold">Accelerated WebGPU context detected.</span>
+                  ) : (
+                    <span className="text-[#72706C]">WebGPU hardware context is not detected.</span>
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1 font-mono text-[10px]">
+                  <span className="bg-[#111213] px-2.5 py-0.5 rounded border border-[#2A2D30] text-[#A3A09B]">
+                    Hardware Level: <strong className="text-[#3C6B4D]">{hardwareInfo.tier.toUpperCase()}</strong>
+                  </span>
+                  <span className="bg-[#111213] px-2.5 py-0.5 rounded border border-[#2A2D30] text-[#A3A09B]">
+                    Recommended Model: <strong className="text-[#3C6B4D]">{hardwareInfo.recommendedModel}</strong>
+                  </span>
+                </div>
+              </div>
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-1.5 text-[11px]">
+                <div className="flex items-center gap-1.5 font-bold text-[#ECEBE9] font-mono">
+                  <Info size={12} className="text-[#3C6B4D]" />
+                  <span>Advisor Recommendation</span>
+                </div>
+                <p className="text-[#A3A09B] text-[10px] italic leading-snug font-sans">
+                  "{hardwareInfo.explanation}"
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Recommended Model Prominent Highlight Card */}
+          {recommendedModelObj && (
+            <div className="glass-card border-[#3C6B4D] bg-gradient-to-br from-[#18191B] to-[#111213] p-5 space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold font-mono bg-[#3C6B4D] text-[#111213] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Recommended Model for your Machine
+                  </span>
+                  <h3 className="font-extrabold text-base text-[#ECEBE9] pt-1">
+                    {recommendedModelObj.name} ({recommendedModelObj.parameters})
+                  </h3>
+                  <p className="text-xs text-[#A3A09B] leading-relaxed max-w-2xl font-sans pt-1">
+                    {recommendedModelObj.description}
+                  </p>
+                </div>
+                
+                {/* Selection / Download trigger on recommendation */}
+                <div className="shrink-0">
+                  {isRecPulling ? (
+                    <div className="flex items-center gap-2 bg-[#111213] border border-[#2A2D30] px-4 py-2 rounded-xl text-xs text-[#A3A09B] font-mono animate-pulse">
+                      <Loader2 size={13} className="animate-spin text-[#3C6B4D]" />
+                      <span>Pulling {pullProgress}%</span>
+                    </div>
+                  ) : isRecInstalled ? (
+                    <button
+                      onClick={() => selectModelForChat(recommendedModelObj.id)}
+                      className={`flex items-center gap-1.5 text-xs font-bold py-2.5 px-4 rounded-xl border transition-all duration-150 active:scale-[0.98] font-mono ${
+                        chatSuccessId === recommendedModelObj.id
+                          ? 'bg-[#3C6B4D]/20 border-[#3C6B4D] text-[#3C6B4D]'
+                          : 'bg-[#3C6B4D] border-[#3C6B4D] text-[#111213] hover:opacity-90'
+                      }`}
+                    >
+                      <Play size={13} />
+                      <span>{chatSuccessId === recommendedModelObj.id ? 'Selected' : 'Use in Chat'}</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => pullModel(recommendedModelObj.id)}
+                      disabled={!!activePullId}
+                      className="btn-primary py-2.5 px-4 text-xs font-mono disabled:opacity-40 disabled:pointer-events-none"
+                    >
+                      <Download size={13} />
+                      <span>Pull Recommended</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick specs for recommendation */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-3 border-t border-[#2A2D30]/60 text-[10px] text-[#A3A09B] font-mono">
+                <div>Disk Space: <strong className="text-[#ECEBE9]">{recommendedModelObj.size}</strong></div>
+                <div>Context Size: <strong className="text-[#ECEBE9]">{recommendedModelObj.features.contextWindow}</strong></div>
+                <div>Coding: <strong className="text-[#ECEBE9]">{recommendedModelObj.features.coding}</strong></div>
+                <div>Speed: <strong className="text-[#ECEBE9]">{recommendedModelObj.features.speed}</strong></div>
+              </div>
+            </div>
+          )}
+
+          {/* Hardware Compatibility Matrix Grid */}
+          <div className="glass-card p-5 space-y-3">
+            <div className="text-[11px] font-bold font-mono text-[#ECEBE9] uppercase tracking-wider">
+              Hardware Compatibility Matrix
+            </div>
+            <p className="text-[11px] text-[#A3A09B] leading-relaxed font-sans">
+              Compare standard offline model size parameters against typical system hardware profiles to choose the correct model:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+              {matrixTiers.map((tierData, idx) => (
+                <div 
+                  key={idx} 
+                  className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3.5 flex flex-col gap-2 relative overflow-hidden"
+                >
+                  <div className="font-extrabold text-[11px] text-[#ECEBE9] font-mono">
+                    {tierData.tier}
+                  </div>
+                  <div className="space-y-0.5 text-[9px] text-[#A3A09B] font-mono">
+                    <div>Memory: {tierData.ram}</div>
+                    <div>CPU: {tierData.cores}</div>
+                  </div>
+                  <div className={`mt-auto text-[9px] font-mono font-bold px-2 py-1 rounded border text-center ${tierData.style}`}>
+                    {tierData.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Catalog Compatibility Lookup Table */}
+          <div className="glass-card p-5 space-y-3">
+            <div className="text-[11px] font-bold font-mono text-[#ECEBE9] uppercase tracking-wider">
+              Full Catalog Compatibility Checklist
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[11px] font-mono text-[#A3A09B] border-collapse">
+                <thead>
+                  <tr className="border-b border-[#2A2D30] text-[#ECEBE9]">
+                    <th className="py-2.5 pr-4">Model Name</th>
+                    <th className="py-2.5 px-4">Parameters</th>
+                    <th className="py-2.5 px-4">RAM Recommendation</th>
+                    <th className="py-2.5 px-4">Compatibility Status</th>
+                    <th className="py-2.5 pl-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#2A2D30]/40">
+                  {MODELS_CATALOG.map(model => {
+                    const compatibility = getModelCompatibility(model);
+                    const isInstalled = installedModels.some(m => m.startsWith(model.id) || model.id.startsWith(m.split(':')[0]));
+
+                    return (
+                      <tr key={model.id} className="hover:bg-[#18191B]/40 transition-colors">
+                        <td className="py-3 pr-4 font-bold text-[#ECEBE9]">{model.name}</td>
+                        <td className="py-3 px-4">{model.parameters} ({model.size})</td>
+                        <td className="py-3 px-4">{model.ramRequired}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-0.5 rounded border text-[9px] ${compatibility.colorClass}`}>
+                            {compatibility.label}
+                          </span>
+                        </td>
+                        <td className="py-3 pl-4 text-right">
+                          {isInstalled ? (
+                            <span className="text-[#3C6B4D] font-bold text-[10px]">Installed ✓</span>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                pullModel(model.id);
+                                setActiveTab('catalog');
+                              }}
+                              className="text-[#3C6B4D] hover:underline font-bold text-[10px]"
+                            >
+                              Download
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'troubleshoot' && (
         /* Troubleshooting Guide Section */
         <div className="glass-card p-6 space-y-6">
           <div className="space-y-2 border-b border-[#2A2D30] pb-4">
