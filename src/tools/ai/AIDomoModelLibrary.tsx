@@ -397,7 +397,7 @@ export const AIDomoModelLibrary = () => {
         <div>
           <h2 className="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
             <Layers className="text-teal-400" />
-            <span>Local Ollama Model Library</span>
+            <span>Local Domo Model Library</span>
           </h2>
           <p className="text-xs text-slate-400 mt-1">
             Browse offline-compatible LLM profiles, see recommended hardware requirements, and pull models directly.
