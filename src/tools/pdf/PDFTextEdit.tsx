@@ -3,7 +3,7 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { 
   Upload, Check, ShieldAlert, Sliders, Search, 
-  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle
+  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical
 } from 'lucide-react';
 
 // Dynamically load PDF.js script from CDN
@@ -286,6 +286,49 @@ export const PDFTextEditTool = () => {
     });
   };
 
+  // Drag handler function
+  const handleDragStart = (e: React.MouseEvent, item: TextItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const initialItemX = item.x;
+    const initialItemY = item.y;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      
+      // Calculate delta in PDF coordinate space (Y axis is inverted relative to screen)
+      const pdfDx = dx / scale;
+      const pdfDy = -dy / scale;
+
+      const pageIndex = currentPage - 1;
+      setAllTextItems(prev => {
+        const updated = (prev[pageIndex] || []).map(t => {
+          if (t.id === item.id) {
+            return {
+              ...t,
+              x: initialItemX + pdfDx,
+              y: initialItemY + pdfDy
+            };
+          }
+          return t;
+        });
+        return { ...prev, [pageIndex]: updated };
+      });
+    };
+
+    const handleMouseUp = () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
   // Delete text block
   const handleDeleteItem = (id: string) => {
     const pageIndex = currentPage - 1;
@@ -551,6 +594,15 @@ export const PDFTextEditTool = () => {
             }}
             className="group"
           >
+            {/* Grab Drag Handle */}
+            <div
+              onMouseDown={(e) => handleDragStart(e, item)}
+              className="absolute -left-5 top-1/2 -translate-y-1/2 p-0.5 bg-slate-900 border border-slate-800 text-slate-400 rounded cursor-move hover:text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow"
+              title="Drag to move text block"
+            >
+              <GripVertical size={11} />
+            </div>
+
             <input
               type="text"
               value={item.text}
@@ -564,7 +616,7 @@ export const PDFTextEditTool = () => {
                 fontFamily: item.fontFamily === 'Times-Roman' ? 'serif' : item.fontFamily === 'Courier' ? 'monospace' : 'sans-serif',
                 fontWeight: isBold ? 'bold' : 'normal',
                 fontStyle: isItalic ? 'italic' : 'normal',
-                paddingRight: '8px' // Prevents cursor clipping on last letters
+                paddingRight: '8px'
               }}
               className={`w-full h-full font-medium px-1 py-0.5 rounded border transition-all focus:outline-none ${inputClass} ${
                 isActive 
@@ -579,7 +631,7 @@ export const PDFTextEditTool = () => {
                 e.stopPropagation();
                 handleDeleteItem(item.id);
               }}
-              className="absolute -top-3 -right-3 p-0.5 bg-rose-900 border border-rose-800 text-rose-200 rounded-full hover:bg-rose-850 opacity-0 group-hover:opacity-100 transition-opacity z-20"
+              className="absolute -top-3 -right-3 p-0.5 bg-rose-900 border border-rose-800 text-rose-200 rounded-full hover:bg-rose-850 opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow"
               title="Delete block"
             >
               <Trash2 size={10} />
