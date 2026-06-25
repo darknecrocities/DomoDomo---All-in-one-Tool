@@ -1,5 +1,6 @@
 import React from 'react';
 import { Plus, Play, FileCode, DollarSign } from 'lucide-react';
+import type { SkillDef } from '../DomoSkillCreator';
 
 interface AgentConfig {
   id: string;
@@ -14,6 +15,7 @@ interface AgentConfig {
   timingsMs: number;
   tokensUsed: number;
   estimatedCost: number;
+  attachedSkillId?: string;
 }
 
 interface MultiIdeDashboardProps {
@@ -37,6 +39,8 @@ interface MultiIdeDashboardProps {
   handleWriteArtifactToWorkspace: (art: any) => void;
   highlightCode: (code: string) => string;
   handleMountDirectory: () => void;
+  customSkills: SkillDef[];
+  premadeSkills: SkillDef[];
 }
 
 export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
@@ -59,7 +63,9 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
   mcpConnected,
   handleWriteArtifactToWorkspace,
   highlightCode,
-  handleMountDirectory
+  handleMountDirectory,
+  customSkills,
+  premadeSkills
 }) => {
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -157,31 +163,44 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
               agent.isExecuting ? 'border-emerald-500/40 shadow-emerald-500/5 shadow-lg scale-[1.01]' : 'border-[#2A2D30]'
             }`}
           >
-            {/* Agent Header */}
-            <div className="flex justify-between items-start pb-2.5 border-b border-[#2A2D30]">
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${agent.isExecuting ? 'bg-emerald-500 animate-pulse' : 'bg-[#72706C]'}`} />
-                  <h4 className="text-xs font-bold text-[#ECEBE9]">{agent.name}</h4>
+            {/* Agent Header (Inline Editable) */}
+            <div className="flex justify-between items-start pb-2.5 border-b border-[#2A2D30] gap-2">
+              <div className="space-y-1 w-full text-left">
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${agent.isExecuting ? 'bg-emerald-500 animate-pulse' : 'bg-[#72706C]'}`} />
+                  <input
+                    type="text"
+                    value={agent.name}
+                    onChange={(e) => handleUpdateAgent(agent.id, 'name', e.target.value)}
+                    className="bg-transparent border-b border-transparent hover:border-[#2A2D30] focus:border-[#3C6B4D] text-xs font-bold text-[#ECEBE9] px-1 focus:outline-none w-full"
+                    placeholder="Agent Name"
+                  />
                 </div>
-                <span className="text-[10px] text-[#72706C] font-semibold">{agent.role}</span>
+                <input
+                  type="text"
+                  value={agent.role}
+                  onChange={(e) => handleUpdateAgent(agent.id, 'role', e.target.value)}
+                  className="bg-transparent border-b border-transparent hover:border-[#2A2D30] focus:border-[#3C6B4D] text-[10px] text-[#A3A09B] px-1 focus:outline-none w-full font-semibold"
+                  placeholder="Agent Role / Responsibility"
+                />
               </div>
               <button
                 onClick={() => handleRemoveAgent(agent.id)}
-                className="text-[#72706C] hover:text-rose-500 text-[10px]"
+                className="text-[#72706C] hover:text-rose-500 text-[10px] shrink-0 p-1"
+                title="Remove Agent"
               >
                 ✕
               </button>
             </div>
 
             {/* Agent Config HUD */}
-            <div className="py-2.5 grid grid-cols-2 gap-2 border-b border-[#2A2D30]/60">
+            <div className="py-2.5 grid grid-cols-2 gap-2 border-b border-[#2A2D30]/60 text-left">
               <div className="space-y-1">
                 <label className="text-[9px] uppercase font-bold text-[#72706C] block">Model</label>
                 <select
                   value={agent.model}
                   onChange={(e) => handleUpdateAgent(agent.id, 'model', e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-md text-[10px] text-[#ECEBE9] px-1 py-0.5"
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-md text-[10px] text-[#ECEBE9] px-1 py-0.5 focus:outline-none"
                 >
                   <option value="">Ollama Default</option>
                   {downloadedModels.map(m => <option key={m} value={m}>{m}</option>)}
@@ -209,6 +228,37 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
                     );
                   })}
                 </div>
+              </div>
+            </div>
+
+            {/* Prompt Template & Attached Skill */}
+            <div className="py-2.5 border-b border-[#2A2D30]/60 grid grid-cols-1 gap-2 text-left">
+              <div className="space-y-1">
+                <label className="text-[9px] uppercase font-bold text-[#72706C] block">Attached Skill (Optional)</label>
+                <select
+                  value={agent.attachedSkillId || ''}
+                  onChange={(e) => handleUpdateAgent(agent.id, 'attachedSkillId', e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-md text-[10px] text-[#ECEBE9] px-1.5 py-0.5 focus:outline-none"
+                >
+                  <option value="">None / Default</option>
+                  <optgroup label="Pre-made Skills">
+                    {premadeSkills.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
+                  </optgroup>
+                  <optgroup label="Custom Library">
+                    {customSkills.map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
+                  </optgroup>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[9px] uppercase font-bold text-[#72706C] block">Prompt Template</label>
+                <textarea
+                  value={agent.promptTemplate}
+                  onChange={(e) => handleUpdateAgent(agent.id, 'promptTemplate', e.target.value)}
+                  rows={2}
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-md text-[10px] text-[#ECEBE9] px-2 py-1 focus:outline-none focus:border-[#3C6B4D] resize-none leading-relaxed font-mono"
+                  placeholder="System instruction prompt for this agent..."
+                />
               </div>
             </div>
 

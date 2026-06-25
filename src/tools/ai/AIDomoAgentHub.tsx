@@ -17,8 +17,7 @@ import {
 import { aiService, PROVIDERS } from '../../utils/aiService';
 
 // Extracted Sub-Components
-import { AgentSkillsCreator } from './components/AgentSkillsCreator';
-import type { SkillDef } from './components/AgentSkillsCreator';
+import type { SkillDef } from './DomoSkillCreator';
 import { AgentPermissionsManager } from './components/AgentPermissionsManager';
 import { MultiIdeDashboard } from './components/MultiIdeDashboard';
 import { McpConnectionManager } from './components/McpConnectionManager';
@@ -159,7 +158,7 @@ const getCorrectedFilePath = (path: string) => {
 };
 
 export const AIDomoAgentHub = () => {
-  const [activeTab, setActiveTab] = useState<'ide' | 'orchestrator' | 'skills' | 'permissions' | 'models' | 'setup'>('ide');
+  const [activeTab, setActiveTab] = useState<'ide' | 'orchestrator' | 'permissions' | 'models' | 'setup'>('ide');
   const [osTab, setOsTab] = useState<'mac' | 'win' | 'linux'>('mac');
   
   const [ollamaActive, setOllamaActive] = useState(false);
@@ -195,7 +194,6 @@ export const AIDomoAgentHub = () => {
     external_apis: false
   });
 
-  // Agent definitions for Orchestrator
   interface AgentConfig {
     id: string;
     name: string;
@@ -209,6 +207,7 @@ export const AIDomoAgentHub = () => {
     timingsMs: number;
     tokensUsed: number;
     estimatedCost: number;
+    attachedSkillId?: string;
   }
 
   const [agents, setAgents] = useState<AgentConfig[]>([
@@ -256,15 +255,19 @@ export const AIDomoAgentHub = () => {
     }
   ]);
 
-  // Skill Creator UI state
-  const [skillForm, setSkillForm] = useState<SkillDef>({
-    name: 'New Custom Skill',
-    description: 'A modular custom skillset built visually.',
-    tools: ['file_editor'],
-    permissions: ['read_files'],
-    rules: ['Avoid security loopholes'],
-    systemInstructions: 'You are an assistant expert skill module.'
-  });
+  // Local library custom skills state
+  const [customSkills, setCustomSkills] = useState<SkillDef[]>([]);
+
+  useEffect(() => {
+    const raw = localStorage.getItem('domodomo_custom_skills');
+    if (raw) {
+      try {
+        setCustomSkills(JSON.parse(raw));
+      } catch (e) {
+        console.error('Error loading custom skills:', e);
+      }
+    }
+  }, []);
 
   const [orchestratorPrompt, setOrchestratorPrompt] = useState<string>('');
   const [isOrchestrating, setIsOrchestrating] = useState<boolean>(false);
@@ -527,14 +530,30 @@ export const AIDomoAgentHub = () => {
           const agentModel = agent.model || selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b');
           logToBlackboard('System', `⏱️ Running agentic workspace loop on ${agent.name} (${agent.role}) using ${agentModel}...`, 'system');
           
+          // Resolve attached skill if present
+          let skillInstructions = '';
+          let skillRules = '';
+          let skillPermissions: string[] = [];
+          if (agent.attachedSkillId) {
+            const skill = [...PREMADE_SKILLS, ...customSkills].find(s => s.name === agent.attachedSkillId);
+            if (skill) {
+              skillInstructions = `Attached Skill Instructions:\n${skill.systemInstructions}\n`;
+              if (skill.rules && skill.rules.length > 0) {
+                skillRules = `Skill Rules & Constraints:\n${skill.rules.map(r => `- ${r}`).join('\n')}\n`;
+              }
+              skillPermissions = skill.permissions || [];
+            }
+          }
+
+          const combinedPermissions = Array.from(new Set([...agent.permissions, ...skillPermissions]));
+
           const systemPrompt = `${agent.promptTemplate}
 
-You have active access to the local workspace via these tool call tags:
-- To read a file: [READ_FILE: relative/path/to/file]
-- To write/create/update a file: [WRITE_FILE: relative/path/to/file]\n\`\`\`\ncontent\n\`\`\`
-- To list directory contents: [LIST_DIRECTORY]
-- To run a terminal command (compile, test, run scripts): [EXECUTE_COMMAND: command]
+${skillInstructions}
+${skillRules}
 
+You have active access to the local workspace via these tool call tags:
+${combinedPermissions.includes('read_files') ? '- To read a file: [READ_FILE: relative/path/to/file]\n' : ''}${combinedPermissions.includes('write_files') ? '- To write/create/update a file: [WRITE_FILE: relative/path/to/file]\n\`\`\`\ncontent\n\`\`\`\n' : ''}${combinedPermissions.includes('read_files') ? '- To list directory contents: [LIST_DIRECTORY]\n' : ''}${combinedPermissions.includes('execute_commands') ? '- To run a terminal command (compile, test, run scripts): [EXECUTE_COMMAND: command]\n' : ''}
 Examples of how to use tools:
 1. To write a file:
 [WRITE_FILE: src/index.html]
@@ -616,7 +635,20 @@ When you are fully finished with your task (or if no tool calls are needed), out
           setAgents(prev => prev.map(a => a.id === agent.id ? { ...a, isExecuting: true, ideContent: '// Analyzing parallel prompt...' } : a));
           const agentModel = agent.model || selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b');
           
-          const systemPrompt = `${agent.promptTemplate}\n\nTask context: Parallel solver.`;
+          // Resolve attached skill if present
+          let skillInstructions = '';
+          let skillRules = '';
+          if (agent.attachedSkillId) {
+            const skill = [...PREMADE_SKILLS, ...customSkills].find(s => s.name === agent.attachedSkillId);
+            if (skill) {
+              skillInstructions = `\nAttached Skill Instructions:\n${skill.systemInstructions}\n`;
+              if (skill.rules && skill.rules.length > 0) {
+                skillRules = `Skill Rules & Constraints:\n${skill.rules.map(r => `- ${r}`).join('\n')}\n`;
+              }
+            }
+          }
+
+          const systemPrompt = `${agent.promptTemplate}${skillInstructions}${skillRules}\n\nTask context: Parallel solver.`;
           const userPrompt = `Goal Task: ${orchestratorPrompt}`;
 
           const startTime = Date.now();
@@ -1244,7 +1276,7 @@ file_content
 
       {/* Navigation tabs */}
       <div className="flex border-b border-[#2A2D30] gap-4 overflow-x-auto">
-        {(['ide', 'orchestrator', 'skills', 'permissions', 'models', 'setup'] as const).map((tab) => (
+        {(['ide', 'orchestrator', 'permissions', 'models', 'setup'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -1256,7 +1288,6 @@ file_content
           >
             {tab === 'ide' ? 'Agent Workspace' : 
              tab === 'orchestrator' ? 'Multi-Agent Orchestrator' : 
-             tab === 'skills' ? 'Skills Creator' : 
              tab === 'permissions' ? 'Boundaries & Permissions' : 
              tab === 'models' ? 'MCP & Catalog' : 'Setup Guide'}
           </button>
@@ -1436,14 +1467,7 @@ file_content
           handleWriteArtifactToWorkspace={handleWriteArtifactToWorkspace}
           highlightCode={highlightCode}
           handleMountDirectory={handleMountDirectory}
-        />
-      )}
-
-      {/* Skills Tab (Subcomponent) */}
-      {activeTab === 'skills' && (
-        <AgentSkillsCreator
-          skillForm={skillForm}
-          setSkillForm={setSkillForm}
+          customSkills={customSkills}
           premadeSkills={PREMADE_SKILLS}
         />
       )}
