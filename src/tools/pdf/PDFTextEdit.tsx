@@ -694,12 +694,18 @@ export const PDFTextEditTool = () => {
         }
       };
 
-      for (const pageIdxStr of Object.keys(allTextItems)) {
-        const pageIdx = parseInt(pageIdxStr, 10);
-        if (pageIdx >= pages.length) continue;
-
+      for (let pageIdx = 0; pageIdx < pages.length; pageIdx++) {
         const page = pages[pageIdx];
-        const items = allTextItems[pageIdx];
+        const items = allTextItems[pageIdx] || [];
+        const strokes = allStrokes[pageIdx] || [];
+
+        if (items.length === 0 && strokes.length === 0) continue;
+
+        // Retrieve CropBox and MediaBox to account for offsets (e.g. cropped/shifted pages)
+        const cropBox = page.getCropBox() || page.getMediaBox();
+        const mediaBox = page.getMediaBox();
+        const xOffset = cropBox && mediaBox ? cropBox.x - mediaBox.x : 0;
+        const yOffset = cropBox && mediaBox ? cropBox.y - mediaBox.y : 0;
 
         // 1. Draw edited text overlays
         for (const item of items) {
@@ -707,8 +713,8 @@ export const PDFTextEditTool = () => {
           if (isChanged || item.isNew) {
             if (!item.isNew && item.originalText.trim().length > 0) {
               page.drawRectangle({
-                x: item.x - 4,
-                y: item.y - 3,
+                x: item.x + xOffset - 4,
+                y: item.y + yOffset - 3,
                 width: item.width + 8,
                 height: item.fontSize * 1.35,
                 color: rgb(1, 1, 1),
@@ -721,8 +727,8 @@ export const PDFTextEditTool = () => {
               const selectedFont = familyMap[item.fontStyle || 'regular'] || familyMap['regular'];
               
               page.drawText(item.text, {
-                x: item.x,
-                y: item.y,
+                x: item.x + xOffset,
+                y: item.y + yOffset,
                 size: item.fontSize,
                 font: selectedFont,
                 color: rgb(0, 0, 0),
@@ -733,7 +739,6 @@ export const PDFTextEditTool = () => {
         }
 
         // 2. Draw paint brush vectors
-        const strokes = allStrokes[pageIdx] || [];
         for (const stroke of strokes) {
           if (stroke.points.length < 2) continue;
           
@@ -746,8 +751,8 @@ export const PDFTextEditTool = () => {
             const b = parseInt(stroke.color.slice(5, 7), 16) / 255;
             
             page.drawLine({
-              start: { x: p1.x, y: p1.y },
-              end: { x: p2.x, y: p2.y },
+              start: { x: p1.x + xOffset, y: p1.y + yOffset },
+              end: { x: p2.x + xOffset, y: p2.y + yOffset },
               thickness: stroke.size,
               color: rgb(r, g, b)
             });
