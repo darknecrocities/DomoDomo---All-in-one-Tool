@@ -23,7 +23,7 @@ DomoDomo is built as a **Zero-Server, Local-First application**. The primary des
 graph TD
     Client[Browser Tab Sandbox] --> Router[HashRouter Pages]
     Router --> Shell[Shell Layout Component]
-    Shell --> Tools[90+ Modular Tools]
+    Shell --> Tools[110+ Modular Tools]
     Tools --> WASM[WASM Engines - FFmpeg, PDF-lib]
     Tools --> AI[Local AI Engine - Ollama, Transformers.js]
     AI --> LocalMemory[Local Memory Manager]
