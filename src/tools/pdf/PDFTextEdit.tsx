@@ -37,6 +37,7 @@ interface TextItem {
   height: number;
   fontName: string;
   fontFamily: 'Helvetica' | 'Times-Roman' | 'Courier';
+  fontStyle?: 'regular' | 'bold' | 'italic' | 'bold-italic';
   isNew?: boolean;
 }
 
@@ -63,6 +64,7 @@ export const PDFTextEditTool = () => {
   const [customText, setCustomText] = useState('New Text Block');
   const [customFontSize, setCustomFontSize] = useState(12);
   const [customFontFamily, setCustomFontFamily] = useState<'Helvetica' | 'Times-Roman' | 'Courier'>('Helvetica');
+  const [customFontStyle, setCustomFontStyle] = useState<'regular' | 'bold' | 'italic' | 'bold-italic'>('regular');
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -153,6 +155,18 @@ export const PDFTextEditTool = () => {
             fontFamily = 'Courier';
           }
 
+          let fontStyle: 'regular' | 'bold' | 'italic' | 'bold-italic' = 'regular';
+          const nameLower = (item.fontName || '').toLowerCase();
+          const hasBold = nameLower.includes('bold') || nameLower.includes('bd') || nameLower.includes('w7');
+          const hasItalic = nameLower.includes('italic') || nameLower.includes('oblique') || nameLower.includes('it');
+          if (hasBold && hasItalic) {
+            fontStyle = 'bold-italic';
+          } else if (hasBold) {
+            fontStyle = 'bold';
+          } else if (hasItalic) {
+            fontStyle = 'italic';
+          }
+
           return {
             id: `text-${pageIndex}-${idx}`,
             pageIndex,
@@ -164,7 +178,8 @@ export const PDFTextEditTool = () => {
             width: item.width || 60,
             height: item.height || fontSize || 12,
             fontName: item.fontName || 'Helvetica',
-            fontFamily
+            fontFamily,
+            fontStyle
           };
         });
 
@@ -182,9 +197,17 @@ export const PDFTextEditTool = () => {
 
   const currentPageItems = allTextItems[currentPage - 1] || [];
 
-  const estimateWidth = (text: string, fontSize: number, fontFamily: string) => {
-    const charRatio = fontFamily === 'Courier' ? 0.6 : 0.52;
-    return text.length * fontSize * charRatio;
+  const estimateWidth = (text: string, fontSize: number, fontFamily: string, fontStyle?: string) => {
+    const isCourier = fontFamily === 'Courier';
+    const isBold = fontStyle === 'bold' || fontStyle === 'bold-italic';
+    const isItalic = fontStyle === 'italic' || fontStyle === 'bold-italic';
+    
+    let charRatio = isCourier ? 0.6 : 0.53;
+    if (isBold) charRatio += 0.05;
+    if (isItalic) charRatio += 0.02;
+    
+    // Add extra padding boundary to prevent horizontal cutoffs completely
+    return (text.length * fontSize * charRatio) + 22;
   };
 
   // Update text item value
@@ -193,7 +216,7 @@ export const PDFTextEditTool = () => {
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.id === id) {
-          const nextWidth = estimateWidth(newText, item.fontSize, item.fontFamily);
+          const nextWidth = estimateWidth(newText, item.fontSize, item.fontFamily, item.fontStyle);
           return { 
             ...item, 
             text: newText,
@@ -212,7 +235,7 @@ export const PDFTextEditTool = () => {
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.id === id) {
-          const nextWidth = estimateWidth(item.text, item.fontSize, font);
+          const nextWidth = estimateWidth(item.text, item.fontSize, font, item.fontStyle);
           return { 
             ...item, 
             fontFamily: font,
@@ -231,10 +254,29 @@ export const PDFTextEditTool = () => {
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.id === id) {
-          const nextWidth = estimateWidth(item.text, size, item.fontFamily);
+          const nextWidth = estimateWidth(item.text, size, item.fontFamily, item.fontStyle);
           return { 
             ...item, 
             fontSize: size,
+            width: nextWidth
+          };
+        }
+        return item;
+      });
+      return { ...prev, [pageIndex]: updated };
+    });
+  };
+
+  // Update font style
+  const handleFontStyleChange = (id: string, styleVal: 'regular' | 'bold' | 'italic' | 'bold-italic') => {
+    const pageIndex = currentPage - 1;
+    setAllTextItems(prev => {
+      const updated = (prev[pageIndex] || []).map(item => {
+        if (item.id === id) {
+          const nextWidth = estimateWidth(item.text, item.fontSize, item.fontFamily, styleVal);
+          return {
+            ...item,
+            fontStyle: styleVal,
             width: nextWidth
           };
         }
@@ -311,13 +353,18 @@ export const PDFTextEditTool = () => {
       // 2. Otherwise match the style of the nearest block (within 100 points) and create a new block
       let finalFontSize = customFontSize;
       let finalFontFamily = customFontFamily;
+      let finalFontStyle = customFontStyle;
       if (closestItem && minDistance <= 100) {
         finalFontSize = closestItem.fontSize;
         finalFontFamily = closestItem.fontFamily;
-        // Optionally update the toolbar/settings state too
+        finalFontStyle = closestItem.fontStyle || 'regular';
+        
         setCustomFontSize(closestItem.fontSize);
         setCustomFontFamily(closestItem.fontFamily);
+        setCustomFontStyle(closestItem.fontStyle || 'regular');
       }
+
+      const calculatedWidth = estimateWidth(customText, finalFontSize, finalFontFamily, finalFontStyle);
 
       const newItem: TextItem = {
         id: `custom-${pageIndex}-${Date.now()}`,
@@ -327,10 +374,11 @@ export const PDFTextEditTool = () => {
         x: pdfX,
         y: pdfY,
         fontSize: finalFontSize,
-        width: customText.length * (finalFontSize * 0.65),
+        width: calculatedWidth,
         height: finalFontSize * 1.2,
         fontName: 'Helvetica',
         fontFamily: finalFontFamily,
+        fontStyle: finalFontStyle,
         isNew: true
       };
 
@@ -351,10 +399,12 @@ export const PDFTextEditTool = () => {
     setAllTextItems(prev => {
       const updated = (prev[pageIndex] || []).map(item => {
         if (item.text.includes(searchQuery)) {
+          const nextText = item.text.replaceAll(searchQuery, replaceQuery);
+          const nextWidth = estimateWidth(nextText, item.fontSize, item.fontFamily, item.fontStyle);
           return {
             ...item,
-            text: item.text.replaceAll(searchQuery, replaceQuery),
-            width: Math.max(item.width, item.text.replaceAll(searchQuery, replaceQuery).length * (item.fontSize * 0.65))
+            text: nextText,
+            width: Math.max(item.width, nextWidth)
           };
         }
         return item;
@@ -374,15 +424,41 @@ export const PDFTextEditTool = () => {
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
       
-      // Embed standard font options
+      // Embed standard font variants
       const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const helveticaOblique = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+      const helveticaBoldOblique = await pdfDoc.embedFont(StandardFonts.HelveticaBoldOblique);
+
       const timesRoman = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+      const timesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+      const timesRomanItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
+      const timesRomanBoldItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
+
       const courier = await pdfDoc.embedFont(StandardFonts.Courier);
+      const courierBold = await pdfDoc.embedFont(StandardFonts.CourierBold);
+      const courierOblique = await pdfDoc.embedFont(StandardFonts.CourierOblique);
+      const courierBoldOblique = await pdfDoc.embedFont(StandardFonts.CourierBoldOblique);
 
       const fontMap = {
-        'Helvetica': helvetica,
-        'Times-Roman': timesRoman,
-        'Courier': courier
+        'Helvetica': {
+          'regular': helvetica,
+          'bold': helveticaBold,
+          'italic': helveticaOblique,
+          'bold-italic': helveticaBoldOblique
+        },
+        'Times-Roman': {
+          'regular': timesRoman,
+          'bold': timesRomanBold,
+          'italic': timesRomanItalic,
+          'bold-italic': timesRomanBoldItalic
+        },
+        'Courier': {
+          'regular': courier,
+          'bold': courierBold,
+          'italic': courierOblique,
+          'bold-italic': courierBoldOblique
+        }
       };
 
       for (const pageIdxStr of Object.keys(allTextItems)) {
@@ -395,7 +471,7 @@ export const PDFTextEditTool = () => {
         for (const item of items) {
           const isChanged = item.text !== item.originalText;
           if (isChanged || item.isNew) {
-            // Draw covering rectangle
+            // Draw covering white rectangle
             if (!item.isNew && item.originalText.trim().length > 0) {
               page.drawRectangle({
                 x: item.x - 2,
@@ -406,9 +482,11 @@ export const PDFTextEditTool = () => {
               });
             }
 
-            // Draw new text with selected font
+            // Draw new text with selected font family and style variant
             if (item.text.trim().length > 0) {
-              const selectedFont = fontMap[item.fontFamily] || helvetica;
+              const familyMap = fontMap[item.fontFamily] || fontMap['Helvetica'];
+              const selectedFont = familyMap[item.fontStyle || 'regular'] || familyMap['regular'];
+              
               page.drawText(item.text, {
                 x: item.x,
                 y: item.y,
@@ -451,12 +529,15 @@ export const PDFTextEditTool = () => {
 
         let inputClass = "";
         if (shouldShowOpaque) {
-          inputClass = "bg-white border-[#4E8E5E] text-slate-950 shadow-sm z-10";
+          inputClass = "bg-white border-[#4E8E5E] text-slate-950 shadow-sm z-10 animate-fadeIn";
         } else if (highlightAll) {
           inputClass = "bg-[#4E8E5E]/5 border-dashed border-[#4E8E5E]/30 text-transparent hover:bg-[#4E8E5E]/15 hover:border-[#4E8E5E]/60 hover:text-slate-900/70";
         } else {
           inputClass = "bg-transparent text-transparent border-transparent hover:bg-[#4E8E5E]/10 hover:border-[#4E8E5E]/40 hover:text-slate-900/60";
         }
+
+        const isBold = item.fontStyle === 'bold' || item.fontStyle === 'bold-italic';
+        const isItalic = item.fontStyle === 'italic' || item.fontStyle === 'bold-italic';
 
         return (
           <div
@@ -465,8 +546,8 @@ export const PDFTextEditTool = () => {
               position: 'absolute',
               left: `${vx}px`,
               top: `${vy - itemHeight}px`,
-              width: `${Math.max(itemWidth, 65)}px`,
-              height: `${Math.max(itemHeight + 4, 18)}px`,
+              width: `${Math.max(itemWidth, 75)}px`,
+              height: `${Math.max(itemHeight + 5, 20)}px`,
             }}
             className="group"
           >
@@ -480,7 +561,10 @@ export const PDFTextEditTool = () => {
               }}
               style={{
                 fontSize: `${item.fontSize * scale}px`,
-                fontFamily: item.fontFamily === 'Times-Roman' ? 'serif' : item.fontFamily === 'Courier' ? 'monospace' : 'sans-serif'
+                fontFamily: item.fontFamily === 'Times-Roman' ? 'serif' : item.fontFamily === 'Courier' ? 'monospace' : 'sans-serif',
+                fontWeight: isBold ? 'bold' : 'normal',
+                fontStyle: isItalic ? 'italic' : 'normal',
+                paddingRight: '8px' // Prevents cursor clipping on last letters
               }}
               className={`w-full h-full font-medium px-1 py-0.5 rounded border transition-all focus:outline-none ${inputClass} ${
                 isActive 
@@ -511,7 +595,7 @@ export const PDFTextEditTool = () => {
   const activeItem = currentPageItems.find(item => item.id === activeItemId);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left animate-fadeIn">
       {/* Canvas workspace */}
       <div className="lg:col-span-8 flex flex-col gap-6">
         <div className="glass-card p-6 flex flex-col gap-4 min-h-[500px]">
@@ -652,6 +736,19 @@ export const PDFTextEditTool = () => {
                       />
                     </div>
 
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] text-slate-400 font-bold">FONT FAMILY</label>
+                      <select
+                        value={activeItem.fontFamily}
+                        onChange={(e) => handleFontChange(activeItem.id, e.target.value as any)}
+                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
+                      >
+                        <option value="Helvetica">Helvetica (Sans-Serif)</option>
+                        <option value="Times-Roman">Times (Serif)</option>
+                        <option value="Courier">Courier (Monospace)</option>
+                      </select>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-2">
                       <div className="flex flex-col gap-1">
                         <label className="text-[10px] text-slate-400 font-bold">FONT SIZE</label>
@@ -664,15 +761,16 @@ export const PDFTextEditTool = () => {
                       </div>
                       
                       <div className="flex flex-col gap-1">
-                        <label className="text-[10px] text-slate-400 font-bold">FONT STYLE</label>
+                        <label className="text-[10px] text-slate-400 font-bold">FONT WEIGHT/STYLE</label>
                         <select
-                          value={activeItem.fontFamily}
-                          onChange={(e) => handleFontChange(activeItem.id, e.target.value as any)}
+                          value={activeItem.fontStyle || 'regular'}
+                          onChange={(e) => handleFontStyleChange(activeItem.id, e.target.value as any)}
                           className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none"
                         >
-                          <option value="Helvetica">Helvetica (Sans-Serif)</option>
-                          <option value="Times-Roman">Times (Serif)</option>
-                          <option value="Courier">Courier (Monospace)</option>
+                          <option value="regular">Regular</option>
+                          <option value="bold">Bold</option>
+                          <option value="italic">Italic</option>
+                          <option value="bold-italic">Bold Italic</option>
                         </select>
                       </div>
                     </div>
@@ -702,6 +800,19 @@ export const PDFTextEditTool = () => {
                     />
                   </div>
 
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-slate-500 font-semibold">FONT FAMILY</label>
+                    <select
+                      value={customFontFamily}
+                      onChange={(e) => setCustomFontFamily(e.target.value as any)}
+                      className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
+                    >
+                      <option value="Helvetica">Helvetica</option>
+                      <option value="Times-Roman">Times</option>
+                      <option value="Courier">Courier</option>
+                    </select>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex flex-col gap-1">
                       <label className="text-[10px] text-slate-500 font-semibold">FONT SIZE</label>
@@ -716,13 +827,14 @@ export const PDFTextEditTool = () => {
                     <div className="flex flex-col gap-1">
                       <label className="text-[10px] text-slate-500 font-semibold">FONT STYLE</label>
                       <select
-                        value={customFontFamily}
-                        onChange={(e) => setCustomFontFamily(e.target.value as any)}
+                        value={customFontStyle}
+                        onChange={(e) => setCustomFontStyle(e.target.value as any)}
                         className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none"
                       >
-                        <option value="Helvetica">Helvetica</option>
-                        <option value="Times-Roman">Times</option>
-                        <option value="Courier">Courier</option>
+                        <option value="regular">Regular</option>
+                        <option value="bold">Bold</option>
+                        <option value="italic">Italic</option>
+                        <option value="bold-italic">Bold Italic</option>
                       </select>
                     </div>
                   </div>
