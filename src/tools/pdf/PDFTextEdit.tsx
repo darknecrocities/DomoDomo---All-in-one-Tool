@@ -711,16 +711,15 @@ export const PDFTextEditTool = () => {
         for (const item of items) {
           const isChanged = item.text !== item.originalText;
           if (isChanged || item.isNew) {
-            if (!item.isNew && item.originalText.trim().length > 0) {
-              page.drawRectangle({
-                x: item.x + xOffset - 4,
-                y: item.y + yOffset - 3,
-                width: item.width + 8,
-                height: item.fontSize * 1.35,
-                color: rgb(1, 1, 1),
-                rotate: degrees(item.rotation || 0)
-              });
-            }
+            // Always draw a white background rectangle behind any edited or new text block to match the editor UI behavior
+            page.drawRectangle({
+              x: item.x + xOffset - 4,
+              y: item.y + yOffset - 3,
+              width: item.width + 8,
+              height: item.fontSize * 1.35,
+              color: rgb(1, 1, 1),
+              rotate: degrees(item.rotation || 0)
+            });
 
             if (item.text.trim().length > 0) {
               const familyMap = fontMap[item.fontFamily] || fontMap['Helvetica'];
