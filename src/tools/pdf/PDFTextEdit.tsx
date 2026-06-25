@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { 
   Upload, Check, ShieldAlert, Sliders, Search, 
-  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical, Paintbrush, Eraser
+  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical, Paintbrush, Eraser, RotateCw
 } from 'lucide-react';
 
 // Dynamically load PDF.js script from CDN
@@ -38,6 +38,7 @@ interface TextItem {
   fontName: string;
   fontFamily: 'Helvetica' | 'Times-Roman' | 'Courier';
   fontStyle?: 'regular' | 'bold' | 'italic' | 'bold-italic';
+  rotation?: number; // angle in degrees
   isNew?: boolean;
 }
 
@@ -80,6 +81,7 @@ export const PDFTextEditTool = () => {
   const [customFontSize, setCustomFontSize] = useState(12);
   const [customFontFamily, setCustomFontFamily] = useState<'Helvetica' | 'Times-Roman' | 'Courier'>('Helvetica');
   const [customFontStyle, setCustomFontStyle] = useState<'regular' | 'bold' | 'italic' | 'bold-italic'>('regular');
+  const [customRotation, setCustomRotation] = useState<number>(0);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -231,6 +233,14 @@ export const PDFTextEditTool = () => {
             fontStyle = 'italic';
           }
 
+          // Extract initial rotation from transformation matrix if possible
+          // transform[0] = cos(a) * scaleX, transform[1] = sin(a) * scaleX
+          let rotation = 0;
+          if (transform[0] !== 0 || transform[1] !== 0) {
+            const angle = Math.round(Math.atan2(transform[1], transform[0]) * (180 / Math.PI));
+            rotation = angle;
+          }
+
           return {
             id: `text-${pageIndex}-${idx}`,
             pageIndex,
@@ -243,7 +253,8 @@ export const PDFTextEditTool = () => {
             height: item.height || fontSize || 12,
             fontName: item.fontName || 'Helvetica',
             fontFamily,
-            fontStyle
+            fontStyle,
+            rotation
           };
         });
 
@@ -342,6 +353,23 @@ export const PDFTextEditTool = () => {
             ...item,
             fontStyle: styleVal,
             width: nextWidth
+          };
+        }
+        return item;
+      });
+      return { ...prev, [pageIndex]: updated };
+    });
+  };
+
+  // Update orientation/rotation angle
+  const handleRotationChange = (id: string, angle: number) => {
+    const pageIndex = currentPage - 1;
+    setAllTextItems(prev => {
+      const updated = (prev[pageIndex] || []).map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            rotation: angle
           };
         }
         return item;
@@ -544,14 +572,17 @@ export const PDFTextEditTool = () => {
       let finalFontSize = customFontSize;
       let finalFontFamily = customFontFamily;
       let finalFontStyle = customFontStyle;
+      let finalRotation = customRotation;
       if (closestItem && minDistance <= 100) {
         finalFontSize = closestItem.fontSize;
         finalFontFamily = closestItem.fontFamily;
         finalFontStyle = closestItem.fontStyle || 'regular';
+        finalRotation = closestItem.rotation || 0;
         
         setCustomFontSize(closestItem.fontSize);
         setCustomFontFamily(closestItem.fontFamily);
         setCustomFontStyle(closestItem.fontStyle || 'regular');
+        setCustomRotation(closestItem.rotation || 0);
       }
 
       const calculatedWidth = estimateWidth(customText, finalFontSize, finalFontFamily, finalFontStyle);
@@ -569,6 +600,7 @@ export const PDFTextEditTool = () => {
         fontName: 'Helvetica',
         fontFamily: finalFontFamily,
         fontStyle: finalFontStyle,
+        rotation: finalRotation,
         isNew: true
       };
 
@@ -678,6 +710,7 @@ export const PDFTextEditTool = () => {
                 width: item.width + 4,
                 height: item.fontSize * 1.25,
                 color: rgb(1, 1, 1),
+                rotate: degrees(item.rotation || 0)
               });
             }
 
@@ -691,6 +724,7 @@ export const PDFTextEditTool = () => {
                 size: item.fontSize,
                 font: selectedFont,
                 color: rgb(0, 0, 0),
+                rotate: degrees(item.rotation || 0)
               });
             }
           }
@@ -768,8 +802,10 @@ export const PDFTextEditTool = () => {
               top: `${vy - itemHeight}px`,
               width: `${Math.max(itemWidth, 75)}px`,
               height: `${Math.max(itemHeight + 5, 20)}px`,
-              // Ignore overlay mouse events completely when paint brush drawing mode is active
-              pointerEvents: drawMode ? 'none' : 'auto'
+              pointerEvents: drawMode ? 'none' : 'auto',
+              // Apply rotation transform visually using CSS Origin at bottom-left coordinate
+              transform: `rotate(${item.rotation || 0}deg)`,
+              transformOrigin: 'left bottom'
             }}
             className="group"
           >
@@ -1053,7 +1089,7 @@ export const PDFTextEditTool = () => {
                       </div>
                       
                       <div className="flex flex-col gap-1">
-                        <label className="text-[10px] text-slate-400 font-bold">FONT WEIGHT/STYLE</label>
+                        <label className="text-[10px] text-slate-400 font-bold">FONT STYLE</label>
                         <select
                           value={activeItem.fontStyle || 'regular'}
                           onChange={(e) => handleFontStyleChange(activeItem.id, e.target.value as any)}
@@ -1066,6 +1102,34 @@ export const PDFTextEditTool = () => {
                         </select>
                       </div>
                     </div>
+
+                    {/* Rotation controls for Selected Block */}
+                    <div className="flex flex-col gap-1 border-t border-slate-850 pt-2.5">
+                      <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold">
+                        <span className="flex items-center gap-1"><RotateCw size={11} /> ORIENTATION ROTATION</span>
+                        <span className="font-mono text-indigo-400">{activeItem.rotation || 0}°</span>
+                      </div>
+                      <input 
+                        type="range"
+                        min="-180"
+                        max="180"
+                        value={activeItem.rotation || 0}
+                        onChange={(e) => handleRotationChange(activeItem.id, parseInt(e.target.value, 10))}
+                        className="w-full accent-indigo-500 bg-[#151C2C] h-1 rounded-lg cursor-pointer"
+                      />
+                      <div className="grid grid-cols-4 gap-1 mt-1.5">
+                        {([0, 90, 180, -90] as const).map((angle) => (
+                          <button
+                            key={angle}
+                            onClick={() => handleRotationChange(activeItem.id, angle)}
+                            className="py-0.5 bg-[#151C2C] hover:bg-slate-800 border border-slate-800 text-[10px] text-slate-350 rounded font-semibold transition-all"
+                          >
+                            {angle === -90 ? '270°' : `${angle}°`}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               ) : !drawMode ? (
@@ -1131,6 +1195,34 @@ export const PDFTextEditTool = () => {
                         </select>
                       </div>
                     </div>
+
+                    {/* Rotation configs for Add Custom Text */}
+                    <div className="flex flex-col gap-1 border-t border-slate-850/60 pt-2.5">
+                      <div className="flex justify-between items-center text-[10px] text-slate-550 font-semibold">
+                        <span>DEFAULT ANGLE</span>
+                        <span className="font-mono text-teal-400">{customRotation}°</span>
+                      </div>
+                      <input 
+                        type="range"
+                        min="-180"
+                        max="180"
+                        value={customRotation}
+                        onChange={(e) => setCustomRotation(parseInt(e.target.value, 10))}
+                        className="w-full accent-teal-500 bg-[#151C2C] h-1 rounded-lg cursor-pointer"
+                      />
+                      <div className="grid grid-cols-4 gap-1 mt-1.5">
+                        {([0, 90, 180, -90] as const).map((angle) => (
+                          <button
+                            key={angle}
+                            onClick={() => setCustomRotation(angle)}
+                            className="py-0.5 bg-[#151C2C] hover:bg-slate-850 border border-slate-800 text-[10px] text-slate-400 rounded font-medium transition-all"
+                          >
+                            {angle === -90 ? '270°' : `${angle}°`}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               )}
