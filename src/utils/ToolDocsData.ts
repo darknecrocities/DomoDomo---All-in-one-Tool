@@ -875,6 +875,96 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Displays system specifications. Viewport size, resolution details, connection limits, and device storage estimates.',
         howItWorks: '1. Queries system screen APIs. 2. Maps parameters. 3. Renders dashboard metrics.',
         technicalSpecs: 'Runs entirely client-side on load.'
+      },
+      {
+        id: 'jwt-gen',
+        name: 'JWT Generator & Signer',
+        engine: 'WebCrypto / SubtleCrypto API',
+        details: 'Generates, signs, and validates JSON Web Tokens dynamically using browser-native SubtleCrypto APIs.',
+        functionality: 'Generates and signs secure JWT tokens. Integrates key visibilities, claims calendar inputs, and signature verifications.',
+        howItWorks: '1. Encodes header/payload to Base64URL. 2. Computes HMAC-SHA256 signature using browser WebCrypto. 3. Compiles final JWT dots-notation.',
+        technicalSpecs: 'Runs completely client-side. Complies with WebCrypto specifications.'
+      },
+      {
+        id: 'case-convert',
+        name: 'Text Case Converter',
+        engine: 'RegExp Case Parser Engine',
+        details: 'Normalizes and translates text identifiers dynamically across 10 distinct case styles including camelCase, snake_case, PascalCase, and kebab-case.',
+        functionality: 'Convert variable and text identifier cases. Features visual grid lists copies and custom separator selectors.',
+        howItWorks: '1. Splits strings into clean word boundaries. 2. Resolves case conversions. 3. Normalizes slugs. 4. Updates display layout.',
+        technicalSpecs: 'Strips special characters and supports custom separators.'
+      },
+      {
+        id: 'url-parse',
+        name: 'URL & Query String Parser',
+        engine: 'Browser Native URL Engine',
+        details: 'Breaks down URL strings into host parameters and search segments, offering interactive keys updates and validation checks.',
+        functionality: 'Parse URL segments and edit query strings. Features parameter table lists, JSON serialization formats, and breadcrumbs tracker.',
+        howItWorks: '1. Instantiates standard browser URL parser. 2. Populates parameters grid. 3. Synthesizes updated segments into rebuilt string.',
+        technicalSpecs: 'Ensures absolute URI syntax validation.'
+      },
+      {
+        id: 'flexbox-grid-playground',
+        name: 'CSS Flexbox & Grid Playground',
+        engine: 'React Dynamic Stylesheets Compiler',
+        details: 'Visual parameters simulator designed to design layouts using CSS Flexbox and Grid properties, rendering live design models and generating stylesheets.',
+        functionality: 'Playground to test and compile Flex and Grid layouts. Supports visual child selectors overrides and responsive presets.',
+        howItWorks: '1. Maps layouts configurations to React state. 2. Renders dynamic items. 3. Compiles custom style rules into CSS code.',
+        technicalSpecs: 'Compiles clean stylesheets matching CSS Flex/Grid standards.'
+      },
+      {
+        id: 'js-sandbox-console',
+        name: 'JS Code Sandbox & Console',
+        engine: 'Sandboxed Function execution context',
+        details: 'Executes custom ES6 JavaScript scripts in a sandboxed client scope, capturing outputs logs and computing benchmark stats.',
+        functionality: 'Sandboxed code playground and stdout console log. Features mock console monitors, custom parameters passing, and benchmarks timer.',
+        howItWorks: '1. Intercepts browser standard console logs. 2. Runs JS inputs through safe dynamic scope binding. 3. Displays executions.',
+        technicalSpecs: 'Restricts infinite loops and supports toggleable Strict Mode.'
+      },
+      {
+        id: 'docker-compose-builder',
+        name: 'Docker Compose Builder',
+        engine: 'YAML configuration compiler',
+        details: 'Visually compiles multi-container configurations from service image configurations, ports mapping parameters, environment variables, and directories mounts.',
+        functionality: 'Generates clean docker-compose.yml files. Features preset service stacks loaders and configuration downloads.',
+        howItWorks: '1. Receives services properties configs. 2. Builds string layers. 3. Formats parameters into valid YAML compose structures.',
+        technicalSpecs: 'Generates output matching modern Compose schemas.'
+      },
+      {
+        id: 'svg-optimizer',
+        name: 'SVG Optimizer & Editor',
+        engine: 'XML text optimizer',
+        details: 'Minifies vector graphic sizing by removing comments, metadata, and editor tags while offering color customizers.',
+        functionality: 'Compresses and edits SVG vector XML trees. Features float decimals precision slider and live color selectors overrides.',
+        howItWorks: '1. Parses raw SVG text. 2. Strips metadata and comments. 3. Replaces styling values. 4. Redraws preview.',
+        technicalSpecs: 'Requires valid SVG layout to compute optimizations.'
+      },
+      {
+        id: 'http-header-inspector',
+        name: 'HTTP Header Inspector',
+        engine: 'Response Headers parser',
+        details: 'Inspects HTTP response headers metadata, verifying security CSP/HSTS rules, evaluating scores, and generating CORS parameters.',
+        functionality: 'HTTP headers analyzer and compliance reporter. Features cookie status checks and status codes registry search.',
+        howItWorks: '1. Parses header arrays. 2. Audits against security recommendations. 3. Renders metrics table.',
+        technicalSpecs: 'Audits headers against modern OWASP recommendations.'
+      },
+      {
+        id: 'ip-subnetter',
+        name: 'CIDR Subnet & Socket Calculator',
+        engine: 'Bitwise IP address calculator',
+        details: 'Calculates IPv4 subnet structures, network ranges, broadcast coordinates, and usable host counts from CIDR blocks.',
+        functionality: 'Subnet calculator and port registry explorer. Features binary bitwise details layout and classification parser.',
+        howItWorks: '1. Converts IP segments to decimal values. 2. Performs bitwise AND with netmasks. 3. Compiles decimal network data.',
+        technicalSpecs: 'Supports standard classless inter-domain routing (CIDR) masks.'
+      },
+      {
+        id: 'viewport-ua-tester',
+        name: 'Viewport & User-Agent Tester',
+        engine: 'Device viewport simulator',
+        details: 'Simulates viewports sizes matching responsive breakpoints (Mobile, Tablet, Desktop) and estimates download speed metrics.',
+        functionality: 'Device emulator and media query inspector. Features layout rotate switches, user-agent overrides, and touch pointer overlay.',
+        howItWorks: '1. Adjusts canvas scale zoom metrics. 2. Decodes user-agent strings. 3. Calculates file transfer times against speed options.',
+        technicalSpecs: 'Computes download times against standard network bandwidth profiles.'
       }
     ]
   },
