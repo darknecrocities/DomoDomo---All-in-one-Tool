@@ -3,7 +3,7 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { 
   Upload, Check, ShieldAlert, Sliders, Search, 
-  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical
+  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical, Paintbrush, Eraser
 } from 'lucide-react';
 
 // Dynamically load PDF.js script from CDN
@@ -41,6 +41,12 @@ interface TextItem {
   isNew?: boolean;
 }
 
+interface DrawStroke {
+  points: { x: number; y: number }[];
+  color: string;
+  size: number;
+}
+
 export const PDFTextEditTool = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -53,6 +59,15 @@ export const PDFTextEditTool = () => {
   // Cache for text items across pages
   const [allTextItems, setAllTextItems] = useState<{ [pageIndex: number]: TextItem[] }>({});
   
+  // Brush drawing states
+  const [drawMode, setDrawMode] = useState(false);
+  const [brushColor, setBrushColor] = useState('#ff0000');
+  const [brushSize, setBrushSize] = useState(4);
+  const [allStrokes, setAllStrokes] = useState<{ [pageIndex: number]: DrawStroke[] }>({});
+  
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [currentPoints, setCurrentPoints] = useState<{ x: number; y: number }[]>([]);
+
   const [pdfjsDoc, setPdfjsDoc] = useState<any>(null);
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [scale, setScale] = useState(1.2);
@@ -73,6 +88,7 @@ export const PDFTextEditTool = () => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setAllTextItems({});
+      setAllStrokes({});
       setCurrentPage(1);
       setTotalPages(0);
       setPdfjsDoc(null);
@@ -122,6 +138,7 @@ export const PDFTextEditTool = () => {
           const context = canvas.getContext('2d');
           if (context) {
             await page.render({ canvasContext: context, viewport }).promise;
+            drawStrokesOnCanvas(context, viewport);
           }
         }
       } catch (err) {
@@ -131,6 +148,53 @@ export const PDFTextEditTool = () => {
 
     renderPage();
   }, [pdfjsDoc, currentPage, scale]);
+
+  // Redraw canvas whenever drawing strokes update
+  const redrawAll = async () => {
+    if (!pdfjsDoc || !currentViewport) return;
+    try {
+      const page = await pdfjsDoc.getPage(currentPage);
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvasContext: context, viewport: currentViewport }).promise;
+          drawStrokesOnCanvas(context, currentViewport);
+        }
+      }
+    } catch (e) {
+      console.error('Redraw error:', e);
+    }
+  };
+
+  useEffect(() => {
+    redrawAll();
+  }, [allStrokes]);
+
+  const drawStrokesOnCanvas = (ctx: CanvasRenderingContext2D, viewport: any) => {
+    const pageIndex = currentPage - 1;
+    const strokes = allStrokes[pageIndex] || [];
+    
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    for (const stroke of strokes) {
+      if (stroke.points.length === 0) continue;
+      ctx.beginPath();
+      ctx.strokeStyle = stroke.color;
+      ctx.lineWidth = stroke.size * scale;
+      
+      const [firstVx, firstVy] = viewport.convertToViewportPoint(stroke.points[0].x, stroke.points[0].y);
+      ctx.moveTo(firstVx, firstVy);
+      
+      for (let i = 1; i < stroke.points.length; i++) {
+        const [vx, vy] = viewport.convertToViewportPoint(stroke.points[i].x, stroke.points[i].y);
+        ctx.lineTo(vx, vy);
+      }
+      ctx.stroke();
+    }
+  };
 
   // Extract page text items (ONLY runs when doc or page changes and items aren't cached yet)
   useEffect(() => {
@@ -341,9 +405,94 @@ export const PDFTextEditTool = () => {
     }
   };
 
-  // Add custom text on click
-  const handleCanvasClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+  // Painting event handlers
+  const handleMouseDown = async (e: React.MouseEvent<HTMLDivElement>) => {
     if (!pdfjsDoc || !containerRef.current) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    if (drawMode) {
+      // Begin stroke drawing
+      e.preventDefault();
+      setIsDrawing(true);
+      try {
+        const page = await pdfjsDoc.getPage(currentPage);
+        const viewport = page.getViewport({ scale });
+        const [pdfX, pdfY] = viewport.convertToPdfPoint(clickX, clickY);
+        setCurrentPoints([{ x: pdfX, y: pdfY }]);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleMouseMove = async (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!pdfjsDoc || !containerRef.current) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    if (drawMode && isDrawing) {
+      try {
+        const page = await pdfjsDoc.getPage(currentPage);
+        const viewport = page.getViewport({ scale });
+        const [pdfX, pdfY] = viewport.convertToPdfPoint(clickX, clickY);
+        
+        const newPoints = [...currentPoints, { x: pdfX, y: pdfY }];
+        setCurrentPoints(newPoints);
+
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const context = canvas.getContext('2d');
+          if (context) {
+            context.beginPath();
+            context.strokeStyle = brushColor;
+            context.lineWidth = brushSize * scale;
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
+            
+            const [startVx, startVy] = viewport.convertToViewportPoint(
+              currentPoints[currentPoints.length - 1].x,
+              currentPoints[currentPoints.length - 1].y
+            );
+            context.moveTo(startVx, startVy);
+            
+            const [endVx, endVy] = viewport.convertToViewportPoint(pdfX, pdfY);
+            context.lineTo(endVx, endVy);
+            context.stroke();
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (drawMode && isDrawing) {
+      setIsDrawing(false);
+      if (currentPoints.length > 0) {
+        const pageIndex = currentPage - 1;
+        const newStroke: DrawStroke = {
+          points: currentPoints,
+          color: brushColor,
+          size: brushSize
+        };
+        
+        setAllStrokes(prev => ({
+          ...prev,
+          [pageIndex]: [...(prev[pageIndex] || []), newStroke]
+        }));
+      }
+      setCurrentPoints([]);
+    }
+  };
+
+  const handleCanvasClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    if (drawMode || !pdfjsDoc || !containerRef.current) return;
 
     // Do not trigger custom text placement if clicking inputs or buttons
     const target = e.target as HTMLElement;
@@ -367,14 +516,12 @@ export const PDFTextEditTool = () => {
       let minDistance = Infinity;
 
       for (const item of items) {
-        // Pad boundaries slightly to make selection feel natural
         const padX = Math.max(item.width * 0.1, 10);
         const padY = Math.max(item.fontSize * 0.5, 8);
         
         const inX = pdfX >= (item.x - padX) && pdfX <= (item.x + item.width + padX);
         const inY = pdfY >= (item.y - padY) && pdfY <= (item.y + item.fontSize + padY);
 
-        // Distance from click point to item starting point
         const dist = Math.hypot(pdfX - item.x, pdfY - item.y);
         
         if (inX && inY) {
@@ -393,7 +540,7 @@ export const PDFTextEditTool = () => {
         return;
       }
 
-      // 2. Otherwise match the style of the nearest block (within 100 points) and create a new block
+      // 2. Otherwise match style and create a new block
       let finalFontSize = customFontSize;
       let finalFontFamily = customFontFamily;
       let finalFontStyle = customFontStyle;
@@ -433,6 +580,15 @@ export const PDFTextEditTool = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  // Clear current page strokes
+  const handleClearStrokes = () => {
+    const pageIndex = currentPage - 1;
+    setAllStrokes(prev => ({
+      ...prev,
+      [pageIndex]: []
+    }));
   };
 
   // Replace text
@@ -511,10 +667,10 @@ export const PDFTextEditTool = () => {
         const page = pages[pageIdx];
         const items = allTextItems[pageIdx];
 
+        // 1. Draw edited text overlays
         for (const item of items) {
           const isChanged = item.text !== item.originalText;
           if (isChanged || item.isNew) {
-            // Draw covering white rectangle
             if (!item.isNew && item.originalText.trim().length > 0) {
               page.drawRectangle({
                 x: item.x - 2,
@@ -525,7 +681,6 @@ export const PDFTextEditTool = () => {
               });
             }
 
-            // Draw new text with selected font family and style variant
             if (item.text.trim().length > 0) {
               const familyMap = fontMap[item.fontFamily] || fontMap['Helvetica'];
               const selectedFont = familyMap[item.fontStyle || 'regular'] || familyMap['regular'];
@@ -538,6 +693,28 @@ export const PDFTextEditTool = () => {
                 color: rgb(0, 0, 0),
               });
             }
+          }
+        }
+
+        // 2. Draw paint brush vectors
+        const strokes = allStrokes[pageIdx] || [];
+        for (const stroke of strokes) {
+          if (stroke.points.length < 2) continue;
+          
+          for (let i = 0; i < stroke.points.length - 1; i++) {
+            const p1 = stroke.points[i];
+            const p2 = stroke.points[i + 1];
+            
+            const r = parseInt(stroke.color.slice(1, 3), 16) / 255;
+            const g = parseInt(stroke.color.slice(3, 5), 16) / 255;
+            const b = parseInt(stroke.color.slice(5, 7), 16) / 255;
+            
+            page.drawLine({
+              start: { x: p1.x, y: p1.y },
+              end: { x: p2.x, y: p2.y },
+              thickness: stroke.size,
+              color: rgb(r, g, b)
+            });
           }
         }
       }
@@ -591,6 +768,8 @@ export const PDFTextEditTool = () => {
               top: `${vy - itemHeight}px`,
               width: `${Math.max(itemWidth, 75)}px`,
               height: `${Math.max(itemHeight + 5, 20)}px`,
+              // Ignore overlay mouse events completely when paint brush drawing mode is active
+              pointerEvents: drawMode ? 'none' : 'auto'
             }}
             className="group"
           >
@@ -715,10 +894,17 @@ export const PDFTextEditTool = () => {
                 <div 
                   ref={containerRef} 
                   onClick={handleCanvasClick}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
                   className="relative shadow-lg border border-slate-800 bg-white"
-                  style={{ width: viewportSize.width, height: viewportSize.height }}
+                  style={{ 
+                    width: viewportSize.width, 
+                    height: viewportSize.height,
+                    cursor: drawMode ? 'crosshair' : 'default'
+                  }}
                 >
-                  <canvas ref={canvasRef} className="block" />
+                  <canvas ref={canvasRef} className="block animate-fadeIn" />
                   
                   {/* Overlay inputs */}
                   {renderOverlayInputs()}
@@ -765,8 +951,62 @@ export const PDFTextEditTool = () => {
           {file ? (
             <div className="flex flex-col gap-4">
               
+              {/* Drawing mode configs */}
+              <div className="flex flex-col gap-3 p-3 bg-slate-900/40 rounded-xl border border-slate-850">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-slate-350 uppercase tracking-wider flex items-center gap-1.5">
+                    <Paintbrush size={13} className="text-teal-400" />
+                    <span>Freehand Paint Brush</span>
+                  </span>
+                  <button 
+                    onClick={() => { setDrawMode(prev => !prev); setActiveItemId(null); }}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
+                      drawMode ? 'bg-teal-500/25 border-teal-500/45 text-teal-400' : 'bg-slate-950 border-slate-800 text-slate-500'
+                    }`}
+                  >
+                    {drawMode ? 'Brush Active' : 'Enable Brush'}
+                  </button>
+                </div>
+
+                {drawMode && (
+                  <div className="flex flex-col gap-2.5 mt-1 border-t border-slate-850/60 pt-2.5 animate-fadeIn">
+                    <div className="flex justify-between items-center">
+                      <label className="text-[10px] text-slate-500 font-semibold uppercase">BRUSH COLOR</label>
+                      <input 
+                        type="color" 
+                        value={brushColor} 
+                        onChange={(e) => setBrushColor(e.target.value)}
+                        className="w-10 h-6 bg-transparent border-0 cursor-pointer rounded overflow-hidden"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <div className="flex justify-between items-center text-[10px] text-slate-500 font-semibold uppercase">
+                        <span>BRUSH THICKNESS</span>
+                        <span className="font-mono text-slate-350">{brushSize}px</span>
+                      </div>
+                      <input 
+                        type="range" 
+                        min="1" 
+                        max="20" 
+                        value={brushSize} 
+                        onChange={(e) => setBrushSize(parseInt(e.target.value, 10))}
+                        className="w-full accent-teal-500 cursor-pointer bg-slate-950 h-1.5 rounded-lg border border-slate-850"
+                      />
+                    </div>
+
+                    <button 
+                      onClick={handleClearStrokes}
+                      className="mt-1 py-1 px-3 border border-rose-900/30 bg-rose-950/20 hover:bg-rose-950/35 text-rose-400 text-[10px] font-bold uppercase rounded flex items-center justify-center gap-1 transition-all"
+                    >
+                      <Eraser size={11} /> Clear Page Drawing
+                    </button>
+                  </div>
+                )}
+              </div>
+              
               {/* Selected block configuration */}
-              {activeItem ? (
+              {!drawMode && activeItem ? (
                 <div className="flex flex-col gap-3 p-3 bg-slate-900/40 rounded-xl border border-indigo-500/25">
                   <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center justify-between">
                     <span>Block Settings</span>
@@ -828,101 +1068,105 @@ export const PDFTextEditTool = () => {
                     </div>
                   </div>
                 </div>
-              ) : (
+              ) : !drawMode ? (
                 <div className="text-[11px] text-slate-500 bg-slate-900/20 p-3 rounded-lg border border-slate-850 italic">
                   Select any text box on the page to customize its font style or scale individually.
                 </div>
-              )}
+              ) : null}
 
               {/* Add Custom Text settings */}
-              <div className="flex flex-col gap-3 p-3 bg-slate-900/40 rounded-xl border border-slate-850">
-                <span className="text-xs font-bold text-slate-350 uppercase tracking-wider flex items-center gap-1.5">
-                  <Plus size={13} className="text-teal-400" />
-                  <span>Click-to-Add Text Tool</span>
-                </span>
-                
-                <div className="flex flex-col gap-2.5">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-slate-500 font-semibold">ANNOTATION TEXT</label>
-                    <input
-                      type="text"
-                      value={customText}
-                      onChange={(e) => setCustomText(e.target.value)}
-                      className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-slate-500 font-semibold">FONT FAMILY</label>
-                    <select
-                      value={customFontFamily}
-                      onChange={(e) => setCustomFontFamily(e.target.value as any)}
-                      className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
-                    >
-                      <option value="Helvetica">Helvetica</option>
-                      <option value="Times-Roman">Times</option>
-                      <option value="Courier">Courier</option>
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
+              {!drawMode && (
+                <div className="flex flex-col gap-3 p-3 bg-slate-900/40 rounded-xl border border-slate-850">
+                  <span className="text-xs font-bold text-slate-350 uppercase tracking-wider flex items-center gap-1.5">
+                    <Plus size={13} className="text-teal-400" />
+                    <span>Click-to-Add Text Tool</span>
+                  </span>
+                  
+                  <div className="flex flex-col gap-2.5">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-slate-500 font-semibold">FONT SIZE</label>
+                      <label className="text-[10px] text-slate-500 font-semibold">ANNOTATION TEXT</label>
                       <input
-                        type="number"
-                        value={customFontSize}
-                        onChange={(e) => setCustomFontSize(parseInt(e.target.value, 10) || 12)}
-                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                        type="text"
+                        value={customText}
+                        onChange={(e) => setCustomText(e.target.value)}
+                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
                       />
                     </div>
-                    
+
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-slate-500 font-semibold">FONT STYLE</label>
+                      <label className="text-[10px] text-slate-500 font-semibold">FONT FAMILY</label>
                       <select
-                        value={customFontStyle}
-                        onChange={(e) => setCustomFontStyle(e.target.value as any)}
-                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                        value={customFontFamily}
+                        onChange={(e) => setCustomFontFamily(e.target.value as any)}
+                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
                       >
-                        <option value="regular">Regular</option>
-                        <option value="bold">Bold</option>
-                        <option value="italic">Italic</option>
-                        <option value="bold-italic">Bold Italic</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Times-Roman">Times</option>
+                        <option value="Courier">Courier</option>
                       </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-semibold">FONT SIZE</label>
+                        <input
+                          type="number"
+                          value={customFontSize}
+                          onChange={(e) => setCustomFontSize(parseInt(e.target.value, 10) || 12)}
+                          className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                        />
+                      </div>
+                      
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 font-semibold">FONT STYLE</label>
+                        <select
+                          value={customFontStyle}
+                          onChange={(e) => setCustomFontStyle(e.target.value as any)}
+                          className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-2 py-1 text-xs text-slate-200 focus:outline-none"
+                        >
+                          <option value="regular">Regular</option>
+                          <option value="bold">Bold</option>
+                          <option value="italic">Italic</option>
+                          <option value="bold-italic">Bold Italic</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Page-wide Search & Replace */}
-              <div className="flex flex-col gap-3 p-3 bg-slate-900/40 rounded-xl border border-slate-850">
-                <span className="text-xs font-bold text-slate-350 uppercase tracking-wider flex items-center gap-1.5">
-                  <Search size={13} className="text-indigo-400" />
-                  <span>Search & Replace Page</span>
-                </span>
-                <div className="flex flex-col gap-2">
-                  <input
-                    type="text"
-                    placeholder="Find word..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Replace with..."
-                    value={replaceQuery}
-                    onChange={(e) => setReplaceQuery(e.target.value)}
-                    className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
-                  />
-                  <button
-                    onClick={handleReplace}
-                    disabled={!searchQuery}
-                    className="btn-secondary w-full py-1.5 text-xs font-semibold flex justify-center items-center gap-1 disabled:opacity-40"
-                  >
-                    Run Search-Replace
-                  </button>
+              {!drawMode && (
+                <div className="flex flex-col gap-3 p-3 bg-slate-900/40 rounded-xl border border-slate-850">
+                  <span className="text-xs font-bold text-slate-350 uppercase tracking-wider flex items-center gap-1.5">
+                    <Search size={13} className="text-indigo-400" />
+                    <span>Search & Replace Page</span>
+                  </span>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      placeholder="Find word..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Replace with..."
+                      value={replaceQuery}
+                      onChange={(e) => setReplaceQuery(e.target.value)}
+                      className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+                    />
+                    <button
+                      onClick={handleReplace}
+                      disabled={!searchQuery}
+                      className="btn-secondary w-full py-1.5 text-xs font-semibold flex justify-center items-center gap-1 disabled:opacity-40"
+                    >
+                      Run Search-Replace
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Actions */}
               <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
@@ -935,7 +1179,7 @@ export const PDFTextEditTool = () => {
                   <span>{saving ? 'Building PDF...' : 'Download Edited PDF'}</span>
                 </button>
                 <button
-                  onClick={() => { setFile(null); setAllTextItems({}); }}
+                  onClick={() => { setFile(null); setAllTextItems({}); setAllStrokes({}); }}
                   className="btn-secondary w-full py-2 text-xs border-rose-950/20 text-rose-400 hover:bg-rose-950/20"
                 >
                   Close Document
