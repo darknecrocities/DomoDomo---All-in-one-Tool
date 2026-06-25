@@ -143,6 +143,7 @@ import { AICodeReviewerTool } from '../tools/ai/AICodeReviewer';
 import { AIMindMapperTool } from '../tools/ai/AIMindMapper';
 import { AIDomoAgentHub } from '../tools/ai/AIDomoAgentHub';
 import { AIDomoSelection } from '../tools/ai/AIDomoSelection';
+import { AIDomoModelLibrary } from '../tools/ai/AIDomoModelLibrary';
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -287,7 +288,8 @@ export const TOOLS: Tool[] = [
   { id: 'ai-code-reviewer', name: 'AI Code Reviewer', category: 'ai', description: 'Review code for bugs, security issues, and best practices.', icon: 'Hammer', run: async (i) => i, component: AICodeReviewerTool },
   { id: 'ai-mind-mapper', name: 'AI Mind Mapper', category: 'ai', description: 'Turn a topic into a visual text-based mind map outline.', icon: 'Hammer', run: async (i) => i, component: AIMindMapperTool },
   { id: 'domo-agent-hub', name: 'Domo Agent Hub', category: 'ai', description: 'Interactive offline coding IDE & AI agent workspace.', icon: 'Hammer', run: async (i) => i, component: AIDomoAgentHub },
-  { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', run: async (i) => i, component: AIDomoSelection }
+  { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', run: async (i) => i, component: AIDomoSelection },
+  { id: 'ollama-library', name: 'Ollama Model Library', category: 'ai', description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', run: async (i) => i, component: AIDomoModelLibrary }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {

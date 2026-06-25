@@ -1169,6 +1169,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Highlights segments for explanation. Custom chat window, mascot styling, and file attachments.',
         howItWorks: '1. Catches highlighted text. 2. Submits to friendly mascot prompt. 3. Streams markdown.',
         technicalSpecs: 'Outputs friendly custom formatting answers.'
+      },
+      {
+        id: 'ollama-library',
+        name: 'Ollama Model Library',
+        engine: 'Ollama Registry REST Stream',
+        details: 'Integrates with local Ollama service endpoints to monitor connection, query installed models list, and stream pulling chunks to update progress bars.',
+        functionality: 'Browse LLMs models, review VRAM requirements, see dynamic hardware advisor, download models directly, and copy terminal execution code logs.',
+        howItWorks: '1. Verifies localhost CORS connection. 2. Compares offline tags to catalog targets. 3. Submits stream requests to pull models. 4. Visualizes loading percentages.',
+        technicalSpecs: 'Connects directly to port 11434 (changeable endpoint). Requires proper CORS headers configuration to override browser cross-origin limits.'
       }
     ]
   }
