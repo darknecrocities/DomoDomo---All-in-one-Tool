@@ -15,9 +15,10 @@ export async function getTransformers() {
   return module;
 }
 
-// Singletons for local embedding and sentiment analysis
+// Singletons for local embedding, sentiment analysis, and speech recognition
 let embeddingPipeline: any = null;
 let classifierPipeline: any = null;
+let whisperPipeline: any = null;
 
 const makeProgressCallback = (callback?: LoadingProgressCallback) => {
   return (data: any) => {
@@ -513,5 +514,49 @@ export const aiService = {
     const pipe = await this.initClassifier();
     const result = await pipe(text);
     return result;
+  },
+
+  // 4. Speech Recognition Pipeline - Whisper
+  async initWhisper(onProgress?: LoadingProgressCallback) {
+    if (whisperPipeline) {
+      if (onProgress) onProgress('Ready', 100);
+      return whisperPipeline;
+    }
+
+    const { pipeline } = await getTransformers();
+    onProgress?.('Loading local Whisper AI model (~40MB)...', 10);
+
+    whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en', {
+      progress_callback: makeProgressCallback(onProgress)
+    });
+
+    return whisperPipeline;
+  },
+
+  async transcribeAudio(audioData: Float32Array | Blob, isTranslation = false, onProgress?: LoadingProgressCallback): Promise<string> {
+    const pipe = await this.initWhisper(onProgress);
+    
+    let audioBuffer: Float32Array;
+    if (audioData instanceof Blob) {
+      // Decode audio Blob to raw float32 audio
+      const arrayBuffer = await audioData.arrayBuffer();
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioContextClass();
+      const decodedBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      audioBuffer = decodedBuffer.getChannelData(0); // get mono channel
+      await audioCtx.close();
+    } else {
+      audioBuffer = audioData;
+    }
+
+    onProgress?.('Transcribing audio locally...', 90);
+    const result = await pipe(audioBuffer, {
+      chunk_length_s: 30,
+      stride_length_s: 5,
+      task: isTranslation ? 'translate' : 'transcribe',
+    });
+    
+    onProgress?.('Ready', 100);
+    return result.text || '';
   }
 };

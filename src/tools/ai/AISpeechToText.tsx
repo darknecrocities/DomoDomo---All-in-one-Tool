@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Copy, Check, FileText, Loader2, Sparkles, ShieldAlert, Award } from 'lucide-react';
+import { Mic, MicOff, Copy, Check, FileText, Loader2, Sparkles, ShieldAlert, Award, AlertCircle } from 'lucide-react';
 import { handleTextCopy, triggerTextDownload } from '../../utils/sharedHelpers';
 import { LocalAIConfigPanel } from '../../components/LocalAIConfigPanel';
 import { aiService } from '../../utils/aiService';
 
 export const AISpeechToTextTool = () => {
+  const [engine, setEngine] = useState<'browser' | 'whisper'>('browser');
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
@@ -12,9 +13,11 @@ export const AISpeechToTextTool = () => {
   const [meetingNotes, setMeetingNotes] = useState('');
   
   const [language, setLanguage] = useState('en-US');
+  const [translateToEnglish, setTranslateToEnglish] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copiedRefined, setCopiedRefined] = useState(false);
   const [supported, setSupported] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Model select options configs
   const [selectedModel, setSelectedModel] = useState('');
@@ -30,6 +33,7 @@ export const AISpeechToTextTool = () => {
   const [wpm, setWpm] = useState(0);
   const [loadingLLM, setLoadingLLM] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
+  const [loadProgress, setLoadProgress] = useState(0);
 
   const [micLevel, setMicLevel] = useState(0);
 
@@ -40,6 +44,10 @@ export const AISpeechToTextTool = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<any>(null);
   const waveCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  
+  // Whisper Live Recording buffers
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const languages = [
     { code: 'en-US', name: 'English (US)' },
@@ -50,7 +58,7 @@ export const AISpeechToTextTool = () => {
     { code: 'fil-PH', name: 'Filipino (Tagalog)' }
   ];
 
-  // Load cached transcript (Feature 5)
+  // Load cached transcript
   useEffect(() => {
     const cached = localStorage.getItem('domodomo_stt_cached');
     if (cached) setTranscript(cached);
@@ -62,7 +70,7 @@ export const AISpeechToTextTool = () => {
     checkKeywordSpotting(transcript);
   }, [transcript]);
 
-  // Keyword spotter check (Feature 10)
+  // Keyword spotter check
   const checkKeywordSpotting = (text: string) => {
     if (!keywordSpotter.trim()) return;
     const keywords = keywordSpotter.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
@@ -89,7 +97,6 @@ export const AISpeechToTextTool = () => {
 
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
-          // Append speaker tags (Feature 7)
           const tag = `[Speaker ${activeSpeaker}]: `;
           final += (transcript.endsWith('\n') || transcript === '' ? tag : '') + event.results[i][0].transcript + '\n';
         } else {
@@ -105,6 +112,7 @@ export const AISpeechToTextTool = () => {
 
     rec.onerror = (event: any) => {
       console.error('Speech recognition error', event.error);
+      setErrorMsg(`Web Speech error: ${event.error}. Consider using local Whisper AI engine.`);
     };
 
     rec.onend = () => {
@@ -124,7 +132,7 @@ export const AISpeechToTextTool = () => {
     };
   }, [language, activeSpeaker, transcript]);
 
-  // WPM pacing logic (Feature 6)
+  // WPM pacing logic
   useEffect(() => {
     if (secondsRecorded > 0) {
       const words = transcript.split(/\s+/).filter(Boolean).length;
@@ -216,17 +224,76 @@ export const AISpeechToTextTool = () => {
     setMicLevel(0);
   };
 
-  const handleToggleRecording = () => {
-    if (!supported || !recognitionRef.current) return;
-
+  const handleToggleRecording = async () => {
+    setErrorMsg('');
     if (isRecording) {
-      recognitionRef.current.stop();
+      if (engine === 'browser') {
+        if (recognitionRef.current) recognitionRef.current.stop();
+      } else {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+          mediaRecorderRef.current.stop();
+        }
+        setIsRecording(false);
+        stopAudioMonitoring();
+        stopTimer();
+      }
     } else {
-      setInterimTranscript('');
-      recognitionRef.current.start();
-      setIsRecording(true);
-      startAudioMonitoring();
-      startTimer();
+      if (engine === 'browser') {
+        if (!supported || !recognitionRef.current) {
+          setErrorMsg('Web Speech recognition is not supported in this browser. Try Chrome/Safari or choose local Whisper AI engine.');
+          return;
+        }
+        setInterimTranscript('');
+        try {
+          recognitionRef.current.start();
+          setIsRecording(true);
+          startAudioMonitoring();
+          startTimer();
+        } catch (e: any) {
+          setErrorMsg(`Failed to start Web Speech: ${e.message}`);
+        }
+      } else {
+        // Whisper recording
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const mediaRecorder = new MediaRecorder(stream);
+          mediaRecorderRef.current = mediaRecorder;
+          audioChunksRef.current = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              audioChunksRef.current.push(event.data);
+            }
+          };
+
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+            setLoadingLLM(true);
+            setStatusMsg('Loading local Whisper model...');
+            try {
+              const text = await aiService.transcribeAudio(audioBlob, translateToEnglish, (msg, prog) => {
+                setStatusMsg(msg);
+                setLoadProgress(prog);
+              });
+              const tag = `[Speaker ${activeSpeaker}]: `;
+              setTranscript(prev => prev + (prev.endsWith('\n') || prev === '' ? tag : '') + text + '\n');
+            } catch (err: any) {
+              setErrorMsg(`Whisper error: ${err.message || err}`);
+            } finally {
+              setLoadingLLM(false);
+              setStatusMsg('');
+              setLoadProgress(0);
+            }
+          };
+
+          mediaRecorder.start();
+          setIsRecording(true);
+          startAudioMonitoring();
+          startTimer();
+        } catch (e: any) {
+          setErrorMsg(`Could not access microphone: ${e.message}`);
+        }
+      }
     }
   };
 
@@ -280,11 +347,29 @@ Output only structured bullet points.`;
     }
   };
 
-  // Load custom audio file placeholder metadata
-  const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Whisper audio file transcription
+  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setTranscript(prev => prev + `[Audio File Loaded: ${file.name} | ${(file.size/1024/1024).toFixed(2)} MB]\n`);
+
+    setErrorMsg('');
+    setLoadingLLM(true);
+    setStatusMsg('Initializing local Whisper model...');
+
+    try {
+      const text = await aiService.transcribeAudio(file, translateToEnglish, (msg, prog) => {
+        setStatusMsg(msg);
+        setLoadProgress(prog);
+      });
+      
+      setTranscript(prev => prev + `[Audio File: ${file.name}]\n${text}\n`);
+    } catch (err: any) {
+      setErrorMsg(`Failed to transcribe file: ${err.message || err}`);
+    } finally {
+      setLoadingLLM(false);
+      setStatusMsg('');
+      setLoadProgress(0);
+    }
   };
 
   return (
@@ -309,28 +394,66 @@ Output only structured bullet points.`;
           </h3>
         </div>
 
-        {!supported && (
-          <div className="bg-red-950/40 border border-red-900/30 text-red-300 p-3 rounded-lg text-xs">
-            Speech Recognition is not supported by your browser. Try Chrome or Safari.
+        {errorMsg && (
+          <div className="bg-red-950/40 border border-red-900/30 text-red-300 p-3 rounded-lg text-xs flex items-center gap-2">
+            <AlertCircle size={14} className="shrink-0" />
+            <span>{errorMsg}</span>
           </div>
         )}
+
+        {/* Engine parameter selector */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setEngine('browser'); setErrorMsg(''); }}
+            disabled={isRecording}
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${
+              engine === 'browser' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-slate-800 bg-slate-900 text-slate-400'
+            }`}
+          >
+            Browser Engine (Real-time Web Speech)
+          </button>
+          <button
+            onClick={() => { setEngine('whisper'); setErrorMsg(''); }}
+            disabled={isRecording}
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all flex items-center justify-center gap-1.5 ${
+              engine === 'whisper' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-slate-800 bg-slate-900 text-slate-400'
+            }`}
+          >
+            Whisper AI Engine (Offline local model)
+          </button>
+        </div>
 
         {/* Configurations - Language & Speaker Tags */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-450">
           <div className="flex flex-col gap-1.5">
             <label className="text-slate-400">Speech Language</label>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              disabled={isRecording}
-              className="bg-slate-900 border border-slate-850 rounded px-2.5 py-1.5 focus:outline-none"
-            >
-              {languages.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
+            {engine === 'browser' ? (
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                disabled={isRecording}
+                className="bg-slate-900 border border-slate-850 rounded px-2.5 py-1.5 focus:outline-none"
+              >
+                {languages.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] text-slate-500 italic">Whisper auto-detects speech language</span>
+                <label className="flex items-center gap-2 cursor-pointer mt-1 font-semibold text-slate-350">
+                  <input
+                    type="checkbox"
+                    checked={translateToEnglish}
+                    onChange={(e) => setTranslateToEnglish(e.target.checked)}
+                    className="accent-teal-550 rounded w-3.5 h-3.5"
+                  />
+                  <span>Translate directly to English</span>
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -391,16 +514,32 @@ Output only structured bullet points.`;
           </div>
         )}
 
-        {/* Audio upload */}
-        <div className="flex flex-col gap-1.5 text-xs font-semibold text-slate-400 border-t border-slate-850/60 pt-3">
-          <span>Upload Audio File (Metadata Reader)</span>
+        {/* Audio upload (Transcriber via Whisper AI) */}
+        <div className="flex flex-col gap-1.5 text-xs font-semibold text-slate-450 border-t border-slate-850/60 pt-3">
+          <label className="text-slate-400">Transcribe Audio File (Local Whisper AI)</label>
           <input
             type="file"
             accept="audio/*"
             onChange={handleAudioUpload}
-            className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1 text-[10px]"
+            disabled={loadingLLM}
+            className="bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 text-[10px] focus:outline-none file:bg-teal-900/25 file:text-teal-400 file:border-0 file:rounded file:px-2 file:py-1 file:cursor-pointer hover:file:bg-teal-900/40"
           />
         </div>
+
+        {/* Loading and download progress for local AI models */}
+        {loadingLLM && statusMsg && (
+          <div className="flex flex-col gap-1.5 text-slate-400 font-mono text-[10px] bg-slate-950/60 p-3 border border-slate-900 rounded">
+            <div className="flex items-center gap-2">
+              <Loader2 size={13} className="animate-spin text-teal-400" />
+              <span>{statusMsg}</span>
+            </div>
+            {loadProgress > 0 && (
+              <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mt-1 border border-slate-850">
+                <div className="bg-teal-500 h-full transition-all duration-300" style={{ width: `${loadProgress}%` }} />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Transcripts displays */}
         {(transcript || interimTranscript) && (
@@ -459,13 +598,6 @@ Output only structured bullet points.`;
                 <span>Generate Meeting Notes</span>
               </button>
             </div>
-
-            {loadingLLM && statusMsg && (
-              <div className="flex items-center gap-2 text-slate-400 font-mono text-[9px] bg-slate-950/60 p-2 border border-slate-900 rounded animate-pulse">
-                <Loader2 size={11} className="animate-spin text-teal-400" />
-                <span>{statusMsg}</span>
-              </div>
-            )}
 
             {/* Cleaned Transcript view */}
             {refinedTranscript && (
