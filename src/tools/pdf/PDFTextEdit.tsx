@@ -40,6 +40,14 @@ interface TextItem {
   fontStyle?: 'regular' | 'bold' | 'italic' | 'bold-italic';
   rotation?: number; // angle in degrees
   isNew?: boolean;
+  
+  // Track original values to detect modifications on export
+  originalX?: number;
+  originalY?: number;
+  originalRotation?: number;
+  originalFontSize?: number;
+  originalFontFamily?: 'Helvetica' | 'Times-Roman' | 'Courier';
+  originalFontStyle?: 'regular' | 'bold' | 'italic' | 'bold-italic';
 }
 
 interface DrawStroke {
@@ -267,7 +275,15 @@ export const PDFTextEditTool = () => {
             fontName: item.fontName || 'Helvetica',
             fontFamily,
             fontStyle,
-            rotation
+            rotation,
+            
+            // Store original values to track edits
+            originalX: transform[4],
+            originalY: transform[5],
+            originalRotation: rotation,
+            originalFontSize: fontSize || 11,
+            originalFontFamily: fontFamily,
+            originalFontStyle: fontStyle
           };
         });
 
@@ -709,16 +725,25 @@ export const PDFTextEditTool = () => {
 
         // 1. Draw edited text overlays
         for (const item of items) {
-          const isChanged = item.text !== item.originalText;
+          const isChanged = 
+            item.text !== item.originalText ||
+            item.x !== item.originalX ||
+            item.y !== item.originalY ||
+            (item.rotation || 0) !== (item.originalRotation || 0) ||
+            item.fontSize !== item.originalFontSize ||
+            item.fontFamily !== item.originalFontFamily ||
+            item.fontStyle !== item.originalFontStyle;
+
           if (isChanged || item.isNew) {
             // Always draw a white background rectangle behind any edited or new text block to match the editor UI behavior
+            // We rotate by -rotation because pdf-lib degrees() rotates counter-clockwise, but CSS rotates clockwise
             page.drawRectangle({
               x: item.x + xOffset - 4,
               y: item.y + yOffset - 3,
               width: item.width + 8,
               height: item.fontSize * 1.35,
               color: rgb(1, 1, 1),
-              rotate: degrees(item.rotation || 0)
+              rotate: degrees(-(item.rotation || 0))
             });
 
             if (item.text.trim().length > 0) {
@@ -731,7 +756,7 @@ export const PDFTextEditTool = () => {
                 size: item.fontSize,
                 font: selectedFont,
                 color: rgb(0, 0, 0),
-                rotate: degrees(item.rotation || 0)
+                rotate: degrees(-(item.rotation || 0))
               });
             }
           }
