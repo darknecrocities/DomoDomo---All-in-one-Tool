@@ -12,6 +12,13 @@ import { ColorPaletteExtractorTool } from '../tools/photo/ColorPaletteExtractor'
 import { CollageMakerTool } from '../tools/photo/CollageMaker';
 import { FormatConverterTool } from '../tools/photo/FormatConverter';
 
+// Security Suite Imports
+import { FileHashCheckerTool } from '../tools/security/FileHashChecker';
+import { PasswordAnalyzerTool } from '../tools/security/PasswordAnalyzer';
+import { MetadataCleanerTool } from '../tools/security/MetadataCleaner';
+import { ExifViewerTool } from '../tools/security/ExifViewer';
+import { URLAnalyzerTool } from '../tools/security/URLAnalyzer';
+
 // PDF Suite Imports
 import { PDFMergeTool } from '../tools/pdf/PDFMerge';
 import { PDFSplitTool } from '../tools/pdf/PDFSplit';
@@ -178,6 +185,12 @@ export const TOOLS: Tool[] = [
   { id: 'ocr-scanner', name: 'OCR Scanner', category: 'document', description: 'Extract text from scanned pages using local OCR.', icon: 'FileText', run: async (i) => i, component: OCRScannerTool },
   { id: 'resume-builder', name: 'Resume Builder', category: 'document', description: 'Compile developer resumes to TXT instantly.', icon: 'FileText', run: async (i) => i, component: ResumeBuilderTool },
   { id: 'invoice-gen', name: 'Invoice Generator', category: 'document', description: 'Formulator for corporate invoice templates.', icon: 'FileText', run: async (i) => i, component: InvoiceGeneratorTool },
+  // Security Tools (10 Standard)
+  { id: 'hash-checker', name: 'File Hash Checker', category: 'security', description: 'Verify file integrity using SHA-256, SHA-512, MD5 locally.', icon: 'ShieldAlert', run: async (i) => i, component: FileHashCheckerTool },
+  { id: 'password-analyzer', name: 'Password Analyzer', category: 'security', description: 'Analyze password strength, entropy, and dictionary matches offline.', icon: 'Lock', run: async (i) => i, component: PasswordAnalyzerTool },
+  { id: 'metadata-cleaner', name: 'Metadata Cleaner', category: 'security', description: 'Strip hidden EXIF data and metadata from images and PDFs.', icon: 'ShieldAlert', run: async (i) => i, component: MetadataCleanerTool },
+  { id: 'exif-viewer', name: 'EXIF Viewer', category: 'security', description: 'Inspect GPS, device, and camera metadata in images for privacy auditing.', icon: 'Search', run: async (i) => i, component: ExifViewerTool },
+  { id: 'url-analyzer', name: 'URL Safety Analyzer', category: 'security', description: 'Detect typosquatting, suspicious characters, and homograph attacks.', icon: 'Search', run: async (i) => i, component: URLAnalyzerTool },
   { id: 'summarizer', name: 'Summarizer', category: 'document', description: 'Extract key points and summary from local text.', icon: 'FileText', run: async (i) => i, component: SummarizerTool },
   { id: 'translator', name: 'Translator', category: 'document', description: 'Translate text locally via dictionary mapping.', icon: 'FileText', run: async (i) => i, component: TranslatorTool },
   { id: 'grammar-fixer', name: 'Grammar Fixer', category: 'document', description: 'Fix syntax and grammatical spelling in browser.', icon: 'FileText', run: async (i) => i, component: GrammarFixerTool },

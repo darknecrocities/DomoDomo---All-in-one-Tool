@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'ai';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai';
 
 export interface ToolDoc {
   id: string;
@@ -11,6 +11,11 @@ export interface ToolDoc {
 }
 
 export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: ToolDoc[] }> = {
+  security: {
+    title: 'DomoGuard Security Suite',
+    desc: 'Local-first offline security and privacy utilities.',
+    list: []
+  },
   pdf: {
     title: 'PDF Document Suite',
     desc: 'Local browser compilation of vector documents, overlays, signature drawing, and text manipulation.',
