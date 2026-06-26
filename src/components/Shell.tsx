@@ -167,11 +167,37 @@ export const Shell = () => {
   };
 
   useEffect(() => {
+    const CACHE_KEY = 'github_stars_cache';
+    const CACHE_TTL = 3600000; // 1 hour
+
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { stars, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_TTL) {
+          setStars(stars);
+        }
+      }
+    } catch (e) {
+      console.warn('Cache read error:', e);
+    }
+
     fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
         if (typeof data.stargazers_count === 'number') {
           setStars(data.stargazers_count);
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+              stars: data.stargazers_count,
+              timestamp: Date.now()
+            }));
+          } catch (e) {
+            console.warn('Cache write error:', e);
+          }
         }
       })
       .catch((err) => console.error('Failed to fetch github stars:', err));

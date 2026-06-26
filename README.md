@@ -20,22 +20,41 @@ DomoDomo operates on a **zero-leak mandate**. Standard SaaS utilities require up
 
 ## ⚙️ Tech Stack & Core Libraries
 
-DomoDomo is engineered using modern, lightweight frontend technologies to ensure security, native speed, and fully offline operation.
+DomoDomo is engineered using modern, lightweight frontend technologies to ensure security, native speed, and fully offline operation. Every library and model used is intentionally chosen to run completely offline.
 
-### Core Stack
+### Core Architecture & Routing Stack
 - **Framework**: [React 19](https://react.dev/) + [Vite](https://vite.dev/) (For ultra-fast Hot Module Replacement and bundler efficiency)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict type safety)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict type safety across all utilities)
+- **Routing**: [React Router DOM](https://reactrouter.com/) (Client-side routing)
 - **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) (Fluid utilities matching the custom Domo Green theme)
-- **Icons**: [Lucide React](https://lucide.dev/) (Scalable vector icons)
+- **Icons**: [Lucide React](https://lucide.dev/) (Scalable, lightweight vector icons)
+- **Head Management**: [React Helmet Async](https://github.com/staylor/react-helmet-async) (SEO and dynamic meta tags)
 
-### Processing & Acceleration Libraries
-- **[`pdf-lib`](https://pdf-lib.js.org/)**: Client-side parser to merge, split, watermark, and modify PDF byte arrays.
-- **[`@pdfsmaller/pdf-encrypt`](https://www.npmjs.com/package/@pdfsmaller/pdf-encrypt)**: Local utility enabling client-side password encryption and restrictions on PDF exports.
-- **[`Tesseract.js`](https://tesseract.projectnaptha.com/)**: Client-side Optical Character Recognition (OCR) engine running via WebAssembly.
-- **[`FFmpeg.wasm`](https://ffmpegwasm.netlify.app/)**: WebAssembly port of FFmpeg enabling local video cropping, trimming, and audio extraction.
-- **[`@xenova/transformers`](https://huggingface.co/docs/transformers.js)**: Local embeddings extraction (`all-MiniLM-L6-v2`) and text classification (`distilbert`) executed in-browser.
-- **Web Audio API**: Native operating system audio synthesis, recording, visual frequency parsing, and speed modulation.
-- **IndexedDB**: Persistent local browser storage cache allowing high-performance sandbox operations without bloat.
+### AI, Machine Learning & Local Models
+- **Generative LLMs (Ollama Integration)**: Supports various models like `llama3.2:1b` (recommended for medium setups), `qwen2.5:0.5b` (for low specs), and `deepseek-coder` for code generation. Operations happen locally on port `11434`.
+- **Text Classification & Embeddings**: Uses [Transformers.js (`@xenova/transformers`)](https://huggingface.co/docs/transformers.js) executing inside the browser via WebAssembly.
+  - **Models utilized**: `all-MiniLM-L6-v2` for semantic search/embeddings and `distilbert` for text classification.
+- **Facial Recognition & Tracking**: Utilizes [MediaPipe Tasks Vision](https://developers.google.com/mediapipe) loaded dynamically via CDN.
+  - **Models utilized**: `blaze_face_short_range.tflite` for real-time video face detection and auto-blurring. GPU-accelerated via WebGL.
+- **Optical Character Recognition (OCR)**: [Tesseract.js](https://tesseract.projectnaptha.com/) running via WebAssembly to extract text from images natively.
+
+### Media & Document Processing Engine
+- **Video & Audio Processing**:
+  - [FFmpeg.wasm](https://ffmpegwasm.netlify.app/): WebAssembly port of FFmpeg enabling local video cropping, trimming, subtitle hardcoding, and audio extraction.
+  - **Web Audio API**: Native operating system audio synthesis, recording, visual frequency parsing, and speed modulation.
+- **PDF Manipulation & Security**:
+  - [pdf-lib](https://pdf-lib.js.org/): Client-side parser to merge, split, watermark, compress, and modify PDF byte arrays.
+  - [pdfjs-dist](https://mozilla.github.io/pdf.js/): Mozilla's core library for rendering PDF documents into Canvas/HTML elements natively.
+  - [@pdfsmaller/pdf-encrypt](https://www.npmjs.com/package/@pdfsmaller/pdf-encrypt): Local utility enabling client-side password encryption (AES) and permission restrictions on PDF exports.
+- **Image & Photo Utilities**:
+  - [exifr](https://mutiny.cz/exifr/): High-performance, memory-efficient EXIF parser to read/strip metadata from photos.
+  - **Canvas API**: Extensive use of the HTML5 Canvas for collage making, image compression, format conversion (WebP/JPG/PNG), and pixel manipulations.
+
+### Barcode & Networking Tools
+- **QR Code & Barcode**: 
+  - [qrcode](https://www.npmjs.com/package/qrcode): Used for rendering and generating styled QR codes.
+  - [jsqr](https://github.com/cozmo/jsQR): Native JavaScript library for scanning and decoding QR codes from camera feeds.
+- **Local Storage & Caching**: IndexedDB and localStorage persistent browser cache allowing high-performance sandbox operations, large file handling, and API rate-limit caching without server bloat.
 
 ---
 
