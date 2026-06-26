@@ -18,6 +18,11 @@ import { PasswordAnalyzerTool } from '../tools/security/PasswordAnalyzer';
 import { MetadataCleanerTool } from '../tools/security/MetadataCleaner';
 import { ExifViewerTool } from '../tools/security/ExifViewer';
 import { URLAnalyzerTool } from '../tools/security/URLAnalyzer';
+import { FileEncryptionTool } from '../tools/security/FileEncryption';
+import { FileShredderTool } from '../tools/security/FileShredder';
+import { QRSecurityTool } from '../tools/security/QRSecurity';
+import { NetworkScannerTool } from '../tools/security/NetworkScanner';
+import { PhishingDetectorTool } from '../tools/security/PhishingDetector';
 
 // PDF Suite Imports
 import { PDFMergeTool } from '../tools/pdf/PDFMerge';
@@ -191,6 +196,11 @@ export const TOOLS: Tool[] = [
   { id: 'metadata-cleaner', name: 'Metadata Cleaner', category: 'security', description: 'Strip hidden EXIF data and metadata from images and PDFs.', icon: 'ShieldAlert', run: async (i) => i, component: MetadataCleanerTool },
   { id: 'exif-viewer', name: 'EXIF Viewer', category: 'security', description: 'Inspect GPS, device, and camera metadata in images for privacy auditing.', icon: 'Search', run: async (i) => i, component: ExifViewerTool },
   { id: 'url-analyzer', name: 'URL Safety Analyzer', category: 'security', description: 'Detect typosquatting, suspicious characters, and homograph attacks.', icon: 'Search', run: async (i) => i, component: URLAnalyzerTool },
+  { id: 'file-encryption', name: 'File Encryption Tool', category: 'security', description: 'Encrypt files locally using AES-256 password protection.', icon: 'Lock', run: async (i) => i, component: FileEncryptionTool },
+  { id: 'file-shredder', name: 'Secure File Shredder', category: 'security', description: 'Overwrite files multiple times before deletion to prevent recovery.', icon: 'ShieldAlert', run: async (i) => i, component: FileShredderTool },
+  { id: 'qr-security', name: 'QR Security Scanner', category: 'security', description: 'Analyze QR codes for hidden URLs and suspicious redirect chains.', icon: 'QrCode', run: async (i) => i, component: QRSecurityTool },
+  { id: 'network-scanner', name: 'Local Network Scanner', category: 'security', description: 'Discover connected devices, IP/MAC addresses, and open ports.', icon: 'Globe', run: async (i) => i, component: NetworkScannerTool },
+  { id: 'phishing-detector', name: 'Phishing Detector', category: 'security', description: 'Scan emails and URLs using heuristic rule engines for risk scores.', icon: 'ShieldAlert', run: async (i) => i, component: PhishingDetectorTool },
   { id: 'summarizer', name: 'Summarizer', category: 'document', description: 'Extract key points and summary from local text.', icon: 'FileText', run: async (i) => i, component: SummarizerTool },
   { id: 'translator', name: 'Translator', category: 'document', description: 'Translate text locally via dictionary mapping.', icon: 'FileText', run: async (i) => i, component: TranslatorTool },
   { id: 'grammar-fixer', name: 'Grammar Fixer', category: 'document', description: 'Fix syntax and grammatical spelling in browser.', icon: 'FileText', run: async (i) => i, component: GrammarFixerTool },

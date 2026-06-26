@@ -169,12 +169,12 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'password-analyzer', name: 'Password Analyzer', category: 'security', description: 'Analyze password strength, entropy, and dictionary matches offline.', icon: 'Lock', status: 'functional' },
   { id: 'metadata-cleaner', name: 'Metadata Cleaner', category: 'security', description: 'Strip hidden EXIF data and metadata from images and PDFs.', icon: 'ShieldAlert', status: 'functional' },
   { id: 'exif-viewer', name: 'EXIF Viewer', category: 'security', description: 'Inspect GPS, device, and camera metadata in images for privacy auditing.', icon: 'Search', status: 'functional' },
-  { id: 'file-encryption', name: 'File Encryption Tool', category: 'security', description: 'Encrypt files locally using AES-256 password protection.', icon: 'Lock', status: 'planned' },
-  { id: 'file-shredder', name: 'Secure File Shredder', category: 'security', description: 'Overwrite files multiple times before deletion to prevent recovery.', icon: 'ShieldAlert', status: 'planned' },
-  { id: 'qr-security', name: 'QR Security Scanner', category: 'security', description: 'Analyze QR codes for hidden URLs and suspicious redirect chains.', icon: 'QrCode', status: 'planned' },
+  { id: 'file-encryption', name: 'File Encryption Tool', category: 'security', description: 'Encrypt files locally using AES-256 password protection.', icon: 'Lock', status: 'functional' },
+  { id: 'file-shredder', name: 'Secure File Shredder', category: 'security', description: 'Overwrite files multiple times before deletion to prevent recovery.', icon: 'ShieldAlert', status: 'functional' },
+  { id: 'qr-security', name: 'QR Security Scanner', category: 'security', description: 'Analyze QR codes for hidden URLs and suspicious redirect chains.', icon: 'QrCode', status: 'functional' },
   { id: 'url-analyzer', name: 'URL Safety Analyzer', category: 'security', description: 'Detect typosquatting, suspicious characters, and homograph attacks.', icon: 'Search', status: 'functional' },
-  { id: 'network-scanner', name: 'Local Network Scanner', category: 'security', description: 'Discover connected devices, IP/MAC addresses, and open ports.', icon: 'Globe', status: 'planned' },
-  { id: 'phishing-detector', name: 'Phishing Detector', category: 'security', description: 'Scan emails and URLs using heuristic rule engines for risk scores.', icon: 'ShieldAlert', status: 'planned' },
+  { id: 'network-scanner', name: 'Local Network Scanner', category: 'security', description: 'Discover connected devices, IP/MAC addresses, and open ports.', icon: 'Globe', status: 'functional' },
+  { id: 'phishing-detector', name: 'Phishing Detector', category: 'security', description: 'Scan emails and URLs using heuristic rule engines for risk scores.', icon: 'ShieldAlert', status: 'functional' },
 
   // DomoGuard AI Security (10)
   { id: 'ai-malware-analyzer', name: 'DomoGuard Malware Analyzer', category: 'security', description: 'AI explains suspicious files, scripts, and source code behavior.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
