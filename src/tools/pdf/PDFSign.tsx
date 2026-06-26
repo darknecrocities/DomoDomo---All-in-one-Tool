@@ -1,7 +1,7 @@
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState, useRef, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { Upload, Check, ShieldAlert, PenTool, RefreshCw, Layers, Move } from 'lucide-react';
+import { Upload, Check, ShieldAlert, PenTool, RefreshCw, Layers, Move, Image as ImageIcon, Trash2 } from 'lucide-react';
 
 // Dynamically load PDF.js script from a standard CDN
 const loadPdfJs = (): Promise<any> => {
@@ -33,6 +33,68 @@ export const PDFSignTool = () => {
   const [brushWidth, setBrushWidth] = useState<number>(3);
   const [signatureSaved, setSignatureSaved] = useState<boolean>(false);
   const [signatureUrl, setSignatureUrl] = useState<string>('');
+
+  // Tab & Gallery States
+  const [activeTab, setActiveTab] = useState<'draw' | 'upload'>('draw');
+  const [savedSignatures, setSavedSignatures] = useState<string[]>([]);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+
+  // Load from LocalStorage
+  useEffect(() => {
+    const loaded = localStorage.getItem('domoguard_signatures');
+    if (loaded) {
+      try {
+        setSavedSignatures(JSON.parse(loaded));
+      } catch (e) {
+        console.error('Failed to parse saved signatures', e);
+      }
+    }
+  }, []);
+
+  const saveToGallery = (url: string) => {
+    try {
+      // Keep max 10, put latest first
+      const updated = [url, ...savedSignatures.filter(s => s !== url)].slice(0, 10); 
+      setSavedSignatures(updated);
+      localStorage.setItem('domoguard_signatures', JSON.stringify(updated));
+    } catch (e: any) {
+      if (e.name === 'QuotaExceededError') {
+        alert('Browser storage is full. Cannot save more signatures to gallery.');
+      }
+    }
+  };
+
+  const deleteFromGallery = (url: string) => {
+    const updated = savedSignatures.filter(s => s !== url);
+    setSavedSignatures(updated);
+    localStorage.setItem('domoguard_signatures', JSON.stringify(updated));
+    if (signatureUrl === url) {
+      setSignatureSaved(false);
+      setSignatureUrl('');
+    }
+  };
+
+  const handleSignatureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Signature file must be under 2MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      setSignatureUrl(dataUrl);
+      setSignatureSaved(true);
+      saveToGallery(dataUrl);
+    };
+    reader.readAsDataURL(file);
+    
+    // Reset input
+    if (uploadInputRef.current) uploadInputRef.current.value = '';
+  };
 
   // Placement States
   const [targetPage, setTargetPage] = useState<number>(1);
@@ -222,6 +284,7 @@ export const PDFSignTool = () => {
     const dataUrl = canvas.toDataURL('image/png');
     setSignatureUrl(dataUrl);
     setSignatureSaved(true);
+    saveToGallery(dataUrl);
   };
 
   // Drag Placement Handlers
@@ -328,80 +391,151 @@ export const PDFSignTool = () => {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Signature Pad Panel */}
       <div className="lg:col-span-8 flex flex-col gap-6 text-left">
-        {/* Draw panel */}
+        {/* Draw/Upload panel */}
         <div className="glass-card p-6 flex flex-col gap-5">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <PenTool className="text-[#4E8E5E]" size={22} />
-              <span>1. Draw Your Signature</span>
+              <span>1. Provide Your Signature</span>
             </h2>
-            <button
-              onClick={initCanvas}
-              className="text-[10px] text-rose-400 hover:text-rose-350 font-bold flex items-center gap-1.5"
-            >
-              <RefreshCw size={12} />
-              <span>Clear Pad</span>
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <div className="relative border border-slate-800 rounded-2xl bg-slate-950/40 overflow-hidden flex items-center justify-center p-2">
-              <canvas
-                ref={canvasRef}
-                width={500}
-                height={200}
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                onTouchStart={startDrawing}
-                onTouchMove={draw}
-                onTouchEnd={stopDrawing}
-                className="bg-[#1a2333]/30 border border-slate-850 rounded-xl cursor-pencil max-w-full touch-none"
-              />
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-900/30 rounded-xl border border-slate-850">
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-slate-400">Ink:</span>
-                <div className="flex gap-2">
-                  {['#000000', '#0f172a', '#1e40af', '#991b1b'].map((col) => (
-                    <button
-                      key={col}
-                      onClick={() => setInkColor(col)}
-                      className={`w-6 h-6 rounded-full border transition-all ${
-                        inkColor === col ? 'ring-2 ring-teal-400 scale-110' : 'opacity-70'
-                      }`}
-                      style={{ backgroundColor: col }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Width:</span>
-                <input
-                  type="range"
-                  min="1"
-                  max="8"
-                  value={brushWidth}
-                  onChange={(e) => setBrushWidth(parseInt(e.target.value))}
-                  className="w-24 h-1 bg-slate-800 rounded appearance-none cursor-pointer accent-[#4E8E5E]"
-                />
-              </div>
-
+            <div className="flex items-center gap-2 bg-slate-900/50 p-1 rounded-lg border border-slate-800">
               <button
-                onClick={saveSignatureImage}
-                className={`py-2 px-4 rounded-xl text-xs font-bold transition-all ${
-                  signatureSaved
-                    ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
-                    : 'bg-[#4E8E5E] text-white hover:bg-[#3d704a]'
+                onClick={() => setActiveTab('draw')}
+                className={`text-xs font-bold px-3 py-1.5 rounded-md transition-all ${
+                  activeTab === 'draw' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                {signatureSaved ? 'Signature Locked ✓' : 'Lock Signature'}
+                Draw
+              </button>
+              <button
+                onClick={() => setActiveTab('upload')}
+                className={`text-xs font-bold px-3 py-1.5 rounded-md transition-all ${
+                  activeTab === 'upload' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Upload
               </button>
             </div>
           </div>
+
+          {activeTab === 'draw' ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-end">
+                <button
+                  onClick={initCanvas}
+                  className="text-[10px] text-rose-400 hover:text-rose-350 font-bold flex items-center gap-1.5"
+                >
+                  <RefreshCw size={12} />
+                  <span>Clear Pad</span>
+                </button>
+              </div>
+              <div className="relative border border-slate-800 rounded-2xl bg-slate-950/40 overflow-hidden flex items-center justify-center p-2">
+                <canvas
+                  ref={canvasRef}
+                  width={500}
+                  height={200}
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={stopDrawing}
+                  onMouseLeave={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
+                  className="bg-[#1a2333]/30 border border-slate-850 rounded-xl cursor-pencil max-w-full touch-none"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-900/30 rounded-xl border border-slate-850">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-slate-400">Ink:</span>
+                  <div className="flex gap-2">
+                    {['#000000', '#0f172a', '#1e40af', '#991b1b'].map((col) => (
+                      <button
+                        key={col}
+                        onClick={() => setInkColor(col)}
+                        className={`w-6 h-6 rounded-full border transition-all ${
+                          inkColor === col ? 'ring-2 ring-teal-400 scale-110' : 'opacity-70'
+                        }`}
+                        style={{ backgroundColor: col }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400">Width:</span>
+                  <input
+                    type="range"
+                    min="1"
+                    max="8"
+                    value={brushWidth}
+                    onChange={(e) => setBrushWidth(parseInt(e.target.value))}
+                    className="w-24 h-1 bg-slate-800 rounded appearance-none cursor-pointer accent-[#4E8E5E]"
+                  />
+                </div>
+
+                <button
+                  onClick={saveSignatureImage}
+                  className={`py-2 px-4 rounded-xl text-xs font-bold transition-all ${
+                    signatureSaved
+                      ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
+                      : 'bg-[#4E8E5E] text-white hover:bg-[#3d704a]'
+                  }`}
+                >
+                  {signatureSaved ? 'Signature Locked ✓' : 'Lock Signature'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div className="border border-dashed border-slate-800 rounded-2xl p-6 bg-slate-950/20 text-center flex flex-col items-center gap-3">
+                <div className="p-3 bg-slate-900/60 rounded-full border border-slate-800 text-[#4E8E5E]">
+                  <ImageIcon size={24} />
+                </div>
+                <label className="btn-primary cursor-pointer mt-1">
+                  <span>Choose Image (PNG/JPG)</span>
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleSignatureUpload}
+                    className="hidden"
+                    ref={uploadInputRef}
+                  />
+                </label>
+                <p className="text-slate-500 text-[10px]">Transparent PNG recommended. Max 2MB.</p>
+              </div>
+              
+              {savedSignatures.length > 0 && (
+                <div className="flex flex-col gap-2 mt-2">
+                  <span className="text-xs font-bold text-slate-400">Saved Signatures ({savedSignatures.length}/10)</span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
+                    {savedSignatures.map((sigUrl, idx) => (
+                      <div 
+                        key={idx} 
+                        className={`relative group h-16 border rounded-xl overflow-hidden cursor-pointer transition-all ${
+                          signatureUrl === sigUrl ? 'border-[#4E8E5E] ring-1 ring-[#4E8E5E] bg-slate-900/60' : 'border-slate-800 bg-slate-950/40 hover:border-slate-600'
+                        }`}
+                        onClick={() => {
+                          setSignatureUrl(sigUrl);
+                          setSignatureSaved(true);
+                        }}
+                      >
+                        <div className="h-full w-full flex items-center justify-center p-2 bg-white/5">
+                          <img src={sigUrl} alt="Saved" className="max-h-full max-w-full object-contain" />
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); deleteFromGallery(sigUrl); }}
+                          className="absolute top-1 right-1 p-1 bg-rose-500/20 text-rose-400 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500 hover:text-white"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Drag Workspace panel */}

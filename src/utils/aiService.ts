@@ -19,6 +19,7 @@ export async function getTransformers() {
 let embeddingPipeline: any = null;
 let classifierPipeline: any = null;
 let whisperPipeline: any = null;
+let ttsPipeline: any = null;
 
 const makeProgressCallback = (callback?: LoadingProgressCallback) => {
   return (data: any) => {
@@ -166,6 +167,32 @@ export const aiService = {
       return { status: true, models };
     } catch {
       return { status: false, models: [] };
+    }
+  },
+
+  async synthesizeSpeechLocally(
+    text: string,
+    voiceId: string = 'cmu_us_awb_arctic-wav-arctic_a0001',
+    progressCallback?: LoadingProgressCallback
+  ): Promise<{ audio: Float32Array; sampling_rate: number }> {
+    try {
+      const { pipeline } = await getTransformers();
+      
+      if (!ttsPipeline) {
+        ttsPipeline = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
+          progress_callback: makeProgressCallback(progressCallback)
+        });
+      }
+
+      // Default speaker embeddings mapped to standard cmu_arctic speakers
+      const speakerUrl = `https://huggingface.co/datasets/Xenova/cmu-arctic-xvectors-extracted/resolve/main/${voiceId}.bin`;
+
+      // The pipeline returns { audio: Float32Array, sampling_rate: number }
+      const output = await ttsPipeline(text, { speaker_embeddings: speakerUrl });
+      return output;
+    } catch (err) {
+      console.error('TTS synthesis error:', err);
+      throw err;
     }
   },
 

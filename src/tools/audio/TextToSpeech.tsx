@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Volume2, Play, Square, Globe, Sparkles, BookOpen } from 'lucide-react';
+import { Volume2, Play, Square, Globe, Sparkles, BookOpen, Download, Cpu, HardDrive } from 'lucide-react';
+import { aiService } from '../../utils/aiService';
+import { float32ArrayToWavBlob } from '../../utils/audioHelpers';
+import { triggerBlobDownload } from '../../utils/sharedHelpers';
 
 interface PresetScript {
   title: string;
@@ -15,6 +18,15 @@ export const TextToSpeechTool = () => {
   const [volume, setVolume] = useState(1);
   const [speaking, setSpeaking] = useState(false);
   const [lang, setLang] = useState('all');
+  
+  // Engine Mode
+  const [engineMode, setEngineMode] = useState<'native' | 'wasm'>('native');
+  
+  // WASM Local AI States
+  const [wasmStatus, setWasmStatus] = useState<string>('');
+  const [wasmProgress, setWasmProgress] = useState<number>(0);
+  const [wasmAudioBlob, setWasmAudioBlob] = useState<Blob | null>(null);
+  const [wasmAudioUrl, setWasmAudioUrl] = useState<string | null>(null);
   
   // Realtime highlighting index
   const [highlightRange, setHighlightRange] = useState<{ start: number; end: number } | null>(null);
@@ -81,6 +93,37 @@ export const TextToSpeechTool = () => {
     setHighlightRange(null);
   };
 
+  const handleWasmSynthesize = async () => {
+    setSpeaking(true);
+    setWasmStatus('Initializing local AI model...');
+    setWasmProgress(0);
+    setWasmAudioBlob(null);
+    if (wasmAudioUrl) URL.revokeObjectURL(wasmAudioUrl);
+    setWasmAudioUrl(null);
+
+    try {
+      const output = await aiService.synthesizeSpeechLocally(text, 'cmu_us_awb_arctic-wav-arctic_a0001', (status, progress) => {
+        setWasmStatus(status);
+        setWasmProgress(progress);
+      });
+      
+      const wavBlob = float32ArrayToWavBlob(output.audio, output.sampling_rate);
+      setWasmAudioBlob(wavBlob);
+      setWasmAudioUrl(URL.createObjectURL(wavBlob));
+      setWasmStatus('Synthesis complete!');
+      setWasmProgress(100);
+    } catch (err: any) {
+      setWasmStatus(`Error: ${err.message}`);
+    } finally {
+      setSpeaking(false);
+    }
+  };
+
+  const handleDownloadWav = () => {
+    if (!wasmAudioBlob) return;
+    triggerBlobDownload(wasmAudioBlob, 'domodomo_synthesized_speech.wav');
+  };
+
   // SSML-like presets
   const VOICE_PRESETS = [
     { label: 'News Anchor', rate: 1.05, pitch: 0.95 },
@@ -124,7 +167,26 @@ export const TextToSpeechTool = () => {
           <h3 className="font-bold text-teal-400 text-sm">Text to Speech Synthesizer</h3>
           <p className="text-[10px] text-slate-500">Synthesize text into speech locally using native browser voice nodes</p>
         </div>
-        <span className="ml-auto text-[10px] text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">High Fidelity</span>
+        
+        {/* Engine Toggle */}
+        <div className="ml-auto flex items-center bg-slate-900/80 p-1 rounded-lg border border-slate-800">
+          <button
+            onClick={() => setEngineMode('native')}
+            className={`flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded transition-all ${
+              engineMode === 'native' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <HardDrive size={12} /> OS Native
+          </button>
+          <button
+            onClick={() => setEngineMode('wasm')}
+            className={`flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded transition-all ${
+              engineMode === 'wasm' ? 'bg-teal-600 text-white' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Cpu size={12} /> Local AI
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -256,14 +318,39 @@ export const TextToSpeechTool = () => {
             </div>
           </div>
 
+          {/* WASM Output Controls */}
+          {engineMode === 'wasm' && (
+            <div className="flex flex-col gap-2 mt-2">
+              {wasmStatus && (
+                <div className="text-[10px] text-teal-400 font-mono bg-teal-500/10 p-2 rounded border border-teal-500/20">
+                  {wasmStatus}
+                  {wasmProgress > 0 && wasmProgress < 100 && (
+                    <div className="w-full bg-slate-800 h-1 mt-1 rounded overflow-hidden">
+                      <div className="bg-teal-500 h-full" style={{ width: `${wasmProgress}%` }} />
+                    </div>
+                  )}
+                </div>
+              )}
+              {wasmAudioUrl && (
+                <div className="flex flex-col gap-2">
+                  <audio controls src={wasmAudioUrl} className="w-full h-8" />
+                  <button onClick={handleDownloadWav}
+                    className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-teal-300 text-xs font-bold py-2 rounded transition-colors border border-slate-700">
+                    <Download size={13} /> Download WAV
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex gap-2 mt-auto">
             {speaking ? (
-              <button onClick={handleStop}
-                className="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold py-2.5 rounded-lg transition-colors shadow-lg">
-                <Square size={13} /> Stop Speech
+              <button onClick={engineMode === 'native' ? handleStop : () => {}} disabled={engineMode === 'wasm'}
+                className="w-full flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold py-2.5 rounded-lg transition-colors shadow-lg disabled:opacity-50">
+                <Square size={13} /> {engineMode === 'wasm' ? 'Processing...' : 'Stop Speech'}
               </button>
             ) : (
-              <button onClick={handleSpeak} disabled={!text.trim()}
+              <button onClick={engineMode === 'native' ? handleSpeak : handleWasmSynthesize} disabled={!text.trim()}
                 className="w-full btn-primary flex items-center justify-center gap-2 py-2.5 text-xs font-bold disabled:opacity-50 shadow-lg">
                 <Play size={13} /> Synthesize Speech
               </button>
