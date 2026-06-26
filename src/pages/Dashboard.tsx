@@ -177,16 +177,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'phishing-detector', name: 'Phishing Detector', category: 'security', description: 'Scan emails and URLs using heuristic rule engines for risk scores.', icon: 'ShieldAlert', status: 'functional' },
 
   // DomoGuard AI Security (10)
-  { id: 'ai-malware-analyzer', name: 'DomoGuard Malware Analyzer', category: 'security', description: 'AI explains suspicious files, scripts, and source code behavior.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
-  { id: 'ai-phishing-analyzer', name: 'DomoGuard Phishing Analyzer', category: 'security', description: 'AI detects social engineering, urgency manipulation, and credential theft.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
-  { id: 'ai-code-auditor', name: 'DomoGuard Code Auditor', category: 'security', description: 'AI finds hardcoded secrets, SQLi, and XSS in developer projects.', icon: 'Code', status: 'planned', requiresOllama: true },
-  { id: 'ai-log-analyzer', name: 'DomoGuard Log Analyzer', category: 'security', description: 'AI reviews server logs to explain brute force attempts and compromises.', icon: 'Search', status: 'planned', requiresOllama: true },
-  { id: 'ai-threat-intel', name: 'DomoGuard Threat Intel', category: 'security', description: 'Offline AI assistant with RAG database for CVEs and ransomware behavior.', icon: 'Cpu', status: 'planned', requiresOllama: true },
-  { id: 'ai-url-investigation', name: 'DomoGuard URL Investigation', category: 'security', description: 'AI checks URL structure for brand impersonation and encoded payloads.', icon: 'Globe', status: 'planned', requiresOllama: true },
-  { id: 'ai-file-reputation', name: 'DomoGuard File Reputation', category: 'security', description: 'AI summarizes findings from extracted strings and metadata in executables.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
-  { id: 'ai-reverse-engineering', name: 'DomoGuard Reverse Engineering', category: 'security', description: 'AI explains decompiled functions and assembly for cybersecurity students.', icon: 'Code', status: 'planned', requiresOllama: true },
-  { id: 'ai-deepfake-detection', name: 'DomoGuard Deepfake Detection', category: 'security', description: 'Local image analysis to detect AI-generated artifacts and inconsistencies.', icon: 'Image', status: 'planned', requiresOllama: true },
-  { id: 'ai-incident-report', name: 'DomoGuard Incident Report', category: 'security', description: 'AI generates SOC executive summaries and IOCs from logs and findings.', icon: 'FileText', status: 'planned', requiresOllama: true }
+  { id: 'ai-malware-analyzer', name: 'DomoGuard Malware Analyzer', category: 'security', description: 'AI explains suspicious files, scripts, and source code behavior.', icon: 'ShieldAlert', status: 'functional', requiresOllama: true },
+  { id: 'ai-phishing-analyzer', name: 'DomoGuard Phishing Analyzer', category: 'security', description: 'AI detects social engineering, urgency manipulation, and credential theft.', icon: 'ShieldAlert', status: 'functional', requiresOllama: true },
+  { id: 'ai-code-auditor', name: 'DomoGuard Code Auditor', category: 'security', description: 'AI finds hardcoded secrets, SQLi, and XSS in developer projects.', icon: 'Code', status: 'functional', requiresOllama: true },
+  { id: 'ai-log-analyzer', name: 'DomoGuard Log Analyzer', category: 'security', description: 'AI reviews server logs to explain brute force attempts and compromises.', icon: 'Search', status: 'functional', requiresOllama: true },
+  { id: 'ai-threat-intel', name: 'DomoGuard Threat Intel', category: 'security', description: 'Offline AI assistant with RAG database for CVEs and ransomware behavior.', icon: 'Cpu', status: 'functional', requiresOllama: true },
+  { id: 'ai-url-investigation', name: 'DomoGuard URL Investigation', category: 'security', description: 'AI checks URL structure for brand impersonation and encoded payloads.', icon: 'Globe', status: 'functional', requiresOllama: true },
+  { id: 'ai-file-reputation', name: 'DomoGuard File Reputation', category: 'security', description: 'AI summarizes findings from extracted strings and metadata in executables.', icon: 'ShieldAlert', status: 'functional', requiresOllama: true },
+  { id: 'ai-reverse-engineering', name: 'DomoGuard Reverse Engineering', category: 'security', description: 'AI explains decompiled functions and assembly for cybersecurity students.', icon: 'Code', status: 'functional', requiresOllama: true },
+  { id: 'ai-deepfake-detection', name: 'DomoGuard Deepfake Detection', category: 'security', description: 'Local image analysis to detect AI-generated artifacts and inconsistencies.', icon: 'Image', status: 'functional', requiresOllama: true },
+  { id: 'ai-incident-report', name: 'DomoGuard Incident Report', category: 'security', description: 'AI generates SOC executive summaries and IOCs from logs and findings.', icon: 'FileText', status: 'functional', requiresOllama: true }
 ];
 
 export const Dashboard = () => {
@@ -315,10 +315,7 @@ export const Dashboard = () => {
     }
     const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
     
-    // Hide DomoGuard tools if Ollama is not active
-    if (tool.requiresOllama && (!isLocal || !hasOllama)) {
-      return false;
-    }
+    // No longer hiding DomoGuard AI tools here. We want to show them as "Tease" cards if Ollama isn't active.
     
     return matchesSearch && matchesCategory;
   });
@@ -826,26 +823,33 @@ ollama run llama3`}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredTools.slice(0, activeCategory === 'all' ? visibleCount : undefined).map((tool) => {
             const isReady = tool.status === 'functional';
+            const isTeased = tool.requiresOllama && (!isLocal || !hasOllama);
+
             return (
               <div
                 key={tool.id}
-                onClick={() => isReady && navigate(`/tool/${tool.id}`)}
+                onClick={() => isReady && !isTeased && navigate(`/tool/${tool.id}`)}
                 className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
-                  isReady
+                  isReady && !isTeased
                     ? 'glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50'
-                    : 'opacity-50 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
+                    : 'opacity-60 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
                 } transition-all duration-200`}
               >
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-start">
                     <div className={`p-3 rounded-xl border ${
-                      isReady 
+                      isReady && !isTeased
                         ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform' 
                         : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
                     }`}>
                       <DynamicIcon name={tool.icon} size={22} />
                     </div>
-                    {isReady ? (
+                    {isTeased ? (
+                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
+                        <Cpu size={10} />
+                        Needs Local AI
+                      </span>
+                    ) : isReady ? (
                       <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
                         Ready
                       </span>
@@ -872,10 +876,16 @@ ollama run llama3`}
                     {tool.category} Tool
                   </span>
                   
-                  {isReady && (
+                  {isReady && !isTeased && (
                     <span className="text-xs font-semibold text-[#3C6B4D] group-hover:translate-x-1 transition-transform flex items-center gap-1">
                       <span>Open</span>
                       <span>→</span>
+                    </span>
+                  )}
+                  {isTeased && (
+                    <span className="text-[10px] font-bold text-[#E29E2D] flex items-center gap-1">
+                      <ShieldAlert size={12} />
+                      Unlock in Dashboard
                     </span>
                   )}
                 </div>

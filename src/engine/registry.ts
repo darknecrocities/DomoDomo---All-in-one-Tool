@@ -24,6 +24,17 @@ import { QRSecurityTool } from '../tools/security/QRSecurity';
 import { NetworkScannerTool } from '../tools/security/NetworkScanner';
 import { PhishingDetectorTool } from '../tools/security/PhishingDetector';
 
+import { AICodeAuditorTool } from '../tools/security/ai/AICodeAuditor';
+import { AILogAnalyzerTool } from '../tools/security/ai/AILogAnalyzer';
+import { AIMalwareAnalyzerTool } from '../tools/security/ai/AIMalwareAnalyzer';
+import { AIPhishingAnalyzerTool } from '../tools/security/ai/AIPhishingAnalyzer';
+import { AIThreatIntelTool } from '../tools/security/ai/AIThreatIntel';
+import { AIUrlInvestigationTool } from '../tools/security/ai/AIUrlInvestigation';
+import { AIFileReputationTool } from '../tools/security/ai/AIFileReputation';
+import { AIReverseEngineeringTool } from '../tools/security/ai/AIReverseEngineering';
+import { AIDeepfakeDetectionTool } from '../tools/security/ai/AIDeepfakeDetection';
+import { AIIncidentReportTool } from '../tools/security/ai/AIIncidentReport';
+
 // PDF Suite Imports
 import { PDFMergeTool } from '../tools/pdf/PDFMerge';
 import { PDFSplitTool } from '../tools/pdf/PDFSplit';
@@ -314,7 +325,19 @@ export const TOOLS: Tool[] = [
   { id: 'domo-agent-hub', name: 'Domo Agent Hub', category: 'ai', description: 'Interactive offline coding IDE & AI agent workspace.', icon: 'Hammer', run: async (i) => i, component: AIDomoAgentHub },
   { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', run: async (i) => i, component: AIDomoSelection },
   { id: 'ollama-library', name: 'Domo Model Library', category: 'ai', description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', run: async (i) => i, component: AIDomoModelLibrary },
-  { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool }
+  { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool },
+
+  // DomoGuard AI Security Tools
+  { id: 'ai-code-auditor', name: 'DomoGuard Code Auditor', category: 'security', description: 'AI finds hardcoded secrets, SQLi, and XSS in developer projects.', icon: 'Code', run: async (i) => i, component: AICodeAuditorTool },
+  { id: 'ai-log-analyzer', name: 'DomoGuard Log Analyzer', category: 'security', description: 'AI reviews server logs to explain brute force attempts and compromises.', icon: 'Search', run: async (i) => i, component: AILogAnalyzerTool },
+  { id: 'ai-malware-analyzer', name: 'DomoGuard Malware Analyzer', category: 'security', description: 'AI explains suspicious files, scripts, and source code behavior.', icon: 'ShieldAlert', run: async (i) => i, component: AIMalwareAnalyzerTool },
+  { id: 'ai-phishing-analyzer', name: 'DomoGuard Phishing Analyzer', category: 'security', description: 'AI detects social engineering, urgency manipulation, and credential theft.', icon: 'ShieldAlert', run: async (i) => i, component: AIPhishingAnalyzerTool },
+  { id: 'ai-threat-intel', name: 'DomoGuard Threat Intel', category: 'security', description: 'Offline AI assistant with RAG database for CVEs and ransomware behavior.', icon: 'Cpu', run: async (i) => i, component: AIThreatIntelTool },
+  { id: 'ai-url-investigation', name: 'DomoGuard URL Investigation', category: 'security', description: 'AI checks URL structure for brand impersonation and encoded payloads.', icon: 'Globe', run: async (i) => i, component: AIUrlInvestigationTool },
+  { id: 'ai-file-reputation', name: 'DomoGuard File Reputation', category: 'security', description: 'AI summarizes findings from extracted strings and metadata in executables.', icon: 'ShieldAlert', run: async (i) => i, component: AIFileReputationTool },
+  { id: 'ai-reverse-engineering', name: 'DomoGuard Reverse Engineering', category: 'security', description: 'AI explains decompiled functions and assembly for cybersecurity students.', icon: 'Code', run: async (i) => i, component: AIReverseEngineeringTool },
+  { id: 'ai-deepfake-detection', name: 'DomoGuard Deepfake Detection', category: 'security', description: 'Local image analysis to detect AI-generated artifacts and inconsistencies.', icon: 'Image', run: async (i) => i, component: AIDeepfakeDetectionTool },
+  { id: 'ai-incident-report', name: 'DomoGuard Incident Report', category: 'security', description: 'AI generates SOC executive summaries and IOCs from logs and findings.', icon: 'FileText', run: async (i) => i, component: AIIncidentReportTool }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {
