@@ -41,6 +41,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'palette-extractor', name: 'Color Palette Extractor', category: 'photo', description: 'Extract key color swatches and hex codes.', icon: 'Image', status: 'functional' },
   { id: 'collage-maker', name: 'Collage Maker', category: 'photo', description: 'Combine multiple images in editable canvas grids.', icon: 'Image', status: 'functional' },
   { id: 'format-converter', name: 'Format Converter', category: 'photo', description: 'Convert image files to JPG, PNG, WebP locally.', icon: 'Image', status: 'functional' },
+  { id: 'template-studio', name: 'Template Studio', category: 'photo', description: 'Create and fill reusable branded image templates with text.', icon: 'LayoutTemplate', status: 'functional' },
 
   // PDF (10)
   { id: 'pdf-merge', name: 'Merge PDFs', category: 'pdf', description: 'Combine multiple PDF files into a single document.', icon: 'FileText', status: 'functional' },

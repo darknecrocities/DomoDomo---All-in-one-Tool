@@ -11,6 +11,7 @@ import { ImageUpscalerTool } from '../tools/photo/ImageUpscaler';
 import { ColorPaletteExtractorTool } from '../tools/photo/ColorPaletteExtractor';
 import { CollageMakerTool } from '../tools/photo/CollageMaker';
 import { FormatConverterTool } from '../tools/photo/FormatConverter';
+import { TemplateStudioTool } from '../tools/photo/TemplateStudio';
 
 // Security Suite Imports
 import { FileHashCheckerTool } from '../tools/security/FileHashChecker';
@@ -181,6 +182,7 @@ export const TOOLS: Tool[] = [
   { id: 'palette-extractor', name: 'Color Palette Extractor', category: 'photo', description: 'Extract key color swatches and hex codes.', icon: 'Image', run: async (i) => i, component: ColorPaletteExtractorTool },
   { id: 'collage-maker', name: 'Collage Maker', category: 'photo', description: 'Combine multiple images in editable canvas grids.', icon: 'Image', run: async (i) => i, component: CollageMakerTool },
   { id: 'format-converter', name: 'Format Converter', category: 'photo', description: 'Convert image files to JPG, PNG, WebP locally.', icon: 'Image', run: async (i) => i, component: FormatConverterTool },
+  { id: 'template-studio', name: 'Template Studio', category: 'photo', description: 'Create and fill reusable branded image templates with text.', icon: 'LayoutTemplate', run: async (i) => i, component: TemplateStudioTool },
 
   // PDF Tools (10)
   { id: 'pdf-merge', name: 'Merge PDFs', category: 'pdf', description: 'Combine multiple PDF files into a single document.', icon: 'FileText', run: async (i) => i, component: PDFMergeTool },
