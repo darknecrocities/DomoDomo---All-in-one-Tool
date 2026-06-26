@@ -12,6 +12,7 @@ interface PlannedTool {
   description: string;
   icon: string;
   status: 'functional' | 'planned';
+  requiresOllama?: boolean;
 }
 
 const CATEGORIES = [
@@ -24,7 +25,8 @@ const CATEGORIES = [
   { id: 'video', name: 'Video WASM' },
   { id: 'audio', name: 'Audio Web' },
   { id: 'dev', name: 'Developer Tools' },
-  { id: 'ai', name: 'Local AI' }
+  { id: 'ai', name: 'Local AI' },
+  { id: 'security', name: 'Developer Security' }
 ];
 
 const ALL_PLANNED_TOOLS: PlannedTool[] = [
@@ -160,7 +162,31 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'domo-agent-hub', name: 'Domo Agent Hub', category: 'ai', description: 'Interactive offline coding IDE & AI agent workspace.', icon: 'Hammer', status: 'functional' },
   { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', status: 'functional' },
   { id: 'ollama-library', name: 'Domo Model Library', category: 'ai', description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', status: 'functional' },
-  { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', status: 'functional' }
+  { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', status: 'functional' },
+  
+  // Security Tools (10 Standard)
+  { id: 'hash-checker', name: 'File Hash Checker', category: 'security', description: 'Verify file integrity using SHA-256, SHA-512, MD5 locally.', icon: 'ShieldAlert', status: 'planned' },
+  { id: 'password-analyzer', name: 'Password Analyzer', category: 'security', description: 'Analyze password strength, entropy, and dictionary matches offline.', icon: 'Lock', status: 'planned' },
+  { id: 'metadata-cleaner', name: 'Metadata Cleaner', category: 'security', description: 'Strip hidden EXIF data and metadata from images and PDFs.', icon: 'ShieldAlert', status: 'planned' },
+  { id: 'exif-viewer', name: 'EXIF Viewer', category: 'security', description: 'Inspect GPS, device, and camera metadata in images for privacy auditing.', icon: 'Search', status: 'planned' },
+  { id: 'file-encryption', name: 'File Encryption Tool', category: 'security', description: 'Encrypt files locally using AES-256 password protection.', icon: 'Lock', status: 'planned' },
+  { id: 'file-shredder', name: 'Secure File Shredder', category: 'security', description: 'Overwrite files multiple times before deletion to prevent recovery.', icon: 'ShieldAlert', status: 'planned' },
+  { id: 'qr-security', name: 'QR Security Scanner', category: 'security', description: 'Analyze QR codes for hidden URLs and suspicious redirect chains.', icon: 'QrCode', status: 'planned' },
+  { id: 'url-analyzer', name: 'URL Safety Analyzer', category: 'security', description: 'Detect typosquatting, suspicious characters, and homograph attacks.', icon: 'Search', status: 'planned' },
+  { id: 'network-scanner', name: 'Local Network Scanner', category: 'security', description: 'Discover connected devices, IP/MAC addresses, and open ports.', icon: 'Globe', status: 'planned' },
+  { id: 'phishing-detector', name: 'Phishing Detector', category: 'security', description: 'Scan emails and URLs using heuristic rule engines for risk scores.', icon: 'ShieldAlert', status: 'planned' },
+
+  // PandaGuard AI Security (10)
+  { id: 'ai-malware-analyzer', name: 'PandaGuard Malware Analyzer', category: 'security', description: 'AI explains suspicious files, scripts, and source code behavior.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
+  { id: 'ai-phishing-analyzer', name: 'PandaGuard Phishing Analyzer', category: 'security', description: 'AI detects social engineering, urgency manipulation, and credential theft.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
+  { id: 'ai-code-auditor', name: 'PandaGuard Code Auditor', category: 'security', description: 'AI finds hardcoded secrets, SQLi, and XSS in developer projects.', icon: 'Code', status: 'planned', requiresOllama: true },
+  { id: 'ai-log-analyzer', name: 'PandaGuard Log Analyzer', category: 'security', description: 'AI reviews server logs to explain brute force attempts and compromises.', icon: 'Search', status: 'planned', requiresOllama: true },
+  { id: 'ai-threat-intel', name: 'PandaGuard Threat Intel', category: 'security', description: 'Offline AI assistant with RAG database for CVEs and ransomware behavior.', icon: 'Cpu', status: 'planned', requiresOllama: true },
+  { id: 'ai-url-investigation', name: 'PandaGuard URL Investigation', category: 'security', description: 'AI checks URL structure for brand impersonation and encoded payloads.', icon: 'Globe', status: 'planned', requiresOllama: true },
+  { id: 'ai-file-reputation', name: 'PandaGuard File Reputation', category: 'security', description: 'AI summarizes findings from extracted strings and metadata in executables.', icon: 'ShieldAlert', status: 'planned', requiresOllama: true },
+  { id: 'ai-reverse-engineering', name: 'PandaGuard Reverse Engineering', category: 'security', description: 'AI explains decompiled functions and assembly for cybersecurity students.', icon: 'Code', status: 'planned', requiresOllama: true },
+  { id: 'ai-deepfake-detection', name: 'PandaGuard Deepfake Detection', category: 'security', description: 'Local image analysis to detect AI-generated artifacts and inconsistencies.', icon: 'Image', status: 'planned', requiresOllama: true },
+  { id: 'ai-incident-report', name: 'PandaGuard Incident Report', category: 'security', description: 'AI generates SOC executive summaries and IOCs from logs and findings.', icon: 'FileText', status: 'planned', requiresOllama: true }
 ];
 
 export const Dashboard = () => {
@@ -288,6 +314,12 @@ export const Dashboard = () => {
       return false;
     }
     const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
+    
+    // Hide PandaGuard tools if Ollama is not active
+    if (tool.requiresOllama && (!isLocal || !hasOllama)) {
+      return false;
+    }
+    
     return matchesSearch && matchesCategory;
   });
 
@@ -774,6 +806,23 @@ ollama run llama3`}
                   )}
                 </div>
               )}
+          {activeCategory === 'security' && (!isLocal || !hasOllama) && (
+            <div className="bg-[#E29E2D]/10 border border-[#E29E2D]/20 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
+              <div>
+                <h3 className="text-[#ECEBE9] font-bold text-sm flex items-center gap-2">
+                  <ShieldAlert size={16} className="text-[#E29E2D]" />
+                  Unlock PandaGuard AI Suite
+                </h3>
+                <p className="text-[#A3A09B] text-xs mt-1 leading-relaxed">
+                  10 advanced AI security tools are currently hidden. Start your local Ollama instance and download a model to unlock them.
+                </p>
+              </div>
+              <button onClick={() => handleCategoryChange('ai')} className="btn-secondary text-xs px-4 py-2 shrink-0 border-[#E29E2D]/20 text-[#E29E2D] hover:bg-[#E29E2D]/10">
+                Setup Offline AI
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredTools.slice(0, activeCategory === 'all' ? visibleCount : undefined).map((tool) => {
             const isReady = tool.status === 'functional';
