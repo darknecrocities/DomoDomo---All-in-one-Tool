@@ -13,8 +13,54 @@ export interface ToolDoc {
 export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; list: ToolDoc[] }> = {
   security: {
     title: 'DomoGuard Security Suite',
-    desc: 'Local-first offline security and privacy utilities.',
-    list: []
+    desc: 'Local-first offline security, cryptographic, and AI-powered threat intelligence utilities.',
+    list: [
+      {
+        id: 'ai-code-auditor',
+        name: 'AI Code Auditor',
+        engine: 'Ollama LLM Backend',
+        details: 'Streams source code strings through a local AI model constrained by system prompts to perform static application security testing (SAST).',
+        functionality: 'Detects hardcoded secrets, injection flaws, and logic errors. Provides secure remediation examples.',
+        howItWorks: '1. User pastes code. 2. App connects to local Ollama daemon. 3. Model analyzes logic offline. 4. Markdown response is streamed back to the UI.',
+        technicalSpecs: 'Requires local Ollama. Network traffic never leaves localhost.'
+      },
+      {
+        id: 'ai-threat-intel',
+        name: 'AI Threat Intel',
+        engine: 'Ollama Chat Interface',
+        details: 'Provides conversational access to an offline Cyber Threat Intelligence assistant trained on CVEs and APT group behaviors.',
+        functionality: 'Allows users to research ransomware strains, attack techniques, and indicators of compromise without querying public search engines.',
+        howItWorks: '1. User submits query. 2. Chat history is mapped and concatenated. 3. Model generates intelligence report. 4. Output rendered in chat UI.',
+        technicalSpecs: 'Knowledge cutoff depends on the local model downloaded.'
+      },
+      {
+        id: 'ai-deepfake-detection',
+        name: 'AI Deepfake Detection',
+        engine: 'Ollama Vision API',
+        details: 'Encodes images to Base64 and executes a native POST fetch to the local Ollama daemon, utilizing multimodal vision architectures (e.g. llava) to detect artifacts.',
+        functionality: 'Examines images for anatomical inconsistencies and lighting errors indicative of AI generation.',
+        howItWorks: '1. Image is loaded and base64 encoded. 2. Sent to Vision model via local fetch. 3. Model analyzes pixels and responds with a verdict.',
+        technicalSpecs: 'Requires a vision-capable model (like llava) installed locally.'
+      },
+      {
+        id: 'url-analyzer',
+        name: 'URL Analyzer',
+        engine: 'Levenshtein Distance Algorithm',
+        details: 'Parses URLs to extract root domains and compares them against high-value targets (e.g., banks, tech giants) using a Levenshtein distance matrix to detect typosquatting.',
+        functionality: 'Identifies homograph attacks (non-ASCII characters) and visually similar domain names designed for phishing.',
+        howItWorks: '1. User inputs URL. 2. Domain is extracted. 3. Matrix computes string distance to target list. 4. Warns user if distance is 1 or 2.',
+        technicalSpecs: 'Executes instantly in-browser using O(N*M) algorithmic complexity.'
+      },
+      {
+        id: 'file-encryption',
+        name: 'File Encryption',
+        engine: 'WebCrypto PBKDF2 + AES-GCM',
+        details: 'Derives a 256-bit cryptographic key from a user password using 100,000 iterations of PBKDF2, then encrypts file buffers with AES-GCM.',
+        functionality: 'Securely encrypts and decrypts files locally without sending them to a server.',
+        howItWorks: '1. File read into ArrayBuffer. 2. Random 16-byte salt and 12-byte IV generated. 3. Content encrypted. 4. Salt and IV prepended to output Blob.',
+        technicalSpecs: 'Produces highly secure .domoguard files that can only be decrypted with the correct password.'
+      }
+    ]
   },
   pdf: {
     title: 'PDF Document Suite',

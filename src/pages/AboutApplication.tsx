@@ -86,6 +86,12 @@ export const AboutApplication = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
+            <span className="text-[#3C6B4D] font-bold text-sm block">DomoGuard AI Security Suite</span>
+            <p className="text-xs text-[#A3A09B] leading-relaxed">
+              Added 10 new localized AI security tools connecting strictly to offline Ollama models. Includes Code Auditor, Threat Intel Chat, Deepfake Detection, Malware Analysis, and Incident Reporting—all processing directly on your machine.
+            </p>
+          </div>
+          <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
             <span className="text-[#3C6B4D] font-bold text-sm block">10 New Developer Utilities</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
               Added powerful local-first developer tools under the Dev suite, including Cron Expression Parser, SQL Formatter, YAML-JSON Converter, Markdown Table Builder, Side-by-Side Diff Checker, Keyboard Event Finder, CSS Box Shadow & Glassmorphism Designers, Number Base Converter, and Screen Telemetry diagnostics.
