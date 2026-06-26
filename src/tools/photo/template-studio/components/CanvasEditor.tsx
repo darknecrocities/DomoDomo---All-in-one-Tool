@@ -1,8 +1,9 @@
+import React, { useRef, useEffect } from 'react';
 import { Stage, Layer, Image as KonvaImage, Text, Transformer } from 'react-konva';
 import useImage from 'use-image';
 import QRCode from 'qrcode';
 import JsBarcode from 'jsbarcode';
-import type { TemplateData, Layer as LayerType, TextLayer, QRLayer, BarcodeLayer, ImageLayer } from '../types';
+import type { TemplateData, Layer as LayerType, TextLayer } from '../types';
 
 interface CanvasEditorProps {
   template: TemplateData;
@@ -45,7 +46,7 @@ const TransformerComponent = ({ isSelected, shapeProps, onChange, onSelect, lock
             y: e.target.y(),
           });
         }}
-        onTransformEnd={(e) => {
+        onTransformEnd={() => {
           if (locked) return;
           const node = shapeRef.current;
           const scaleX = node.scaleX();
@@ -119,7 +120,7 @@ const DynamicBarcodeNode = ({ layer, isSelected, locked, onSelect, onChange, mod
         margin: 0
       });
       setSrc(canvas.toDataURL());
-    } catch (e) {
+    } catch {
       // Invalid barcode format
     }
   }, [layer.text, layer.format, layer.lineColor, layer.bgColor, layer.displayValue, layer.variableName, mode, userInputs]);
@@ -232,9 +233,9 @@ export const CanvasEditor: React.FC<CanvasEditorProps> = ({
                   align: textLayer.align,
                   lineHeight: textLayer.lineHeight,
                   letterSpacing: textLayer.letterSpacing,
-                  stroke: textLayer.strokeWidth > 0 ? textLayer.stroke : null,
+                  stroke: textLayer.strokeWidth > 0 ? (textLayer.stroke || undefined) : undefined,
                   strokeWidth: textLayer.strokeWidth,
-                  shadowColor: textLayer.shadowBlur > 0 ? textLayer.shadowColor : null,
+                  shadowColor: textLayer.shadowBlur > 0 ? (textLayer.shadowColor || undefined) : undefined,
                   shadowBlur: textLayer.shadowBlur,
                   shadowOffsetX: textLayer.shadowBlur > 0 ? textLayer.shadowOffsetX : 0,
                   shadowOffsetY: textLayer.shadowBlur > 0 ? textLayer.shadowOffsetY : 0,

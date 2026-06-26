@@ -58,9 +58,9 @@ export const useTemplateStudio = () => {
   }, [updateTemplate]);
 
   const updateLayer = useCallback((id: string, changes: Partial<Layer>) => {
-    updateTemplate(prev => ({
+    updateTemplate((prev) => ({
       ...prev,
-      layers: prev.layers.map(l => l.id === id ? { ...l, ...changes } : l)
+      layers: prev.layers.map(l => l.id === id ? { ...l, ...changes } as Layer : l)
     }));
   }, [updateTemplate]);
 

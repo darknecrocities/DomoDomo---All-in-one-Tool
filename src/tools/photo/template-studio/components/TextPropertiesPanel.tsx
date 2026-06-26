@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Layer, TextLayer, QRLayer, BarcodeLayer, ImageLayer } from '../types';
-import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, Type } from 'lucide-react';
+import { Italic, Underline, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 
 interface PropertiesPanelProps {
   layer: Layer;

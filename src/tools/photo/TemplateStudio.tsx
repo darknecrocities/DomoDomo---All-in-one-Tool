@@ -1,8 +1,10 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { useTemplateStudio } from './template-studio/useTemplateStudio';
+import { LayerPanel } from './template-studio/components/LayerPanel';
 import { PropertiesPanel } from './template-studio/components/TextPropertiesPanel';
 import { CanvasEditor } from './template-studio/components/CanvasEditor';
 import { parseCSV, generateBatchZIP } from './template-studio/utils';
 import { PRESET_TEMPLATES } from './template-studio/templates';
-import type { TextLayer, QRLayer, BarcodeLayer, ImageLayer } from './template-studio/types';
 import { Upload, Download, Plus, Save, LayoutTemplate, Undo, Redo, ZoomIn, ZoomOut, Maximize, Loader2, Hand, MousePointer2, QrCode, Barcode, Image as ImageIcon, Library, X } from 'lucide-react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 

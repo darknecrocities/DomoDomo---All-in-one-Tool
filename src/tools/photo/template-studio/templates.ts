@@ -1,4 +1,4 @@
-import { TemplateData } from './types';
+import type { TemplateData } from './types';
 
 export const PRESET_TEMPLATES: Record<string, TemplateData> = {
   employee_id: {
