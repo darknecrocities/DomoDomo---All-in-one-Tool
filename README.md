@@ -63,7 +63,7 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 To ensure complete privacy without external API subscription costs, DomoDomo integrates directly with local **Ollama** runtimes on `http://localhost:11434`.
 
 ### 🧠 Domo Agent Hub & Multi-Agent Orchestrator
-The Domo Agent Hub is a local-first custom IDE workspace that hooks directly to your local folders using browser file system handles.
+The Domo Agent Hub is a local-first custom IDE workspace that hooks directly to your local folders using browser file system handles. It is designed specifically for users who want a lightweight coding, rapid debugging, and streamlined environment without the heavy complexity and bloat of traditional setups.
 - **Multi-Agent Orchestrator:** Configure, name, and assign distinct LLM models to multiple specialized agent personas (e.g., Domo Architect, Domo Hacker, Domo Auditor) to work simultaneously or sequentially.
   - *Sequential Chain:* Flows agent outputs downstream as context to the next agent (optimal for low VRAM specs).
   - *Parallel Evaluation:* Processes agent responses concurrently to compare perspectives.

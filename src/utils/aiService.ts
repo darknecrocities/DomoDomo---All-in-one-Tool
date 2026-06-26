@@ -553,7 +553,7 @@ export const aiService = {
     const { pipeline } = await getTransformers();
     onProgress?.('Loading local Whisper AI model (~40MB)...', 10);
 
-    whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny.en', {
+    whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
       progress_callback: makeProgressCallback(onProgress)
     });
 

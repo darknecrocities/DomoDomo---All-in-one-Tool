@@ -6,10 +6,11 @@ import { AboutApplication } from './pages/AboutApplication';
 import { DoorSplash } from './components/DoorSplash';
 import { Documentation } from './pages/Documentation';
 import { LibraryApi } from './pages/LibraryApi';
-
+import { AutoPilotProvider } from './tools/autopilot/AutoPilotProvider';
+import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilot';
 function App() {
   return (
-    <>
+    <AutoPilotProvider>
       <DoorSplash />
       <HashRouter>
         <Routes>
@@ -23,7 +24,8 @@ function App() {
           </Route>
         </Routes>
       </HashRouter>
-    </>
+      <FloatingAutoPilot />
+    </AutoPilotProvider>
   );
 }
 

@@ -169,6 +169,7 @@ import { AIDomoAgentHub } from '../tools/ai/AIDomoAgentHub';
 import { AIDomoSelection } from '../tools/ai/AIDomoSelection';
 import { AIDomoModelLibrary } from '../tools/ai/AIDomoModelLibrary';
 import { DomoSkillCreatorTool } from '../tools/ai/DomoSkillCreator';
+import { AutoPilotWorkspace } from '../tools/autopilot/AutoPilotWorkspace';
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -328,6 +329,7 @@ export const TOOLS: Tool[] = [
   { id: 'domo-selection', name: 'DomoDomo Selection Explainer', category: 'ai', description: 'Highlight text or code to query DomoDomo offline.', icon: 'Hammer', run: async (i) => i, component: AIDomoSelection },
   { id: 'ollama-library', name: 'Domo Model Library', category: 'ai', description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', run: async (i) => i, component: AIDomoModelLibrary },
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool },
+  { id: 'auto-pilot', name: 'Auto-Pilot Workspace', category: 'ai', description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', run: async (i) => i, component: AutoPilotWorkspace },
 
   // DomoGuard AI Security Tools
   { id: 'ai-code-auditor', name: 'DomoGuard Code Auditor', category: 'security', description: 'AI finds hardcoded secrets, SQLi, and XSS in developer projects.', icon: 'Code', run: async (i) => i, component: AICodeAuditorTool },
