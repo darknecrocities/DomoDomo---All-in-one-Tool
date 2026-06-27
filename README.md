@@ -3,10 +3,9 @@
 DomoDomo is a 100% client-side, offline-first web utility application. Built as a high-performance, private, zero-server architecture toolbox, all operations run completely inside your browser sandbox. Your data, images, PDFs, and files never leave your computer—no servers, no APIs, and no external clouds are ever touched.
 
 ---
-
-
-
 ## 🛠️ Codebase Architecture & Design Philosophy
+
+
 
 DomoDomo operates on a **zero-leak mandate**. Standard SaaS utilities require uploading sensitive business contracts or personal photos to remote cloud servers. DomoDomo compiles and processes all assets locally on your CPU/GPU using modern browser sandboxing.
 
