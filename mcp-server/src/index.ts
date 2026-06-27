@@ -13,27 +13,76 @@ import * as path from 'path';
 // Root path configuration (default to domodomo workspace root)
 const WORKSPACE_ROOT = path.resolve('../');
 
-// Helper to resolve Ollama models folder path
-function getOllamaModelsPath(customPath?: string): string {
-  if (customPath && fs.existsSync(customPath)) {
-    return customPath;
-  }
-  if (process.env.OLLAMA_MODELS && fs.existsSync(process.env.OLLAMA_MODELS)) {
-    return process.env.OLLAMA_MODELS;
-  }
-  const home = process.env.USERPROFILE || process.env.HOME || 'C:\\Users\\Default';
-  let defaultPath = '';
-  if (process.platform === 'win32') {
-    defaultPath = path.join(home, '.ollama', 'models');
-  } else if (process.platform === 'darwin') {
-    defaultPath = path.join(home, '.ollama', 'models');
-  } else {
-    defaultPath = '/usr/share/ollama/.ollama/models';
-    if (!fs.existsSync(defaultPath)) {
-      defaultPath = path.join(home, '.ollama', 'models');
+// Helper to resolve Ollama models folder path — tries all known locations
+function getOllamaModelsPath(customPath?: string): { resolved: string; tried: string[] } {
+  const tried: string[] = [];
+
+  // 1. Custom path provided by user
+  if (customPath && customPath.trim()) {
+    const trimmed = customPath.trim();
+    tried.push(trimmed);
+    if (fs.existsSync(trimmed)) {
+      return { resolved: trimmed, tried };
+    }
+    // If custom path was provided but doesn't exist, still add manifests check
+    const withManifests = path.join(trimmed, 'manifests');
+    if (fs.existsSync(withManifests)) {
+      return { resolved: trimmed, tried };
     }
   }
-  return defaultPath;
+
+  // 2. OLLAMA_MODELS environment variable
+  if (process.env.OLLAMA_MODELS) {
+    tried.push(process.env.OLLAMA_MODELS);
+    if (fs.existsSync(process.env.OLLAMA_MODELS)) {
+      return { resolved: process.env.OLLAMA_MODELS, tried };
+    }
+  }
+
+  const home = process.env.USERPROFILE || process.env.HOME || '';
+  const localAppData = process.env.LOCALAPPDATA || '';
+  const appData = process.env.APPDATA || '';
+
+  // Build candidate paths to try (in priority order)
+  const candidates: string[] = [];
+
+  if (process.platform === 'win32') {
+    // Most common Windows Ollama paths
+    if (home) {
+      candidates.push(path.join(home, '.ollama', 'models'));
+    }
+    if (localAppData) {
+      candidates.push(path.join(localAppData, 'Ollama', 'models'));
+      candidates.push(path.join(localAppData, 'ollama', 'models'));
+    }
+    if (appData) {
+      candidates.push(path.join(appData, 'Ollama', 'models'));
+    }
+    // Common user paths
+    candidates.push('C:\\Users\\Arron\\.ollama\\models');
+    candidates.push('C:\\.ollama\\models');
+  } else if (process.platform === 'darwin') {
+    if (home) {
+      candidates.push(path.join(home, '.ollama', 'models'));
+    }
+    candidates.push('/usr/local/share/ollama/.ollama/models');
+  } else {
+    candidates.push('/usr/share/ollama/.ollama/models');
+    if (home) {
+      candidates.push(path.join(home, '.ollama', 'models'));
+    }
+  }
+
+  for (const candidate of candidates) {
+    tried.push(candidate);
+    if (fs.existsSync(candidate)) {
+      return { resolved: candidate, tried };
+    }
+  }
+
+  // Return best guess even if it doesn't exist yet
+  const fallback = candidates[0] || path.join(home, '.ollama', 'models');
+  return { resolved: fallback, tried };
 }
 
 // Helper to recursively walk a directory
@@ -319,12 +368,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'list_ollama_models': {
         const customPath = (args as any).ollamaPath;
-        const modelsPath = getOllamaModelsPath(customPath);
+        const { resolved: modelsPath, tried } = getOllamaModelsPath(customPath);
         const manifestsRoot = path.join(modelsPath, 'manifests');
         
         if (!fs.existsSync(manifestsRoot)) {
           return {
-            content: [{ type: 'text', text: `Ollama manifests folder not found at: ${manifestsRoot}. Check your custom Ollama path.` }],
+            content: [{ type: 'text', text: `Ollama manifests folder not found. Searched:\n${tried.join('\n')}\n\nEnsure Ollama is installed and has downloaded at least one model.` }],
             isError: true
           };
         }
@@ -376,11 +425,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'export_ollama_model': {
         const { modelName, modelTag, destinationPath } = args as any;
         const customPath = (args as any).ollamaPath;
-        const modelsPath = getOllamaModelsPath(customPath);
+        const { resolved: modelsPath, tried } = getOllamaModelsPath(customPath);
         
         const manifestsRoot = path.join(modelsPath, 'manifests');
         if (!fs.existsSync(manifestsRoot)) {
-          return { content: [{ type: 'text', text: `Ollama manifests directory not found.` }], isError: true };
+          return { content: [{ type: 'text', text: `Ollama manifests directory not found. Auto-searched:\n${tried.join('\n')}\n\nFix: In the Storage Path field at the top, click Browse... and select your Ollama models folder (usually C:\\Users\\${process.env.USERNAME || 'YourName'}\\.ollama\\models).` }], isError: true };
         }
 
         const files = getManifestsRecursively(manifestsRoot);
@@ -463,7 +512,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'import_ollama_model': {
         const { sourceFolderPath } = args as any;
         const customPath = (args as any).ollamaPath;
-        const modelsPath = getOllamaModelsPath(customPath);
+        const { resolved: modelsPath } = getOllamaModelsPath(customPath);
         
         const metadataPath = path.join(sourceFolderPath, 'metadata.json');
         const manifestSrcPath = path.join(sourceFolderPath, 'manifest');
