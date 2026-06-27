@@ -80,34 +80,21 @@ export const Shell = () => {
 
   useEffect(() => {
     const checkForUpdates = async () => {
-      // 1. Only check for updates if running on localhost / local environment
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       if (!isLocalhost) {
-        return; // Don't prompt online users for git updates
+        return;
       }
 
       try {
-        // 2. Fetch the local commit SHA and active branch from the Vite dev server API
-        const shaRes = await fetch(`/api/git-sha?t=${Date.now()}`);
-        if (shaRes.ok) {
-          const shaData = await shaRes.json();
-          const localSha = shaData.sha;
-          const branch = shaData.branch || 'main';
-
-          // 3. Fetch the latest commit for that specific branch from the remote GitHub repository
-          const remoteRes = await fetch(`https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/${branch}?t=${Date.now()}`);
-          if (!remoteRes.ok) return;
-          const remoteData = await remoteRes.json();
-          const remoteSha = remoteData.sha;
-          const remoteShaShort = remoteSha ? remoteSha.substring(0, 7) : '';
-
-          // 4. Compare remote and local commit SHAs
-          if (localSha && remoteSha && !localSha.startsWith(remoteSha) && !remoteSha.startsWith(localSha)) {
+        const res = await fetch(`/api/git-check-updates?t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.updateAvailable) {
             setSimulatedCommit({
-              hash: remoteShaShort,
-              message: remoteData.commit?.message?.split('\n')?.[0] || 'New updates available',
-              author: remoteData.commit?.author?.name || 'developer',
-              files: ['Repository files']
+              hash: 'origin/main',
+              message: data.commits[0] || 'New updates available on main branch',
+              author: 'darknecrocities',
+              files: [`${data.commitsCount} new commits`]
             });
             setRepoStatus('update_available');
           } else {
@@ -120,7 +107,7 @@ export const Shell = () => {
     };
 
     checkForUpdates();
-    const interval = setInterval(checkForUpdates, 30000);
+    const interval = setInterval(checkForUpdates, 45000);
     return () => clearInterval(interval);
   }, [repoStatus]);
 

@@ -713,6 +713,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://domodomo.site/tool/model-migrator</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://domodomo.site/tool/ai-code-auditor</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

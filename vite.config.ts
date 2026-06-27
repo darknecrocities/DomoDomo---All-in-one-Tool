@@ -53,6 +53,31 @@ export default defineConfig({
               res.writeHead(500, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ error: err.message }));
             }
+          } else if (req.url === '/api/git-check-updates' && req.method === 'GET') {
+            try {
+              // Fetch main updates (silent, non-blocking, short timeout)
+              try {
+                execSync('git fetch origin main', { timeout: 6000, stdio: 'ignore' });
+              } catch (e) {
+                // Fetch failed (probably offline), compare with local tracking refs
+              }
+
+              // Count commits between local HEAD and origin/main
+              const commits = execSync('git log HEAD..origin/main --oneline', { encoding: 'utf-8' }).trim();
+              const updateAvailable = commits.length > 0;
+              const commitList = commits ? commits.split('\n').map(c => c.slice(8)) : [];
+              const commitsCount = commitList.length;
+
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({
+                updateAvailable,
+                commitsCount,
+                commits: commitList
+              }));
+            } catch (err: any) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: err.message }));
+            }
           } else if (req.url === '/api/git-update' && req.method === 'POST') {
             res.writeHead(200, {
               'Content-Type': 'text/plain',
@@ -75,7 +100,7 @@ export default defineConfig({
             };
             (async () => {
               try {
-                await runCmd('git pull');
+                await runCmd('git pull origin main');
                 await runCmd('npm install');
                 res.write('\n✅ Update completed successfully! Reloading app...');
                 res.end();
