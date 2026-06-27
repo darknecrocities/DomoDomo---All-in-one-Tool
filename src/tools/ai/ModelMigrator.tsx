@@ -181,6 +181,8 @@ export const ModelMigrator = () => {
   const [pullProgress, setPullProgress] = useState(0);
   const [pullStatus, setPullStatus] = useState('');
   const [pullError, setPullError] = useState<string | null>(null);
+  const [pullExportDestination, setPullExportDestination] = useState('');
+  const [isAutoExporting, setIsAutoExporting] = useState(false);
 
   // Global loading
   const [isLoadingPath, setIsLoadingPath] = useState(false);
@@ -357,7 +359,7 @@ export const ModelMigrator = () => {
     setPullModelName(modelTag);
     setIsPulling(true);
     setPullProgress(0);
-    setPullStatus('Connecting to registry...');
+    setPullStatus('Connecting to Ollama registry...');
     setPullError(null);
 
     try {
@@ -365,9 +367,48 @@ export const ModelMigrator = () => {
         setPullStatus(status);
         setPullProgress(progress);
       });
-      showAlert('success', `Model ${modelTag} pulled successfully!`);
-      setPullModelName('');
+
+      showAlert('success', `Model ${modelTag} downloaded to Ollama!`);
       await loadLocalModels();
+
+      // Auto-export to HDD/USB if user specified a destination
+      if (pullExportDestination.trim() && mcpOnline) {
+        setIsAutoExporting(true);
+        setPullStatus('Copying to external drive...');
+        try {
+          // Find the freshly pulled model in local list
+          const refreshed = await mcpClient.callTool('list_ollama_models', { ollamaPath: customOllamaPath || undefined });
+          const models: LocalModel[] = refreshed.content?.[0]?.text ? JSON.parse(refreshed.content[0].text) : [];
+          const pulledModel = models.find(m => 
+            `${m.name}:${m.tag}`.toLowerCase() === modelTag.toLowerCase() ||
+            m.name.toLowerCase() === modelTag.replace(/:.*$/, '').toLowerCase()
+          );
+
+          if (pulledModel) {
+            const exportResponse = await mcpClient.callTool('export_ollama_model', {
+              modelName: pulledModel.name,
+              modelTag: pulledModel.tag,
+              destinationPath: pullExportDestination.trim(),
+              ollamaPath: customOllamaPath || undefined
+            });
+            const result = exportResponse.content?.[0]?.text ? JSON.parse(exportResponse.content[0].text) : null;
+            if (result?.success) {
+              showAlert('success', `Model saved to your Seagate: ${result.exportPath}`);
+              setPullStatus(`Saved to ${pullExportDestination}`);
+            } else {
+              showAlert('error', 'Pull succeeded but auto-export to HDD failed. Use the Export tab manually.');
+            }
+          } else {
+            showAlert('error', 'Could not locate pulled model for export. Try exporting manually from the Export tab.');
+          }
+        } catch (exportErr: any) {
+          showAlert('error', `Auto-export failed: ${exportErr.message}. Use the Export tab to copy manually.`);
+        } finally {
+          setIsAutoExporting(false);
+        }
+      }
+
+      setPullModelName('');
     } catch (err: any) {
       setPullError(err.message || 'Failed to pull model.');
       showAlert('error', 'Model download failed.');
@@ -769,7 +810,7 @@ export const ModelMigrator = () => {
 
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1 text-xs">
-                    <span className="text-[#A3A09B] font-mono font-bold">Model Registry Tag name:</span>
+                    <span className="text-[#A3A09B] font-mono font-bold">Model Registry Tag:</span>
                     <input 
                       type="text" 
                       value={pullModelName}
@@ -782,20 +823,53 @@ export const ModelMigrator = () => {
                     </span>
                   </div>
 
+                  {/* Save directly to HDD */}
+                  <div className="flex flex-col gap-1 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#A3A09B] font-mono font-bold">Auto-Save to External Drive (Optional):</span>
+                      <span className="text-[10px] text-[#3C6B4D] bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 px-2 py-0.5 rounded-full font-mono">NEW</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={pullExportDestination}
+                        onChange={(e) => setPullExportDestination(e.target.value)}
+                        placeholder="e.g. E:\OllamaModels  (your Seagate drive path)"
+                        className="flex-1 bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] font-mono rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-[#3C6B4D]/50 transition-colors"
+                      />
+                      <button 
+                        onClick={() => selectDirectory(setPullExportDestination)}
+                        className="px-3.5 py-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 hover:bg-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                        title="Browse to your Seagate or external HDD"
+                      >
+                        <FolderOpen size={13} />
+                        <span>Browse...</span>
+                      </button>
+                    </div>
+                    <span className="text-[10px] text-[#72706C] italic font-sans pl-1">
+                      If set, model is automatically copied to your Seagate/USB after download. Leave blank to only install locally.
+                    </span>
+                  </div>
+
                   <button
                     onClick={() => handlePullModel()}
-                    disabled={isPulling || !ollamaOnline || !pullModelName}
+                    disabled={isPulling || isAutoExporting || !ollamaOnline || !pullModelName}
                     className="w-full bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:hover:bg-[#3C6B4D] text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
                   >
                     {isPulling ? (
                       <>
                         <Loader2 size={14} className="animate-spin" />
-                        <span>Pulling Model ({pullProgress}%)...</span>
+                        <span>Downloading... {pullProgress}%</span>
+                      </>
+                    ) : isAutoExporting ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        <span>Copying to Seagate HDD...</span>
                       </>
                     ) : (
                       <>
                         <Download size={14} />
-                        <span>Start Downloading</span>
+                        <span>{pullExportDestination ? 'Download + Save to Seagate' : 'Download to Local Ollama'}</span>
                       </>
                     )}
                   </button>
