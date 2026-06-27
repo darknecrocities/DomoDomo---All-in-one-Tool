@@ -621,29 +621,61 @@ export const ModelMigrator = () => {
     const hddPath = pullExportDestination.trim();
 
     // ── Direct-to-HDD mode ──────────────────────────────────────────────────
-    // When HDD path is set AND MCP is online, uses ollama CLI with OLLAMA_MODELS
-    // overridden to the HDD path — model downloads DIRECTLY to Seagate, zero laptop storage used.
+    // Spawns ollama pull with OLLAMA_MODELS=hddPath — downloads directly to Seagate.
+    // Returns immediately with a job ID, then polls check_pull_status for live progress.
     if (hddPath && mcpOnline) {
-      setPullStatus(`Downloading directly to ${hddPath}...`);
+      setPullStatus(`Starting download to ${hddPath}...`);
       try {
         const response = await mcpClient.callTool('pull_model_direct', {
           modelTag,
           destinationPath: hddPath
         });
         const result = response.content?.[0]?.text ? JSON.parse(response.content[0].text) : null;
-        if (result?.success) {
-          showAlert('success', `✅ ${modelTag} downloaded directly to your Seagate: ${hddPath}`);
-          setPullStatus(`Saved directly to ${hddPath}`);
-          setPullModelName('');
-          await loadLocalModels();
-        } else {
-          const errMsg = result?.error || 'Direct HDD download failed.';
-          setPullError(errMsg);
-          showAlert('error', `Direct download failed: ${errMsg}`);
+
+        if (!result?.success || !result?.statusFile) {
+          setPullError(result?.error || 'Failed to start download process.');
+          showAlert('error', result?.error || 'Could not start direct HDD download.');
+          setIsPulling(false);
+          return;
         }
+
+        // Poll the status file every 2 seconds for live progress
+        setPullStatus(`Downloading to ${hddPath} (via ollama)...`);
+        const statusFile = result.statusFile;
+
+        await new Promise<void>((resolve) => {
+          const interval = setInterval(async () => {
+            try {
+              const pollResp = await mcpClient.callTool('check_pull_status', { statusFile });
+              const status = pollResp.content?.[0]?.text ? JSON.parse(pollResp.content[0].text) : null;
+              if (!status) return;
+
+              if (status.lastLine) {
+                setPullStatus(`→ ${status.lastLine.slice(0, 80)}`);
+              }
+
+              if (status.status === 'done') {
+                clearInterval(interval);
+                showAlert('success', `✅ ${modelTag} saved directly to your Seagate: ${hddPath}`);
+                setPullStatus(`Saved to ${hddPath}`);
+                setPullModelName('');
+                await loadLocalModels();
+                resolve();
+              } else if (status.status === 'error') {
+                clearInterval(interval);
+                setPullError(status.error || 'Download failed.');
+                showAlert('error', `Direct download failed: ${status.error}`);
+                resolve();
+              }
+            } catch {
+              // poll errors are non-fatal, keep retrying
+            }
+          }, 2000);
+        });
+
       } catch (err: any) {
-        setPullError(err.message || 'Failed to download model directly to HDD.');
-        showAlert('error', 'Direct HDD download failed.');
+        setPullError(err.message || 'Failed to start direct HDD download.');
+        showAlert('error', 'Direct HDD download failed. Make sure Ollama is installed and running.');
       } finally {
         setIsPulling(false);
         setIsAutoExporting(false);
@@ -652,7 +684,7 @@ export const ModelMigrator = () => {
     }
 
     // ── Standard mode (no HDD path set) ─────────────────────────────────────
-    // Uses Ollama HTTP API with progress streaming, then auto-exports to HDD if specified.
+    // Uses Ollama HTTP API with streaming progress.
     setPullStatus('Connecting to Ollama registry...');
     try {
       await aiService.pullOllamaModel(modelTag, (status, progress) => {
@@ -670,6 +702,7 @@ export const ModelMigrator = () => {
       setIsPulling(false);
     }
   };
+
 
 
   const formatSize = (bytes: number) => {

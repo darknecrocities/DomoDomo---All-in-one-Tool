@@ -242,6 +242,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['modelTag', 'destinationPath'],
         },
       },
+      {
+        name: 'check_pull_status',
+        description: 'Poll the status of an in-progress direct-to-HDD model download started by pull_model_direct.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            statusFile: { type: 'string', description: 'Absolute path to the status JSON file returned by pull_model_direct' },
+          },
+          required: ['statusFile'],
+        },
+      },
     ],
   };
 });
@@ -583,44 +594,99 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'pull_model_direct': {
         const { modelTag, destinationPath } = args as any;
         if (!modelTag || !destinationPath) {
-          return { content: [{ type: 'text', text: 'Missing modelTag or destinationPath.' }], isError: true };
+          return { content: [{ type: 'text', text: JSON.stringify({ success: false, error: 'Missing modelTag or destinationPath.' }) }], isError: true };
         }
 
-        // Create the destination directory if it doesn't exist
+        // Create the destination directory
         try {
           fs.mkdirSync(destinationPath, { recursive: true });
         } catch (mkErr: any) {
-          return { content: [{ type: 'text', text: `Failed to create destination folder: ${mkErr.message}` }], isError: true };
+          return { content: [{ type: 'text', text: JSON.stringify({ success: false, error: `Cannot create folder: ${mkErr.message}` }) }], isError: true };
         }
 
-        return new Promise((resolve) => {
-          // Override OLLAMA_MODELS so Ollama CLI downloads directly to the HDD path
-          const env = { ...process.env, OLLAMA_MODELS: destinationPath };
-          const cmd = `ollama pull ${modelTag}`;
+        // Find ollama executable — check common Windows install locations
+        const ollamaExeCandidates = [
+          'ollama', // If it's in PATH
+          path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Ollama', 'ollama.exe'),
+          path.join(process.env.LOCALAPPDATA || '', 'Programs', 'ollama', 'ollama.exe'),
+          'C:\\Program Files\\Ollama\\ollama.exe',
+          'C:\\Program Files (x86)\\Ollama\\ollama.exe',
+          path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'Programs', 'Ollama', 'ollama.exe'),
+        ];
 
-          exec(cmd, { env, maxBuffer: 100 * 1024 * 1024, timeout: 0 }, (error, stdout, stderr) => {
-            if (error && !stdout.includes('success') && !stderr.includes('success')) {
-              resolve({
-                content: [{ type: 'text', text: JSON.stringify({
-                  success: false,
-                  error: stderr || error.message,
-                  hint: 'Make sure Ollama is installed and running. Run: ollama serve'
-                })}],
-                isError: true
-              });
-            } else {
-              resolve({
-                content: [{ type: 'text', text: JSON.stringify({
-                  success: true,
-                  model: modelTag,
-                  savedTo: destinationPath,
-                  output: (stdout || stderr).slice(-500)
-                })}]
-              });
-            }
-          });
+        let ollamaExe = 'ollama';
+        for (const candidate of ollamaExeCandidates) {
+          if (candidate !== 'ollama' && fs.existsSync(candidate)) {
+            ollamaExe = candidate;
+            break;
+          }
+        }
+
+        // Job ID for status polling
+        const jobId = `pull_${Date.now()}`;
+        const statusFile = path.join(destinationPath, `._domo_pull_status_${jobId}.json`);
+
+        const writeStatus = (data: object) => {
+          try { fs.writeFileSync(statusFile, JSON.stringify(data), 'utf-8'); } catch {}
+        };
+
+        writeStatus({ jobId, status: 'starting', model: modelTag, savedTo: destinationPath, progress: 0 });
+
+        // Spawn ollama pull with OLLAMA_MODELS overridden — runs in background, writes progress to file
+        const env = { ...process.env, OLLAMA_MODELS: destinationPath };
+        const { spawn } = require('child_process');
+        const child = spawn(ollamaExe, ['pull', modelTag], { env, windowsHide: true });
+
+        let lastOutput = '';
+        child.stdout.on('data', (data: Buffer) => {
+          lastOutput = data.toString();
+          writeStatus({ jobId, status: 'downloading', model: modelTag, savedTo: destinationPath, lastLine: lastOutput.trim() });
         });
+        child.stderr.on('data', (data: Buffer) => {
+          lastOutput = data.toString();
+          writeStatus({ jobId, status: 'downloading', model: modelTag, savedTo: destinationPath, lastLine: lastOutput.trim() });
+        });
+        child.on('close', (code: number) => {
+          if (code === 0) {
+            writeStatus({ jobId, status: 'done', success: true, model: modelTag, savedTo: destinationPath });
+          } else {
+            writeStatus({ jobId, status: 'error', success: false, model: modelTag, error: `ollama exited with code ${code}. Output: ${lastOutput.slice(-300)}` });
+          }
+          // Clean up status file after 5 minutes
+          setTimeout(() => { try { fs.unlinkSync(statusFile); } catch {} }, 5 * 60 * 1000);
+        });
+        child.on('error', (err: Error) => {
+          writeStatus({ jobId, status: 'error', success: false, model: modelTag, error: `Could not start ollama: ${err.message}. Ensure Ollama is installed.` });
+        });
+
+        // Return the job ID immediately — frontend polls check_pull_status
+        return {
+          content: [{ type: 'text', text: JSON.stringify({
+            success: true,
+            jobId,
+            statusFile,
+            model: modelTag,
+            savedTo: destinationPath,
+            ollamaExe,
+            message: 'Download started in background. Poll check_pull_status for progress.'
+          })}]
+        };
       }
+
+      case 'check_pull_status': {
+        const { statusFile } = args as any;
+        if (!statusFile || !fs.existsSync(statusFile)) {
+          return { content: [{ type: 'text', text: JSON.stringify({ status: 'done', message: 'Status file not found — download may have completed.' }) }] };
+        }
+        try {
+          const data = fs.readFileSync(statusFile, 'utf-8');
+          return { content: [{ type: 'text', text: data }] };
+        } catch (e: any) {
+          return { content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: e.message }) }] };
+        }
+      }
+
+
 
       case 'select_local_directory': {
 
