@@ -11,7 +11,7 @@ export default defineConfig({
     {
       name: 'local-memory-db-middleware',
       configureServer(server) {
-        server.middlewares.use((req, res, next) => {
+        server.middlewares.use(async (req, res, next) => {
           if (req.url === '/api/memory' && req.method === 'POST') {
             let body = '';
             req.on('data', chunk => {
@@ -55,24 +55,52 @@ export default defineConfig({
             }
           } else if (req.url === '/api/git-check-updates' && req.method === 'GET') {
             try {
-              // Fetch main updates (silent, non-blocking, short timeout)
+              const localSha = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+              let remoteSha = '';
+
+              // Try fetching remote main SHA from GitHub API first
               try {
-                execSync('git fetch origin main', { timeout: 6000, stdio: 'ignore' });
+                const apiRes = await fetch('https://api.github.com/repos/darknecrocities/DomoDomo---All-in-one-Tool/commits/main', {
+                  headers: { 'User-Agent': 'Mozilla/5.0' },
+                  signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(4000) : undefined
+                });
+                if (apiRes.ok) {
+                  const data = (await apiRes.json()) as any;
+                  remoteSha = data.sha;
+                }
               } catch (e) {
-                // Fetch failed (probably offline), compare with local tracking refs
+                // ignore
               }
 
-              // Count commits between local HEAD and origin/main
-              const commits = execSync('git log HEAD..origin/main --oneline', { encoding: 'utf-8' }).trim();
-              const updateAvailable = commits.length > 0;
-              const commitList = commits ? commits.split('\n').map(c => c.slice(8)) : [];
-              const commitsCount = commitList.length;
+              // Fallback to git fetch if API check failed
+              if (!remoteSha) {
+                try {
+                  execSync('git fetch origin main', { timeout: 5000, stdio: 'ignore' });
+                  remoteSha = execSync('git rev-parse origin/main', { encoding: 'utf-8' }).trim();
+                } catch (e) {
+                  // ignore
+                }
+              }
+
+              let updateAvailable = false;
+              if (remoteSha && localSha !== remoteSha) {
+                try {
+                  // If remoteSha is already an ancestor of HEAD, local is ahead/updated (returns 0)
+                  // If it's not, we are behind (returns non-zero error)
+                  execSync(`git merge-base --is-ancestor ${remoteSha} HEAD`);
+                  updateAvailable = false;
+                } catch (e) {
+                  updateAvailable = true;
+                }
+              }
 
               res.writeHead(200, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({
                 updateAvailable,
-                commitsCount,
-                commits: commitList
+                localSha,
+                remoteSha,
+                commitsCount: updateAvailable ? 1 : 0,
+                commits: updateAvailable ? ['Latest updates on main branch'] : []
               }));
             } catch (err: any) {
               res.writeHead(500, { 'Content-Type': 'application/json' });
