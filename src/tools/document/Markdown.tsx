@@ -114,10 +114,31 @@ export const MarkdownTool = () => {
     html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-4 list-disc text-slate-300 my-1">$1</li>');
 
     // Images
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-lg border border-slate-800 my-3 shadow-md mx-auto" />');
+    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
+      const trimmedUrl = url.trim().toLowerCase();
+      const isSafe = 
+        trimmedUrl.startsWith('http://') || 
+        trimmedUrl.startsWith('https://') || 
+        trimmedUrl.startsWith('data:image/') ||
+        (!trimmedUrl.includes(':') && !trimmedUrl.startsWith('//')) ||
+        trimmedUrl.startsWith('#');
+      const safeUrl = isSafe ? url : '';
+      return `<img src="${safeUrl}" alt="${alt}" class="max-w-full h-auto rounded-lg border border-slate-800 my-3 shadow-md mx-auto" />`;
+    });
 
     // Links
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 underline font-semibold transition-colors">$1</a>');
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+      const trimmedUrl = url.trim().toLowerCase();
+      const isSafe = 
+        trimmedUrl.startsWith('http://') || 
+        trimmedUrl.startsWith('https://') || 
+        trimmedUrl.startsWith('mailto:') || 
+        trimmedUrl.startsWith('tel:') || 
+        trimmedUrl.startsWith('#') ||
+        (!trimmedUrl.includes(':') && !trimmedUrl.startsWith('//'));
+      const safeUrl = isSafe ? url : '#';
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 underline font-semibold transition-colors">${text}</a>`;
+    });
 
     // Paragraphs and Tables Parser
     const lines = html.split('\n');
