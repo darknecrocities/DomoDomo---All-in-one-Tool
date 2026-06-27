@@ -159,7 +159,7 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     description: 'Navigate the user interface to open a specific DomoDomo tool or page.',
     level: 2,
     parameters: {
-      tool_id: 'The ID of the tool or page to open. Valid IDs: "about", "docs", "library-api", "dashboard", "auto-pilot", "pdf-merge", "pdf-split", "pdf-compress", "pdf-ocr", "pdf-viewer", "pdf-text-edit", "image-resizer", "image-compressor", "crop-rotate", "ai-enhancer", "rich-text", "markdown-editor", "ocr-scanner", "hash-checker", "password-analyzer", "metadata-cleaner", "network-scanner", "qr-generator", "qr-scanner", "ai-chat", "ollama-library", "domo-agent-hub".'
+      tool_id: 'The ID of the tool or page to open. Valid IDs: "about", "docs", "library-api", "dashboard", "auto-pilot", "model-migrator", "pdf-merge", "pdf-split", "pdf-compress", "pdf-ocr", "pdf-viewer", "pdf-text-edit", "image-resizer", "image-compressor", "crop-rotate", "ai-enhancer", "rich-text", "markdown-editor", "ocr-scanner", "hash-checker", "password-analyzer", "metadata-cleaner", "network-scanner", "qr-generator", "qr-scanner", "ai-chat", "ollama-library", "domo-agent-hub".'
     },
     execute: async (args, ctx) => {
       const id = (args.tool_id || '').trim().toLowerCase();
