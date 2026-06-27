@@ -302,6 +302,7 @@ export const aiService = {
       temperature?: number;
       topK?: number;
       topP?: number;
+      images?: string[];
     }
   ): Promise<string> {
     const savedModel = this.getSelectedOllamaModel();
@@ -377,7 +378,7 @@ export const aiService = {
     prompt: string,
     numPredict: number = 800,
     systemPrompt?: string,
-    options?: { temperature?: number; topK?: number; topP?: number }
+    options?: { temperature?: number; topK?: number; topP?: number; images?: string[] }
   ): Promise<string> {
     const endpoint = this.getCustomEndpoint('ollama') || 'http://localhost:11434';
     const res = await fetch(`${endpoint}/api/generate`, {
@@ -387,6 +388,7 @@ export const aiService = {
         model: model,
         prompt: prompt,
         system: systemPrompt,
+        images: options?.images,
         stream: false,
         options: {
           num_predict: numPredict,

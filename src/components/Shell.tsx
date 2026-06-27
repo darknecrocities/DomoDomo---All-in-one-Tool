@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, NavLink } from 'react-router-dom';
+import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
 import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -36,6 +36,18 @@ const FacebookIcon = ({ size = 18 }: { size?: number }) => (
 );
 
 export const Shell = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleDomoNavigate = (e: any) => {
+      if (e.detail && e.detail.path) {
+        navigate(e.detail.path);
+      }
+    };
+    window.addEventListener('domo-navigate' as any, handleDomoNavigate);
+    return () => window.removeEventListener('domo-navigate' as any, handleDomoNavigate);
+  }, [navigate]);
+
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {

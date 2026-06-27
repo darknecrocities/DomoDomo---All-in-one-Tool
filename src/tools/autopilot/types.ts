@@ -1,5 +1,14 @@
+import React from 'react';
 export type PermissionLevel = 1 | 2 | 3;
 export type MissionStatus = 'idle' | 'planning' | 'running' | 'paused' | 'waiting_approval' | 'completed' | 'failed';
+
+export interface MissionArtifact {
+  id: string;
+  name: string;
+  content: string;
+  type: string;
+  timestamp: number;
+}
 
 export interface Mission {
   id: string;
@@ -10,6 +19,7 @@ export interface Mission {
   logs: MissionLog[];
   currentStepIndex: number;
   steps: MissionStep[];
+  artifacts: MissionArtifact[];
 }
 
 export interface MissionStep {
@@ -40,6 +50,17 @@ export interface AutoPilotSkill {
 export interface ExecutionContext {
   log: (msg: string, type?: MissionLog['type'], details?: string) => void;
   requestApproval: (prompt: string) => Promise<boolean>;
+  addArtifact: (name: string, content: string, type: string) => void;
+  selectedModel: string;
+  uploadedFiles: UploadedFile[];
+}
+
+export interface UploadedFile {
+  name: string;
+  type: string;
+  size: number;
+  content: string; // text contents or data URI
+  base64Raw?: string; // raw base64 string for vision analysis
 }
 
 export interface AutoPilotContextType {
@@ -57,4 +78,16 @@ export interface AutoPilotContextType {
   setFloatingVisible: (visible: boolean) => void;
   voiceEnabled: boolean;
   setVoiceEnabled: (enabled: boolean) => void;
+  mcpOnline: boolean;
+  availableMcpTools: string[];
+  syncMcp: () => Promise<boolean>;
+  clearMission: () => void;
+  uploadedFiles: UploadedFile[];
+  addUploadedFile: (file: UploadedFile) => void;
+  removeUploadedFile: (name: string) => void;
+  inputGoal: string;
+  setInputGoal: React.Dispatch<React.SetStateAction<string>>;
+  isListening: boolean;
+  toggleListen: () => void;
 }
+
