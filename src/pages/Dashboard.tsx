@@ -618,7 +618,7 @@ ollama run llama3`}
                 <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
                   <span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
-                    Based on your specs, we recommend running <strong className="text-white font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
+                    Based on your specs, we recommend running <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
                   </p>
                 </div>
               </div>
@@ -748,7 +748,7 @@ ollama run llama3`}
                           </span>
                         </div>
                         <div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
-                          We recommend <strong className="text-white font-mono">{hardware.recommendedModel}</strong> for your hardware.
+                          We recommend <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong> for your hardware.
                         </div>
                       </div>
 
