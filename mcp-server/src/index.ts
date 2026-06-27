@@ -6,7 +6,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -633,7 +633,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         // Spawn ollama pull with OLLAMA_MODELS overridden — runs in background, writes progress to file
         const env = { ...process.env, OLLAMA_MODELS: destinationPath };
-        const { spawn } = require('child_process');
         const child = spawn(ollamaExe, ['pull', modelTag], { env, windowsHide: true });
 
         let lastOutput = '';
