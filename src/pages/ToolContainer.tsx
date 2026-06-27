@@ -36,6 +36,21 @@ export const ToolContainer = () => {
   const seoTitle = `${tool.name} - Free Local Web Utility | DomoDomo`;
   const seoDesc = `Use ${tool.name} completely locally and privately in your browser tab. Category: ${tool.category}. ${tool.description}`;
 
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": tool.name,
+    "description": tool.description,
+    "applicationCategory": `${tool.category.charAt(0).toUpperCase() + tool.category.slice(1)}Application`,
+    "operatingSystem": "All",
+    "browserRequirements": "Requires HTML5, WebAssembly, and modern browser support.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <Helmet>
@@ -45,6 +60,10 @@ export const ToolContainer = () => {
         <meta property="og:description" content={seoDesc} />
         <meta property="twitter:title" content={seoTitle} />
         <meta property="twitter:description" content={seoDesc} />
+        <link rel="canonical" href={`https://domodomo.site/tool/${tool.id}`} />
+        <script type="application/ld+json">
+          {JSON.stringify(schemaMarkup)}
+        </script>
       </Helmet>
 
       {/* Tool Header Breadcrumb */}

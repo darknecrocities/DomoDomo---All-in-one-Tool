@@ -6,12 +6,106 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
 // Root path configuration (default to domodomo workspace root)
 const WORKSPACE_ROOT = path.resolve('../');
+
+// Helper to resolve Ollama models folder path — tries all known locations
+function getOllamaModelsPath(customPath?: string): { resolved: string; tried: string[] } {
+  const tried: string[] = [];
+
+  // 1. Custom path provided by user
+  if (customPath && customPath.trim()) {
+    const trimmed = customPath.trim();
+    tried.push(trimmed);
+    if (fs.existsSync(trimmed)) {
+      return { resolved: trimmed, tried };
+    }
+    // If custom path was provided but doesn't exist, still add manifests check
+    const withManifests = path.join(trimmed, 'manifests');
+    if (fs.existsSync(withManifests)) {
+      return { resolved: trimmed, tried };
+    }
+  }
+
+  // 2. OLLAMA_MODELS environment variable
+  if (process.env.OLLAMA_MODELS) {
+    tried.push(process.env.OLLAMA_MODELS);
+    if (fs.existsSync(process.env.OLLAMA_MODELS)) {
+      return { resolved: process.env.OLLAMA_MODELS, tried };
+    }
+  }
+
+  const home = process.env.USERPROFILE || process.env.HOME || '';
+  const localAppData = process.env.LOCALAPPDATA || '';
+  const appData = process.env.APPDATA || '';
+
+  // Build candidate paths to try (in priority order)
+  const candidates: string[] = [];
+
+  if (process.platform === 'win32') {
+    // Most common Windows Ollama paths
+    if (home) {
+      candidates.push(path.join(home, '.ollama', 'models'));
+    }
+    if (localAppData) {
+      candidates.push(path.join(localAppData, 'Ollama', 'models'));
+      candidates.push(path.join(localAppData, 'ollama', 'models'));
+    }
+    if (appData) {
+      candidates.push(path.join(appData, 'Ollama', 'models'));
+    }
+    // Common user paths
+    candidates.push('C:\\Users\\Arron\\.ollama\\models');
+    candidates.push('C:\\.ollama\\models');
+  } else if (process.platform === 'darwin') {
+    if (home) {
+      candidates.push(path.join(home, '.ollama', 'models'));
+    }
+    candidates.push('/usr/local/share/ollama/.ollama/models');
+  } else {
+    candidates.push('/usr/share/ollama/.ollama/models');
+    if (home) {
+      candidates.push(path.join(home, '.ollama', 'models'));
+    }
+  }
+
+  for (const candidate of candidates) {
+    tried.push(candidate);
+    if (fs.existsSync(candidate)) {
+      return { resolved: candidate, tried };
+    }
+  }
+
+  // Return best guess even if it doesn't exist yet
+  const fallback = candidates[0] || path.join(home, '.ollama', 'models');
+  return { resolved: fallback, tried };
+}
+
+// Helper to recursively walk a directory
+function getManifestsRecursively(dir: string, baseDir: string = ''): { relPath: string; absPath: string }[] {
+  let results: { relPath: string; absPath: string }[] = [];
+  if (!fs.existsSync(dir)) return [];
+  const list = fs.readdirSync(dir);
+  list.forEach((file) => {
+    const absPath = path.join(dir, file);
+    const relPath = baseDir ? `${baseDir}/${file}` : file;
+    try {
+      const stat = fs.statSync(absPath);
+      if (stat && stat.isDirectory()) {
+        results = results.concat(getManifestsRecursively(absPath, relPath));
+      } else {
+        results.push({ relPath, absPath });
+      }
+    } catch {
+      // ignore
+    }
+  });
+  return results;
+}
 
 const server = new Server(
   {
@@ -90,6 +184,73 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             replacementContent: { type: 'string', description: 'New code block to replace the target content with' },
           },
           required: ['path', 'searchContent', 'replacementContent'],
+        },
+      },
+      {
+        name: 'list_ollama_models',
+        description: 'List local Ollama models found on disk (including registry, namespace, and manifest metadata).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            ollamaPath: { type: 'string', description: 'Optional custom path to Ollama models folder' },
+          },
+        },
+      },
+      {
+        name: 'export_ollama_model',
+        description: 'Export an Ollama model\'s manifest and SHA256 layer blobs to a target portable directory (like a USB drive or HDD path).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            modelName: { type: 'string', description: 'The name of the model to export (e.g. llama3.2)' },
+            modelTag: { type: 'string', description: 'The tag of the model to export (e.g. 3b)' },
+            destinationPath: { type: 'string', description: 'Absolute target path to save the exported files' },
+            ollamaPath: { type: 'string', description: 'Optional custom path to local Ollama models folder' },
+          },
+          required: ['modelName', 'modelTag', 'destinationPath'],
+        },
+      },
+      {
+        name: 'import_ollama_model',
+        description: 'Import an exported Ollama model from a portable directory back into the local Ollama models storage.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sourceFolderPath: { type: 'string', description: 'Absolute source path of the exported model directory containing metadata.json, manifest, and blobs/' },
+            ollamaPath: { type: 'string', description: 'Optional custom path to local Ollama models folder' },
+          },
+          required: ['sourceFolderPath'],
+        },
+      },
+      {
+        name: 'select_local_directory',
+        description: 'Launch a native host OS dialog window to visually browse and select a local storage folder or external USB/HDD drive.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
+      {
+        name: 'pull_model_direct',
+        description: 'Pull an Ollama model directly into a custom path (e.g. external HDD or USB) by overriding OLLAMA_MODELS env — bypasses laptop local storage entirely.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            modelTag: { type: 'string', description: 'The model tag to pull (e.g. llama3.2:3b)' },
+            destinationPath: { type: 'string', description: 'Absolute path to download the model into (e.g. D:\\OllamaModels)' },
+          },
+          required: ['modelTag', 'destinationPath'],
+        },
+      },
+      {
+        name: 'check_pull_status',
+        description: 'Poll the status of an in-progress direct-to-HDD model download started by pull_model_direct.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            statusFile: { type: 'string', description: 'Absolute path to the status JSON file returned by pull_model_direct' },
+          },
+          required: ['statusFile'],
         },
       },
     ],
@@ -226,6 +387,345 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         } catch (e: any) {
           return { content: [{ type: 'text', text: `Error: ${e.message}` }], isError: true };
         }
+      }
+
+      case 'list_ollama_models': {
+        const customPath = (args as any).ollamaPath;
+        const { resolved: modelsPath, tried } = getOllamaModelsPath(customPath);
+        const manifestsRoot = path.join(modelsPath, 'manifests');
+        
+        if (!fs.existsSync(manifestsRoot)) {
+          // If manifests root doesn't exist, it means the folder is empty or new.
+          // Return an empty list instead of throwing an error.
+          return { content: [{ type: 'text', text: JSON.stringify({ modelsPath, models: [] }) }] };
+        }
+
+        const files = getManifestsRecursively(manifestsRoot);
+        const models: any[] = [];
+
+        files.forEach((file) => {
+          const normalized = file.relPath.replace(/\\/g, '/');
+          const parts = normalized.split('/');
+          
+          if (parts.length >= 4) {
+            const registry = parts[0];
+            const namespace = parts[1];
+            const name = parts.slice(2, parts.length - 1).join('/');
+            const tag = parts[parts.length - 1];
+
+            let sizeBytes = 0;
+            let layersCount = 0;
+            try {
+              const manifestContent = fs.readFileSync(file.absPath, 'utf-8');
+              const manifest = JSON.parse(manifestContent);
+              if (manifest.layers) {
+                layersCount = manifest.layers.length;
+                sizeBytes += manifest.layers.reduce((sum: number, l: any) => sum + (l.size || 0), 0);
+              }
+              if (manifest.config && manifest.config.size) {
+                sizeBytes += manifest.config.size;
+              }
+            } catch (err) {
+              // ignore
+            }
+
+            models.push({
+              registry,
+              namespace,
+              name,
+              tag,
+              sizeBytes,
+              layersCount,
+              manifestPath: file.relPath
+            });
+          }
+        });
+
+        return { content: [{ type: 'text', text: JSON.stringify({ modelsPath, models }) }] };
+      }
+
+      case 'export_ollama_model': {
+        const { modelName, modelTag, destinationPath } = args as any;
+        const customPath = (args as any).ollamaPath;
+        const { resolved: modelsPath, tried } = getOllamaModelsPath(customPath);
+        
+        const manifestsRoot = path.join(modelsPath, 'manifests');
+        if (!fs.existsSync(manifestsRoot)) {
+          return { content: [{ type: 'text', text: `Ollama manifests directory not found. Auto-searched:\n${tried.join('\n')}\n\nFix: In the Storage Path field at the top, click Browse... and select your Ollama models folder (usually C:\\Users\\${process.env.USERNAME || 'YourName'}\\.ollama\\models).` }], isError: true };
+        }
+
+        const files = getManifestsRecursively(manifestsRoot);
+        const targetManifest = files.find(file => {
+          const normalized = file.relPath.replace(/\\/g, '/');
+          return normalized.endsWith(`/${modelName}/${modelTag}`);
+        });
+
+        if (!targetManifest) {
+          return { content: [{ type: 'text', text: `Model "${modelName}:${modelTag}" not found locally in Ollama manifests.` }], isError: true };
+        }
+
+        let manifest: any;
+        try {
+          manifest = JSON.parse(fs.readFileSync(targetManifest.absPath, 'utf-8'));
+        } catch (err: any) {
+          return { content: [{ type: 'text', text: `Failed to read manifest file: ${err.message}` }], isError: true };
+        }
+
+        const exportFolder = path.join(destinationPath, `${modelName.replace(/\//g, '_')}-${modelTag}`);
+        const exportBlobsFolder = path.join(exportFolder, 'blobs');
+
+        try {
+          fs.mkdirSync(exportBlobsFolder, { recursive: true });
+        } catch (err: any) {
+          return { content: [{ type: 'text', text: `Failed to create export directory: ${err.message}` }], isError: true };
+        }
+
+        fs.copyFileSync(targetManifest.absPath, path.join(exportFolder, 'manifest'));
+
+        const copiedBlobs: string[] = [];
+        const missingBlobs: string[] = [];
+        
+        const digestsToCopy: string[] = [];
+        if (manifest.config && manifest.config.digest) {
+          digestsToCopy.push(manifest.config.digest);
+        }
+        if (manifest.layers) {
+          manifest.layers.forEach((l: any) => {
+            if (l.digest) digestsToCopy.push(l.digest);
+          });
+        }
+
+        digestsToCopy.forEach((digest) => {
+          const blobFile = digest.replace(':', '-');
+          const srcBlobPath = path.join(modelsPath, 'blobs', blobFile);
+          const destBlobPath = path.join(exportBlobsFolder, blobFile);
+
+          if (fs.existsSync(srcBlobPath)) {
+            fs.copyFileSync(srcBlobPath, destBlobPath);
+            copiedBlobs.push(digest);
+          } else {
+            missingBlobs.push(digest);
+          }
+        });
+
+        const metadata = {
+          modelName,
+          modelTag,
+          originalManifestPath: targetManifest.relPath,
+          exportedAt: new Date().toISOString(),
+          platform: process.platform,
+          digests: digestsToCopy
+        };
+        fs.writeFileSync(path.join(exportFolder, 'metadata.json'), JSON.stringify(metadata, null, 2), 'utf-8');
+
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({
+              success: missingBlobs.length === 0,
+              exportPath: exportFolder,
+              copiedLayers: copiedBlobs.length,
+              missingLayers: missingBlobs
+            })
+          }]
+        };
+      }
+
+      case 'import_ollama_model': {
+        const { sourceFolderPath } = args as any;
+        const customPath = (args as any).ollamaPath;
+        const { resolved: modelsPath } = getOllamaModelsPath(customPath);
+        
+        const metadataPath = path.join(sourceFolderPath, 'metadata.json');
+        const manifestSrcPath = path.join(sourceFolderPath, 'manifest');
+        const blobsSrcFolder = path.join(sourceFolderPath, 'blobs');
+
+        if (!fs.existsSync(metadataPath) || !fs.existsSync(manifestSrcPath) || !fs.existsSync(blobsSrcFolder)) {
+          return { content: [{ type: 'text', text: `Invalid source folder. Ensure metadata.json, manifest and blobs/ folder exist.` }], isError: true };
+        }
+
+        let metadata: any;
+        try {
+          metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+        } catch (err: any) {
+          return { content: [{ type: 'text', text: `Failed to read metadata.json: ${err.message}` }], isError: true };
+        }
+
+        const modelName = metadata.modelName;
+        const modelTag = metadata.modelTag;
+        const targetRelManifestPath = metadata.originalManifestPath || `registry.ollama.ai/library/${modelName}/${modelTag}`;
+        
+        const localBlobsFolder = path.join(modelsPath, 'blobs');
+        const localManifestDest = path.join(modelsPath, 'manifests', targetRelManifestPath);
+
+        try {
+          fs.mkdirSync(localBlobsFolder, { recursive: true });
+          fs.mkdirSync(path.dirname(localManifestDest), { recursive: true });
+        } catch (err: any) {
+          return { content: [{ type: 'text', text: `Failed to initialize local directories: ${err.message}` }], isError: true };
+        }
+
+        const copiedBlobs: string[] = [];
+        const sourceBlobs = fs.readdirSync(blobsSrcFolder);
+
+        sourceBlobs.forEach((blobFile) => {
+          const srcBlob = path.join(blobsSrcFolder, blobFile);
+          const destBlob = path.join(localBlobsFolder, blobFile);
+          fs.copyFileSync(srcBlob, destBlob);
+          copiedBlobs.push(blobFile);
+        });
+
+        fs.copyFileSync(manifestSrcPath, localManifestDest);
+
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({
+              success: true,
+              model: `${modelName}:${modelTag}`,
+              manifestPath: localManifestDest,
+              importedBlobsCount: copiedBlobs.length
+            })
+          }]
+        };
+      }
+
+      case 'pull_model_direct': {
+        const { modelTag, destinationPath } = args as any;
+        if (!modelTag || !destinationPath) {
+          return { content: [{ type: 'text', text: JSON.stringify({ success: false, error: 'Missing modelTag or destinationPath.' }) }], isError: true };
+        }
+
+        // Create the destination directory
+        try {
+          fs.mkdirSync(destinationPath, { recursive: true });
+        } catch (mkErr: any) {
+          return { content: [{ type: 'text', text: JSON.stringify({ success: false, error: `Cannot create folder: ${mkErr.message}` }) }], isError: true };
+        }
+
+        // Find ollama executable — check common Windows install locations
+        const ollamaExeCandidates = [
+          'ollama', // If it's in PATH
+          path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Ollama', 'ollama.exe'),
+          path.join(process.env.LOCALAPPDATA || '', 'Programs', 'ollama', 'ollama.exe'),
+          'C:\\Program Files\\Ollama\\ollama.exe',
+          'C:\\Program Files (x86)\\Ollama\\ollama.exe',
+          path.join(process.env.USERPROFILE || '', 'AppData', 'Local', 'Programs', 'Ollama', 'ollama.exe'),
+        ];
+
+        let ollamaExe = 'ollama';
+        for (const candidate of ollamaExeCandidates) {
+          if (candidate !== 'ollama' && fs.existsSync(candidate)) {
+            ollamaExe = candidate;
+            break;
+          }
+        }
+
+        // Job ID for status polling
+        const jobId = `pull_${Date.now()}`;
+        const statusFile = path.join(destinationPath, `._domo_pull_status_${jobId}.json`);
+
+        const writeStatus = (data: object) => {
+          try { fs.writeFileSync(statusFile, JSON.stringify(data), 'utf-8'); } catch {}
+        };
+
+        writeStatus({ jobId, status: 'starting', model: modelTag, savedTo: destinationPath, progress: 0 });
+
+        // Spawn ollama pull with OLLAMA_MODELS overridden — runs in background, writes progress to file
+        const env = { ...process.env, OLLAMA_MODELS: destinationPath };
+        const child = spawn(ollamaExe, ['pull', modelTag], { env, windowsHide: true });
+
+        let lastOutput = '';
+        child.stdout.on('data', (data: Buffer) => {
+          lastOutput = data.toString();
+          writeStatus({ jobId, status: 'downloading', model: modelTag, savedTo: destinationPath, lastLine: lastOutput.trim() });
+        });
+        child.stderr.on('data', (data: Buffer) => {
+          lastOutput = data.toString();
+          writeStatus({ jobId, status: 'downloading', model: modelTag, savedTo: destinationPath, lastLine: lastOutput.trim() });
+        });
+        child.on('close', (code: number) => {
+          if (code === 0) {
+            writeStatus({ jobId, status: 'done', success: true, model: modelTag, savedTo: destinationPath });
+          } else {
+            writeStatus({ jobId, status: 'error', success: false, model: modelTag, error: `ollama exited with code ${code}. Output: ${lastOutput.slice(-300)}` });
+          }
+          // Clean up status file after 5 minutes
+          setTimeout(() => { try { fs.unlinkSync(statusFile); } catch {} }, 5 * 60 * 1000);
+        });
+        child.on('error', (err: Error) => {
+          writeStatus({ jobId, status: 'error', success: false, model: modelTag, error: `Could not start ollama: ${err.message}. Ensure Ollama is installed.` });
+        });
+
+        // Return the job ID immediately — frontend polls check_pull_status
+        return {
+          content: [{ type: 'text', text: JSON.stringify({
+            success: true,
+            jobId,
+            statusFile,
+            model: modelTag,
+            savedTo: destinationPath,
+            ollamaExe,
+            message: 'Download started in background. Poll check_pull_status for progress.'
+          })}]
+        };
+      }
+
+      case 'check_pull_status': {
+        const { statusFile } = args as any;
+        if (!statusFile || !fs.existsSync(statusFile)) {
+          return { content: [{ type: 'text', text: JSON.stringify({ status: 'done', message: 'Status file not found — download may have completed.' }) }] };
+        }
+        try {
+          const data = fs.readFileSync(statusFile, 'utf-8');
+          return { content: [{ type: 'text', text: data }] };
+        } catch (e: any) {
+          return { content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: e.message }) }] };
+        }
+      }
+
+
+
+      case 'select_local_directory': {
+
+        return new Promise((resolve) => {
+          let command = '';
+          if (process.platform === 'win32') {
+            // Build the PowerShell script as a plain string first
+            const psScript = [
+              'Add-Type -AssemblyName System.Windows.Forms;',
+              '$dlg = New-Object System.Windows.Forms.FolderBrowserDialog;',
+              '$dlg.ShowNewFolderButton = $true;',
+              '$dlg.Description = "Select target folder or external USB/HDD drive";',
+              '$owner = New-Object System.Windows.Forms.Form;',
+              '$owner.TopMost = $true;',
+              '$owner.ShowInTaskbar = $false;',
+              '$owner.WindowState = [System.Windows.Forms.FormWindowState]::Minimized;',
+              '$owner.Show();',
+              '$owner.Hide();',
+              'if ($dlg.ShowDialog($owner) -eq [System.Windows.Forms.DialogResult]::OK) {',
+              '  Write-Output $dlg.SelectedPath;',
+              '};',
+              '$owner.Dispose();'
+            ].join(' ');
+            // Encode to UTF-16LE base64 so PowerShell -EncodedCommand accepts it cleanly
+            const encoded = Buffer.from(psScript, 'utf16le').toString('base64');
+            command = `powershell.exe -NoProfile -WindowStyle Hidden -EncodedCommand ${encoded}`;
+          } else if (process.platform === 'darwin') {
+            command = `osascript -e 'POSIX path of (choose folder with prompt "Select target folder or external USB/HDD drive")'`;
+          } else {
+            command = `zenity --file-selection --directory --title="Select target folder or external USB/HDD drive"`;
+          }
+
+          exec(command, { timeout: 60000 }, (error, stdout, stderr) => {
+            if (error) {
+              resolve({ content: [{ type: 'text', text: '' }], isError: true });
+            } else {
+              const selectedPath = stdout.trim();
+              resolve({ content: [{ type: 'text', text: selectedPath }] });
+            }
+          });
+        });
       }
 
       default:

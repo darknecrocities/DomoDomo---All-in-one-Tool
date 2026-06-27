@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, BookOpen, Cpu, Shield, Terminal, Settings, GitBranch, Lock, Server, Layers } from 'lucide-react';
 import { TOOLS_DOCS } from '../utils/ToolDocsData';
 import type { ToolCategory } from '../utils/ToolDocsData';
@@ -29,6 +30,11 @@ export const Documentation = () => {
 
   return (
     <div className="flex flex-col gap-8 text-left">
+      <Helmet>
+        <title>DomoDomo Documentation - Technical Guides & Spec</title>
+        <meta name="description" content="Read the technical specifications of DomoDomo. Understand how WebAssembly (WASM), WebGPU, Web Audio, and local browser sandboxes execute private tools offline." />
+        <link rel="canonical" href="https://domodomo.site/docs" />
+      </Helmet>
       {/* Docs Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#2A2D30]">
         <div className="flex flex-col gap-1.5">

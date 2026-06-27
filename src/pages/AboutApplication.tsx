@@ -1,4 +1,5 @@
 import { Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { BRAND_KIT } from '../utils/BrandKit';
 import domodomoLogo from '../assets/domodomo.png';
 import domodomoWinkLogo from '../assets/domodomo_wink.png';
@@ -30,6 +31,11 @@ const techStack = [
 export const AboutApplication = () => {
   return (
     <div className="flex flex-col gap-8 text-left">
+      <Helmet>
+        <title>About DomoDomo - Private & Secure Offline Toolbox</title>
+        <meta name="description" content="Learn about DomoDomo's client-side, zero-server architecture. All tools run completely offline in your browser sandbox with absolute privacy." />
+        <link rel="canonical" href="https://domodomo.site/about" />
+      </Helmet>
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.12] pointer-events-none" />
         <div className="lg:col-span-8 z-10 flex flex-col gap-4">
@@ -104,9 +110,9 @@ export const AboutApplication = () => {
             </p>
           </div>
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">
-            <span className="text-[#3C6B4D] font-bold text-sm block">Domo Agent Hub & Explainer</span>
+            <span className="text-[#3C6B4D] font-bold text-sm block">Multi-Agent Orchestration Hub</span>
             <p className="text-xs text-[#A3A09B] leading-relaxed">
-              A local-first offline IDE with browser folder mounting, Multi-Agent sequential/parallel orchestration, file writing commands, Autosave, Live Coding simulation toggles, correct extension mapping, and custom markdown responses.
+              A local-first offline IDE featuring browser folder mounting and powerful Multi-Agent sequential/parallel orchestration. Designed specifically for users who want lightweight coding, rapid debugging, and streamlined environments without the heavy complexity of traditional setups. The Agent Hub provides an adaptable workspace complete with file writing commands, Autosave, Live Coding simulation toggles, correct extension mapping, and custom markdown responses.
             </p>
           </div>
           <div className="bg-[#111213] p-5 rounded-xl border border-[#2A2D30] space-y-2">

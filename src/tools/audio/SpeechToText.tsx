@@ -127,7 +127,7 @@ export const SpeechToTextTool = () => {
 
     rec.onerror = (event: any) => {
       console.error('Speech recognition error', event);
-      if (event.error === 'no-speech') {
+      if (event.error === 'no-speech' || event.error === 'aborted') {
         // Safe to ignore / let it auto-restart
         return;
       }

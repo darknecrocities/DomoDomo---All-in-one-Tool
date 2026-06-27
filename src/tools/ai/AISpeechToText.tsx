@@ -111,6 +111,9 @@ export const AISpeechToTextTool = () => {
     };
 
     rec.onerror = (event: any) => {
+      if (event.error === 'aborted' || event.error === 'no-speech') {
+        return; // Ignore expected or harmless errors
+      }
       console.error('Speech recognition error', event.error);
       setErrorMsg(`Web Speech error: ${event.error}. Consider using local Whisper AI engine.`);
     };
@@ -304,10 +307,12 @@ export const AISpeechToTextTool = () => {
     setStatusMsg('Running punctuation refiner...');
 
     try {
-      const prompt = `Correct spelling, format, and add paragraphs/commas to this speech transcription. Maintain speaker tags like [Speaker A] and [Speaker B]:
-"${transcript}"
+      const prompt = `Correct spelling, format, and add paragraphs/commas to this speech transcription. Maintain speaker tags like [Speaker A] and [Speaker B].
 
-Output only the corrected formatted document.`;
+TRANSCRIPT:
+${transcript}
+
+CRITICAL INSTRUCTION: Output ONLY the corrected formatted transcript. Do not include any conversational filler, greetings, explanations, or notes. Start the output directly with the first speaker tag.`;
 
       const result = await aiService.generateText(prompt, maxTokens, () => {}, selectedModel || undefined, {
         systemPrompt,
@@ -330,9 +335,11 @@ Output only the corrected formatted document.`;
 
     try {
       const prompt = `Compile key takeaways, bullet point notes, and action steps from this speech transcript:
-"${transcript}"
 
-Output only structured bullet points.`;
+TRANSCRIPT:
+${transcript}
+
+CRITICAL INSTRUCTION: Output ONLY structured bullet points. Do not include any conversational filler, greetings, or introductory phrases.`;
 
       const result = await aiService.generateText(prompt, maxTokens, () => {}, selectedModel || undefined, {
         systemPrompt: 'You are a secretary. Compile meeting minutes and actions items.',

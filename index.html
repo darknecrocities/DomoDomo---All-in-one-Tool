@@ -7,6 +7,14 @@
     <meta name="google-site-verification" content="-FuSQc_PqfYiFLH5zbkA5UpGrTFTGKCywFwaCsOl3Vo" />
     <script>
       (function() {
+        // Recover routing path from redirects fallback (e.g. GitHub Pages)
+        const params = new URLSearchParams(window.location.search);
+        const redirectPath = params.get('p');
+        if (redirectPath !== null) {
+          const cleanPath = '/' + redirectPath.replace(/~and~/g, '&');
+          window.history.replaceState(null, null, window.location.origin + cleanPath);
+        }
+
         const saved = localStorage.getItem('domo-theme');
         if (saved === 'light') {
           document.documentElement.classList.add('light');
