@@ -461,7 +461,6 @@ export const ModelMigrator = () => {
           />
           <button 
             onClick={() => selectDirectory(setCustomOllamaPath)}
-            disabled={!mcpOnline}
             className="px-3.5 py-2 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/45 text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
             title="Browse drive storage folder"
           >
@@ -581,7 +580,6 @@ export const ModelMigrator = () => {
                       />
                       <button 
                         onClick={() => selectDirectory(setExportDestination)}
-                        disabled={!mcpOnline}
                         className="px-3.5 py-2 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/45 text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 animate-pulse-subtle"
                       >
                         <FolderOpen size={13} />
@@ -668,7 +666,6 @@ export const ModelMigrator = () => {
                       />
                       <button 
                         onClick={() => selectDirectory(setImportSource)}
-                        disabled={!mcpOnline}
                         className="px-3.5 py-2 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/45 text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                         title="Browse drive storage folder"
                       >
