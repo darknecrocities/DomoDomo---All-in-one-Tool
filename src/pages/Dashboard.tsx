@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
 
@@ -14,10 +13,12 @@ interface PlannedTool {
   icon: string;
   status: 'functional' | 'planned';
   requiresOllama?: boolean;
+  popular?: boolean;
 }
 
 const CATEGORIES = [
   { id: 'all', name: 'All Tools' },
+  { id: 'popular', name: 'Popular' },
   { id: 'photo', name: 'Photo & Image' },
   { id: 'pdf', name: 'PDF Document' },
   { id: 'document', name: 'Text & Doc' },
@@ -32,26 +33,26 @@ const CATEGORIES = [
 
 const ALL_PLANNED_TOOLS: PlannedTool[] = [
   // Photo (10)
-  { id: 'background-remover', name: 'Background Remover', category: 'photo', description: 'Erase image backgrounds instantly. Click to key out matching colors, or use manual eraser.', icon: 'Image', status: 'functional' },
-  { id: 'image-resizer', name: 'Image Resizer', category: 'photo', description: 'Resize images to precise dimensions using Canvas.', icon: 'Image', status: 'functional' },
-  { id: 'image-compressor', name: 'Image Compressor', category: 'photo', description: 'Reduce image file sizes with real-time quality scale.', icon: 'Image', status: 'functional' },
+  { id: 'background-remover', name: 'Background Remover', category: 'photo', description: 'Erase image backgrounds instantly. Click to key out matching colors, or use manual eraser.', icon: 'Image', status: 'functional', popular: true },
+  { id: 'image-resizer', name: 'Image Resizer', category: 'photo', description: 'Resize images to precise dimensions using Canvas.', icon: 'Image', status: 'functional', popular: true },
+  { id: 'image-compressor', name: 'Image Compressor', category: 'photo', description: 'Reduce image file sizes with real-time quality scale.', icon: 'Image', status: 'functional', popular: true },
   { id: 'crop-rotate', name: 'Crop & Rotate Tool', category: 'photo', description: 'Crop or rotate photos to standard ratios.', icon: 'Image', status: 'functional' },
   { id: 'ai-enhancer', name: 'AI Image Enhancer', category: 'photo', description: 'Enhance details using local contrast and color filters.', icon: 'Image', status: 'functional' },
   { id: 'watermark-tool', name: 'Watermark Tool', category: 'photo', description: 'Add logo or text watermarks overlay onto photos.', icon: 'Image', status: 'functional' },
   { id: 'image-upscaler', name: 'Image Upscaler', category: 'photo', description: 'Upscale dimensions using canvas bicubic interpolation.', icon: 'Image', status: 'functional' },
   { id: 'palette-extractor', name: 'Color Palette Extractor', category: 'photo', description: 'Extract key color swatches and hex codes.', icon: 'Image', status: 'functional' },
   { id: 'collage-maker', name: 'Collage Maker', category: 'photo', description: 'Combine multiple images in editable canvas grids.', icon: 'Image', status: 'functional' },
-  { id: 'format-converter', name: 'Format Converter', category: 'photo', description: 'Convert image files to JPG, PNG, WebP locally.', icon: 'Image', status: 'functional' },
+  { id: 'format-converter', name: 'Format Converter', category: 'photo', description: 'Convert image files to JPG, PNG, WebP locally.', icon: 'Image', status: 'functional', popular: true },
   { id: 'template-studio', name: 'Template Studio', category: 'photo', description: 'Create and fill reusable branded image templates with text.', icon: 'LayoutTemplate', status: 'functional' },
 
   // PDF (10)
-  { id: 'pdf-merge', name: 'Merge PDFs', category: 'pdf', description: 'Combine multiple PDF files into a single document.', icon: 'FileText', status: 'functional' },
+  { id: 'pdf-merge', name: 'Merge PDFs', category: 'pdf', description: 'Combine multiple PDF files into a single document.', icon: 'FileText', status: 'functional', popular: true },
   { id: 'pdf-split', name: 'Split PDF', category: 'pdf', description: 'Extract pages from a PDF document into separate files.', icon: 'FileText', status: 'functional' },
-  { id: 'pdf-compress', name: 'Compress PDF', category: 'pdf', description: 'Compress PDF size using structural optimization.', icon: 'FileText', status: 'functional' },
+  { id: 'pdf-compress', name: 'Compress PDF', category: 'pdf', description: 'Compress PDF size using structural optimization.', icon: 'FileText', status: 'functional', popular: true },
   { id: 'pdf-to-img', name: 'PDF → Image', category: 'pdf', description: 'Export PDF page views as high-res PNG images.', icon: 'FileText', status: 'functional' },
   { id: 'img-to-pdf', name: 'Image → PDF', category: 'pdf', description: 'Convert graphics and photos into PDF document pages.', icon: 'FileText', status: 'functional' },
   { id: 'pdf-watermark', name: 'Add Watermark', category: 'pdf', description: 'Overlay transparent text stamps onto PDFs.', icon: 'FileText', status: 'functional' },
-  { id: 'pdf-sign', name: 'Sign PDF', category: 'pdf', description: 'Place transparent hand-drawn signatures on files.', icon: 'FileText', status: 'functional' },
+  { id: 'pdf-sign', name: 'Sign PDF', category: 'pdf', description: 'Place transparent hand-drawn signatures on files.', icon: 'FileText', status: 'functional', popular: true },
   { id: 'pdf-protect', name: 'Protect PDF', category: 'pdf', description: 'Set passwords and encryption constraints on PDFs.', icon: 'FileText', status: 'functional' },
   { id: 'pdf-ocr', name: 'Extract Text (OCR)', category: 'pdf', description: 'Transcribe PDFs using structural parsing.', icon: 'FileText', status: 'functional' },
   { id: 'pdf-viewer', name: 'PDF Viewer', category: 'pdf', description: 'Read and view PDF books locally in frame.', icon: 'FileText', status: 'functional' },
@@ -82,7 +83,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'zip-extractor', name: 'ZIP Extractor', category: 'converter', description: 'Outline and unpack local zip compression archives.', icon: 'Hammer', status: 'functional' },
 
   // QR / Barcode (10)
-  { id: 'qr-generator', name: 'QR Code Generator', category: 'qr', description: 'Create customized QR codes for links, text, and credentials.', icon: 'QrCode', status: 'functional' },
+  { id: 'qr-generator', name: 'QR Code Generator', category: 'qr', description: 'Create customized QR codes for links, text, and credentials.', icon: 'QrCode', status: 'functional', popular: true },
   { id: 'qr-scanner', name: 'QR Scanner', category: 'qr', description: 'Scan QR codes using local browser webcam feed.', icon: 'QrCode', status: 'functional' },
   { id: 'wifi-qr', name: 'WiFi QR Generator', category: 'qr', description: 'Generate router network scan cards.', icon: 'QrCode', status: 'functional' },
   { id: 'vcard-qr', name: 'vCard QR Generator', category: 'qr', description: 'Encode business contact sheets in QR codes.', icon: 'QrCode', status: 'functional' },
@@ -94,7 +95,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'qr-designer', name: 'QR Designer', category: 'qr', description: 'Customize modules and patterns in QR designs.', icon: 'QrCode', status: 'functional' },
 
   // Video (10)
-  { id: 'trim-video', name: 'Trim Video', category: 'video', description: 'Clip video file frames between start and end slider ranges.', icon: 'Image', status: 'functional' },
+  { id: 'trim-video', name: 'Trim Video', category: 'video', description: 'Clip video file frames between start and end slider ranges.', icon: 'Image', status: 'functional', popular: true },
   { id: 'compress-video', name: 'Compress Video', category: 'video', description: 'Reduce video track file sizes in the browser.', icon: 'Image', status: 'functional' },
   { id: 'merge-videos', name: 'Merge Videos', category: 'video', description: 'Combine multiple video files together.', icon: 'Image', status: 'functional' },
   { id: 'convert-video', name: 'Convert Video', category: 'video', description: 'Convert video files to WebM or MP4 format.', icon: 'Image', status: 'functional' },
@@ -107,7 +108,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'face-blur', name: 'Face Blur', category: 'video', description: 'Locally detect and blur human face coordinates in video frames.', icon: 'Shield', status: 'functional' },
 
   // Audio (10)
-  { id: 'audio-cutter', name: 'Audio Cutter', category: 'audio', description: 'Trim start and end offsets of audio tracks.', icon: 'FileText', status: 'functional' },
+  { id: 'audio-cutter', name: 'Audio Cutter', category: 'audio', description: 'Trim start and end offsets of audio tracks.', icon: 'FileText', status: 'functional', popular: true },
   { id: 'audio-merge', name: 'Audio Merge', category: 'audio', description: 'Concatenate multiple audio tracks.', icon: 'FileText', status: 'functional' },
   { id: 'noise-removal', name: 'Noise Removal', category: 'audio', description: 'Filter background hiss and clicks from audio feeds.', icon: 'FileText', status: 'functional' },
   { id: 'audio-convert', name: 'Convert Audio', category: 'audio', description: 'Convert audio files to MP3 or WAV formats.', icon: 'FileText', status: 'functional' },
@@ -119,8 +120,8 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'audio-visualizer', name: 'Audio Visualizer', category: 'audio', description: 'Render real-time sound frequency bars.', icon: 'FileText', status: 'functional' },
 
   // Dev Tools (20)
-  { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'Beautify and validate JSON strings.', icon: 'Hammer', status: 'functional' },
-  { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads offline.', icon: 'Hammer', status: 'functional' },
+  { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'Beautify and validate JSON strings.', icon: 'Hammer', status: 'functional', popular: true },
+  { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads offline.', icon: 'Hammer', status: 'functional', popular: true },
   { id: 'dev-base64', name: 'Base64 Tool', category: 'dev', description: 'Encode or decode base64 strings.', icon: 'Hammer', status: 'functional' },
   { id: 'regex-tester', name: 'Regex Tester', category: 'dev', description: 'Test expression matching patterns.', icon: 'Hammer', status: 'functional' },
   { id: 'uuid-gen', name: 'UUID Generator', category: 'dev', description: 'Generate unique random UUIDv4 keys.', icon: 'Hammer', status: 'functional' },
@@ -133,7 +134,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'sql-formatter', name: 'SQL Formatter', category: 'dev', description: 'Format and beautify SQL queries with custom spacing.', icon: 'Hammer', status: 'functional' },
   { id: 'yaml-json', name: 'YAML ↔ JSON Converter', category: 'dev', description: 'Convert configuration structures between YAML and JSON.', icon: 'Hammer', status: 'functional' },
   { id: 'md-table-gen', name: 'Markdown Table Generator', category: 'dev', description: 'Interactive layout to design and generate Markdown tables.', icon: 'Hammer', status: 'functional' },
-  { id: 'diff-checker', name: 'Diff Checker', category: 'dev', description: 'Compare two text layers side-by-side to highlight differences.', icon: 'Hammer', status: 'functional' },
+  { id: 'diff-checker', name: 'Diff Checker', category: 'dev', description: 'Compare two text layers side-by-side to highlight differences.', icon: 'Hammer', status: 'functional', popular: true },
   { id: 'keycode-finder', name: 'Keyboard Keycode Finder', category: 'dev', description: 'Detect keyboard keys and view standard browser event values.', icon: 'Hammer', status: 'functional' },
   { id: 'box-shadow-gen', name: 'Box Shadow Generator', category: 'dev', description: 'Visual parameters slider to configure CSS box shadow styles.', icon: 'Hammer', status: 'functional' },
   { id: 'base-converter', name: 'Base Converter', category: 'dev', description: 'Convert integers between decimal, binary, octal, and hex bases.', icon: 'Hammer', status: 'functional' },
@@ -317,7 +318,10 @@ export const Dashboard = () => {
     if (activeCategory === 'all' && tool.category === 'ai') {
       return false;
     }
-    const matchesCategory = activeCategory === 'all' || tool.category === activeCategory;
+    const matchesCategory =
+      activeCategory === 'all' ||
+      (activeCategory === 'popular' && tool.popular) ||
+      tool.category === activeCategory;
     
     // No longer hiding DomoGuard AI tools here. We want to show them as "Tease" cards if Ollama isn't active.
     
@@ -626,7 +630,7 @@ ollama run llama3`}
                 <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
                   <span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
-                    Based on your specs, we recommend running <strong className="text-white font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
+                    Based on your specs, we recommend running <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
                   </p>
                 </div>
               </div>
@@ -756,7 +760,7 @@ ollama run llama3`}
                           </span>
                         </div>
                         <div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
-                          We recommend <strong className="text-white font-mono">{hardware.recommendedModel}</strong> for your hardware.
+                          We recommend <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong> for your hardware.
                         </div>
                       </div>
 
@@ -840,7 +844,9 @@ ollama run llama3`}
                 onClick={() => isReady && !isTeased && navigate(`/tool/${tool.id}`)}
                 className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
                   isReady && !isTeased
-                    ? 'glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50'
+                    ? tool.popular
+                      ? 'glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]'
+                      : 'glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50'
                     : 'opacity-60 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
                 } transition-all duration-200`}
               >
@@ -848,7 +854,9 @@ ollama run llama3`}
                   <div className="flex justify-between items-start">
                     <div className={`p-3 rounded-xl border ${
                       isReady && !isTeased
-                        ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform' 
+                        ? tool.popular
+                          ? 'bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform'
+                          : 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform' 
                         : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
                     }`}>
                       <DynamicIcon name={tool.icon} size={22} />
@@ -859,9 +867,17 @@ ollama run llama3`}
                         Needs Local AI
                       </span>
                     ) : isReady ? (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-                        Ready
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {tool.popular && (
+                          <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
+                            <Star size={10} className="fill-[#D4AF37]" />
+                            <span>Popular</span>
+                          </span>
+                        )}
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+                          Ready
+                        </span>
+                      </div>
                     ) : (
                       <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
                         Planned
@@ -870,7 +886,9 @@ ollama run llama3`}
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <h3 className="font-bold text-lg text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors">
+                    <h3 className={`font-bold text-lg text-[#ECEBE9] ${
+                      tool.popular ? 'group-hover:text-[#D4AF37]' : 'group-hover:text-[#3C6B4D]'
+                    } transition-colors`}>
                       {tool.name}
                     </h3>
                     <p className="text-[#A3A09B] text-xs leading-relaxed">
@@ -886,7 +904,9 @@ ollama run llama3`}
                   </span>
                   
                   {isReady && !isTeased && (
-                    <span className="text-xs font-semibold text-[#3C6B4D] group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                    <span className={`text-xs font-semibold ${
+                      tool.popular ? 'text-[#D4AF37]' : 'text-[#3C6B4D]'
+                    } group-hover:translate-x-1 transition-transform flex items-center gap-1`}>
                       <span>Open</span>
                       <span>→</span>
                     </span>

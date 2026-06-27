@@ -147,6 +147,90 @@
   .text-\[\#4E8E5E\] { color: var(--primary) !important; }
   .text-\[\#3C6B4D\] { color: var(--primary) !important; }
   .text-emerald-400 { color: var(--primary) !important; }
+
+  /* Override static Tailwind text colors to support dynamic dark/light swapping */
+  .text-slate-50 { color: var(--text) !important; }
+  .text-slate-100 { color: var(--text) !important; }
+  .text-slate-200 { color: var(--text) !important; }
+  .text-slate-300 { color: var(--text) !important; }
+  .text-slate-350 { color: var(--text) !important; }
+  .text-slate-400 { color: var(--text-secondary) !important; }
+  .text-slate-450 { color: var(--text-secondary) !important; }
+  .text-slate-500 { color: var(--text-tertiary) !important; }
+  .text-slate-600 { color: var(--text-tertiary) !important; }
+  .text-slate-700 { color: var(--text-tertiary) !important; }
+
+  .text-gray-50 { color: var(--text) !important; }
+  .text-gray-100 { color: var(--text) !important; }
+  .text-gray-200 { color: var(--text) !important; }
+  .text-gray-300 { color: var(--text) !important; }
+  .text-gray-400 { color: var(--text-secondary) !important; }
+  .text-gray-500 { color: var(--text-tertiary) !important; }
+
+  .text-zinc-50 { color: var(--text) !important; }
+  .text-zinc-100 { color: var(--text) !important; }
+  .text-zinc-200 { color: var(--text) !important; }
+  .text-zinc-300 { color: var(--text) !important; }
+  .text-zinc-400 { color: var(--text-secondary) !important; }
+  .text-zinc-500 { color: var(--text-tertiary) !important; }
+
+  .text-neutral-50 { color: var(--text) !important; }
+  .text-neutral-100 { color: var(--text) !important; }
+  .text-neutral-200 { color: var(--text) !important; }
+  .text-neutral-300 { color: var(--text) !important; }
+  .text-neutral-400 { color: var(--text-secondary) !important; }
+  .text-neutral-500 { color: var(--text-tertiary) !important; }
+
+  .text-stone-50 { color: var(--text) !important; }
+  .text-stone-100 { color: var(--text) !important; }
+  .text-stone-200 { color: var(--text) !important; }
+  .text-stone-300 { color: var(--text) !important; }
+  .text-stone-400 { color: var(--text-secondary) !important; }
+  .text-stone-500 { color: var(--text-tertiary) !important; }
+
+  /* In light mode, text-white should become dark text (var(--text)), unless on buttons, links, or inside colored bg elements */
+  .light .text-white {
+    color: var(--text) !important;
+  }
+
+  .light button.text-white,
+  .light button .text-white,
+  .light a.text-white,
+  .light a .text-white,
+  .light .btn-primary,
+  .light .btn-primary *,
+  .light [class*="bg-indigo"].text-white,
+  .light [class*="bg-indigo"] .text-white,
+  .light [class*="bg-teal"].text-white,
+  .light [class*="bg-teal"] .text-white,
+  .light [class*="bg-rose"].text-white,
+  .light [class*="bg-rose"] .text-white,
+  .light [class*="bg-emerald"].text-white,
+  .light [class*="bg-emerald"] .text-white,
+  .light [class*="bg-green"].text-white,
+  .light [class*="bg-green"] .text-white,
+  .light [class*="bg-red"].text-white,
+  .light [class*="bg-red"] .text-white,
+  .light [class*="bg-violet"].text-white,
+  .light [class*="bg-violet"] .text-white,
+  .light [class*="bg-sky"].text-white,
+  .light [class*="bg-sky"] .text-white,
+  .light [class*="bg-cyan"].text-white,
+  .light [class*="bg-cyan"] .text-white,
+  .light [class*="bg-orange"].text-white,
+  .light [class*="bg-orange"] .text-white,
+  .light [class*="bg-amber"].text-white,
+  .light [class*="bg-amber"] .text-white,
+  .light [class*="bg-[#3C6B4D]"].text-white,
+  .light [class*="bg-[#3C6B4D]"] .text-white,
+  .light [class*="bg-[#4E8E5E]"].text-white,
+  .light [class*="bg-[#4E8E5E]"] .text-white,
+  .light [class*="bg-blue"].text-white,
+  .light [class*="bg-blue"] .text-white,
+  .light [class*="bg-purple"].text-white,
+  .light [class*="bg-purple"] .text-white {
+    color: #ffffff !important;
+  }
   
   .border-\[\#2A2D30\] { border-color: var(--border) !important; }
   .border-\[\#3C6B4D\] { border-color: var(--primary) !important; }

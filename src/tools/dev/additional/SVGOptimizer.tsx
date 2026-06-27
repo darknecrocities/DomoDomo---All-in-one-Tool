@@ -22,6 +22,66 @@ export const SVGOptimizerTool = () => {
   const [savingsPercent, setSavingsPercent] = useState(0);
   const [nodeCount, setNodeCount] = useState(0);
 
+  const sanitizeSVGRegexFallback = (svgString: string): string => {
+    let cleaned = svgString;
+    // Remove script tags and contents
+    cleaned = cleaned.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+    cleaned = cleaned.replace(/<script[\s\S]*?\/>/gi, '');
+    // Remove event handlers (onXXX="...")
+    cleaned = cleaned.replace(/\s+on[a-zA-Z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, '');
+    // Remove javascript/data URLs
+    cleaned = cleaned.replace(/\s+(?:xlink:)?href\s*=\s*["']\s*(?:javascript|data):[^"']*["']/gi, '');
+    return cleaned;
+  };
+
+  const sanitizeSVG = (svgString: string): string => {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgString, 'image/svg+xml');
+      
+      if (!doc || !doc.documentElement || doc.querySelector('parsererror')) {
+        return sanitizeSVGRegexFallback(svgString);
+      }
+      
+      const sanitizeNode = (node: Node) => {
+        if (node.nodeType === 1) { // ELEMENT_NODE
+          const el = node as Element;
+          const tagName = el.tagName.toLowerCase();
+          
+          if (tagName === 'script' || tagName === 'animate' || tagName === 'set' || tagName === 'handler') {
+            el.parentNode?.removeChild(el);
+            return;
+          }
+          
+          const attrs = Array.from(el.attributes);
+          for (const attr of attrs) {
+            const attrName = attr.name.toLowerCase();
+            const attrValue = attr.value.trim().toLowerCase();
+            
+            if (attrName.startsWith('on')) {
+              el.removeAttribute(attr.name);
+            } else if ((attrName === 'href' || attrName.endsWith(':href')) && 
+                       (attrValue.startsWith('javascript:') || attrValue.startsWith('data:'))) {
+              el.removeAttribute(attr.name);
+            }
+          }
+        }
+        
+        const children = Array.from(node.childNodes);
+        for (const child of children) {
+          sanitizeNode(child);
+        }
+      };
+      
+      sanitizeNode(doc.documentElement);
+      
+      const serializer = new XMLSerializer();
+      return serializer.serializeToString(doc.documentElement);
+    } catch (e) {
+      return sanitizeSVGRegexFallback(svgString);
+    }
+  };
+
   const optimizeSVG = (raw: string): string => {
     let clean = raw.trim();
 
@@ -73,7 +133,7 @@ export const SVGOptimizerTool = () => {
       .replace(/>\s+</g, '><')
       .trim();
 
-    return clean;
+    return sanitizeSVG(clean);
   };
 
   useEffect(() => {
