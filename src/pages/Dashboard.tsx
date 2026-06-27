@@ -165,6 +165,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'ollama-library', name: 'Domo Model Library', category: 'ai', description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', status: 'functional' },
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', status: 'functional' },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', category: 'ai', description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', status: 'functional', requiresOllama: true },
+  { id: 'model-migrator', name: 'Ollama Model Migrator', category: 'ai', description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', status: 'functional', requiresOllama: true },
   
   // Security Tools (10 Standard)
   { id: 'hash-checker', name: 'File Hash Checker', category: 'security', description: 'Verify file integrity using SHA-256, SHA-512, MD5 locally.', icon: 'ShieldAlert', status: 'functional' },
