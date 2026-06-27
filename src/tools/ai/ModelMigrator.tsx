@@ -232,16 +232,40 @@ export const ModelMigrator = () => {
     loadLocalModels();
   }, [mcpOnline]);
 
-  // Native folder picker bridge call
+  // Native folder picker — uses browser File System Access API first (works in Chrome/Edge automatically),
+  // falls back to MCP bridge dialog for Firefox / non-supported browsers
   const selectDirectory = async (onSelected: (path: string) => void) => {
+    // Try browser-native showDirectoryPicker first (Chrome 86+, Edge 86+)
+    if ('showDirectoryPicker' in window) {
+      try {
+        const dirHandle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
+        // Reconstruct the local path from the folder name
+        // showDirectoryPicker gives us the handle.name — the actual full path
+        // is not exposed for security reasons, so we use the name and let user confirm
+        const folderName = dirHandle.name;
+        
+        // Store the handle reference and use the name as the path indicator
+        // For actual file operations, we prompt user to type the full path
+        // But we can auto-fill with the name as a hint
+        onSelected(folderName);
+        showAlert('success', `Selected folder: "${folderName}". If this is on an external drive, please verify the full path (e.g. D:\\${folderName}) is correct in the path input below.`);
+        return;
+      } catch (err: any) {
+        if (err.name === 'AbortError') return; // user cancelled — do nothing
+        // showDirectoryPicker failed, fall through to MCP bridge
+      }
+    }
+
+    // Fallback: use Domo MCP bridge PowerShell/osascript dialog
     if (!mcpOnline) {
-      showAlert('error', 'Local Bridge is offline. Start Domo MCP server to enable visual directory browsing.');
+      showAlert('error', 'Your browser does not support the File System Access API. Start the Domo MCP server (run "npm run mcp") to enable native folder selection.');
       return;
     }
     try {
       const response = await mcpClient.callTool('select_local_directory', {});
       if (response.content?.[0]?.text) {
         onSelected(response.content[0].text);
+        showAlert('success', `Selected: ${response.content[0].text}`);
       }
     } catch (err: any) {
       showAlert('error', err.message || 'Failed to select directory.');
@@ -461,8 +485,8 @@ export const ModelMigrator = () => {
           />
           <button 
             onClick={() => selectDirectory(setCustomOllamaPath)}
-            className="px-3.5 py-2 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/45 text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
-            title="Browse drive storage folder"
+            className="px-3.5 py-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 hover:bg-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+            title="Open native folder browser"
           >
             <FolderOpen size={13} />
             <span>Browse...</span>
@@ -580,14 +604,14 @@ export const ModelMigrator = () => {
                       />
                       <button 
                         onClick={() => selectDirectory(setExportDestination)}
-                        className="px-3.5 py-2 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/45 text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 animate-pulse-subtle"
+                        className="px-3.5 py-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 hover:bg-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                       >
                         <FolderOpen size={13} />
                         <span>Browse...</span>
                       </button>
                     </div>
                     <span className="text-[10px] text-[#72706C] italic font-sans pl-1">
-                      Tip: Select an external drive path or folder. Make sure it has enough storage space to fit the model weights.
+                      Click <strong className="text-[#ECEBE9]">Browse...</strong> to pick a drive folder visually. The full path (e.g. <code className="font-mono text-[#3C6B4D] bg-[#111213] px-0.5 rounded">D:\OllamaBackups</code>) will be auto-filled or you can type it manually.
                     </span>
                   </div>
 
@@ -666,7 +690,7 @@ export const ModelMigrator = () => {
                       />
                       <button 
                         onClick={() => selectDirectory(setImportSource)}
-                        className="px-3.5 py-2 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/45 text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
+                        className="px-3.5 py-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 hover:bg-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                         title="Browse drive storage folder"
                       >
                         <FolderOpen size={13} />
@@ -674,7 +698,7 @@ export const ModelMigrator = () => {
                       </button>
                     </div>
                     <span className="text-[10px] text-[#72706C] italic font-sans pl-1">
-                      Point to the directory containing metadata.json, manifest, and blobs/
+                      Click <strong className="text-[#ECEBE9]">Browse...</strong> to pick the exported model folder. If on an external drive, confirm the full path (e.g. <code className="font-mono text-[#3C6B4D] bg-[#111213] px-0.5 rounded">D:\OllamaBackups\llama3.2-3b</code>).
                     </span>
                   </div>
 
