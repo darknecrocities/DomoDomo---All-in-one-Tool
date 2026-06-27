@@ -30,6 +30,7 @@ interface CatalogModel {
 }
 
 const REGISTRY_MODELS: CatalogModel[] = [
+  // ─── Existing Models ────────────────────────────────────────────────────────
   {
     id: 'llama3.2:1b',
     name: 'Meta Llama 3.2 1B',
@@ -95,7 +96,7 @@ const REGISTRY_MODELS: CatalogModel[] = [
     name: 'Google Gemma 2 9B',
     parameters: '9.2B',
     downloadSize: '5.4 GB',
-    vramRequired: '16GB - 24GB RAM',
+    vramRequired: '16GB RAM',
     contextWindow: '8k context',
     capabilities: ['Logical Reasoning', 'Textbook-Style Synthesis', 'Complex Analytics'],
     useCase: 'In-depth textual research, coding architecture suggestions, and high-precision scientific outputs.',
@@ -131,7 +132,7 @@ const REGISTRY_MODELS: CatalogModel[] = [
     name: 'LLaVA 7B (Vision)',
     parameters: '7.2B',
     downloadSize: '4.7 GB',
-    vramRequired: '16GB+ RAM (GPU Needed)',
+    vramRequired: '16GB RAM (GPU Needed)',
     contextWindow: '4k context',
     capabilities: ['Image Analysis', 'Diagram OCR', 'Object Identification'],
     useCase: 'Analyzing system diagrams, extracting text from screenshots, and image questioning.',
@@ -149,8 +150,264 @@ const REGISTRY_MODELS: CatalogModel[] = [
     useCase: 'Advanced programming diagnostics, automated script creation, and refactoring directory code bases locally.',
     description: 'One of the industry\'s best open coding models, trained specifically on large codebase indices.',
     iconType: 'code'
+  },
+
+  // ─── 20 New Models (16GB RAM Optimized) ─────────────────────────────────────
+
+  {
+    id: 'llama3.1:8b',
+    name: 'Meta Llama 3.1 8B',
+    parameters: '8.0B',
+    downloadSize: '4.7 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['Function Calling', 'Code Generation', 'Multilingual'],
+    useCase: 'Versatile instruction-following for coding agents, tool-use pipelines, and multilingual text generation.',
+    description: 'Meta\'s flagship 8B model with a massive 128k context window and excellent instruction tuning.',
+    iconType: 'general'
+  },
+  {
+    id: 'codellama:7b',
+    name: 'Meta Code Llama 7B',
+    parameters: '7.0B',
+    downloadSize: '3.8 GB',
+    vramRequired: '8GB - 16GB RAM',
+    contextWindow: '100k context',
+    capabilities: ['Code Completion', 'Bug Detection', 'Multi-language'],
+    useCase: 'IDE-style code completions, unit test generation, and inline documentation writing across Python, JS, C++.',
+    description: 'Meta\'s dedicated coding model built on Llama 2 fine-tuned on 500B tokens of code.',
+    iconType: 'code'
+  },
+  {
+    id: 'codellama:13b',
+    name: 'Meta Code Llama 13B',
+    parameters: '13.0B',
+    downloadSize: '7.4 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '100k context',
+    capabilities: ['Complex Refactoring', 'Architecture Review', 'Infilling'],
+    useCase: 'Deep codebase analysis, multi-file refactoring, and technical design reviews within 16GB RAM budget.',
+    description: 'The stronger Code Llama variant with significantly improved code reasoning and infill accuracy.',
+    iconType: 'code'
+  },
+  {
+    id: 'qwen2.5-coder:7b',
+    name: 'Qwen 2.5 Coder 7B',
+    parameters: '7.6B',
+    downloadSize: '4.3 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['Code Generation', 'Debugging', 'SQL & Scripts'],
+    useCase: 'State-of-the-art open coding model for full-stack generation, data scripts, DevOps automation, and SQL.',
+    description: 'Alibaba\'s purpose-built coding model trained on 5.5T tokens — outperforms GPT-3.5 on coding tasks.',
+    iconType: 'code'
+  },
+  {
+    id: 'qwen2.5-coder:14b',
+    name: 'Qwen 2.5 Coder 14B',
+    parameters: '14.8B',
+    downloadSize: '8.2 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['Enterprise Code Review', 'Multi-repo Analysis', 'API Design'],
+    useCase: 'Production-grade code analysis, large API surface refactoring, and enterprise-level documentation generation.',
+    description: 'The most powerful open coding model at the 16GB boundary — rivals GitHub Copilot on benchmarks.',
+    iconType: 'code'
+  },
+  {
+    id: 'deepseek-coder-v2:16b',
+    name: 'DeepSeek Coder V2 16B',
+    parameters: '16.0B',
+    downloadSize: '8.9 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['236 Languages', 'Math + Code', 'Tool Calling'],
+    useCase: 'Handles 236 programming languages, advanced math proofs, competitive coding, and agentic tool calls.',
+    description: 'DeepSeek\'s breakthrough V2 coding model using MoE architecture — matches Claude 3 Sonnet on HumanEval.',
+    iconType: 'code'
+  },
+  {
+    id: 'starcoder2:7b',
+    name: 'BigCode StarCoder2 7B',
+    parameters: '7.0B',
+    downloadSize: '4.0 GB',
+    vramRequired: '8GB - 16GB RAM',
+    contextWindow: '16k context',
+    capabilities: ['80+ Languages', 'Repository Awareness', 'Fill-in-Middle'],
+    useCase: 'Advanced code completion with fill-in-middle, supporting 80+ programming languages for broad polyglot projects.',
+    description: 'Trained on 600+ programming languages with The Stack v2 dataset. Transparent, permissive license.',
+    iconType: 'code'
+  },
+  {
+    id: 'codegemma:7b',
+    name: 'Google CodeGemma 7B',
+    parameters: '7.0B',
+    downloadSize: '5.0 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '8k context',
+    capabilities: ['Python Specialist', 'JavaScript/TS', 'Code Chat'],
+    useCase: 'Google-quality Python and web development assistance, ideal for Flask/FastAPI, React, and Node.js workflows.',
+    description: 'Google\'s specialized coding model built on the Gemma architecture, pretrained on 500B code tokens.',
+    iconType: 'code'
+  },
+  {
+    id: 'granite-code:8b',
+    name: 'IBM Granite Code 8B',
+    parameters: '8.0B',
+    downloadSize: '4.6 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '4k context',
+    capabilities: ['Enterprise Java', 'COBOL Migration', 'DevOps Scripts'],
+    useCase: 'Enterprise code modernization — Java, COBOL, mainframe migration, security vulnerability scanning.',
+    description: 'IBM\'s enterprise-grade coding model. Built for businesses migrating legacy codebases to modern stacks.',
+    iconType: 'code'
+  },
+  {
+    id: 'phi4:latest',
+    name: 'Microsoft Phi-4 14B',
+    parameters: '14.7B',
+    downloadSize: '8.9 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '16k context',
+    capabilities: ['STEM Reasoning', 'Complex Math', 'Code Analysis'],
+    useCase: 'Solving advanced math, physics problems, and coding challenges that require deep structured reasoning.',
+    description: 'Microsoft\'s flagship small model — Phi-4 outperforms GPT-4o on STEM benchmarks despite being 14B.',
+    iconType: 'general'
+  },
+  {
+    id: 'mistral-nemo:latest',
+    name: 'Mistral Nemo 12B',
+    parameters: '12.2B',
+    downloadSize: '7.1 GB',
+    vramRequired: '14GB - 16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['Long Context', 'Tool Use', 'Instruction Following'],
+    useCase: 'Large document processing, RAG pipelines, and long-form text analysis with up to 128k token context.',
+    description: 'Built with NVIDIA. Mistral Nemo delivers 128k context at 12B — a major jump in usable context size.',
+    iconType: 'general'
+  },
+  {
+    id: 'deepseek-r1:7b',
+    name: 'DeepSeek-R1 7B',
+    parameters: '7.6B',
+    downloadSize: '4.7 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '64k context',
+    capabilities: ['Chain-of-Thought', 'Math Proofs', 'Self-Reasoning'],
+    useCase: 'Logical step-by-step problem decomposition, mathematics, scientific reasoning, and algorithm design.',
+    description: 'DeepSeek\'s reasoning-first model — uses chain-of-thought to think before answering, like o1-mini.',
+    iconType: 'general'
+  },
+  {
+    id: 'deepseek-r1:14b',
+    name: 'DeepSeek-R1 14B',
+    parameters: '14.8B',
+    downloadSize: '9.0 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '64k context',
+    capabilities: ['Advanced Reasoning', 'Agentic Tasks', 'Planning'],
+    useCase: 'Complex multi-step planning, autonomous agent workflows, and research-grade analytical tasks.',
+    description: 'The most powerful reasoning model you can run on 16GB RAM — matches o1-preview on AIME benchmarks.',
+    iconType: 'general'
+  },
+  {
+    id: 'solar:10.7b',
+    name: 'Upstage SOLAR 10.7B',
+    parameters: '10.7B',
+    downloadSize: '6.1 GB',
+    vramRequired: '12GB - 16GB RAM',
+    contextWindow: '4k context',
+    capabilities: ['Instruction Following', 'QA Systems', 'Text Summarization'],
+    useCase: 'High-quality instruction-tuned model for customer support bots, knowledge base Q&A, and document summarization.',
+    description: 'Award-winning 10.7B model using Depth-Up-Scaling technique. Ranked #1 on OpenLLM leaderboard on release.',
+    iconType: 'general'
+  },
+  {
+    id: 'llama3.2:11b',
+    name: 'Meta Llama 3.2 11B Vision',
+    parameters: '11.0B',
+    downloadSize: '7.9 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['Image Understanding', 'Chart Reading', 'Visual QA'],
+    useCase: 'Analyzing screenshots, reading chart data, understanding UI layouts, and visual document comprehension.',
+    description: 'Meta\'s multimodal Llama 3.2 — combines powerful language reasoning with vision capabilities.',
+    iconType: 'vision'
+  },
+  {
+    id: 'bakllava:latest',
+    name: 'BakLLaVA 7B (Vision)',
+    parameters: '7.0B',
+    downloadSize: '4.5 GB',
+    vramRequired: '12GB - 16GB RAM',
+    contextWindow: '4k context',
+    capabilities: ['Image Captioning', 'UI Understanding', 'Visual Conversations'],
+    useCase: 'Screenshot captioning, visual debugging of UI components, and conversational image-based Q&A workflows.',
+    description: 'Enhanced LLaVA built on Mistral backbone — better conversational abilities with visual inputs.',
+    iconType: 'vision'
+  },
+  {
+    id: 'nomic-embed-text:latest',
+    name: 'Nomic Embed Text',
+    parameters: '137M',
+    downloadSize: '274 MB',
+    vramRequired: '1GB RAM',
+    contextWindow: '8k context',
+    capabilities: ['Semantic Search', 'RAG Embeddings', 'Similarity Scoring'],
+    useCase: 'Vector database embedding generation for local RAG systems, semantic document search, and similarity scoring.',
+    description: 'State-of-the-art text embedding model for local vector search — matches OpenAI embeddings at zero cost.',
+    iconType: 'general'
+  },
+  {
+    id: 'mxbai-embed-large:latest',
+    name: 'MixBread Embed Large',
+    parameters: '335M',
+    downloadSize: '670 MB',
+    vramRequired: '2GB RAM',
+    contextWindow: '512 tokens',
+    capabilities: ['MTEB #1 Embeddings', 'Code Embeddings', 'Cross-lingual Search'],
+    useCase: 'Best-in-class embedding model for building local knowledge bases, code search engines, and multilingual RAG.',
+    description: 'Achieved #1 on MTEB leaderboard for text embeddings — outperforms OpenAI text-embedding-3-large.',
+    iconType: 'general'
+  },
+  {
+    id: 'qwen2.5:14b',
+    name: 'Alibaba Qwen 2.5 14B',
+    parameters: '14.8B',
+    downloadSize: '8.2 GB',
+    vramRequired: '16GB RAM',
+    contextWindow: '128k context',
+    capabilities: ['Advanced Reasoning', 'Code + Math', 'Long Documents'],
+    useCase: 'Best all-rounder at the 16GB RAM limit — coding, math, long documents, and multilingual support in one model.',
+    description: 'Qwen\'s top open model before the MoE variants. Competitive with GPT-4o-mini on most benchmarks.',
+    iconType: 'code'
+  },
+  {
+    id: 'wizardlm2:7b',
+    name: 'WizardLM 2 7B',
+    parameters: '7.0B',
+    downloadSize: '4.1 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '32k context',
+    capabilities: ['Complex Instructions', 'Role-Play Agents', 'Long Conversations'],
+    useCase: 'Handling complex multi-turn instructions, agent-style role execution, and rich conversational workflows.',
+    description: 'Microsoft\'s Evol-Instruct model — specifically trained to follow difficult, multi-step instructions precisely.',
+    iconType: 'general'
+  },
+  {
+    id: 'dolphin-mistral:latest',
+    name: 'Dolphin Mistral 7B',
+    parameters: '7.2B',
+    downloadSize: '4.1 GB',
+    vramRequired: '10GB - 16GB RAM',
+    contextWindow: '32k context',
+    capabilities: ['Uncensored Responses', 'Code Generation', 'Creative Writing'],
+    useCase: 'Uncensored creative writing, security research, and penetration testing tasks requiring unrestricted output.',
+    description: 'Eric Hartford\'s Dolphin fine-tune on Mistral — removes guardrails for maximum flexibility in research.',
+    iconType: 'general'
   }
 ];
+
 
 export const ModelMigrator = () => {
   const [mcpOnline, setMcpOnline] = useState(mcpClient.isOnline());
@@ -359,55 +616,52 @@ export const ModelMigrator = () => {
     setPullModelName(modelTag);
     setIsPulling(true);
     setPullProgress(0);
-    setPullStatus('Connecting to Ollama registry...');
     setPullError(null);
 
+    const hddPath = pullExportDestination.trim();
+
+    // ── Direct-to-HDD mode ──────────────────────────────────────────────────
+    // When HDD path is set AND MCP is online, uses ollama CLI with OLLAMA_MODELS
+    // overridden to the HDD path — model downloads DIRECTLY to Seagate, zero laptop storage used.
+    if (hddPath && mcpOnline) {
+      setPullStatus(`Downloading directly to ${hddPath}...`);
+      try {
+        const response = await mcpClient.callTool('pull_model_direct', {
+          modelTag,
+          destinationPath: hddPath
+        });
+        const result = response.content?.[0]?.text ? JSON.parse(response.content[0].text) : null;
+        if (result?.success) {
+          showAlert('success', `✅ ${modelTag} downloaded directly to your Seagate: ${hddPath}`);
+          setPullStatus(`Saved directly to ${hddPath}`);
+          setPullModelName('');
+          await loadLocalModels();
+        } else {
+          const errMsg = result?.error || 'Direct HDD download failed.';
+          setPullError(errMsg);
+          showAlert('error', `Direct download failed: ${errMsg}`);
+        }
+      } catch (err: any) {
+        setPullError(err.message || 'Failed to download model directly to HDD.');
+        showAlert('error', 'Direct HDD download failed.');
+      } finally {
+        setIsPulling(false);
+        setIsAutoExporting(false);
+      }
+      return;
+    }
+
+    // ── Standard mode (no HDD path set) ─────────────────────────────────────
+    // Uses Ollama HTTP API with progress streaming, then auto-exports to HDD if specified.
+    setPullStatus('Connecting to Ollama registry...');
     try {
       await aiService.pullOllamaModel(modelTag, (status, progress) => {
         setPullStatus(status);
         setPullProgress(progress);
       });
 
-      showAlert('success', `Model ${modelTag} downloaded to Ollama!`);
+      showAlert('success', `Model ${modelTag} downloaded to local Ollama!`);
       await loadLocalModels();
-
-      // Auto-export to HDD/USB if user specified a destination
-      if (pullExportDestination.trim() && mcpOnline) {
-        setIsAutoExporting(true);
-        setPullStatus('Copying to external drive...');
-        try {
-          // Find the freshly pulled model in local list
-          const refreshed = await mcpClient.callTool('list_ollama_models', { ollamaPath: customOllamaPath || undefined });
-          const models: LocalModel[] = refreshed.content?.[0]?.text ? JSON.parse(refreshed.content[0].text) : [];
-          const pulledModel = models.find(m => 
-            `${m.name}:${m.tag}`.toLowerCase() === modelTag.toLowerCase() ||
-            m.name.toLowerCase() === modelTag.replace(/:.*$/, '').toLowerCase()
-          );
-
-          if (pulledModel) {
-            const exportResponse = await mcpClient.callTool('export_ollama_model', {
-              modelName: pulledModel.name,
-              modelTag: pulledModel.tag,
-              destinationPath: pullExportDestination.trim(),
-              ollamaPath: customOllamaPath || undefined
-            });
-            const result = exportResponse.content?.[0]?.text ? JSON.parse(exportResponse.content[0].text) : null;
-            if (result?.success) {
-              showAlert('success', `Model saved to your Seagate: ${result.exportPath}`);
-              setPullStatus(`Saved to ${pullExportDestination}`);
-            } else {
-              showAlert('error', 'Pull succeeded but auto-export to HDD failed. Use the Export tab manually.');
-            }
-          } else {
-            showAlert('error', 'Could not locate pulled model for export. Try exporting manually from the Export tab.');
-          }
-        } catch (exportErr: any) {
-          showAlert('error', `Auto-export failed: ${exportErr.message}. Use the Export tab to copy manually.`);
-        } finally {
-          setIsAutoExporting(false);
-        }
-      }
-
       setPullModelName('');
     } catch (err: any) {
       setPullError(err.message || 'Failed to pull model.');
@@ -416,6 +670,7 @@ export const ModelMigrator = () => {
       setIsPulling(false);
     }
   };
+
 
   const formatSize = (bytes: number) => {
     if (bytes <= 0) return '0 B';

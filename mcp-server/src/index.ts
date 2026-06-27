@@ -230,6 +230,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: 'pull_model_direct',
+        description: 'Pull an Ollama model directly into a custom path (e.g. external HDD or USB) by overriding OLLAMA_MODELS env — bypasses laptop local storage entirely.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            modelTag: { type: 'string', description: 'The model tag to pull (e.g. llama3.2:3b)' },
+            destinationPath: { type: 'string', description: 'Absolute path to download the model into (e.g. D:\\OllamaModels)' },
+          },
+          required: ['modelTag', 'destinationPath'],
+        },
+      },
     ],
   };
 });
@@ -568,7 +580,50 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
+      case 'pull_model_direct': {
+        const { modelTag, destinationPath } = args as any;
+        if (!modelTag || !destinationPath) {
+          return { content: [{ type: 'text', text: 'Missing modelTag or destinationPath.' }], isError: true };
+        }
+
+        // Create the destination directory if it doesn't exist
+        try {
+          fs.mkdirSync(destinationPath, { recursive: true });
+        } catch (mkErr: any) {
+          return { content: [{ type: 'text', text: `Failed to create destination folder: ${mkErr.message}` }], isError: true };
+        }
+
+        return new Promise((resolve) => {
+          // Override OLLAMA_MODELS so Ollama CLI downloads directly to the HDD path
+          const env = { ...process.env, OLLAMA_MODELS: destinationPath };
+          const cmd = `ollama pull ${modelTag}`;
+
+          exec(cmd, { env, maxBuffer: 100 * 1024 * 1024, timeout: 0 }, (error, stdout, stderr) => {
+            if (error && !stdout.includes('success') && !stderr.includes('success')) {
+              resolve({
+                content: [{ type: 'text', text: JSON.stringify({
+                  success: false,
+                  error: stderr || error.message,
+                  hint: 'Make sure Ollama is installed and running. Run: ollama serve'
+                })}],
+                isError: true
+              });
+            } else {
+              resolve({
+                content: [{ type: 'text', text: JSON.stringify({
+                  success: true,
+                  model: modelTag,
+                  savedTo: destinationPath,
+                  output: (stdout || stderr).slice(-500)
+                })}]
+              });
+            }
+          });
+        });
+      }
+
       case 'select_local_directory': {
+
         return new Promise((resolve) => {
           let command = '';
           if (process.platform === 'win32') {
