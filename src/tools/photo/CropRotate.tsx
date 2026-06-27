@@ -17,6 +17,35 @@ export const CropRotateTool = () => {
   const isDragging = useRef<string | null>(null);
   const dragStart = useRef({ x: 0, y: 0, cx: 0, cy: 0, cw: 0, ch: 0 });
 
+  const [unit, setUnit] = useState<'%' | 'px'>('%');
+  const [naturalSize, setNaturalSize] = useState<{ w: number; h: number } | null>(null);
+
+  // Load natural dimensions when the image URL changes
+  useEffect(() => {
+    if (!imageUrl) {
+      setNaturalSize(null);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
+    };
+    img.src = imageUrl;
+  }, [imageUrl]);
+
+  const is90 = rotate % 180 !== 0;
+  const currentW = naturalSize ? (is90 ? naturalSize.h : naturalSize.w) : 0;
+  const currentH = naturalSize ? (is90 ? naturalSize.w : naturalSize.h) : 0;
+
+  // ponytail: derived state to keep pixel bounds synchronized without duplicate states (rerender-derived-state)
+  const cropPx = {
+    x: naturalSize ? Math.round((crop.x / 100) * currentW) : 0,
+    y: naturalSize ? Math.round((crop.y / 100) * currentH) : 0,
+    w: naturalSize ? Math.round((crop.w / 100) * currentW) : 0,
+    h: naturalSize ? Math.round((crop.h / 100) * currentH) : 0,
+  };
+
+
   // Handle aspect ratio constraint updates
   useEffect(() => {
     if (aspect === 'free') return;
@@ -127,6 +156,7 @@ export const CropRotateTool = () => {
     setFlipH(false);
     setFlipV(false);
     setCrop({ x: 10, y: 10, w: 80, h: 80 });
+    setUnit('%');
   };
 
   const handleSave = () => {
@@ -313,18 +343,55 @@ export const CropRotateTool = () => {
             </div>
           )}
 
-          <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">Precise Crop Bounds (%)</span>
+          {imageUrl && naturalSize && (
+            <div className="flex flex-col gap-2 p-3 rounded bg-slate-900/40 border border-slate-800/80 text-xs">
+              <div className="flex justify-between text-slate-400">
+                <span>Original Size:</span>
+                <span className="font-semibold text-slate-200">{naturalSize.w} × {naturalSize.h} px</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Selected Size:</span>
+                <span className="font-semibold text-emerald-400">{cropPx.w} × {cropPx.h} px</span>
+              </div>
+              <div className="flex justify-between items-center mt-1 border-t border-slate-800/50 pt-2">
+                <span className="text-slate-400 font-semibold">Unit Type</span>
+                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-800">
+                  <button
+                    onClick={() => setUnit('%')}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${unit === '%' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                  >
+                    %
+                  </button>
+                  <button
+                    onClick={() => setUnit('px')}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${unit === 'px' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                  >
+                    PX
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">Precise Crop Bounds ({unit})</span>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="flex flex-col gap-1">
               <label className="text-slate-400">Left (X)</label>
               <input 
                 type="number" 
                 min={0} 
-                max={100 - crop.w} 
-                value={Math.round(crop.x)} 
+                max={unit === 'px' ? (currentW - cropPx.w) : (100 - crop.w)} 
+                value={unit === 'px' ? cropPx.x : Math.round(crop.x)} 
                 onChange={(e) => {
-                  const val = Math.max(0, Math.min(100 - crop.w, Number(e.target.value)));
-                  setCrop(prev => ({ ...prev, x: val }));
+                  const numVal = Number(e.target.value);
+                  if (unit === 'px' && currentW) {
+                    // ponytail: convert pixel input to container percentage (rendering-hydration-no-flicker style)
+                    const valPx = Math.max(0, Math.min(currentW - cropPx.w, numVal));
+                    setCrop(prev => ({ ...prev, x: (valPx / currentW) * 100 }));
+                  } else {
+                    const valPct = Math.max(0, Math.min(100 - crop.w, numVal));
+                    setCrop(prev => ({ ...prev, x: valPct }));
+                  }
                 }}
                 className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
               />
@@ -334,11 +401,18 @@ export const CropRotateTool = () => {
               <input 
                 type="number" 
                 min={0} 
-                max={100 - crop.h} 
-                value={Math.round(crop.y)} 
+                max={unit === 'px' ? (currentH - cropPx.h) : (100 - crop.h)} 
+                value={unit === 'px' ? cropPx.y : Math.round(crop.y)} 
                 onChange={(e) => {
-                  const val = Math.max(0, Math.min(100 - crop.h, Number(e.target.value)));
-                  setCrop(prev => ({ ...prev, y: val }));
+                  const numVal = Number(e.target.value);
+                  if (unit === 'px' && currentH) {
+                    // ponytail: convert pixel input to container percentage
+                    const valPx = Math.max(0, Math.min(currentH - cropPx.h, numVal));
+                    setCrop(prev => ({ ...prev, y: (valPx / currentH) * 100 }));
+                  } else {
+                    const valPct = Math.max(0, Math.min(100 - crop.h, numVal));
+                    setCrop(prev => ({ ...prev, y: valPct }));
+                  }
                 }}
                 className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
               />
@@ -347,19 +421,33 @@ export const CropRotateTool = () => {
               <label className="text-slate-450">Width</label>
               <input 
                 type="number" 
-                min={10} 
-                max={100 - crop.x} 
-                value={Math.round(crop.w)} 
+                min={unit === 'px' ? 10 : 10} 
+                max={unit === 'px' ? (currentW - cropPx.x) : (100 - crop.x)} 
+                value={unit === 'px' ? cropPx.w : Math.round(crop.w)} 
                 onChange={(e) => {
-                  const val = Math.max(10, Math.min(100 - crop.x, Number(e.target.value)));
-                  setCrop(prev => {
-                    const ratio = aspect === 'free' ? null : aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
-                    if (ratio) {
-                      const newH = Math.min(100 - prev.y, val / ratio);
-                      return { ...prev, w: newH * ratio, h: newH };
-                    }
-                    return { ...prev, w: val };
-                  });
+                  const numVal = Number(e.target.value);
+                  const ratio = aspect === 'free' ? null : aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
+                  if (unit === 'px' && currentW) {
+                    // ponytail: convert pixel input to container percentage
+                    const valPx = Math.max(10, Math.min(currentW - cropPx.x, numVal));
+                    const pctW = (valPx / currentW) * 100;
+                    setCrop(prev => {
+                      if (ratio) {
+                        const newPctH = Math.min(100 - prev.y, pctW / ratio);
+                        return { ...prev, w: newPctH * ratio, h: newPctH };
+                      }
+                      return { ...prev, w: pctW };
+                    });
+                  } else {
+                    const valPct = Math.max(10, Math.min(100 - crop.x, numVal));
+                    setCrop(prev => {
+                      if (ratio) {
+                        const newH = Math.min(100 - prev.y, valPct / ratio);
+                        return { ...prev, w: newH * ratio, h: newH };
+                      }
+                      return { ...prev, w: valPct };
+                    });
+                  }
                 }}
                 className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
               />
@@ -368,19 +456,33 @@ export const CropRotateTool = () => {
               <label className="text-slate-450">Height</label>
               <input 
                 type="number" 
-                min={10} 
-                max={100 - crop.y} 
-                value={Math.round(crop.h)} 
+                min={unit === 'px' ? 10 : 10} 
+                max={unit === 'px' ? (currentH - cropPx.y) : (100 - crop.y)} 
+                value={unit === 'px' ? cropPx.h : Math.round(crop.h)} 
                 onChange={(e) => {
-                  const val = Math.max(10, Math.min(100 - crop.y, Number(e.target.value)));
-                  setCrop(prev => {
-                    const ratio = aspect === 'free' ? null : aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
-                    if (ratio) {
-                      const newW = Math.min(100 - prev.x, val * ratio);
-                      return { ...prev, w: newW, h: newW / ratio };
-                    }
-                    return { ...prev, h: val };
-                  });
+                  const numVal = Number(e.target.value);
+                  const ratio = aspect === 'free' ? null : aspect === '1:1' ? 1 : aspect === '16:9' ? 16 / 9 : aspect === '4:3' ? 4 / 3 : customRatioW / customRatioH;
+                  if (unit === 'px' && currentH) {
+                    // ponytail: convert pixel input to container percentage
+                    const valPx = Math.max(10, Math.min(currentH - cropPx.y, numVal));
+                    const pctH = (valPx / currentH) * 100;
+                    setCrop(prev => {
+                      if (ratio) {
+                        const newPctW = Math.min(100 - prev.x, pctH * ratio);
+                        return { ...prev, w: newPctW, h: newPctW / ratio };
+                      }
+                      return { ...prev, h: pctH };
+                    });
+                  } else {
+                    const valPct = Math.max(10, Math.min(100 - crop.y, numVal));
+                    setCrop(prev => {
+                      if (ratio) {
+                        const newW = Math.min(100 - prev.x, valPct * ratio);
+                        return { ...prev, w: newW, h: newW / ratio };
+                      }
+                      return { ...prev, h: valPct };
+                    });
+                  }
                 }}
                 className="bg-slate-900 text-slate-200 border border-slate-800 rounded px-2 py-1 focus:outline-none focus:border-emerald-500"
               />
