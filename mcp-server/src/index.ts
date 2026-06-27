@@ -395,10 +395,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const manifestsRoot = path.join(modelsPath, 'manifests');
         
         if (!fs.existsSync(manifestsRoot)) {
-          return {
-            content: [{ type: 'text', text: `Ollama manifests folder not found. Searched:\n${tried.join('\n')}\n\nEnsure Ollama is installed and has downloaded at least one model.` }],
-            isError: true
-          };
+          // If manifests root doesn't exist, it means the folder is empty or new.
+          // Return an empty list instead of throwing an error.
+          return { content: [{ type: 'text', text: JSON.stringify({ modelsPath, models: [] }) }] };
         }
 
         const files = getManifestsRecursively(manifestsRoot);
