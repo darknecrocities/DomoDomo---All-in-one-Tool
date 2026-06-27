@@ -232,44 +232,46 @@ export const ModelMigrator = () => {
     loadLocalModels();
   }, [mcpOnline]);
 
-  // Native folder picker — uses browser File System Access API first (works in Chrome/Edge automatically),
-  // falls back to MCP bridge dialog for Firefox / non-supported browsers
+  // Folder picker — MCP bridge gives full absolute path (preferred).
+  // Browser showDirectoryPicker is fallback-only but CANNOT return the full path due to browser security.
   const selectDirectory = async (onSelected: (path: string) => void) => {
-    // Try browser-native showDirectoryPicker first (Chrome 86+, Edge 86+)
+    // If MCP server is online, use it — it runs a native PowerShell/osascript dialog
+    // and returns the full absolute path (e.g. D:\OllamaBackups)
+    if (mcpOnline) {
+      try {
+        const response = await mcpClient.callTool('select_local_directory', {});
+        const selectedPath = response.content?.[0]?.text?.trim();
+        if (selectedPath) {
+          onSelected(selectedPath);
+          showAlert('success', `Folder selected: ${selectedPath}`);
+        } else {
+          showAlert('error', 'No folder was selected or the dialog was cancelled.');
+        }
+      } catch (err: any) {
+        showAlert('error', err.message || 'Failed to open folder dialog.');
+      }
+      return;
+    }
+
+    // MCP offline — fall back to browser picker with a clear limitation warning
     if ('showDirectoryPicker' in window) {
       try {
         const dirHandle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
-        // Reconstruct the local path from the folder name
-        // showDirectoryPicker gives us the handle.name — the actual full path
-        // is not exposed for security reasons, so we use the name and let user confirm
         const folderName = dirHandle.name;
-        
-        // Store the handle reference and use the name as the path indicator
-        // For actual file operations, we prompt user to type the full path
-        // But we can auto-fill with the name as a hint
         onSelected(folderName);
-        showAlert('success', `Selected folder: "${folderName}". If this is on an external drive, please verify the full path (e.g. D:\\${folderName}) is correct in the path input below.`);
+        showAlert('error',
+          `⚠️ Only the folder name "${folderName}" was captured — browsers cannot read the full drive path. ` +
+          `Please manually type the complete path (e.g. D:\\${folderName}) into the field, ` +
+          `or start the Domo MCP server (npm run mcp) for automatic full-path selection.`
+        );
         return;
       } catch (err: any) {
-        if (err.name === 'AbortError') return; // user cancelled — do nothing
-        // showDirectoryPicker failed, fall through to MCP bridge
+        if (err.name === 'AbortError') return; // user cancelled
       }
     }
 
-    // Fallback: use Domo MCP bridge PowerShell/osascript dialog
-    if (!mcpOnline) {
-      showAlert('error', 'Your browser does not support the File System Access API. Start the Domo MCP server (run "npm run mcp") to enable native folder selection.');
-      return;
-    }
-    try {
-      const response = await mcpClient.callTool('select_local_directory', {});
-      if (response.content?.[0]?.text) {
-        onSelected(response.content[0].text);
-        showAlert('success', `Selected: ${response.content[0].text}`);
-      }
-    } catch (err: any) {
-      showAlert('error', err.message || 'Failed to select directory.');
-    }
+    // Neither available
+    showAlert('error', 'Start the Domo MCP server (run "npm run mcp" in your terminal) to enable visual folder selection with full path support.');
   };
 
   const handleExport = async () => {

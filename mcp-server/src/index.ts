@@ -523,14 +523,33 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return new Promise((resolve) => {
           let command = '';
           if (process.platform === 'win32') {
-            command = `powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.ShowNewFolderButton = $true; $f.Description = 'Select target folder or external USB/HDD drive'; if($f.ShowDialog() -eq 'OK') { Write-Output $f.SelectedPath }"`;
+            // Build the PowerShell script as a plain string first
+            const psScript = [
+              'Add-Type -AssemblyName System.Windows.Forms;',
+              '$dlg = New-Object System.Windows.Forms.FolderBrowserDialog;',
+              '$dlg.ShowNewFolderButton = $true;',
+              '$dlg.Description = "Select target folder or external USB/HDD drive";',
+              '$owner = New-Object System.Windows.Forms.Form;',
+              '$owner.TopMost = $true;',
+              '$owner.ShowInTaskbar = $false;',
+              '$owner.WindowState = [System.Windows.Forms.FormWindowState]::Minimized;',
+              '$owner.Show();',
+              '$owner.Hide();',
+              'if ($dlg.ShowDialog($owner) -eq [System.Windows.Forms.DialogResult]::OK) {',
+              '  Write-Output $dlg.SelectedPath;',
+              '};',
+              '$owner.Dispose();'
+            ].join(' ');
+            // Encode to UTF-16LE base64 so PowerShell -EncodedCommand accepts it cleanly
+            const encoded = Buffer.from(psScript, 'utf16le').toString('base64');
+            command = `powershell.exe -NoProfile -WindowStyle Hidden -EncodedCommand ${encoded}`;
           } else if (process.platform === 'darwin') {
             command = `osascript -e 'POSIX path of (choose folder with prompt "Select target folder or external USB/HDD drive")'`;
           } else {
             command = `zenity --file-selection --directory --title="Select target folder or external USB/HDD drive"`;
           }
 
-          exec(command, (error, stdout, stderr) => {
+          exec(command, { timeout: 60000 }, (error, stdout, stderr) => {
             if (error) {
               resolve({ content: [{ type: 'text', text: '' }], isError: true });
             } else {
