@@ -10,6 +10,12 @@ DomoDomo is a 100% client-side, offline-first web utility application. Built as 
 
 
 
+
+
+
+
+
+
 DomoDomo operates on a **zero-leak mandate**. Standard SaaS utilities require uploading sensitive business contracts or personal photos to remote cloud servers. DomoDomo compiles and processes all assets locally on your CPU/GPU using modern browser sandboxing.
 
 ### Component-Based Architecture
