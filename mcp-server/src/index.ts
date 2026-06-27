@@ -173,6 +173,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['sourceFolderPath'],
         },
       },
+      {
+        name: 'select_local_directory',
+        description: 'Launch a native host OS dialog window to visually browse and select a local storage folder or external USB/HDD drive.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+        },
+      },
     ],
   };
 });
@@ -509,6 +517,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             })
           }]
         };
+      }
+
+      case 'select_local_directory': {
+        return new Promise((resolve) => {
+          let command = '';
+          if (process.platform === 'win32') {
+            command = `powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.ShowNewFolderButton = $true; $f.Description = 'Select target folder or external USB/HDD drive'; if($f.ShowDialog() -eq 'OK') { Write-Output $f.SelectedPath }"`;
+          } else if (process.platform === 'darwin') {
+            command = `osascript -e 'POSIX path of (choose folder with prompt "Select target folder or external USB/HDD drive")'`;
+          } else {
+            command = `zenity --file-selection --directory --title="Select target folder or external USB/HDD drive"`;
+          }
+
+          exec(command, (error, stdout, stderr) => {
+            if (error) {
+              resolve({ content: [{ type: 'text', text: '' }], isError: true });
+            } else {
+              const selectedPath = stdout.trim();
+              resolve({ content: [{ type: 'text', text: selectedPath }] });
+            }
+          });
+        });
       }
 
       default:
