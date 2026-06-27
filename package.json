@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently --names \"vite,mcp\" --prefix-colors \"cyan,green\" \"vite\" \"npm --prefix mcp-server start\"",
+    "dev": "node scripts/auto-update.js && concurrently --names \"vite,mcp\" --prefix-colors \"cyan,green\" \"vite\" \"npm --prefix mcp-server start\"",
     "mcp": "npm --prefix mcp-server start",
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/generate-sitemap.js",
