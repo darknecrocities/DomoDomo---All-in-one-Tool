@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Shell } from './components/Shell';
 import { Dashboard } from './pages/Dashboard';
 import { ToolContainer } from './pages/ToolContainer';
@@ -12,7 +12,7 @@ function App() {
   return (
     <AutoPilotProvider>
       <DoorSplash />
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />
@@ -23,7 +23,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
       <FloatingAutoPilot />
     </AutoPilotProvider>
   );

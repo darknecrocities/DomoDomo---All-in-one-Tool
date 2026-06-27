@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   Search,
   ExternalLink,
@@ -156,6 +157,11 @@ curl -X GET "${endpoint}" \\
 
   return (
     <div className="space-y-8 animate-fadeIn">
+      <Helmet>
+        <title>Developer API Library - Free Web APIs | DomoDomo</title>
+        <meta name="description" content="Browse a curated library of free public developer APIs. Find and filter APIs by category, authentication type, and CORS support for your projects." />
+        <link rel="canonical" href="https://domodomo.site/library-api" />
+      </Helmet>
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#18191B] to-[#1E2022] border border-[#2A2D30] p-8 md:p-10 shadow-lg">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/5 rounded-full blur-3xl pointer-events-none" />

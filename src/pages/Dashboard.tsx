@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
 
@@ -325,6 +326,11 @@ export const Dashboard = () => {
 
   return (
     <div className="flex flex-col gap-8">
+      <Helmet>
+        <title>DomoDomo - 110+ Private, Local-First Browser Utilities</title>
+        <meta name="description" content="Run 110+ high-performance developer, media, and document utilities completely locally in your browser sandbox with absolute privacy." />
+        <link rel="canonical" href="https://domodomo.site" />
+      </Helmet>
       {/* Hero Welcome banner */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
         {/* Subtle grid backdrop decoration */}
