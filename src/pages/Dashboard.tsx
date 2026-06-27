@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
 
