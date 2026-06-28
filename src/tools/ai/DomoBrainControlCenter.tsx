@@ -29,6 +29,9 @@ export const DomoBrainControlCenter = () => {
   const [editName, setEditName] = useState('');
   const [editRole, setEditRole] = useState('Developer');
   const [editTone, setEditTone] = useState('Analytical & Structured');
+  const [editExperience, setEditExperience] = useState('Intermediate Practitioner');
+  const [editTechStack, setEditTechStack] = useState('');
+  const [editHardwareTier, setEditHardwareTier] = useState('Standard Specs');
   const [editGoals, setEditGoals] = useState<string[]>([]);
 
   const goalsList = [
@@ -56,6 +59,9 @@ export const DomoBrainControlCenter = () => {
         setEditName(iden.name);
         setEditRole(iden.role);
         setEditTone(iden.tone);
+        setEditExperience(iden.experience || 'Intermediate Practitioner');
+        setEditTechStack(iden.techStack || '');
+        setEditHardwareTier(iden.hardwareTier || 'Standard Specs');
         setEditGoals(iden.goals || []);
       }
     } catch (e) {
@@ -75,6 +81,9 @@ export const DomoBrainControlCenter = () => {
     await unifiedMemory.saveUserIdentity({
       name: editName.trim() || 'Explorer',
       role: editRole,
+      experience: editExperience,
+      techStack: editTechStack.trim() || 'None Specified',
+      hardwareTier: editHardwareTier,
       goals: editGoals.length > 0 ? editGoals : ['General Productivity'],
       tone: editTone,
       completedOnboarding: true
@@ -101,6 +110,9 @@ export const DomoBrainControlCenter = () => {
     setEditName('');
     setEditRole('Developer');
     setEditTone('Analytical & Structured');
+    setEditExperience('Intermediate Practitioner');
+    setEditTechStack('');
+    setEditHardwareTier('Standard Specs');
     setEditGoals([]);
     loadData();
   };
@@ -447,6 +459,43 @@ export const DomoBrainControlCenter = () => {
                   <option value="Direct & Brief">Direct & Brief (Saves local tokens)</option>
                   <option value="Analytical & Structured">Analytical & Structured (Highly technical)</option>
                   <option value="Friendly & Conversational">Friendly & Conversational (Helpful tutor)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-[#A3A09B] mb-1.5">Technical Experience Level</label>
+                <select
+                  value={editExperience}
+                  onChange={(e) => setEditExperience(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  <option value="Novice / Learning the basics">Novice / Learning the basics</option>
+                  <option value="Intermediate Practitioner">Intermediate Practitioner</option>
+                  <option value="Professional / Senior Specialist">Professional / Senior Specialist</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-[#A3A09B] mb-1.5">Preferred Programming Stack</label>
+                <input
+                  type="text"
+                  placeholder="e.g. TypeScript/React, Python, Go, C++"
+                  value={editTechStack}
+                  onChange={(e) => setEditTechStack(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-[#A3A09B] mb-1.5">Inference Hardware Tier</label>
+                <select
+                  value={editHardwareTier}
+                  onChange={(e) => setEditHardwareTier(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  <option value="Low Specs (Models &lt; 1.5B)">Low Specs (Uses small models: 0.5B - 1.5B)</option>
+                  <option value="Standard Specs (Models 3B - 8B)">Standard Specs (Uses medium models: 3B - 8B)</option>
+                  <option value="Heavy Specs (Models &gt; 14B)">Heavy Specs (Uses large models: &gt; 14B)</option>
                 </select>
               </div>
             </div>

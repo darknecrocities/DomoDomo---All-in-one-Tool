@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Sparkles, User, Brain, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Shield, Sparkles, User, Brain, ArrowRight, ArrowLeft, Cpu } from 'lucide-react';
 import { unifiedMemory } from '../utils/unifiedMemory';
 
 interface OnboardingModalProps {
@@ -10,6 +10,9 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [role, setRole] = useState('Developer');
+  const [experience, setExperience] = useState('Intermediate Practitioner');
+  const [techStack, setTechStack] = useState('');
+  const [hardwareTier, setHardwareTier] = useState('Standard Specs');
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [tone, setTone] = useState('Analytical & Structured');
 
@@ -33,6 +36,9 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
     const profile = {
       name: name.trim() || 'Explorer',
       role,
+      experience,
+      techStack: techStack.trim() || 'None Specified',
+      hardwareTier,
       goals: selectedGoals.length > 0 ? selectedGoals : ['General Productivity'],
       tone,
       completedOnboarding: true
@@ -47,6 +53,9 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
     const defaultProfile = {
       name: 'Explorer',
       role: 'General User',
+      experience: 'Intermediate Practitioner',
+      techStack: 'None Specified',
+      hardwareTier: 'Standard Specs',
       goals: ['General Productivity'],
       tone: 'Helpful & Direct',
       completedOnboarding: true
@@ -69,7 +78,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
             <span className="text-xs font-bold text-[#ECEBE9] uppercase tracking-wider">Assistant Setup</span>
           </div>
           <span className="text-[10px] font-bold text-[#A3A09B] uppercase tracking-wide">
-            Step {step} of 3
+            Step {step} of 4
           </span>
         </div>
 
@@ -177,6 +186,76 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
           <div className="flex flex-col gap-5 py-2">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-2xl text-[#3C6B4D]">
+                <Cpu size={24} />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-[#ECEBE9]">Skills & Technical Stack</h2>
+                <span className="text-xs text-[#A3A09B]">Help the assistant understand your technical specs</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-[#A3A09B] mb-1.5">Expertise Level</label>
+                <select
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  <option value="Novice / Learning the basics">Novice / Learning the basics</option>
+                  <option value="Intermediate Practitioner">Intermediate Practitioner</option>
+                  <option value="Professional / Senior Specialist">Professional / Senior Specialist</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-[#A3A09B] mb-1.5">Preferred Languages or Stack</label>
+                <input
+                  type="text"
+                  placeholder="e.g. TypeScript/React, Python/Django, Rust, C++"
+                  value={techStack}
+                  onChange={(e) => setTechStack(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-[#A3A09B] mb-1.5">Inference Hardware / Model Budget</label>
+                <select
+                  value={hardwareTier}
+                  onChange={(e) => setHardwareTier(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  <option value="Low Specs (Models &lt; 1.5B)">Low Specs (Uses small models: 0.5B - 1.5B)</option>
+                  <option value="Standard Specs (Models 3B - 8B)">Standard Specs (Uses medium models: 3B - 8B)</option>
+                  <option value="Heavy Specs (Models &gt; 14B)">Heavy Specs (Uses large models: &gt; 14B)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center mt-4">
+              <button
+                onClick={() => setStep(2)}
+                className="flex items-center gap-1.5 text-xs text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
+              >
+                <ArrowLeft size={14} />
+                <span>Back</span>
+              </button>
+              <button
+                onClick={() => setStep(4)}
+                className="btn-primary flex items-center gap-1 bg-[#3C6B4D] text-[#ECEBE9] px-5 py-2.5 rounded-lg text-xs font-semibold hover:bg-[#3C6B4D]/90"
+              >
+                <span>Continue</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="flex flex-col gap-5 py-2">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-2xl text-[#3C6B4D]">
                 <Sparkles size={24} />
               </div>
               <div>
@@ -225,7 +304,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
 
             <div className="flex justify-between items-center mt-4">
               <button
-                onClick={() => setStep(2)}
+                onClick={() => setStep(3)}
                 className="flex items-center gap-1.5 text-xs text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
               >
                 <ArrowLeft size={14} />

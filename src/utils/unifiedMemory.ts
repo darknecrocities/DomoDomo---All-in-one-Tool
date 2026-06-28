@@ -25,6 +25,9 @@ export interface UserIdentity {
   role: string;
   goals: string[];
   tone: string;
+  experience: string;
+  techStack: string;
+  hardwareTier: string;
   completedOnboarding: boolean;
   lastUpdated: string;
 }
@@ -443,7 +446,7 @@ export const unifiedMemory = {
       let contextStr = `\n[LOCAL COGNITIVE RECALL MEMORY]\nYou have access to the user's localized memory cache. Treat this like your human intuition. Recite details naturally if queried.`;
 
       if (identity) {
-        contextStr += `\n- User Persona Context:\n  * Name: ${identity.name}\n  * Role: ${identity.role}\n  * Goals: ${identity.goals.join(', ')}\n  * Requested Tone: ${identity.tone} (Adopt this style in your replies)`;
+        contextStr += `\n- User Persona Context:\n  * Name: ${identity.name}\n  * Role: ${identity.role}\n  * Experience Level: ${identity.experience || 'Intermediate'}\n  * Primary Tech Stack: ${identity.techStack || 'None Specified'}\n  * Hardware Specs Tier: ${identity.hardwareTier || 'Standard'}\n  * Goals: ${identity.goals.join(', ')}\n  * Requested Tone: ${identity.tone} (Adopt this style in your replies)`;
       }
 
       if (profile) {

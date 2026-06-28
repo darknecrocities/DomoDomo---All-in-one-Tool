@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee } from 'lucide-react';
+import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2 } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
+import { unifiedMemory } from '../utils/unifiedMemory';
 
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -38,6 +39,17 @@ const FacebookIcon = ({ size = 18 }: { size?: number }) => (
 
 export const Shell = () => {
   const navigate = useNavigate();
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+
+  const handleClearAIData = async () => {
+    if (window.confirm("Are you sure you want to completely purge all local AI data (RAG documents, user habits, and identity preferences) from this device? This cannot be undone.")) {
+      await unifiedMemory.clearHabits();
+      await unifiedMemory.clearIdentity();
+      localStorage.removeItem('domodomo_onboarding_completed');
+      alert("All local AI data has been purged successfully!");
+      window.location.reload();
+    }
+  };
 
   useEffect(() => {
     const handleDomoNavigate = (e: any) => {
@@ -314,6 +326,17 @@ export const Shell = () => {
               <span className="text-[10px] font-mono leading-none">{stars !== null ? stars : '—'}</span>
             </a>
 
+            {/* Clear AI Data Button (Offline Only) */}
+            {isLocalhost && (
+              <button
+                onClick={handleClearAIData}
+                className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#111213] border border-red-950/40 hover:border-red-500/40 text-red-400 hover:text-red-300 transition-all"
+                title="Purge Local AI Data"
+              >
+                <Trash2 size={14} />
+              </button>
+            )}
+
             {/* Theme Toggle Button */}
             <button
               onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
@@ -422,6 +445,16 @@ export const Shell = () => {
                 {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
                 <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
               </button>
+
+              {isLocalhost && (
+                <button
+                  onClick={handleClearAIData}
+                  className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-colors flex items-center gap-2 text-left w-full"
+                >
+                  <Trash2 size={16} />
+                  <span>Purge Local AI Data</span>
+                </button>
+              )}
             </nav>
           </div>
         )}
