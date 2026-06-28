@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { getToolById } from '../engine/registry';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { localMemory } from '../utils/localMemory';
+import { unifiedMemory } from '../utils/unifiedMemory';
 import { TOOL_VARIATIONS } from '../data/seoVariations';
 
 export const ToolContainer = () => {
@@ -15,6 +16,7 @@ export const ToolContainer = () => {
   useEffect(() => {
     if (tool) {
       localMemory.logActivity('Opened Tool', tool.category, `${tool.name}${variation ? ' - ' + variation : ''}`);
+      unifiedMemory.recordAction('Opened Tool', tool.category, `${tool.name}${variation ? ' - ' + variation : ''}`);
     }
   }, [tool, variation]);
 

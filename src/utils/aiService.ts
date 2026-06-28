@@ -1,5 +1,6 @@
 // Shared Offline & Cloud Hybrid AI Service
 import { localMemory } from './localMemory';
+import { unifiedMemory } from './unifiedMemory';
 let transformersModule: any = null;
 
 // Progress callback interface
@@ -316,10 +317,12 @@ export const aiService = {
 
     // Log the interaction
     localMemory.logActivity('AI Chat Inquiry', 'Local AI', prompt.slice(0, 60) + (prompt.length > 60 ? '...' : ''));
+    unifiedMemory.recordAction('AI Chat Inquiry', 'Local AI', prompt.slice(0, 60) + (prompt.length > 60 ? '...' : ''));
 
     // Inject local memory context
     const memoryContext = localMemory.getActivityContextString();
-    const augmentedPrompt = memoryContext ? `${memoryContext}\n\nUser Request:\n${prompt}` : prompt;
+    const recallContext = await unifiedMemory.getRecallContext(prompt);
+    const augmentedPrompt = `${memoryContext}\n${recallContext}\n\nUser Request:\n${prompt}`;
 
     try {
       if (provider.type === 'local') {

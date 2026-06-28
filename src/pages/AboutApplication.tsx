@@ -12,20 +12,27 @@ const stats = [
 ];
 
 const techStack = [
-  'React',
+  'React 19',
   'TypeScript',
-  'Tailwind CSS',
-  'WebAssembly',
-  'Ollama',
+  'Tailwind CSS v3',
   'Vite',
+  'React Router',
+  'WebAssembly (WASM)',
+  'WebGPU',
+  'Web Audio API',
+  'IndexedDB',
+  'Ollama',
+  'Model Context Protocol (MCP)',
   'Transformers.js',
   'FFmpeg.wasm',
-  'pdf-lib',
   'Tesseract.js',
-  'IndexedDB',
-  'Web Audio API',
-  'ONNX Runtime',
-  'WebGPU'
+  'pdf-lib',
+  'PDF.js',
+  'Konva.js',
+  'JSZip',
+  'Exifr',
+  'MediaPipe',
+  'Lucide Icons'
 ];
 
 export const AboutApplication = () => {

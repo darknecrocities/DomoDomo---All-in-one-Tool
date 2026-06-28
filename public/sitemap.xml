@@ -3179,6 +3179,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://domodomo.site/tool/domo-local-brain</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://domodomo.site/tool/ollama-library</loc>
     <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
