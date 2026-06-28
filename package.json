@@ -7,7 +7,7 @@
     "dev": "node scripts/auto-update.js && concurrently --names \"vite,mcp\" --prefix-colors \"cyan,green\" \"vite\" \"npm --prefix mcp-server start\"",
     "mcp": "npm --prefix mcp-server start",
     "build": "tsc -b && vite build",
-    "postbuild": "node scripts/generate-sitemap.js",
+    "postbuild": "node scripts/generate-sitemap.js && node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -30,6 +30,7 @@
     "react-helmet-async": "^3.0.0",
     "react-konva": "^19.2.5",
     "react-router-dom": "^7.18.0",
+    "tesseract.js": "^7.0.0",
     "use-image": "^1.1.4"
   },
   "devDependencies": {

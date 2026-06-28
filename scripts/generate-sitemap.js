@@ -4,6 +4,25 @@ import path from 'path';
 const BASE_URL = 'https://domodomo.site';
 const staticRoutes = ['', 'about', 'docs', 'library-api'];
 
+// High priority tools to boost SEO ranking
+const HIGH_PRIORITY_TOOLS = [
+  'background-remover',
+  'image-resizer',
+  'image-compressor',
+  'format-converter',
+  'pdf-merge',
+  'pdf-split',
+  'pdf-compress',
+  'pdf-to-img',
+  'ocr-scanner',
+  'resume-builder',
+  'qr-generator',
+  'wifi-qr',
+  'json-format',
+  'regex-tester',
+  'diff-checker'
+];
+
 // Read the registry file to extract tool IDs via regex
 const registryPath = path.resolve('./src/engine/registry.ts');
 const registryContent = fs.readFileSync(registryPath, 'utf-8');
@@ -22,6 +41,8 @@ while ((match = toolIdRegex.exec(registryContent)) !== null) {
 
 console.log(`🤖 Extracted ${toolIds.length} tool IDs from registry.`);
 
+const today = new Date().toISOString().split('T')[0];
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   ${staticRoutes
@@ -29,20 +50,23 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
       (route) => `
   <url>
     <loc>${BASE_URL}/${route}</loc>
+    <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${route === '' ? '1.0' : '0.8'}</priority>
   </url>`
     )
     .join('')}
   ${toolIds
-    .map(
-      (id) => `
+    .map((id) => {
+      const isHigh = HIGH_PRIORITY_TOOLS.includes(id);
+      return `
   <url>
     <loc>${BASE_URL}/tool/${id}</loc>
+    <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`
-    )
+    <priority>${isHigh ? '0.9' : '0.7'}</priority>
+  </url>`;
+    })
     .join('')}
 </urlset>`;
 
