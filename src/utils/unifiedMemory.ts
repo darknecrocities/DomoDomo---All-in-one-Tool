@@ -429,6 +429,21 @@ export const unifiedMemory = {
     }
   },
 
+  async getAllChunks(): Promise<KnowledgeChunk[]> {
+    try {
+      const db = await openDB();
+      const tx = db.transaction('knowledge_chunks', 'readonly');
+      const store = tx.objectStore('knowledge_chunks');
+      return await new Promise((resolve, reject) => {
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+      });
+    } catch {
+      return [];
+    }
+  },
+
   async getRecallContext(userPrompt: string, _category = 'general'): Promise<string> {
     try {
       // 0. Fetch user identity
