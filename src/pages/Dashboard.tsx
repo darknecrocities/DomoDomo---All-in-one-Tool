@@ -332,8 +332,19 @@ export const Dashboard = () => {
   return (
     <div className="flex flex-col gap-8">
       <Helmet>
-        <title>DomoDomo - 110+ Private, Local-First Browser Utilities</title>
-        <meta name="description" content="Run 110+ high-performance developer, media, and document utilities completely locally in your browser sandbox with absolute privacy." />
+        <title>DomoDomo - Free Online Tools | 110+ Private Browser Utilities</title>
+        <meta name="description" content="Free all-in-one online toolbox: merge PDFs, remove backgrounds, compress images, generate QR codes, format JSON, edit audio/video, and 100+ more tools. Runs 100% locally in your browser — no uploads, no sign up." />
+        <meta name="keywords" content="free online tools, pdf merger, background remover, image compressor, qr code generator, json formatter, developer tools, browser tools, local ai, privacy tools, file converter" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://domodomo.site/" />
+        <meta property="og:site_name" content="DomoDomo" />
+        <meta property="og:title" content="DomoDomo - Free Online Tools | 110+ Private Browser Utilities" />
+        <meta property="og:description" content="Free all-in-one online toolbox: merge PDFs, remove backgrounds, compress images, generate QR codes, and 100+ more. No uploads, no sign up." />
+        <meta property="og:image" content="https://domodomo.site/favicon.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="DomoDomo - Free Online Tools | 110+ Private Browser Utilities" />
+        <meta name="twitter:description" content="Free all-in-one online toolbox with 110+ tools. No uploads, no sign up, 100% private." />
+        <meta name="twitter:image" content="https://domodomo.site/favicon.png" />
         <link rel="canonical" href="https://domodomo.site" />
       </Helmet>
       {/* Hero Welcome banner */}

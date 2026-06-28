@@ -33,17 +33,24 @@ export const ToolContainer = () => {
   }
 
   const ToolComponent = tool.component;
-  const seoTitle = `${tool.name} - Free Local Web Utility | DomoDomo`;
-  const seoDesc = `Use ${tool.name} completely locally and privately in your browser tab. Category: ${tool.category}. ${tool.description}`;
+  const seoTitle = tool.seoTitle || `${tool.name} - Free Online Tool | DomoDomo`;
+  const seoDesc = tool.description.length > 120 
+    ? tool.description 
+    : `${tool.description} Use ${tool.name} free online — runs 100% locally in your browser with no uploads. Part of DomoDomo's 110+ tool suite.`;
+  const toolUrl = `https://domodomo.site/tool/${tool.id}`;
+  const categoryLabel = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
+  const toolKeywords = tool.keywords || `${tool.name.toLowerCase()}, free ${tool.name.toLowerCase()}, online ${tool.name.toLowerCase()}, ${tool.category} tools, domodomo`;
 
   const schemaMarkup = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": tool.name,
+    "url": toolUrl,
     "description": tool.description,
-    "applicationCategory": `${tool.category.charAt(0).toUpperCase() + tool.category.slice(1)}Application`,
+    "applicationCategory": `${categoryLabel}Application`,
     "operatingSystem": "All",
     "browserRequirements": "Requires HTML5, WebAssembly, and modern browser support.",
+    "featureList": `${tool.name}, Local Processing, No Data Upload, Free, Privacy-First`,
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -51,18 +58,53 @@ export const ToolContainer = () => {
     }
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "DomoDomo",
+        "item": "https://domodomo.site"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": categoryLabel,
+        "item": `https://domodomo.site/?category=${tool.category}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": tool.name,
+        "item": toolUrl
+      }
+    ]
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
+        <meta name="keywords" content={toolKeywords} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={toolUrl} />
+        <meta property="og:site_name" content="DomoDomo" />
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
-        <meta property="twitter:title" content={seoTitle} />
-        <meta property="twitter:description" content={seoDesc} />
-        <link rel="canonical" href={`https://domodomo.site/tool/${tool.id}`} />
+        <meta property="og:image" content="https://domodomo.site/favicon.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDesc} />
+        <meta name="twitter:image" content="https://domodomo.site/favicon.png" />
+        <link rel="canonical" href={toolUrl} />
         <script type="application/ld+json">
           {JSON.stringify(schemaMarkup)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
         </script>
       </Helmet>
 
@@ -86,9 +128,9 @@ export const ToolContainer = () => {
             <div className="p-2.5 bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#3C6B4D] rounded-xl">
               <DynamicIcon name={tool.icon} size={20} />
             </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight">
               {tool.name}
-            </h2>
+            </h1>
           </div>
           <p className="text-[#A3A09B] text-sm mt-1 max-w-2xl leading-relaxed">
             {tool.description}

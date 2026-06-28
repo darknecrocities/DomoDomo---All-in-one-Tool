@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
+Crawl-delay: 1
 
+# Host
+Host: https://domodomo.site
+
+# Sitemaps
 Sitemap: https://domodomo.site/sitemap.xml
+
+# Block crawlers from internal assets
+Disallow: /assets/
+Disallow: /node_modules/

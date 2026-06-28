@@ -18,6 +18,8 @@ export interface Tool {
   category: ToolCategory;
   description: string;
   icon: string; // Lucide icon name, to resolve dynamically
+  keywords?: string; // SEO keywords for meta tags
+  seoTitle?: string; // Custom SEO title override
   run(input: any): Promise<any>;
   component: React.ComponentType;
 }
