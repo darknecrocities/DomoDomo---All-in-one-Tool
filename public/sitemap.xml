@@ -27,6 +27,36 @@
   </url>
   
   <url>
+    <loc>https://domodomo.site/blog/domomulti-orchestration-parallel-ai-workflows</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/blog/connecting-ollama-lmstudio-offline</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/blog/upcoming-autopilot-workspace-autonomous-coding</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/blog/why-local-webassembly-wasm-changing-saas</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/blog/deep-dive-local-file-encryption-security</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://domodomo.site/blog/domodomo-v22-release-notes</loc>
     <lastmod>2026-06-28</lastmod>
     <changefreq>weekly</changefreq>

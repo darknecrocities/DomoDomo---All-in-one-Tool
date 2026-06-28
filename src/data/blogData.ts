@@ -11,6 +11,219 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'domomulti-orchestration-parallel-ai-workflows',
+    title: 'The Power of DomoMulti Orchestration: Running Parallel Offline AI Workflows',
+    excerpt: 'Discover how DomoMulti Orchestration enables sequential and parallel agent workflows using local LLMs. Run complex developer tasks securely on your machine.',
+    date: 'June 28, 2026',
+    readTime: '5 min read',
+    category: 'AI & Cybersecurity',
+    keywords: 'domomulti orchestration, multi-agent orchestration, local ai workflows, parallel ai agents, offline agent hub',
+    content: `
+# The Power of DomoMulti Orchestration: Running Parallel Offline AI Workflows
+
+Artificial intelligence is evolving beyond single-prompt chatbots. To solve complex development and research problems, we need **Multi-Agent Orchestration**—systems where multiple AI agents work together in sequence or parallel to achieve a goal.
+
+With the release of the **DomoMulti Orchestration Hub**, you can design, compile, and run multi-agent workflows completely offline using local LLMs. Here is a guide on how it works.
+
+---
+
+## What is Multi-Agent Orchestration?
+
+In a multi-agent system, tasks are divided among specialized AI agents:
+1. **The Planner:** Analyzes the objective and outlines steps.
+2. **The Coder:** Writes the clean implementation code.
+3. **The Auditor:** Scans the code for security bugs and syntax errors.
+4. **The Writer:** Generates clear markdown documentation.
+
+By orchestrating these roles, the system achieves higher accuracy and fewer hallucinations than a single generic chatbot.
+
+---
+
+## ⚡ Parallel vs. Sequential Workflows
+
+DomoDomo's Multi-Agent Hub supports two execution paradigms:
+
+### 1. Sequential Pipelines
+Each agent waits for the output of the previous agent. For example, the *Auditor* only starts scanning after the *Coder* has completed writing the script. This is ideal for linear workflows like translation, review, and compiling.
+
+### 2. Parallel Workflows
+Agents execute tasks simultaneously. For example, if you ask to compare three different programming solutions, three independent agents can query your local LLM in parallel, significantly saving execution time.
+
+---
+
+## 🛠️ Setting Up Your First Local Multi-Agent Pipeline
+
+To build a multi-agent flow:
+1. Open the [AIDomo Agent Hub](https://domodomo.site/tool/ai-agent-hub).
+2. Configure your agents (e.g. Creator agent, Reviewer agent).
+3. Assign target local models (e.g. \`llama3.2\` for quick plans, \`qwen2.5-coder\` for code generation).
+4. Run the workflow. The hub handles directory mounts and compiles logs locally.
+`
+  },
+  {
+    slug: 'connecting-ollama-lmstudio-offline',
+    title: 'Connecting Ollama and LM Studio Offline for Privacy-Preserving AI',
+    excerpt: 'A comprehensive setup guide to connecting local LLM model servers like Ollama and LM Studio to private browser dashboards without sharing data.',
+    date: 'June 28, 2026',
+    readTime: '4 min read',
+    category: 'AI & Cybersecurity',
+    keywords: 'connect ollama, lm studio offline, local llm server, private ai dashboard, cross-origin resource sharing',
+    content: `
+# Connecting Ollama and LM Studio Offline for Privacy-Preserving AI
+
+Running Large Language Models (LLMs) locally has become the default setup for security-conscious developers. Two of the most popular offline model servers are **Ollama** and **LM Studio**.
+
+In this guide, we show you how to configure these tools to connect with client-side dashboards like DomoDomo securely without internet access.
+
+---
+
+## 🚀 Setting Up Ollama (CORS Configuration)
+
+By default, browser applications cannot connect to local services due to Cross-Origin Resource Sharing (CORS) protections. To allow connection:
+
+### On Windows:
+1. Close Ollama from the taskbar.
+2. Open **System Environment Variables**.
+3. Add a new variable:
+   - Name: \`OLLAMA_ORIGINS\`
+   - Value: \`*\`
+4. Launch Ollama again.
+
+### On macOS / Linux:
+Run this command in your terminal before launching the service:
+\`export OLLAMA_ORIGINS="*"\`
+
+---
+
+## 🎛️ Setting Up LM Studio (Local Server Mode)
+
+LM Studio provides a built-in GUI to host models using a local server that matches OpenAI's API format:
+
+1. Launch LM Studio.
+2. Download your preferred model (e.g., Llama 3.2 3B).
+3. Click the **Developer / Local Server** tab (the double-square icon in the left sidebar).
+4. Select your loaded model from the top dropdown.
+5. Toggle **CORS** to "Enabled" in the server settings panel.
+6. Click **Start Server**. The endpoint will be hosted at \`http://localhost:1234/v1\`.
+
+---
+
+## 🎯 Connect with DomoDomo AI Tools
+Go to the [Local AI Chat Tool](https://domodomo.site/tool/ai-chat). Select either **Ollama** or **LM Studio** in the configuration panel, click detect, and start chatting with absolute privacy.
+`
+  },
+  {
+    slug: 'upcoming-autopilot-workspace-autonomous-coding',
+    title: 'Upcoming Feature: Introducing AutoPilot Workspace for Autonomous Coding',
+    excerpt: 'Preview the upcoming AutoPilot Workspace in DomoDomo. Learn how autonomous agents plan, read files, execute tasks, and check linting errors locally.',
+    date: 'June 27, 2026',
+    readTime: '4 min read',
+    category: 'Product Updates',
+    keywords: 'autopilot workspace, autonomous coding agent, local ai developer, file editing agent, offline dev helper',
+    content: `
+# Upcoming Feature: Introducing AutoPilot Workspace for Autonomous Coding
+
+We are excited to share a sneak peek of our upcoming flagship feature: the **AutoPilot Workspace**.
+
+Designed for developers who want an autonomous local helper, AutoPilot will let you delegate multi-file coding projects, directory analysis, and bug fixing directly to a local agent running on your computer.
+
+---
+
+## How AutoPilot Works
+
+Traditional AI assistants simply output code blocks that you have to copy and paste manually. **AutoPilot** takes this a step further by executing plans autonomously:
+
+1. **User Goal:** You input a high-level task (e.g., "Build a sitemap generator and hook it to the postbuild script").
+2. **Research & Planning:** The agent inspects your workspace directory and writes a structured implementation plan.
+3. **Execution Loop:** Once you approve the plan, the agent reads files, edits specific code lines using atomic patches, and creates new files.
+4. **Local Verification:** The agent compiles and tests the changes, reviewing any lint errors before declaring the goal accomplished.
+
+---
+
+## 🔒 Key Design Pillars: Absolute Safety
+
+To ensure your local files remain safe, AutoPilot is built with security first:
+- **Sandbox Context:** The agent only reads and writes files within the specific mounted directory.
+- **Permission Prompts:** High-risk actions (like executing build commands or installing npm packages) require your explicit approval.
+- **Privacy-First:** AutoPilot connects strictly to your local LLMs (via Ollama or LM Studio), ensuring your workspace data is never uploaded to the cloud.
+
+*Stay tuned! AutoPilot Workspace will be rolling out in the next major release.*
+`
+  },
+  {
+    slug: 'why-local-webassembly-wasm-changing-saas',
+    title: 'Why Local WebAssembly (WASM) is Changing the SaaS Landscape',
+    excerpt: 'Discover how WebAssembly allows complex computational tools like FFmpeg, Tesseract, and PDF engines to run locally in the browser, eliminating subscriptions.',
+    date: 'June 26, 2026',
+    readTime: '4 min read',
+    category: 'Productivity',
+    keywords: 'webassembly wasm, client-side saas, local ffmpeg wasm, offline browser utilities, serverless tools',
+    content: `
+# Why Local WebAssembly (WASM) is Changing the SaaS Landscape
+
+For years, developers and creators had to pay monthly SaaS subscriptions to execute simple tasks like converting a video file, compressing a PDF, or running OCR. The standard excuse was that browser engines were too weak to handle heavy media workloads, requiring remote servers.
+
+With **WebAssembly (WASM)**, this server-centric model is changing. Browsers can now compile and run native code at near-native speeds.
+
+---
+
+## What is WebAssembly?
+
+WebAssembly is a binary code format that runs in modern browsers with near-native performance. It allows developers to compile high-performance code written in C, C++, Rust, or Go and run it inside a secure browser tab sandbox.
+
+This enables a new class of **local-first web applications** that combine the convenience of a website with the speed and privacy of local desktop software.
+
+---
+
+## 🚀 How DomoDomo Uses WASM to Kill Subscriptions
+
+DomoDomo leverages WebAssembly across multiple suites to bypass cloud queues:
+
+### 1. Local Video Conversion (FFmpeg.wasm)
+Normally, converting an MP4 to a GIF requires uploading massive video files. With \`ffmpeg.wasm\`, we load the compiled C video encoder directly into your browser memory, letting you convert videos instantly offline.
+
+### 2. Client-Side PDF Compilation (pdf-lib)
+Rather than uploading sensitive contracts to cloud mergers, WASM-supported engines parse, merge, and split PDF structures locally in milliseconds.
+
+### 3. Local Text Recognition (Tesseract.js)
+Offline OCR loads neural network models directly into browser Web Workers, executing character mapping on your local CPU.
+`
+  },
+  {
+    slug: 'deep-dive-local-file-encryption-security',
+    title: 'Securing Your Workspace: A Deep Dive into DomoDomo Local File Encryption',
+    excerpt: 'Understand how DomoDomo uses Web Crypto APIs to encrypt and decrypt sensitive files offline. Keep your local storage safe from breaches.',
+    date: 'June 25, 2026',
+    readTime: '4 min read',
+    category: 'AI & Cybersecurity',
+    keywords: 'local file encryption, web crypto api, secure file storage, aes gcm 256, offline data encryption',
+    content: `
+# Securing Your Workspace: A Deep Dive into DomoDomo Local File Encryption
+
+Security and privacy are the core pillars of DomoDomo. In this article, we take a deep dive under the hood to see how the **File Encryption Tool** uses modern browser features to protect your sensitive files offline.
+
+---
+
+## 🔑 The Web Crypto API: Safe Browser Encryption
+
+DomoDomo does not use external encryption services. Instead, it relies on the **Web Crypto API**, a low-level cryptographic interface built directly into modern web browsers by W3C standards.
+
+This ensures:
+- **Fast Execution:** Browser-native C++ implementations execute cryptographic operations rapidly.
+- **Hardware Security:** Uses secure random number generators built into your computer's CPU.
+- **Offline Reliability:** Works 100% offline with zero network latency.
+
+---
+
+## 🛡️ AES-GCM 256: Industry Standard Security
+
+When you encrypt a file in DomoDomo:
+1. **Key Derivation (PBKDF2):** The tool takes your custom password and feeds it into the Password-Based Key Derivation Function 2 (PBKDF2) along with a random salt value to generate a strong 256-bit key.
+2. **Encryption (AES-GCM):** The file is encrypted using Advanced Encryption Standard (AES) in Galois/Counter Mode (GCM) with 256-bit keys. GCM mode ensures both **confidentiality** (hiding the file content) and **authenticity** (detecting if anyone tries to tamper with the file).
+3. **Decryption:** The encrypted file, salt, and initial vectors are outputted as a secure package, ready to be safely decrypted on any browser using the same password.
+`
+  },
+  {
     slug: 'domodomo-v22-release-notes',
     title: 'DomoDomo v2.2 Release Notes: AI Magic Layers & Background Remover Upgrades',
     excerpt: 'Read about the latest updates to DomoDomo including advanced histogram-based color sampling for Template Studio Magic Layers and upload replacement fixes for Background Remover.',
