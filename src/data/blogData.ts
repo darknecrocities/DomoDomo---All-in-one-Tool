@@ -61,6 +61,164 @@ We resolved an upload issue inside the **Background Remover** tool that occurred
 `
   },
   {
+    slug: 'domodomo-ai-security-suite-local',
+    title: 'Introducing the DomoDomo AI Security Suite: Local-First Auditing and Malware Analysis',
+    excerpt: 'Explore our 10 new localized AI security tools connecting strictly to offline Ollama models. Includes Code Auditor, Threat Intel Chat, Deepfake Detection, and Incident Reporting.',
+    date: 'June 28, 2026',
+    readTime: '5 min read',
+    category: 'AI & Cybersecurity',
+    keywords: 'local ai security, offline threat intel, ai malware analyzer, private code audit, deepfake detection offline',
+    content: `
+# Introducing the DomoDomo AI Security Suite: Local-First Auditing and Malware Analysis
+
+We are thrilled to formally introduce the **DomoDomo AI Security Suite**, a collection of 10 security-focused utilities engineered to run 100% offline. 
+
+By binding to local Ollama or LM Studio endpoints on your loopback address, these tools perform deep security tasks without sending single lines of code or data to external servers.
+
+---
+
+## 🛡️ The 10 AI Security Tools Added in v2.0+
+
+Here is a breakdown of the new security helpers available in your workspace:
+
+### 1. AI Code Auditor
+Paste source code (JavaScript, Python, C++, Go) to scan for buffer overflows, hardcoded credentials, and package vulnerabilities. The auditor generates patch proposals locally.
+
+### 2. AI Threat Intel Chat
+An offline security research companion. Ask questions about CVE databases, attack vectors, or MITRE ATT&CK frameworks without tracking search history.
+
+### 3. AI Phishing Analyzer
+Analyze email structures, suspicious headers, and URL links to detect social engineering indicators and credential harvest attempts.
+
+### 4. AI Malware Analyzer
+Feed script behaviors, process lists, or disassembly summaries into the offline model to map potential trojans, keyloggers, or ransom loops.
+
+### 5. AI Incident Report Writer
+Quickly compile SOC incident summaries into professional executive reports suitable for compliance documentation.
+
+### 6. AI Deepfake Detection Assistant
+Inspect image telemetry and meta markers locally to highlight synthetic generation footprints.
+
+---
+
+## 🔌 How to Bind to Your Local Ollama Server
+
+1. Install [Ollama](https://ollama.com/) on your local machine.
+2. Launch the terminal and pull a security-specialized model (e.g., Llama3 or Qwen2.5-Coder):
+   \`ollama pull qwen2.5-coder:7b\`
+3. Open any AI tool in DomoDomo. The workspace automatically connects to \`http://localhost:11434\` to run the models.
+`
+  },
+  {
+    slug: 'essential-developer-utilities-guide',
+    title: '10 Essential Developer Utilities in DomoDomo: SQL, YAML, Cron, and Diff Checker Guides',
+    excerpt: 'Discover the new developer tools in DomoDomo. Save time on formatting SQL queries, YAML-JSON translation, cron configurations, and side-by-side diff checking.',
+    date: 'June 27, 2026',
+    readTime: '4 min read',
+    category: 'Productivity',
+    keywords: 'sql formatter, yaml to json, cron parser, diff checker online free, screen info telemetry',
+    content: `
+# 10 Essential Developer Utilities in DomoDomo
+
+Modern developers waste hours swapping tabs to complete simple operations like formatting a SQL statement or parsing a complex cron expression. 
+
+DomoDomo v2.0+ added **10 new developer utilities** to provide a fast, secure, and unified workspace running fully inside your browser tab sandbox.
+
+---
+
+## 🛠️ The New Dev Toolkit Highlights
+
+### 1. SQL Formatter & Beautifier
+Format raw queries with customizable indent size, capital keyword rules, and syntax highlighting. Avoid pasting corporate query schemes on public formatting sites.
+
+### 2. YAML ↔ JSON Converter
+Translates data structures back and forth instantly. Handles complex nested lists and keeps your configurations safe from logging.
+
+### 3. Cron Expression Parser
+Translates standard cron strings (e.g., \`*/5 * * * *\`) into readable human explanations ("every 5 minutes") and highlights the next 5 execution timelines.
+
+### 4. Side-by-Side Diff Checker
+Compare configuration files, text chunks, or code edits side-by-side with colorized margin lines highlighting additions and deletions.
+
+### 5. CSS Box Shadow & Glassmorphism Designers
+Visual slider interfaces to craft modern premium styling code. Grab clean CSS rules instantly with interactive real-time previews.
+
+### 6. Number Base Converter
+Translate integer strings between decimal, binary, octal, and hexadecimal bases with instant bitwise formatting.
+
+---
+
+## 🔒 The Zero-Server Advantage
+Because these developer utilities run 100% locally via Javascript compilers inside your browser namespace, they execute instantly. You get zero queue waits and absolute data confidentiality.
+`
+  },
+  {
+    slug: 'how-to-use-offline-ocr-scanner',
+    title: 'How to Use Offline OCR Scanner to Extract Text from Scanned Docs',
+    excerpt: 'Learn how to extract text from photos and PDF pages offline using Tesseract.js in DomoDomo. Avoid leaks while digitizing receipts and documents.',
+    date: 'June 27, 2026',
+    readTime: '4 min read',
+    category: 'Productivity',
+    keywords: 'ocr scanner, extract text from image, read text from photo, tesseract ocr offline',
+    content: `
+# How to Use Offline OCR Scanner to Extract Text from Scanned Docs
+
+Need to digitize a printed receipt, extract text from a screenshot, or copy notes from a photo? Doing this manually takes too long, but standard online OCR platforms present huge privacy leaks by processing your images in cloud databases.
+
+In this guide, we will show you how to perform high-accuracy Optical Character Recognition (OCR) **completely offline** in your browser.
+
+---
+
+## The Tech Behind Offline OCR: Tesseract.js
+
+DomoDomo's **OCR Scanner** uses Tesseract.js, a pure JavaScript port of the famous Tesseract OCR engine. 
+- **Local Web Workers:** Tesseract.js loads the language models directly into your browser's Web Workers.
+- **Local Computation:** Your CPU executes the character recognition matrices locally. No pixels are ever uploaded over the web.
+
+---
+
+## 🛠️ Step-by-Step OCR Guide
+
+1. Open the [OCR Scanner Tool](https://domodomo.site/tool/ocr-scanner).
+2. Choose your document language (English is loaded by default, but 100+ languages are supported).
+3. Drag and drop your image file (PNG, JPG, or PDF page).
+4. Click **Run OCR**.
+5. Watch the real-time progress indicator. Once complete, your extracted text is loaded into an editable layout container.
+6. Click **Copy Text** or download as a text file.
+`
+  },
+  {
+    slug: 'creating-custom-qr-codes-with-logos',
+    title: 'Creating Custom QR Codes with Logos: A Guide for Modern Brands',
+    excerpt: 'Learn how to generate customized QR codes for Wi-Fi networks, business cards, and social channels with embedded logos completely offline.',
+    date: 'June 26, 2026',
+    readTime: '3 min read',
+    category: 'Graphics & Design',
+    keywords: 'create qr code, wifi qr code generator, custom logo qr, qr code generator free online',
+    content: `
+# Creating Custom QR Codes with Logos: A Guide for Modern Brands
+
+QR codes are everywhere—on restaurant tables, product packages, and digital business cards. However, standard black-and-white square QR codes look outdated. 
+
+Using DomoDomo's **QR Code Generator Suite**, you can create beautiful custom QR codes with logos, custom dot styles, and color gradients securely offline.
+
+---
+
+## 🎨 Customize Your QR Code in 3 Steps
+
+### Step 1: Input Data Type
+Select the data category: URL, WiFi Network, Contact Card (vCard), or SMS.
+
+### Step 2: Set Colors & Style
+- **Gradients:** Toggle color gradients for the QR code body.
+- **Eye Style:** Customize the outer and inner frames of the corner squares.
+- **Embed Logo:** Upload a PNG logo. The generator uses error correction padding (up to 30%) to overlay the logo in the center without breaking scans.
+
+### Step 3: Export as Vector SVG
+Click **Download SVG** for print layouts, or **Download PNG** for digital screens. All rendering is computed locally.
+`
+  },
+  {
     slug: 'remove-background-online-free',
     title: 'How to Remove Backgrounds from Images Online for Free (Zero Uploads)',
     excerpt: 'Learn how to remove backgrounds from your photos instantly in your browser. A completely secure, private, and free method using chroma keying and canvas lasso masks.',
