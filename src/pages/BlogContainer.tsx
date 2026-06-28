@@ -20,8 +20,8 @@ export const BlogContainer = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const seoTitle = 'DomoDomo SEO Content Hub & Guides | 110+ Local Tools';
-  const seoDesc = 'Read our technical guides on file security, image background removal, PDF compression, and local offline AI setups. DomoDomo guides hub.';
+  const seoTitle = 'DomoDomo Product Updates, Release Changelogs & Guides';
+  const seoDesc = 'Discover the latest releases, offline developer tutorials, and utility guides to optimize your sandboxed offline workflows inside DomoDomo.';
 
   return (
     <div className="flex flex-col gap-8 text-left">
@@ -50,10 +50,10 @@ export const BlogContainer = () => {
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-black text-[#ECEBE9] font-heading leading-tight tracking-tight">
-            SEO &amp; Tech Guides
+            Latest Updates &amp; Guides
           </h1>
           <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-2xl">
-            Explore comprehensive guides on image editing, PDF optimization, coding workflows, and setting up secure local AI models without uploading data.
+            Explore the latest feature releases, offline tutorials, and technical guides to get the most out of your private, local-first DomoDomo workspace.
           </p>
         </div>
       </div>
