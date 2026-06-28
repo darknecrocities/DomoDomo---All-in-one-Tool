@@ -151,11 +151,17 @@ export const ToolContainer = () => {
         </div>
 
         <button
-          onClick={() => navigate('/')}
+          onClick={() => {
+            if (window.history.state && window.history.state.idx > 0) {
+              navigate(-1);
+            } else {
+              navigate('/');
+            }
+          }}
           className="btn-secondary py-2 px-4 text-xs font-bold"
         >
           <ArrowLeft size={14} />
-          <span>Dashboard</span>
+          <span>Back</span>
         </button>
       </div>
 
