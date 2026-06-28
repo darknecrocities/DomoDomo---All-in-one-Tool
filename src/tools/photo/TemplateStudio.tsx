@@ -24,8 +24,14 @@ export const TemplateStudioTool = () => {
     redo,
     canUndo,
     canRedo,
-    loadTemplateJSON
+    loadTemplateJSON,
+    localSavedTemplates,
+    saveTemplateToLibrary,
+    deleteTemplateFromLibrary
   } = useTemplateStudio();
+
+  const [libraryNameInput, setLibraryNameInput] = useState('');
+  const [layerSearchQuery, setLayerSearchQuery] = useState('');
 
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -448,6 +454,55 @@ export const TemplateStudioTool = () => {
                   </div>
                 </div>
 
+                {/* Local Storage Saved Templates Library */}
+                <div className="space-y-2 border-t border-[#2A2D30] pt-3">
+                  <label className="text-[10px] text-[#72706C] font-bold block">Browser Designs Library</label>
+                  <div className="flex gap-1.5">
+                    <input
+                      type="text"
+                      placeholder="Save current design..."
+                      value={libraryNameInput}
+                      onChange={e => setLibraryNameInput(e.target.value)}
+                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded p-1.5 text-[11px] outline-none focus:border-[#3C6B4D]"
+                    />
+                    <button
+                      onClick={() => {
+                        const name = libraryNameInput.trim() || template.name;
+                        saveTemplateToLibrary(name, template);
+                        setLibraryNameInput('');
+                        alert(`Design saved locally as "${name}"!`);
+                      }}
+                      className="px-2.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-[10px] font-bold rounded"
+                    >
+                      Save
+                    </button>
+                  </div>
+
+                  {Object.keys(localSavedTemplates).length > 0 && (
+                    <div className="max-h-24 overflow-y-auto custom-scrollbar border border-[#2A2D30] rounded bg-[#111213]/40 p-1.5 space-y-1 mt-1">
+                      {Object.entries(localSavedTemplates).map(([name, data]) => (
+                        <div key={name} className="flex justify-between items-center bg-[#18191B] p-1 rounded border border-[#2A2D30] text-[10px]">
+                          <button
+                            onClick={() => {
+                              loadTemplateJSON(data);
+                              alert(`Loaded local design "${name}"!`);
+                            }}
+                            className="font-semibold text-[#ECEBE9] hover:text-[#3C6B4D] text-left truncate flex-1"
+                          >
+                            📁 {name}
+                          </button>
+                          <button
+                            onClick={() => deleteTemplateFromLibrary(name)}
+                            className="text-red-400 hover:text-red-300 ml-1.5 font-bold text-xs"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-2 border-t border-[#2A2D30] pt-3">
                   <label className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-[#2A2D30] rounded-xl hover:bg-[#2A2D30] cursor-pointer text-[#A3A09B]">
                     <LayoutTemplate size={14} /> <span className="text-xs font-bold text-center">Load JSON</span>
@@ -494,15 +549,25 @@ export const TemplateStudioTool = () => {
                 </div>
               </div>
               <div className="h-px bg-[#2A2D30]" />
-              <LayerPanel 
-                layers={template.layers} 
-                selectedId={selectedId} 
-                onSelect={setSelectedId} 
-                onUpdate={updateLayer} 
-                onDelete={deleteLayer} 
-                onReorder={reorderLayer} 
-                onDuplicate={duplicateLayer}
-              />
+              
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="Search layers..."
+                  value={layerSearchQuery}
+                  onChange={e => setLayerSearchQuery(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg p-2 text-xs outline-none focus:border-[#3C6B4D] font-semibold"
+                />
+                <LayerPanel 
+                  layers={template.layers.filter(l => l.name.toLowerCase().includes(layerSearchQuery.toLowerCase()))} 
+                  selectedId={selectedId} 
+                  onSelect={setSelectedId} 
+                  onUpdate={updateLayer} 
+                  onDelete={deleteLayer} 
+                  onReorder={reorderLayer} 
+                  onDuplicate={duplicateLayer}
+                />
+              </div>
             </>
           ) : (
             <div className="space-y-6">
@@ -584,6 +649,8 @@ export const TemplateStudioTool = () => {
             <PropertiesPanel 
               layer={selectedLayer} 
               onChange={(changes) => updateLayer(selectedLayer.id, changes)} 
+              canvasWidth={template.width}
+              canvasHeight={template.height}
             />
           </div>
         )}

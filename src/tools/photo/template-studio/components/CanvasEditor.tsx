@@ -175,7 +175,7 @@ const DynamicImageNode = ({ layer, isSelected, locked, onSelect, onChange, mode,
 };
 
 const DynamicShapeNode = ({ layer, isSelected, locked, onSelect, onChange, mode }: any) => {
-  const shapeProps = {
+  const shapeProps: any = {
     ...layer,
     opacity: layer.opacity,
     rotation: layer.rotation,
@@ -184,6 +184,23 @@ const DynamicShapeNode = ({ layer, isSelected, locked, onSelect, onChange, mode 
     width: layer.width,
     height: layer.height
   };
+
+  if (layer.gradientEnabled && layer.gradientColor1 && layer.gradientColor2) {
+    const angle = (layer.gradientAngle ?? 90) * Math.PI / 180;
+    shapeProps.fillLinearGradientStartPoint = {
+      x: -Math.cos(angle) * (layer.width / 2),
+      y: -Math.sin(angle) * (layer.height / 2)
+    };
+    shapeProps.fillLinearGradientEndPoint = {
+      x: Math.cos(angle) * (layer.width / 2),
+      y: Math.sin(angle) * (layer.height / 2)
+    };
+    shapeProps.fillLinearGradientColorStops = [
+      0, layer.gradientColor1,
+      1, layer.gradientColor2
+    ];
+    delete shapeProps.fill;
+  }
 
   const renderShapeElement = () => {
     switch (layer.shapeType) {
@@ -202,7 +219,7 @@ const DynamicShapeNode = ({ layer, isSelected, locked, onSelect, onChange, mode 
         const w = layer.width;
         const h = layer.height;
         const points = [w / 2, 0, w, h, 0, h];
-        return <Line {...shapeProps} points={points} closed fill={layer.fill} stroke={layer.stroke} strokeWidth={layer.strokeWidth} />;
+        return <Line {...shapeProps} points={points} closed />;
       }
       case 'star':
         return (
@@ -222,8 +239,7 @@ const DynamicShapeNode = ({ layer, isSelected, locked, onSelect, onChange, mode 
             points={[0, layer.height / 2, layer.width, layer.height / 2]}
             pointerLength={10}
             pointerWidth={10}
-            fill={layer.fill}
-            stroke={layer.fill}
+            stroke={shapeProps.stroke || shapeProps.fill || '#3C6B4D'}
             strokeWidth={layer.strokeWidth || 4}
           />
         );

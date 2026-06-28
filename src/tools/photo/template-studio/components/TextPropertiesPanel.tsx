@@ -6,6 +6,8 @@ import { aiService } from '../../../../utils/aiService';
 interface PropertiesPanelProps {
   layer: Layer;
   onChange: (changes: Partial<Layer>) => void;
+  canvasWidth: number;
+  canvasHeight: number;
 }
 
 const FONTS = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana', 'Helvetica', 'Tahoma', 'Trebuchet MS', 'Impact'];
@@ -155,7 +157,7 @@ const OllamaAssistant: React.FC<{ layer: TextLayer; onChange: (changes: Partial<
   );
 };
 
-export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChange }) => {
+export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChange, canvasWidth, canvasHeight }) => {
   const isText = layer.type === 'text';
   const isQR = layer.type === 'qr';
   const isBarcode = layer.type === 'barcode';
@@ -164,6 +166,55 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
   return (
     <div className="flex flex-col gap-4 text-xs text-left">
       
+      {/* Canvas Alignments */}
+      <div>
+        <label className="text-[10px] text-[#72706C] font-bold block mb-1">Canvas Alignment</label>
+        <div className="grid grid-cols-6 gap-1 bg-[#111213] border border-[#2A2D30] rounded p-1">
+          <button
+            onClick={() => onChange({ x: 0 })}
+            className="p-1 hover:bg-[#2A2D30] rounded text-[9px] font-semibold text-[#A3A09B] hover:text-[#ECEBE9] text-center"
+            title="Align Left"
+          >
+            Left
+          </button>
+          <button
+            onClick={() => onChange({ x: Math.max(0, (canvasWidth - layer.width) / 2) })}
+            className="p-1 hover:bg-[#2A2D30] rounded text-[9px] font-semibold text-[#A3A09B] hover:text-[#ECEBE9] text-center"
+            title="Align Horizontal Center"
+          >
+            H-Ctr
+          </button>
+          <button
+            onClick={() => onChange({ x: Math.max(0, canvasWidth - layer.width) })}
+            className="p-1 hover:bg-[#2A2D30] rounded text-[9px] font-semibold text-[#A3A09B] hover:text-[#ECEBE9] text-center"
+            title="Align Right"
+          >
+            Right
+          </button>
+          <button
+            onClick={() => onChange({ y: 0 })}
+            className="p-1 hover:bg-[#2A2D30] rounded text-[9px] font-semibold text-[#A3A09B] hover:text-[#ECEBE9] text-center"
+            title="Align Top"
+          >
+            Top
+          </button>
+          <button
+            onClick={() => onChange({ y: Math.max(0, (canvasHeight - layer.height) / 2) })}
+            className="p-1 hover:bg-[#2A2D30] rounded text-[9px] font-semibold text-[#A3A09B] hover:text-[#ECEBE9] text-center"
+            title="Align Vertical Center"
+          >
+            V-Ctr
+          </button>
+          <button
+            onClick={() => onChange({ y: Math.max(0, canvasHeight - layer.height) })}
+            className="p-1 hover:bg-[#2A2D30] rounded text-[9px] font-semibold text-[#A3A09B] hover:text-[#ECEBE9] text-center"
+            title="Align Bottom"
+          >
+            Btm
+          </button>
+        </div>
+      </div>
+
       {/* Basic Text Inputs */}
       <div className="space-y-2">
         <div>
@@ -320,11 +371,54 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
 
       {isShape && (
         <>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-[10px] text-[#72706C] font-bold block mb-1">FILL COLOR</label>
-              <input type="color" value={(layer as ShapeLayer).fill || '#3C6B4D'} onChange={e => onChange({ fill: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
+          <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 flex flex-col gap-3">
+            <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2">
+              <label className="text-[10px] text-[#A3A09B] font-bold uppercase tracking-wider">Use Shape Gradient</label>
+              <input
+                type="checkbox"
+                checked={(layer as ShapeLayer).gradientEnabled || false}
+                onChange={e => onChange({ gradientEnabled: e.target.checked } as any)}
+                className="accent-[#3C6B4D]"
+              />
             </div>
+
+            {!(layer as ShapeLayer).gradientEnabled ? (
+              <div>
+                <label className="text-[10px] text-[#72706C] font-bold block mb-1">FILL COLOR</label>
+                <input type="color" value={(layer as ShapeLayer).fill || '#3C6B4D'} onChange={e => onChange({ fill: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[9px] text-[#72706C] font-bold block mb-1">GRADIENT COLOR 1</label>
+                    <input type="color" value={(layer as ShapeLayer).gradientColor1 || '#3C6B4D'} onChange={e => onChange({ gradientColor1: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
+                  </div>
+                  <div>
+                    <label className="text-[9px] text-[#72706C] font-bold block mb-1">GRADIENT COLOR 2</label>
+                    <input type="color" value={(layer as ShapeLayer).gradientColor2 || '#1e3825'} onChange={e => onChange({ gradientColor2: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[9px] text-[#72706C] font-bold block mb-1 flex justify-between">
+                    <span>GRADIENT ANGLE (°)</span>
+                    <span>{(layer as ShapeLayer).gradientAngle ?? 90}°</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="360"
+                    step="15"
+                    value={(layer as ShapeLayer).gradientAngle ?? 90}
+                    onChange={e => onChange({ gradientAngle: Number(e.target.value) } as any)}
+                    className="w-full accent-[#3C6B4D]"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 mt-2">
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1 flex justify-between">
                 <span>BORDER COLOR</span>

@@ -72,6 +72,10 @@ export interface ShapeLayer extends BaseLayer {
   numPoints?: number;
   innerRadius?: number;
   outerRadius?: number;
+  gradientEnabled?: boolean;
+  gradientColor1?: string;
+  gradientColor2?: string;
+  gradientAngle?: number;
 }
 
 export type Layer = TextLayer | ImageLayer | QRLayer | BarcodeLayer | ShapeLayer;

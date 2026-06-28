@@ -124,6 +124,33 @@ export const useTemplateStudio = () => {
     });
   }, [updateTemplate]);
 
+  const [localSavedTemplates, setLocalSavedTemplates] = useState<Record<string, TemplateData>>(() => {
+    try {
+      const saved = localStorage.getItem('domodomo_saved_templates');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const saveTemplateToLibrary = useCallback((name: string, data: TemplateData) => {
+    const updatedName = name.trim() || 'My Design';
+    setLocalSavedTemplates(prev => {
+      const next = { ...prev, [updatedName]: { ...data, name: updatedName } };
+      localStorage.setItem('domodomo_saved_templates', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const deleteTemplateFromLibrary = useCallback((name: string) => {
+    setLocalSavedTemplates(prev => {
+      const next = { ...prev };
+      delete next[name];
+      localStorage.setItem('domodomo_saved_templates', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
   const loadTemplateJSON = useCallback((json: TemplateData) => {
     setTemplate(json);
     setHistory([json]);
@@ -145,6 +172,9 @@ export const useTemplateStudio = () => {
     redo,
     canUndo: historyIndex > 0,
     canRedo: historyIndex < history.length - 1,
-    loadTemplateJSON
+    loadTemplateJSON,
+    localSavedTemplates,
+    saveTemplateToLibrary,
+    deleteTemplateFromLibrary
   };
 };
