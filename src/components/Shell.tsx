@@ -256,6 +256,15 @@ export const Shell = () => {
             >
               Docs
             </NavLink>
+            <NavLink
+              to="/blog"
+              className={({ isActive }) =>
+                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                }`
+              }
+            >
+              Blog
+            </NavLink>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -361,6 +370,13 @@ export const Shell = () => {
                 className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
               >
                 Docs
+              </Link>
+              <Link
+                to="/blog"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
+              >
+                Blog
               </Link>
               <a
                 href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"

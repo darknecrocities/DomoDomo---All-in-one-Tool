@@ -41,6 +41,19 @@ while ((match = toolIdRegex.exec(registryContent)) !== null) {
 
 console.log(`🤖 Extracted ${toolIds.length} tool IDs from registry.`);
 
+// Load blog posts dynamically
+const blogDataPath = path.resolve('./src/data/blogData.ts');
+const blogDataContent = fs.readFileSync(blogDataPath, 'utf-8');
+const slugRegex = /slug:\s*['"]([^'"]+)['"]/g;
+const blogSlugs = [];
+while ((match = slugRegex.exec(blogDataContent)) !== null) {
+  if (!blogSlugs.includes(match[1])) {
+    blogSlugs.push(match[1]);
+  }
+}
+
+console.log(`🤖 Extracted ${blogSlugs.length} blog slugs from data.`);
+
 const today = new Date().toISOString().split('T')[0];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -53,6 +66,17 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${route === '' ? '1.0' : '0.8'}</priority>
+  </url>`
+    )
+    .join('')}
+  ${blogSlugs
+    .map(
+      (slug) => `
+  <url>
+    <loc>${BASE_URL}/blog/${slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>`
     )
     .join('')}

@@ -164,11 +164,12 @@ tools.forEach(tool => {
   fs.writeFileSync(path.resolve(toolDir, 'index.html'), pageHtml);
 });
 
-// 5. Prerender static main pages (About, Docs, Library API)
+// 5. Prerender static main pages (About, Docs, Library API, Blog)
 const staticPages = [
   { path: 'about', title: 'About DomoDomo - All-in-One Local Toolbox', desc: 'DomoDomo is a privacy-first local toolbox running 110+ secure developer, media, and document utilities inside a client-side browser tab sandbox.' },
   { path: 'docs', title: 'DomoDomo Documentation - Setup and API Reference', desc: 'Read the developer guides, architectural setup, and documentation for DomoDomo local tools.' },
-  { path: 'library-api', title: 'Domo Local AI Library API Reference', desc: 'Integrate and call local AI model APIs (Ollama, WebNN) directly from DomoDomo dashboard.' }
+  { path: 'library-api', title: 'Domo Local AI Library API Reference', desc: 'Integrate and call local AI model APIs (Ollama, WebNN) directly from DomoDomo dashboard.' },
+  { path: 'blog', title: 'DomoDomo SEO Content Hub & Guides | 110+ Local Tools', desc: 'Read our technical guides on file security, image background removal, PDF compression, and local offline AI setups. DomoDomo guides hub.' }
 ];
 
 staticPages.forEach(page => {
@@ -197,6 +198,73 @@ staticPages.forEach(page => {
   const pageDir = path.resolve(distPath, page.path);
   fs.mkdirSync(pageDir, { recursive: true });
   fs.writeFileSync(path.resolve(pageDir, 'index.html'), pageHtml);
+});
+
+// 6. Prerender each individual blog article route
+const blogDataPath = path.resolve('./src/data/blogData.ts');
+const blogDataContent = fs.readFileSync(blogDataPath, 'utf-8');
+
+// Parse the BLOG_POSTS array from blogData.ts using regular expressions
+const postBlocks = blogDataContent.match(/\{\s*slug:\s*['"][\s\S]*?content:\s*`[\s\S]*?`\s*\}/g) || [];
+const blogPosts = postBlocks.map(block => {
+  const slug = (block.match(/slug:\s*['"]([^'"]+)['"]/) || [])[1];
+  const title = (block.match(/title:\s*['"]([^'"]+)['"]/) || [])[1];
+  const excerpt = (block.match(/excerpt:\s*['"]([^'"]+)['"]/) || [])[1];
+  const category = (block.match(/category:\s*['"]([^'"]+)['"]/) || [])[1];
+  const keywords = (block.match(/keywords:\s*['"]([^'"]+)['"]/) || [])[1];
+  const contentMatch = block.match(/content:\s*`([\s\S]*?)`/);
+  const content = contentMatch ? contentMatch[1] : '';
+
+  return { slug, title, excerpt, category, keywords, content };
+}).filter(p => p.slug);
+
+console.log(`🤖 Found ${blogPosts.length} blog posts to prerender.`);
+
+blogPosts.forEach(post => {
+  const postUrl = `${BASE_URL}/blog/${post.slug}`;
+  
+  let pageHtml = templateHtml
+    .replace(/<title>.*?<\/title>/, `<title>${escapeHtml(post.title)} | DomoDomo Guides</title>`)
+    .replace(/<meta name="description" content=".*?" \/>/, `<meta name="description" content="${escapeHtml(post.excerpt)}" />`)
+    .replace(/<meta name="keywords" content=".*?" \/>/, `<meta name="keywords" content="${escapeHtml(post.keywords)}" />`)
+    .replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${escapeHtml(post.title)}" />`)
+    .replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${escapeHtml(post.excerpt)}" />`)
+    .replace(/<meta property="og:url" content=".*?" \/>/, `<meta property="og:url" content="${escapeHtml(postUrl)}" />`)
+    .replace(/<meta name="twitter:title" content=".*?" \/>/, `<meta name="twitter:title" content="${escapeHtml(post.title)}" />`)
+    .replace(/<meta name="twitter:description" content=".*?" \/>/, `<meta name="twitter:description" content="${escapeHtml(post.excerpt)}" />`)
+    .replace(/<link rel="canonical" href=".*?" \/>/, `<link rel="canonical" href="${escapeHtml(postUrl)}" />`);
+
+  // Basic HTML rendering of markdown inside fallback div
+  const staticFallback = `
+    <div id="seo-fallback" style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: sans-serif; color: #ecebe9; text-align: left;">
+      <nav style="margin-bottom: 1rem; font-size: 0.85rem; color: #a3a09b;">
+        <a href="/" style="color: #4e8e5e; text-decoration: none;">Dashboard</a> &gt; 
+        <a href="/blog" style="color: #4e8e5e; text-decoration: none;">Blog</a> &gt; 
+        <span>${post.title}</span>
+      </nav>
+      <h1 style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #ecebe9;">${escapeHtml(post.title)}</h1>
+      <div style="font-size: 0.85rem; color: #72706c; margin-bottom: 2rem;">Category: ${escapeHtml(post.category)}</div>
+      
+      <div style="line-height: 1.7; color: #a3a09b;">
+        ${post.content
+          .replace(/\n\s*\n/g, '<br/><br/>')
+          .replace(/## (.*?)\n/g, '<h2 style="color:#ecebe9; margin-top:2rem;">$1</h2>')
+          .replace(/# (.*?)\n/g, '<h1 style="color:#ecebe9; margin-top:2.5rem;">$1</h1>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        }
+      </div>
+      
+      <div style="text-align: center; margin-top: 3rem; border-t: 1px solid #2a2d30; pt: 2rem;">
+        <a href="/" style="display: inline-block; padding: 0.75rem 1.5rem; background: #4e8e5e; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Explore 110+ Offline Tools</a>
+      </div>
+    </div>
+  `;
+
+  pageHtml = pageHtml.replace('<div id="root"></div>', `<div id="root">${staticFallback}</div>`);
+
+  const postDir = path.resolve(distPath, 'blog', post.slug);
+  fs.mkdirSync(postDir, { recursive: true });
+  fs.writeFileSync(path.resolve(postDir, 'index.html'), pageHtml);
 });
 
 console.log('✅ Static Snapshot Prerendering completed successfully.');

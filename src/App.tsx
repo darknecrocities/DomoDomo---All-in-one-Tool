@@ -6,6 +6,8 @@ import { AboutApplication } from './pages/AboutApplication';
 import { DoorSplash } from './components/DoorSplash';
 import { Documentation } from './pages/Documentation';
 import { LibraryApi } from './pages/LibraryApi';
+import { BlogContainer } from './pages/BlogContainer';
+import { BlogPost } from './pages/BlogPost';
 import { AutoPilotProvider } from './tools/autopilot/AutoPilotProvider';
 import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilot';
 function App() {
@@ -20,6 +22,8 @@ function App() {
             <Route path="tool/:id" element={<ToolContainer />} />
             <Route path="docs" element={<Documentation />} />
             <Route path="library-api" element={<LibraryApi />} />
+            <Route path="blog" element={<BlogContainer />} />
+            <Route path="blog/:slug" element={<BlogPost />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
