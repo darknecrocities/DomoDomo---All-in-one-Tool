@@ -1,6 +1,6 @@
 import { FileUploadWrapper, triggerDownload } from '../../utils/sharedHelpers';
-import React, { useState, useRef, useEffect } from 'react';
-import { Download, Upload, Undo2, Redo2, Paintbrush, Scissors, Pipette, Trash2, Check, RefreshCw } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Download, Upload, Undo2, Redo2, Paintbrush, Scissors, Pipette, Trash2, Check, RefreshCw, ImagePlus } from 'lucide-react';
 
 export const BackgroundRemoverTool = () => {
   const [imageUrl, setImageUrl] = useState('');
@@ -35,6 +35,23 @@ export const BackgroundRemoverTool = () => {
   // Redraw counter to trigger render updates
   const [redrawCounter, setRedrawCounter] = useState(0);
   const triggerRedraw = () => setRedrawCounter(prev => prev + 1);
+
+  // Upload a new image (or replace existing one)
+  const handleNewImage = useCallback((file: File) => {
+    // Revoke previous object URL to prevent memory leak
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
+    }
+    // Reset all editing state for the new image
+    setSelectedColor(null);
+    setTracePoints([]);
+    setActiveTool('key');
+    historyRef.current = [];
+    setHistoryIndex(-1);
+    manualMaskCanvasRef.current = null;
+    // Set the new image URL — the useEffect on imageUrl handles canvas setup
+    setImageUrl(URL.createObjectURL(file));
+  }, [imageUrl]);
 
   // Pushes the current manual mask state to the undo/redo history
   const pushHistory = () => {
@@ -105,12 +122,9 @@ export const BackgroundRemoverTool = () => {
       // Draw image onto original canvas
       oc.getContext('2d')?.drawImage(img, 0, 0, c.width, c.height);
       
-      // Initialize manual mask canvas
-      let mmc = manualMaskCanvasRef.current;
-      if (!mmc) {
-        mmc = document.createElement('canvas');
-        manualMaskCanvasRef.current = mmc;
-      }
+      // Initialize manual mask canvas (always create fresh for new image)
+      const mmc = document.createElement('canvas');
+      manualMaskCanvasRef.current = mmc;
       mmc.width = c.width;
       mmc.height = c.height;
       const mctx = mmc.getContext('2d');
@@ -390,7 +404,7 @@ export const BackgroundRemoverTool = () => {
         <div className="absolute inset-0 bg-[#0B0F19]" style={{ backgroundImage: 'radial-gradient(#1e293b 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
         <div className="relative z-10 w-full flex flex-col justify-center">
           {!imageUrl ? (
-            <FileUploadWrapper onUpload={(file) => { setImageUrl(URL.createObjectURL(file)); }} />
+            <FileUploadWrapper onUpload={handleNewImage} />
           ) : (
             <div className="relative mx-auto">
               <canvas
@@ -434,6 +448,14 @@ export const BackgroundRemoverTool = () => {
                   </button>
                 </div>
               )}
+
+              {/* Replace Image button */}
+              <div className="absolute bottom-2 right-2 z-10">
+                <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/90 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold shadow-lg cursor-pointer transition-colors backdrop-blur-sm border border-slate-700">
+                  <ImagePlus size={13} /> Replace Image
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleNewImage(e.target.files[0])} />
+                </label>
+              </div>
             </div>
           )}
         </div>

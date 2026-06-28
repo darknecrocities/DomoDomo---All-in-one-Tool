@@ -5,8 +5,9 @@ import { PropertiesPanel } from './template-studio/components/TextPropertiesPane
 import { CanvasEditor } from './template-studio/components/CanvasEditor';
 import { parseCSV, generateBatchZIP } from './template-studio/utils';
 import { PRESET_TEMPLATES } from './template-studio/templates';
-import { Upload, Download, Plus, Save, LayoutTemplate, Undo, Redo, ZoomIn, ZoomOut, Maximize, Loader2, Hand, MousePointer2, QrCode, Barcode, Image as ImageIcon, Library, X } from 'lucide-react';
+import { Upload, Download, Plus, Save, LayoutTemplate, Undo, Redo, ZoomIn, ZoomOut, Maximize, Loader2, Hand, MousePointer2, QrCode, Barcode, Image as ImageIcon, Library, X, Sparkles } from 'lucide-react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
+import Tesseract from 'tesseract.js';
 
 export const TemplateStudioTool = () => {
   const [mode, setMode] = useState<'admin' | 'user'>('admin');
@@ -35,6 +36,10 @@ export const TemplateStudioTool = () => {
   const [progress, setProgress] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
   const stageRef = useRef<any>(null);
+
+  // Magic Layers states
+  const [isOcrProcessing, setIsOcrProcessing] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState('');
 
   // Keyboard Shortcuts
   useEffect(() => {
@@ -97,6 +102,286 @@ export const TemplateStudioTool = () => {
   const handlePointerUp = (e: React.PointerEvent) => {
     setIsPanning(false);
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+  };
+
+  const handleMagicLayersGrab = async () => {
+    if (!template.bgImage) return;
+    setIsOcrProcessing(true);
+    setOcrProgress('Scanning background image for text...');
+    
+    try {
+      // 1. Perform OCR using Tesseract.js
+      const result = await Tesseract.recognize(
+        template.bgImage,
+        'eng',
+        {
+          logger: (m) => {
+            if (m.status === 'recognizing text') {
+              setOcrProgress(`Extracting text layout: ${Math.round(m.progress * 100)}%`);
+            }
+          }
+        }
+      ) as any;
+
+      console.log('Tesseract OCR Result:', result);
+      console.log('Detected Text:', result.data.text);
+      
+      // Filter lines: require minimum confidence (40+) and length (2+ chars)
+      const lines = (result.data.lines || []).filter((line: any) => {
+        if (!line.text || line.text.trim().length < 2) return false;
+        if (typeof line.confidence === 'number' && line.confidence < 40) return false;
+        return true;
+      });
+      
+      console.log('Filtered Lines:', lines.length, 'of', (result.data.lines || []).length);
+      if (!lines || lines.length === 0) {
+        alert(`No text detected in the image (or all text was below confidence threshold).\nFull text: ${result.data.text || 'None'}`);
+        setIsOcrProcessing(false);
+        return;
+      }
+
+      setOcrProgress('Analyzing text colors...');
+
+      // 2. Load the original image into a canvas for analysis
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = template.bgImage;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
+      const bgCanvas = document.createElement('canvas');
+      bgCanvas.width = img.width;
+      bgCanvas.height = img.height;
+      const bgCtx = bgCanvas.getContext('2d');
+      if (!bgCtx) throw new Error("Could not initialize canvas context");
+      bgCtx.drawImage(img, 0, 0);
+
+      // 3. BEFORE healing: detect text colors from the ORIGINAL image
+      //    Uses histogram clustering to separate text pixels from background pixels
+      const lineColorData: { textColor: string; bgLuminance: number }[] = [];
+      
+      lines.forEach((line: any) => {
+        const { x0, y0, x1, y1 } = line.bbox;
+        const w = Math.max(1, x1 - x0);
+        const h = Math.max(1, y1 - y0);
+        const sx = Math.max(0, Math.min(bgCanvas.width - 1, x0));
+        const sy = Math.max(0, Math.min(bgCanvas.height - 1, y0));
+        const sw = Math.min(w, bgCanvas.width - sx);
+        const sh = Math.min(h, bgCanvas.height - sy);
+        
+        let textColor = '#000000';
+        let bgLum = 200;
+        
+        try {
+          const imgData = bgCtx.getImageData(sx, sy, sw, sh).data;
+          
+          // Bucket pixels into "light" and "dark" groups
+          const lightPixels: { r: number; g: number; b: number }[] = [];
+          const darkPixels: { r: number; g: number; b: number }[] = [];
+          
+          for (let i = 0; i < imgData.length; i += 16) { // sample every 4th pixel
+            const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+            if (lum > 128) {
+              lightPixels.push({ r, g, b });
+            } else {
+              darkPixels.push({ r, g, b });
+            }
+          }
+          
+          // The minority group is likely text; the majority is background
+          const totalPixels = lightPixels.length + darkPixels.length;
+          const textIsLight = lightPixels.length < darkPixels.length;
+          const textPixels = textIsLight ? lightPixels : darkPixels;
+          const bgPixels = textIsLight ? darkPixels : lightPixels;
+          
+          // Only trust clustering if there's a meaningful minority (at least 5% text pixels)
+          if (textPixels.length > totalPixels * 0.05 && textPixels.length > 0) {
+            const avgR = Math.round(textPixels.reduce((s, p) => s + p.r, 0) / textPixels.length);
+            const avgG = Math.round(textPixels.reduce((s, p) => s + p.g, 0) / textPixels.length);
+            const avgB = Math.round(textPixels.reduce((s, p) => s + p.b, 0) / textPixels.length);
+            textColor = `#${avgR.toString(16).padStart(2, '0')}${avgG.toString(16).padStart(2, '0')}${avgB.toString(16).padStart(2, '0')}`;
+          } else {
+            // Fallback: use contrast against average background
+            if (bgPixels.length > 0) {
+              const bgR = bgPixels.reduce((s, p) => s + p.r, 0) / bgPixels.length;
+              const bgG = bgPixels.reduce((s, p) => s + p.g, 0) / bgPixels.length;
+              const bgB = bgPixels.reduce((s, p) => s + p.b, 0) / bgPixels.length;
+              bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
+            }
+            textColor = bgLum > 128 ? '#000000' : '#ffffff';
+          }
+          
+          // Calculate background luminance for later use
+          if (bgPixels.length > 0) {
+            const bgR = bgPixels.reduce((s, p) => s + p.r, 0) / bgPixels.length;
+            const bgG = bgPixels.reduce((s, p) => s + p.g, 0) / bgPixels.length;
+            const bgB = bgPixels.reduce((s, p) => s + p.b, 0) / bgPixels.length;
+            bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
+          }
+        } catch (e) {
+          console.warn('Color detection failed for line:', line.text, e);
+        }
+        
+        lineColorData.push({ textColor, bgLuminance: bgLum });
+      });
+
+      setOcrProgress('Cleaning background (inpainting)...');
+
+      // 4. Gradient-based background inpainting (feathered fill)
+      lines.forEach((line: any) => {
+        const { x0, y0, x1, y1 } = line.bbox;
+        const pad = 6;
+        const px0 = Math.max(0, x0 - pad);
+        const py0 = Math.max(0, y0 - pad);
+        const px1 = Math.min(bgCanvas.width, x1 + pad);
+        const py1 = Math.min(bgCanvas.height, y1 + pad);
+        const pWidth = px1 - px0;
+        const pHeight = py1 - py0;
+
+        if (pWidth <= 0 || pHeight <= 0) return;
+
+        // Sample boundary strips (top, bottom, left, right edges)
+        const sampleBoundary = (cx: number, cy: number): [number, number, number] => {
+          const clx = Math.max(0, Math.min(bgCanvas.width - 1, Math.round(cx)));
+          const cly = Math.max(0, Math.min(bgCanvas.height - 1, Math.round(cy)));
+          try {
+            const p = bgCtx.getImageData(clx, cly, 1, 1).data;
+            return [p[0], p[1], p[2]];
+          } catch {
+            return [200, 200, 200];
+          }
+        };
+
+        // Get edge color arrays for interpolation
+        const topColors: [number, number, number][] = [];
+        const bottomColors: [number, number, number][] = [];
+        const leftColors: [number, number, number][] = [];
+        const rightColors: [number, number, number][] = [];
+        
+        const EDGE_SAMPLES = Math.max(4, Math.min(pWidth, 20));
+        for (let i = 0; i < EDGE_SAMPLES; i++) {
+          const t = i / (EDGE_SAMPLES - 1);
+          const edgeX = px0 + t * pWidth;
+          topColors.push(sampleBoundary(edgeX, Math.max(0, py0 - 1)));
+          bottomColors.push(sampleBoundary(edgeX, Math.min(bgCanvas.height - 1, py1)));
+        }
+        
+        const EDGE_SAMPLES_V = Math.max(4, Math.min(pHeight, 20));
+        for (let i = 0; i < EDGE_SAMPLES_V; i++) {
+          const t = i / (EDGE_SAMPLES_V - 1);
+          const edgeY = py0 + t * pHeight;
+          leftColors.push(sampleBoundary(Math.max(0, px0 - 1), edgeY));
+          rightColors.push(sampleBoundary(Math.min(bgCanvas.width - 1, px1), edgeY));
+        }
+
+        // Bilinear interpolation fill
+        const fillData = bgCtx.createImageData(pWidth, pHeight);
+        for (let fy = 0; fy < pHeight; fy++) {
+          for (let fx = 0; fx < pWidth; fx++) {
+            const tx = pWidth > 1 ? fx / (pWidth - 1) : 0.5;
+            const ty = pHeight > 1 ? fy / (pHeight - 1) : 0.5;
+            
+            // Sample from each edge at the corresponding position
+            const topIdx = Math.min(Math.floor(tx * (EDGE_SAMPLES - 1)), EDGE_SAMPLES - 1);
+            const bottomIdx = Math.min(Math.floor(tx * (EDGE_SAMPLES - 1)), EDGE_SAMPLES - 1);
+            const leftIdx = Math.min(Math.floor(ty * (EDGE_SAMPLES_V - 1)), EDGE_SAMPLES_V - 1);
+            const rightIdx = Math.min(Math.floor(ty * (EDGE_SAMPLES_V - 1)), EDGE_SAMPLES_V - 1);
+            
+            const top = topColors[topIdx];
+            const bottom = bottomColors[bottomIdx];
+            const left = leftColors[leftIdx];
+            const right = rightColors[rightIdx];
+            
+            // Weighted blend: edges closer to a boundary get more weight from that boundary
+            const wTop = 1 - ty;
+            const wBottom = ty;
+            const wLeft = 1 - tx;
+            const wRight = tx;
+            const totalW = wTop + wBottom + wLeft + wRight;
+            
+            const idx = (fy * pWidth + fx) * 4;
+            fillData.data[idx] = Math.round((top[0] * wTop + bottom[0] * wBottom + left[0] * wLeft + right[0] * wRight) / totalW);
+            fillData.data[idx + 1] = Math.round((top[1] * wTop + bottom[1] * wBottom + left[1] * wLeft + right[1] * wRight) / totalW);
+            fillData.data[idx + 2] = Math.round((top[2] * wTop + bottom[2] * wBottom + left[2] * wLeft + right[2] * wRight) / totalW);
+            fillData.data[idx + 3] = 255;
+          }
+        }
+        
+        bgCtx.putImageData(fillData, px0, py0);
+      });
+
+      const newBgImage = bgCanvas.toDataURL('image/png');
+
+      setOcrProgress('Mapping text layers...');
+
+      // 5. Create text layers using pre-computed color data
+      const newLayers = lines.map((line: any, index: number) => {
+        const { x0, y0, x1, y1 } = line.bbox;
+        const textWidth = x1 - x0;
+        const textHeight = y1 - y0;
+        const newId = `text-magic-${Date.now()}-${index}`;
+        
+        const colorInfo = lineColorData[index] || { textColor: '#000000', bgLuminance: 200 };
+        const cleanedText = line.text.trim().replace(/\n+/g, ' ');
+        
+        // Better font size: use 0.85 multiplier for more accurate Konva rendering
+        const estimatedFontSize = Math.max(12, Math.round(textHeight * 0.85));
+        
+        // Add 30% extra width to prevent Konva text wrapping
+        const layerWidth = Math.max(150, Math.round(textWidth * 1.3));
+
+        return {
+          id: newId,
+          type: 'text' as const,
+          name: `Grabbed Text ${index + 1}`,
+          x: x0,
+          y: y0,
+          width: layerWidth,
+          height: textHeight > 0 ? textHeight + 8 : 30,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: template.layers.length + index + 1,
+          text: cleanedText || 'Sample Text',
+          placeholder: 'Enter text here',
+          variableName: `{{GRABBED_VAR_${index + 1}}}`,
+          fontFamily: 'Arial',
+          fontSize: estimatedFontSize,
+          fontWeight: 'normal' as const,
+          fontStyle: 'normal' as const,
+          textDecoration: 'none' as const,
+          fill: colorInfo.textColor,
+          backgroundColor: null,
+          align: 'left' as const,
+          letterSpacing: 0,
+          lineHeight: 1.1,
+          stroke: null,
+          strokeWidth: 0,
+          shadowColor: null,
+          shadowBlur: 0,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+          textTransform: 'none' as const
+        };
+      });
+
+      updateTemplate((prev) => ({
+        ...prev,
+        bgImage: newBgImage,
+        layers: [...prev.layers, ...newLayers]
+      }));
+
+      alert(`✨ Successfully extracted ${newLayers.length} editable text layers!`);
+    } catch (err: any) {
+      console.error(err);
+      alert(`Magic Layers extraction failed: ${err.message || err}`);
+    } finally {
+      setIsOcrProcessing(false);
+      setOcrProgress('');
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -359,6 +644,14 @@ export const TemplateStudioTool = () => {
           </div>
         )}
 
+        {isOcrProcessing && (
+          <div className="absolute inset-0 z-50 bg-[#0A0B0C]/80 backdrop-blur-sm flex flex-col items-center justify-center">
+            <Loader2 size={48} className="text-[#3C6B4D] animate-spin mb-4" />
+            <h2 className="text-xl font-bold">AI Magic Layers</h2>
+            <p className="mt-2 text-sm text-teal-400 font-mono animate-pulse">{ocrProgress}</p>
+          </div>
+        )}
+
         {/* Left Sidebar (Admin = Layers, User = Inputs) */}
         <div className="w-72 flex-shrink-0 bg-[#18191B] border-r border-[#2A2D30] p-4 overflow-y-auto custom-scrollbar flex flex-col gap-6">
           {mode === 'admin' ? (
@@ -376,6 +669,18 @@ export const TemplateStudioTool = () => {
                   <Upload size={16} /> <span className="text-xs font-bold">Upload Background</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
+
+                {template.bgImage && (
+                  <button 
+                    onClick={handleMagicLayersGrab} 
+                    disabled={isOcrProcessing}
+                    className="flex items-center justify-center gap-2 w-full p-2.5 bg-gradient-to-r from-teal-600 to-[#3C6B4D] hover:from-teal-500 hover:to-[#4E8E5E] text-white rounded-xl text-xs font-bold transition-all shadow disabled:opacity-50"
+                  >
+                    <Sparkles size={14} />
+                    <span>AI Magic Layers (Grab Text)</span>
+                  </button>
+                )}
+
                 <div className="grid grid-cols-2 gap-2">
                   <label className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-[#2A2D30] rounded-xl hover:bg-[#2A2D30] cursor-pointer text-[#A3A09B]">
                     <LayoutTemplate size={14} /> <span className="text-xs font-bold text-center">Load JSON</span>
