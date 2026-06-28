@@ -2,6 +2,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Calendar, Clock, BookOpen, Share2, Tag } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogData';
+import { AdSenseUnit } from '../components/AdSenseUnit';
 
 export const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -242,6 +243,9 @@ export const BlogPost = () => {
           ))}
         </div>
       </article>
+
+      {/* BlogPost Mid-Page Ad */}
+      <AdSenseUnit />
 
       {/* Internal link CTA Banner */}
       <div className="rounded-2xl border border-[#3C6B4D]/35 bg-[#3C6B4D]/5 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

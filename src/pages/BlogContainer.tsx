@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Calendar, Clock, BookOpen, ChevronRight, Search } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogData';
 import { useState } from 'react';
+import { AdSenseUnit } from '../components/AdSenseUnit';
 
 export const BlogContainer = () => {
   const [search, setSearch] = useState('');
@@ -149,6 +150,9 @@ export const BlogContainer = () => {
           </button>
         </div>
       )}
+      
+      {/* Blog Directory Footer Ad */}
+      <AdSenseUnit />
     </div>
   );
 };
