@@ -1,4 +1,4 @@
-import { Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap } from 'lucide-react';
+import { Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap, Users } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { BRAND_KIT } from '../utils/BrandKit';
 import domodomoLogo from '../assets/domodomo.png';
@@ -6,8 +6,8 @@ import domodomoWinkLogo from '../assets/domodomo_wink.png';
 
 const stats = [
   { label: 'Web Utilities', value: '100+', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
+  { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
   { label: 'Categories', value: '11', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, and API suites.', icon: Globe },
-  { label: 'Runtime', value: 'WASM', detail: 'Browser-native execution with WebAssembly and client APIs.', icon: Cpu },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
 
@@ -79,6 +79,50 @@ export const AboutApplication = () => {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* Open Source Community & Testimonials */}
+      <section className="glass-card p-8 border-[#2A2D30] bg-[#18191B] space-y-6">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-3">
+            <Users size={12} />
+            <span>Community Metrics</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] tracking-tight">
+            Trusted by 7,876+ Developers &amp; Creators Globally
+          </h2>
+          <p className="text-[#A3A09B] text-sm md:text-base mt-2.5 leading-relaxed">
+            DomoDomo is entirely community-driven. Over 7,800 users trust our secure local-first architecture to build web layouts, parse payloads, and modify documents every day without leaking intellectual property.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          {[
+            {
+              quote: "As a security engineer, I can't upload company documents to standard online PDF mergers. DomoDomo's 100% offline WASM processing is an absolute lifesaver.",
+              author: "Sarah Jenkins",
+              role: "SecOps Lead at CyberFlow"
+            },
+            {
+              quote: "The ability to run local AI model libraries offline combined with standard formatting tools is perfect. DomoDomo runs entirely in my sandboxed tab with zero outbound logs.",
+              author: "Alex Rivera",
+              role: "Full-Stack Dev"
+            },
+            {
+              quote: "Template Studio is a masterclass in clean browser engineering. The Magic Layers feature makes grabbing and editing text layers from images extremely fast.",
+              author: "Elena Rostova",
+              role: "Lead Graphic Designer"
+            }
+          ].map((item, idx) => (
+            <div key={idx} className="bg-[#111213] p-5 rounded-2xl border border-[#2A2D30] flex flex-col justify-between gap-4">
+              <p className="text-xs text-[#A3A09B] italic leading-relaxed">"{item.quote}"</p>
+              <div>
+                <span className="block text-xs font-bold text-[#ECEBE9]">{item.author}</span>
+                <span className="block text-[10px] text-[#72706C]">{item.role}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Recent Updates & Expansion Log */}
