@@ -54,6 +54,82 @@ while ((match = slugRegex.exec(blogDataContent)) !== null) {
 
 console.log(`🤖 Extracted ${blogSlugs.length} blog slugs from data.`);
 
+// Generate the tool variations list programmatically
+const variations = [];
+
+// 1. format-converter (132 variations)
+const imageFormats = ['png', 'jpg', 'jpeg', 'webp', 'bmp', 'gif', 'tiff', 'heic', 'ico', 'svg', 'tga', 'avif'];
+imageFormats.forEach(src => {
+  imageFormats.forEach(target => {
+    if (src !== target) {
+      variations.push({ toolId: 'format-converter', variationId: `${src}-to-${target}` });
+    }
+  });
+});
+
+// 2. pdf-merge (5 variations)
+const pdfMergeIds = ['merge-two-pdfs', 'combine-pdf-files', 'join-pdfs-online', 'concatenate-pdf', 'bind-pdfs-free'];
+pdfMergeIds.forEach(vid => {
+  variations.push({ toolId: 'pdf-merge', variationId: vid });
+});
+
+// 3. qr-generator (17 variations)
+const qrTypeIds = [
+  'wifi-qr-code-generator', 'vcard-business-qr-generator', 'custom-logo-qr-generator', 'url-link-qr-generator', 'sms-text-qr-generator', 'email-qr-code-generator',
+  'whatsapp-qr-code-generator', 'instagram-qr-code-generator', 'facebook-qr-code-generator', 'youtube-qr-code-generator', 'linkedin-qr-code-generator',
+  'tiktok-qr-code-generator', 'pinterest-qr-code-generator', 'paypal-qr-code-generator', 'bitcoin-qr-code-generator', 'ethereum-qr-code-generator', 'crypto-qr-code-generator'
+];
+qrTypeIds.forEach(vid => {
+  variations.push({ toolId: 'qr-generator', variationId: vid });
+});
+
+// 4. image-compressor (50 variations)
+const compressSizes = ['50kb', '100kb', '150kb', '200kb', '300kb', '400kb', '500kb', '1mb', '2mb', '5mb'];
+const compressFormats = ['jpg', 'png', 'jpeg', 'webp', 'gif'];
+compressSizes.forEach(size => {
+  compressFormats.forEach(fmt => {
+    variations.push({ toolId: 'image-compressor', variationId: `compress-${fmt}-to-${size}` });
+  });
+});
+
+// 5. pdf-compress (9 variations)
+const pdfCompressOptions = ['100kb', '200kb', '300kb', '450kb', '500kb', '1mb', '2mb', '3mb', '5mb'];
+pdfCompressOptions.forEach(size => {
+  variations.push({ toolId: 'pdf-compress', variationId: `compress-pdf-to-${size}` });
+});
+
+// 6. image-resizer (150 variations)
+const resolutions = [
+  '1920x1080', '1280x720', '1080x1350', '1080x1080', '1080x566', '1200x630', '1500x500', '1584x396', '1000x1500', '1080x1920', '820x312',
+  '1366x768', '1440x900', '1536x864', '2560x1440', '3840x2160', '1170x2532', '1284x2778', '1179x2556', '1290x2796', '2048x2732',
+  '800x800', '800x600', '640x480', '300x250'
+];
+const resizerFormats = ['jpg', 'png', 'jpeg', 'webp', 'gif', 'bmp'];
+resolutions.forEach(res => {
+  resizerFormats.forEach(fmt => {
+    variations.push({ toolId: 'image-resizer', variationId: `resize-${fmt}-to-${res}` });
+  });
+});
+
+// 7. pdf-to-img (4 variations)
+const pdfToImgFormats = ['png', 'jpg', 'jpeg', 'webp'];
+pdfToImgFormats.forEach(fmt => {
+  variations.push({ toolId: 'pdf-to-img', variationId: `pdf-to-${fmt}` });
+});
+
+// 8. img-to-pdf (4 variations)
+pdfToImgFormats.forEach(fmt => {
+  variations.push({ toolId: 'img-to-pdf', variationId: `${fmt}-to-pdf` });
+});
+
+// 9. ocr-scanner (6 variations)
+const ocrScans = ['ocr-image-to-text', 'ocr-jpg-to-text', 'ocr-png-to-text', 'extract-text-from-photo', 'read-text-from-image', 'image-text-reader'];
+ocrScans.forEach(vid => {
+  variations.push({ toolId: 'ocr-scanner', variationId: vid });
+});
+
+console.log(`🤖 Programmatically generated ${variations.length} tool variations for sitemap.`);
+
 const today = new Date().toISOString().split('T')[0];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -76,6 +152,17 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <loc>${BASE_URL}/blog/${slug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`
+    )
+    .join('')}
+  ${variations
+    .map(
+      (v) => `
+  <url>
+    <loc>${BASE_URL}/tool/${v.toolId}/${v.variationId}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`
     )

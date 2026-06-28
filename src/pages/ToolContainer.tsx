@@ -5,17 +5,18 @@ import { Helmet } from 'react-helmet-async';
 import { getToolById } from '../engine/registry';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { localMemory } from '../utils/localMemory';
+import { TOOL_VARIATIONS } from '../data/seoVariations';
 
 export const ToolContainer = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, variation } = useParams<{ id: string; variation?: string }>();
   const navigate = useNavigate();
   const tool = id ? getToolById(id) : undefined;
 
   useEffect(() => {
     if (tool) {
-      localMemory.logActivity('Opened Tool', tool.category, tool.name);
+      localMemory.logActivity('Opened Tool', tool.category, `${tool.name}${variation ? ' - ' + variation : ''}`);
     }
-  }, [tool]);
+  }, [tool, variation]);
 
   if (!tool) {
     return (
@@ -32,31 +33,41 @@ export const ToolContainer = () => {
     );
   }
 
+  // Find variation info if present
+  const matchedVariation = variation
+    ? TOOL_VARIATIONS.find((v) => v.toolId === tool.id && v.id === variation)
+    : undefined;
+
   const ToolComponent = tool.component;
-  const seoTitle = tool.seoTitle || `${tool.name} - Free Online Tool | DomoDomo`;
-  const seoDesc = tool.description.length > 120 
-    ? tool.description 
-    : `${tool.description} Use ${tool.name} free online — runs 100% locally in your browser with no uploads. Part of DomoDomo's 110+ tool suite.`;
-  const toolUrl = `https://domodomo.site/tool/${tool.id}`;
+  const toolName = matchedVariation ? matchedVariation.name : tool.name;
+  const toolDesc = matchedVariation ? matchedVariation.description : tool.description;
+  const seoTitle = matchedVariation ? matchedVariation.seoTitle : (tool.seoTitle || `${tool.name} - Free Online Tool | DomoDomo`);
+  const seoDesc = toolDesc.length > 120 
+    ? toolDesc 
+    : `${toolDesc} Use ${toolName} free online — runs 100% locally in your browser with no uploads.`;
+  const toolUrl = variation 
+    ? `https://domodomo.site/tool/${tool.id}/${variation}`
+    : `https://domodomo.site/tool/${tool.id}`;
   const categoryLabel = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
-  const toolKeywords = tool.keywords || `${tool.name.toLowerCase()}, free ${tool.name.toLowerCase()}, online ${tool.name.toLowerCase()}, ${tool.category} tools, domodomo`;
+  const toolKeywords = matchedVariation ? matchedVariation.keywords : (tool.keywords || `${tool.name.toLowerCase()}, free ${tool.name.toLowerCase()}, online ${tool.name.toLowerCase()}, ${tool.category} tools, domodomo`);
 
   const schemaMarkup = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": tool.name,
+    "name": toolName,
     "url": toolUrl,
-    "description": tool.description,
+    "description": toolDesc,
     "applicationCategory": `${categoryLabel}Application`,
     "operatingSystem": "All",
     "browserRequirements": "Requires HTML5, WebAssembly, and modern browser support.",
-    "featureList": `${tool.name}, Local Processing, No Data Upload, Free, Privacy-First`,
+    "featureList": `${toolName}, Local Processing, No Data Upload, Free, Privacy-First`,
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
     }
   };
+
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -77,7 +88,7 @@ export const ToolContainer = () => {
       {
         "@type": "ListItem",
         "position": 3,
-        "name": tool.name,
+        "name": toolName,
         "item": toolUrl
       }
     ]
@@ -129,11 +140,11 @@ export const ToolContainer = () => {
               <DynamicIcon name={tool.icon} size={20} />
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight">
-              {tool.name}
+              {toolName}
             </h1>
           </div>
           <p className="text-[#A3A09B] text-sm mt-1 max-w-2xl leading-relaxed">
-            {tool.description}
+            {toolDesc}
           </p>
         </div>
 

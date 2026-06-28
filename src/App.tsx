@@ -20,6 +20,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="about" element={<AboutApplication />} />
             <Route path="tool/:id" element={<ToolContainer />} />
+            <Route path="tool/:id/:variation" element={<ToolContainer />} />
             <Route path="docs" element={<Documentation />} />
             <Route path="library-api" element={<LibraryApi />} />
             <Route path="blog" element={<BlogContainer />} />

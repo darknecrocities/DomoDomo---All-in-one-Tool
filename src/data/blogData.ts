@@ -11,6 +11,56 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'domodomo-v22-release-notes',
+    title: 'DomoDomo v2.2 Release Notes: AI Magic Layers & Background Remover Upgrades',
+    excerpt: 'Read about the latest updates to DomoDomo including advanced histogram-based color sampling for Template Studio Magic Layers and upload replacement fixes for Background Remover.',
+    date: 'June 28, 2026',
+    readTime: '3 min read',
+    category: 'Product Updates',
+    keywords: 'domodomo release notes, ai magic layers, template studio text grab, background remover upload fix, local tools updates',
+    content: `
+# DomoDomo v2.2 Release Notes: AI Magic Layers & Background Remover Upgrades
+
+We are excited to share the release of **DomoDomo v2.2**, introducing significant performance optimizations and key bug fixes for our two most popular graphics tools: **Template Studio** and **Background Remover**.
+
+Here is a summary of the improvements now live.
+
+---
+
+## 🎨 1. Template Studio: Robust AI Magic Layers (Grab Text)
+
+The **AI Magic Layers (Grab Text)** feature, which extracts text blocks from background images and converts them into editable Konva layers, has been completely overhauled:
+
+### 🔍 Histogram-Based Color Detection
+- **Old Behavior:** Text color was sampled after background healing was completed, resulting in the text layers absorbing the healed backdrop color.
+- **New Behavior:** Color detection now queries the original image *before* modification. We implemented **histogram clustering** to group pixels within the bounding box. Since text constitutes the minority group compared to the background, we isolate the minority group to extract the exact hex code of the original text.
+
+### 🩹 Bilinear Background Inpainting
+- **Old Behavior:** Healing a text region used a flat solid fill, creating noticeable boxes on textured backdrops.
+- **New Behavior:** We replaced the flat fill with **bilinear gradient interpolation**. The engine samples border colors from all four margins of the text bounding box and blends them smoothly, producing seamless, textured patches.
+
+### 📐 Prevention of Text Wrapping
+- **Old Behavior:** Text layers had the exact width of the OCR bounding box, causing Konva to wrap text lines unexpectedly.
+- **New Behavior:** Added a **1.3x width padding multiplier** and switched text alignment to left-aligned. We also expanded vertical height padding by **8px** to prevent descender clipping.
+
+---
+
+## 🖼️ 2. Background Remover: Upload & Replacement Fix
+
+We resolved an upload issue inside the **Background Remover** tool that occurred when users attempted to swap or upload multiple images sequentially:
+
+1. **Replace Image Button:** Added a prominent **"Replace Image"** label overlay on the active canvas workspace.
+2. **Fresh Mask Canvas:** Replaced the reuse logic of the manual mask layer. We now instantiate a fresh mask canvas matching the exact dimensions of the replacement image.
+3. **State Cleanup:** Swapping images triggers a complete reset of selected colors, trace coordinates, and undo history states, while revoking the old Blob URL to prevent memory leaks.
+
+---
+
+## 🚀 3. Technical SEO & Performance
+- We added **Static Snapshot Prerendering** to serve custom static HTML fallbacks to crawlers (like Bing and Yahoo) on all 110+ tools and static routes.
+- Sitemap is now dynamically generated with customized crawl priority weights.
+`
+  },
+  {
     slug: 'remove-background-online-free',
     title: 'How to Remove Backgrounds from Images Online for Free (Zero Uploads)',
     excerpt: 'Learn how to remove backgrounds from your photos instantly in your browser. A completely secure, private, and free method using chroma keying and canvas lasso masks.',
