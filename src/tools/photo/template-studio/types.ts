@@ -1,6 +1,6 @@
 export interface BaseLayer {
   id: string;
-  type: 'text' | 'image' | 'qr' | 'barcode';
+  type: 'text' | 'image' | 'qr' | 'barcode' | 'shape';
   x: number;
   y: number;
   width: number;
@@ -62,7 +62,19 @@ export interface BarcodeLayer extends BaseLayer {
   displayValue: boolean;
 }
 
-export type Layer = TextLayer | ImageLayer | QRLayer | BarcodeLayer;
+export interface ShapeLayer extends BaseLayer {
+  type: 'shape';
+  shapeType: 'rect' | 'circle' | 'triangle' | 'star' | 'arrow';
+  fill: string;
+  stroke: string | null;
+  strokeWidth: number;
+  cornerRadius?: number;
+  numPoints?: number;
+  innerRadius?: number;
+  outerRadius?: number;
+}
+
+export type Layer = TextLayer | ImageLayer | QRLayer | BarcodeLayer | ShapeLayer;
 
 export interface TemplateData {
   id?: string;

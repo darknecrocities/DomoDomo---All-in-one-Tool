@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Layer, TextLayer, QRLayer, BarcodeLayer, ImageLayer } from '../types';
+import type { Layer, TextLayer, QRLayer, BarcodeLayer, ImageLayer, ShapeLayer } from '../types';
 import { Italic, Underline, AlignLeft, AlignCenter, AlignRight, Cpu, Wand2, Globe, Sparkles, Loader2 } from 'lucide-react';
 import { aiService } from '../../../../utils/aiService';
 
@@ -160,6 +160,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
   const isQR = layer.type === 'qr';
   const isBarcode = layer.type === 'barcode';
   const isImage = layer.type === 'image';
+  const isShape = layer.type === 'shape';
   return (
     <div className="flex flex-col gap-4 text-xs text-left">
       
@@ -313,6 +314,51 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
               <label className="text-[10px] text-[#72706C] font-bold block mb-1">BACKGROUND</label>
               <input type="color" value={(layer as BarcodeLayer).bgColor} onChange={e => onChange({ bgColor: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
             </div>
+          </div>
+        </>
+      )}
+
+      {isShape && (
+        <>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] text-[#72706C] font-bold block mb-1">FILL COLOR</label>
+              <input type="color" value={(layer as ShapeLayer).fill || '#3C6B4D'} onChange={e => onChange({ fill: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
+            </div>
+            <div>
+              <label className="text-[10px] text-[#72706C] font-bold block mb-1 flex justify-between">
+                <span>BORDER COLOR</span>
+                <button onClick={() => onChange({ stroke: (layer as ShapeLayer).stroke ? null : '#ffffff' } as any)} className="text-[8px] text-[#3C6B4D] hover:underline">
+                  {(layer as ShapeLayer).stroke ? 'Clear' : 'Add'}
+                </button>
+              </label>
+              {(layer as ShapeLayer).stroke !== null && (layer as ShapeLayer).stroke !== undefined ? (
+                <input type="color" value={(layer as ShapeLayer).stroke || '#000000'} onChange={e => onChange({ stroke: e.target.value } as any)} className="w-full h-8 bg-[#18191B] border border-[#2A2D30] rounded cursor-pointer" />
+              ) : (
+                <div className="w-full h-8 bg-[#18191B] border border-[#2A2D30] border-dashed rounded flex items-center justify-center text-[10px] text-[#72706C]">None</div>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] text-[#72706C] font-bold block mb-1">BORDER WIDTH</label>
+              <input type="number" min="0" value={(layer as ShapeLayer).strokeWidth || 0} onChange={e => onChange({ strokeWidth: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+            </div>
+
+            {(layer as ShapeLayer).shapeType === 'rect' && (
+              <div>
+                <label className="text-[10px] text-[#72706C] font-bold block mb-1">CORNER RADIUS</label>
+                <input type="number" min="0" value={(layer as ShapeLayer).cornerRadius || 0} onChange={e => onChange({ cornerRadius: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+              </div>
+            )}
+
+            {(layer as ShapeLayer).shapeType === 'star' && (
+              <div>
+                <label className="text-[10px] text-[#72706C] font-bold block mb-1">STAR POINTS</label>
+                <input type="number" min="3" max="20" value={(layer as ShapeLayer).numPoints || 5} onChange={e => onChange({ numPoints: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+              </div>
+            )}
           </div>
         </>
       )}

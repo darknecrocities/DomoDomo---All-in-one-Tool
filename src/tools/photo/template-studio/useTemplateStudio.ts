@@ -99,6 +99,31 @@ export const useTemplateStudio = () => {
     });
   }, [updateTemplate]);
 
+  const duplicateLayer = useCallback((id: string) => {
+    updateTemplate(prev => {
+      const layer = prev.layers.find(l => l.id === id);
+      if (!layer) return prev;
+
+      const newId = `${layer.type}-${Date.now()}`;
+      const maxZ = Math.max(...prev.layers.map(l => l.zIndex), 0);
+      
+      const newLayer = {
+        ...layer,
+        id: newId,
+        x: layer.x + 20,
+        y: layer.y + 20,
+        name: `${layer.name} (Copy)`,
+        zIndex: maxZ + 1
+      } as Layer;
+
+      setSelectedId(newId);
+      return {
+        ...prev,
+        layers: [...prev.layers, newLayer]
+      };
+    });
+  }, [updateTemplate]);
+
   const loadTemplateJSON = useCallback((json: TemplateData) => {
     setTemplate(json);
     setHistory([json]);
@@ -115,6 +140,7 @@ export const useTemplateStudio = () => {
     updateLayer,
     deleteLayer,
     reorderLayer,
+    duplicateLayer,
     undo,
     redo,
     canUndo: historyIndex > 0,

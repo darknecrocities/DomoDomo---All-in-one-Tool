@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Layer } from '../types';
-import { Eye, EyeOff, Lock, Unlock, Trash2, ArrowUp, ArrowDown, Type, Image as ImageIcon, QrCode, Barcode } from 'lucide-react';
+import { Eye, EyeOff, Lock, Unlock, Trash2, ArrowUp, ArrowDown, Type, Image as ImageIcon, QrCode, Barcode, Copy } from 'lucide-react';
 
 interface LayerPanelProps {
   layers: Layer[];
@@ -9,6 +9,7 @@ interface LayerPanelProps {
   onUpdate: (id: string, changes: Partial<Layer>) => void;
   onDelete: (id: string) => void;
   onReorder: (id: string, direction: 'up' | 'down') => void;
+  onDuplicate?: (id: string) => void;
 }
 
 const getLayerIcon = (type: Layer['type']) => {
@@ -17,6 +18,12 @@ const getLayerIcon = (type: Layer['type']) => {
     case 'image': return <ImageIcon size={14} />;
     case 'qr': return <QrCode size={14} />;
     case 'barcode': return <Barcode size={14} />;
+    case 'shape':
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
+        </svg>
+      );
   }
 };
 
@@ -26,7 +33,8 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
   onSelect,
   onUpdate,
   onDelete,
-  onReorder
+  onReorder,
+  onDuplicate
 }) => {
   const sortedLayers = [...layers].sort((a, b) => b.zIndex - a.zIndex); // visually show top layers first
 
@@ -68,6 +76,15 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
                 >
                   {layer.locked ? <Lock size={12} /> : <Unlock size={12} />}
                 </button>
+                {onDuplicate && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onDuplicate(layer.id); }}
+                    className="p-1 hover:text-[#ECEBE9]"
+                    title="Duplicate Layer"
+                  >
+                    <Copy size={12} />
+                  </button>
+                )}
                 <div className="flex flex-col mx-1">
                   <button
                     disabled={index === 0}
