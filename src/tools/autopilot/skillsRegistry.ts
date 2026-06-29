@@ -393,7 +393,7 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     description: 'Lists all files and folders recursively inside any absolute directory path on the computer (Level 3).',
     level: 3,
     parameters: {
-      path: 'The absolute directory path to list (e.g., "/Users/username/Documents" or "C:\\Users").'
+      path: 'The absolute directory path to list.'
     },
     execute: async (args, ctx) => {
       const dirPath = args.path || '';
@@ -419,7 +419,7 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     level: 3,
     parameters: {
       query: 'Term to find in filenames.',
-      rootPath: 'Optional absolute starting path (e.g., "/Users/username" or "C:\\Users").'
+      rootPath: 'Optional absolute starting path to search from.'
     },
     execute: async (args, ctx) => {
       ctx.log(`OS Searching files for: "${args.query}" under "${args.rootPath || 'Workspace'}"`, 'action');
@@ -443,7 +443,7 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     description: 'Reads the text content of any file on the computer using an absolute file path (Level 3).',
     level: 3,
     parameters: {
-      path: 'The absolute file path to read (e.g., "/Users/username/Documents/notes.txt").'
+      path: 'The absolute file path to read.'
     },
     execute: async (args, ctx) => {
       ctx.log(`OS Reading file: ${args.path}`, 'action');
@@ -493,7 +493,7 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     description: 'Opens a web URL or searches a query in the default system web browser (Level 3).',
     level: 3,
     parameters: {
-      url: 'The URL to open (e.g. "https://facebook.com"), or a search query (e.g. "facebook").'
+      url: 'The target web link/URL or search phrase requested by the user.'
     },
     execute: async (args, ctx) => {
       let target = args.url || '';
