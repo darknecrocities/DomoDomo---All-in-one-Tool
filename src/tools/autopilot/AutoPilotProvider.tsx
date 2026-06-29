@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { AutoPilotContext } from './AutoPilotContext';
-import type { Mission, MissionLog, PermissionLevel, ExecutionContext, AutoPilotContextType, UploadedFile } from './types';
+import type { Mission, MissionLog, PermissionLevel, ExecutionContext, UploadedFile } from './types';
 import { skillsRegistry } from './skillsRegistry';
 import { aiService } from '../../utils/aiService';
 import { localMemory } from '../../utils/localMemory';
