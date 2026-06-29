@@ -1,5 +1,31 @@
 import { aiService } from './aiService';
 
+// Memory cache for RAG knowledge base chunks to avoid hitting IndexedDB on every query
+let cachedKnowledgeChunks: KnowledgeChunk[] | null = null;
+
+async function getCachedChunks(): Promise<KnowledgeChunk[]> {
+  if (cachedKnowledgeChunks) return cachedKnowledgeChunks;
+  try {
+    const db = await openDB();
+    const tx = db.transaction('knowledge_chunks', 'readonly');
+    const store = tx.objectStore('knowledge_chunks');
+    const chunks: KnowledgeChunk[] = await new Promise((resolve, reject) => {
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+    cachedKnowledgeChunks = chunks;
+    return chunks;
+  } catch (e) {
+    console.error('Failed to load knowledge chunks from DB into cache:', e);
+    return [];
+  }
+}
+
+function invalidateChunksCache() {
+  cachedKnowledgeChunks = null;
+}
+
 export interface KnowledgeChunk {
   id?: number;
   text: string;
@@ -345,6 +371,7 @@ export const unifiedMemory = {
         completed++;
       }
 
+      invalidateChunksCache();
       onProgress?.('Knowledge base updated successfully.', 100);
       window.dispatchEvent(new Event('domodomo_memory_updated'));
     } catch (e) {
@@ -358,15 +385,7 @@ export const unifiedMemory = {
       await aiService.initEmbedder();
       const queryEmbedding = await aiService.getEmbedding(queryText);
 
-      const db = await openDB();
-      const tx = db.transaction('knowledge_chunks', 'readonly');
-      const store = tx.objectStore('knowledge_chunks');
-
-      const allChunks: KnowledgeChunk[] = await new Promise((resolve, reject) => {
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => reject(req.error);
-      });
+      const allChunks = await getCachedChunks();
 
       const scored = allChunks.map(chunk => {
         const score = cosineSimilarity(queryEmbedding, chunk.embedding);
@@ -393,11 +412,8 @@ export const unifiedMemory = {
       const db = await openDB();
       const tx = db.transaction('knowledge_chunks', 'readwrite');
       const store = tx.objectStore('knowledge_chunks');
-      const allChunks: KnowledgeChunk[] = await new Promise((resolve, reject) => {
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => reject(req.error);
-      });
+      
+      const allChunks = await getCachedChunks();
 
       const targets = allChunks.filter(c => c.metadata.source === source);
       for (const item of targets) {
@@ -405,6 +421,7 @@ export const unifiedMemory = {
           store.delete(item.id);
         }
       }
+      invalidateChunksCache();
       window.dispatchEvent(new Event('domodomo_memory_updated'));
     } catch (e) {
       console.error('Failed to delete knowledge source:', e);
@@ -413,15 +430,7 @@ export const unifiedMemory = {
 
   async getAllSources(): Promise<string[]> {
     try {
-      const db = await openDB();
-      const tx = db.transaction('knowledge_chunks', 'readonly');
-      const store = tx.objectStore('knowledge_chunks');
-      const allChunks: KnowledgeChunk[] = await new Promise((resolve, reject) => {
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => reject(req.error);
-      });
-
+      const allChunks = await getCachedChunks();
       const sources = allChunks.map(c => c.metadata.source);
       return Array.from(new Set(sources));
     } catch {
@@ -431,14 +440,7 @@ export const unifiedMemory = {
 
   async getAllChunks(): Promise<KnowledgeChunk[]> {
     try {
-      const db = await openDB();
-      const tx = db.transaction('knowledge_chunks', 'readonly');
-      const store = tx.objectStore('knowledge_chunks');
-      return await new Promise((resolve, reject) => {
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => reject(req.error);
-      });
+      return await getCachedChunks();
     } catch {
       return [];
     }

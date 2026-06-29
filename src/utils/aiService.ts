@@ -3,13 +3,21 @@ import { localMemory } from './localMemory';
 import { unifiedMemory } from './unifiedMemory';
 let transformersModule: any = null;
 
+// Memory cache for prompt generations to avoid duplicate queries
+interface CacheEntry {
+  response: string;
+  timestamp: number;
+}
+const generateTextCache: Record<string, CacheEntry> = {};
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
+
 // Progress callback interface
 export type LoadingProgressCallback = (status: string, progress: number) => void;
 
 // Get or dynamically import Transformers.js from CDN
 export async function getTransformers() {
   if (transformersModule) return transformersModule;
-  const cdnUrl = 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+  const cdnUrl = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
   const module = await import(/* @vite-ignore */ cdnUrl);
   transformersModule = module;
   module.env.allowLocalModels = false;
@@ -180,9 +188,20 @@ export const aiService = {
       const { pipeline } = await getTransformers();
       
       if (!ttsPipeline) {
-        ttsPipeline = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
-          progress_callback: makeProgressCallback(progressCallback)
-        });
+        const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+        const device = hasWebGPU ? 'webgpu' : 'wasm';
+        try {
+          ttsPipeline = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
+            device,
+            progress_callback: makeProgressCallback(progressCallback)
+          });
+        } catch (e) {
+          console.warn(`WebGPU TTS pipeline failed, trying fallback to wasm/cpu`, e);
+          ttsPipeline = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
+            device: 'wasm',
+            progress_callback: makeProgressCallback(progressCallback)
+          });
+        }
       }
 
       // Default speaker embeddings mapped to standard cmu_arctic speakers
@@ -308,6 +327,15 @@ export const aiService = {
   ): Promise<string> {
     const savedModel = this.getSelectedOllamaModel();
     const model = modelOverride || savedModel || 'llama3.2:1b';
+    
+    // Check prompt Cache first
+    const cacheKey = `${model}:${prompt}:${options?.systemPrompt || ''}:${options?.temperature || 0.7}`;
+    const cached = generateTextCache[cacheKey];
+    if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+      onProgress?.('Retrieved from local response cache...', 100);
+      return cached.response;
+    }
+
     const provider = this.getProviderForModel(model);
 
     onProgress?.(`Routing request to ${provider.name} (${model})...`, 20);
@@ -325,18 +353,16 @@ export const aiService = {
     const augmentedPrompt = `${memoryContext}\n${recallContext}\n\nUser Request:\n${prompt}`;
 
     try {
+      let result = '';
       if (provider.type === 'local') {
         if (provider.id === 'ollama') {
-          const res = await this.generateTextOllama(model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
-          return res;
+          result = await this.generateTextOllama(model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
         } else if (provider.id === 'lm_studio' || provider.id === 'vllm') {
           // OpenAI-compatible endpoint
-          const res = await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
-          return res;
+          result = await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
         } else if (provider.id === 'llamacpp') {
           // llama.cpp simple completion format
-          const res = await this.callLlamaCpp(endpoint, augmentedPrompt, maxTokens, options?.systemPrompt);
-          return res;
+          result = await this.callLlamaCpp(endpoint, augmentedPrompt, maxTokens, options?.systemPrompt);
         }
       } else {
         // Cloud providers
@@ -345,13 +371,20 @@ export const aiService = {
         }
 
         if (provider.id === 'openai' || provider.id === 'groq' || provider.id === 'together' || provider.id === 'openrouter') {
-          return await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
+          result = await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
         } else if (provider.id === 'gemini') {
-          return await this.callGemini(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
+          result = await this.callGemini(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
         } else if (provider.id === 'anthropic') {
-          return await this.callAnthropic(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
+          result = await this.callAnthropic(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
         }
       }
+
+      // Store success in cache
+      generateTextCache[cacheKey] = {
+        response: result,
+        timestamp: Date.now()
+      };
+      return result;
     } catch (err: any) {
       console.warn(`Primary model invocation failed: ${err.message || err}. Initiating Local Ollama fallback.`);
       onProgress?.('⚠️ Primary provider failed. Falling back to local Ollama...', 60);
@@ -362,7 +395,13 @@ export const aiService = {
         if (ollamaInfo.status && ollamaInfo.models.length > 0) {
           const fallbackModel = ollamaInfo.models.includes('qwen2.5:0.5b') ? 'qwen2.5:0.5b' : ollamaInfo.models[0];
           onProgress?.(`Offline fallback: generating via Ollama (${fallbackModel})...`, 80);
-          return await this.generateTextOllama(fallbackModel, prompt, maxTokens, options?.systemPrompt, options);
+          const fallbackRes = await this.generateTextOllama(fallbackModel, prompt, maxTokens, options?.systemPrompt, options);
+          
+          generateTextCache[cacheKey] = {
+            response: fallbackRes,
+            timestamp: Date.now()
+          };
+          return fallbackRes;
         }
       } catch (fallbackErr: any) {
         console.error('Local fallback failed too:', fallbackErr);
@@ -370,7 +409,12 @@ export const aiService = {
 
       // If everything failed, return structured mock response so the user interface can continue to demo flawlessly
       onProgress?.('⚠️ Offline Simulation Mode activated...', 90);
-      return this.simulateAgentCoding(prompt, model);
+      const simulationRes = this.simulateAgentCoding(prompt, model);
+      generateTextCache[cacheKey] = {
+        response: simulationRes,
+        timestamp: Date.now()
+      };
+      return simulationRes;
     }
 
     throw new Error('All model generation attempts failed.');
@@ -512,9 +556,21 @@ export const aiService = {
     const { pipeline } = await getTransformers();
     onProgress?.('Loading embedding pipeline...', 10);
 
-    embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-      progress_callback: makeProgressCallback(onProgress)
-    });
+    const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+    const device = hasWebGPU ? 'webgpu' : 'wasm';
+
+    try {
+      embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+        device,
+        progress_callback: makeProgressCallback(onProgress)
+      });
+    } catch (e) {
+      console.warn(`WebGPU embedding pipeline failed, trying fallback to wasm/cpu`, e);
+      embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+        device: 'wasm',
+        progress_callback: makeProgressCallback(onProgress)
+      });
+    }
 
     return embeddingPipeline;
   },
@@ -535,9 +591,21 @@ export const aiService = {
     const { pipeline } = await getTransformers();
     onProgress?.('Loading classifier pipeline...', 10);
 
-    classifierPipeline = await pipeline('text-classification', 'Xenova/distilbert-base-uncased-finetuned-sst-2-english', {
-      progress_callback: makeProgressCallback(onProgress)
-    });
+    const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+    const device = hasWebGPU ? 'webgpu' : 'wasm';
+
+    try {
+      classifierPipeline = await pipeline('text-classification', 'Xenova/distilbert-base-uncased-finetuned-sst-2-english', {
+        device,
+        progress_callback: makeProgressCallback(onProgress)
+      });
+    } catch (e) {
+      console.warn(`WebGPU classification pipeline failed, trying fallback to wasm/cpu`, e);
+      classifierPipeline = await pipeline('text-classification', 'Xenova/distilbert-base-uncased-finetuned-sst-2-english', {
+        device: 'wasm',
+        progress_callback: makeProgressCallback(onProgress)
+      });
+    }
 
     return classifierPipeline;
   },
@@ -558,9 +626,21 @@ export const aiService = {
     const { pipeline } = await getTransformers();
     onProgress?.('Loading local Whisper AI model (~40MB)...', 10);
 
-    whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
-      progress_callback: makeProgressCallback(onProgress)
-    });
+    const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+    const device = hasWebGPU ? 'webgpu' : 'wasm';
+
+    try {
+      whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+        device,
+        progress_callback: makeProgressCallback(onProgress)
+      });
+    } catch (e) {
+      console.warn(`WebGPU whisper pipeline failed, trying fallback to wasm/cpu`, e);
+      whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+        device: 'wasm',
+        progress_callback: makeProgressCallback(onProgress)
+      });
+    }
 
     return whisperPipeline;
   },
