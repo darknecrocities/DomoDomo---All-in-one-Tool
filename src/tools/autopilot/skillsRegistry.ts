@@ -509,9 +509,10 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
       if (mcpClient.isOnline()) {
         try {
           let cmd = '';
-          if (process.platform === 'win32') {
+          const userAgent = navigator.userAgent.toLowerCase();
+          if (userAgent.includes('win')) {
             cmd = `start "" "${target}"`;
-          } else if (process.platform === 'darwin') {
+          } else if (userAgent.includes('mac') || userAgent.includes('os x')) {
             cmd = `open "${target}"`;
           } else {
             cmd = `xdg-open "${target}"`;

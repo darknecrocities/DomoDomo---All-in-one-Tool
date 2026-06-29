@@ -6,36 +6,47 @@ import { aiService } from '../../utils/aiService';
 import { localMemory } from '../../utils/localMemory';
 import { mcpClient } from '../../utils/mcpClient';
 
-// Helper to extract and parse JSON from local models with conversational noise
 function extractJson(text: string): any {
   const startCurly = text.indexOf('{');
   const startSquare = text.indexOf('[');
   
   let start = -1;
   let end = -1;
+  let isArray = false;
 
   if (startCurly !== -1 && (startSquare === -1 || startCurly < startSquare)) {
     start = startCurly;
     end = text.lastIndexOf('}');
+    isArray = false;
   } else if (startSquare !== -1) {
     start = startSquare;
     end = text.lastIndexOf(']');
+    isArray = true;
   }
 
-  if (start === -1 || end === -1 || end < start) {
+  if (start === -1) {
     throw new Error('No JSON brackets found in response');
   }
 
-  const jsonContent = text.slice(start, end + 1);
+  let jsonContent = '';
+  if (end === -1 || end < start) {
+    jsonContent = text.slice(start) + (isArray ? ']' : '}');
+  } else {
+    jsonContent = text.slice(start, end + 1);
+  }
+
   try {
     return JSON.parse(jsonContent);
   } catch (err) {
-    // Try cleaning common formatting mistakes by small models
-    const cleaned = jsonContent
-      .replace(/,\s*([\]}])/g, '$1') // trailing commas before ] or }
-      .replace(/\\'/g, "'") // unescape single quotes
-      .replace(/'/g, '"'); // replace single quotes with double quotes
-    return JSON.parse(cleaned);
+    try {
+      const cleaned = jsonContent
+        .replace(/,\s*([\]}])/g, '$1') // trailing commas before ] or }
+        .replace(/\\'/g, "'") // unescape single quotes
+        .replace(/'/g, '"'); // replace single quotes with double quotes
+      return JSON.parse(cleaned);
+    } catch {
+      throw err;
+    }
   }
 }
 
@@ -346,7 +357,7 @@ JSON Output Example:
   ${Object.keys(skill.parameters).map(k => `"${k}": "value"`).join(',\n  ')}
 }`;
 
-          const argsJson = await aiService.generateText(argsPrompt, 300, undefined, selectedModelRef.current, {
+          const argsJson = await aiService.generateText(argsPrompt, 1000, undefined, selectedModelRef.current, {
             systemPrompt: 'You are an argument generator. Output only JSON.',
             temperature: 0.1
           });
