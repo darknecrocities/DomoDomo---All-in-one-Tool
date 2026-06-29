@@ -25,7 +25,9 @@ export const AutoPilotWorkspace = () => {
     inputGoal,
     setInputGoal,
     isListening,
-    toggleListen
+    toggleListen,
+    autoApproveLevel3,
+    setAutoApproveLevel3
   } = useAutoPilotEngine();
 
   const [isSyncing, setIsSyncing] = useState(false);
@@ -138,7 +140,7 @@ export const AutoPilotWorkspace = () => {
         </div>
 
         {/* Model and Voice Options */}
-        <div className="glass-card p-4 grid grid-cols-2 gap-3">
+        <div className="glass-card p-4 grid grid-cols-3 gap-3">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AI Model</span>
             <select 
@@ -162,6 +164,19 @@ export const AutoPilotWorkspace = () => {
                 className={`relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors ${voiceEnabled ? 'bg-[#3C6B4D]' : 'bg-slate-700'}`}
               >
                 <span className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${voiceEnabled ? 'translate-x-4' : 'translate-x-1'}`} />
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Level 3 Control</span>
+            <div className="flex items-center justify-between h-[34px] bg-slate-900 border border-slate-800 rounded-lg px-2">
+              <span className="text-[10px] text-slate-400">Auto-Run</span>
+              <button 
+                onClick={() => setAutoApproveLevel3(!autoApproveLevel3)}
+                className={`relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors ${autoApproveLevel3 ? 'bg-rose-600' : 'bg-slate-700'}`}
+                title="Bypass confirmation approvals for all Level 3 actions"
+              >
+                <span className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${autoApproveLevel3 ? 'translate-x-4' : 'translate-x-1'}`} />
               </button>
             </div>
           </div>

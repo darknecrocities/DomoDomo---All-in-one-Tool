@@ -64,6 +64,7 @@ export const AutoPilotProvider = ({ children }: { children: ReactNode }) => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [inputGoal, setInputGoal] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [autoApproveLevel3, setAutoApproveLevel3] = useState<boolean>(false);
 
   const recognitionRef = useRef<any>(null);
   const silenceTimeoutRef = useRef<any>(null);
@@ -81,6 +82,8 @@ export const AutoPilotProvider = ({ children }: { children: ReactNode }) => {
   voiceEnabledRef.current = voiceEnabled;
   const uploadedFilesRef = useRef<UploadedFile[]>(uploadedFiles);
   uploadedFilesRef.current = uploadedFiles;
+  const autoApproveLevel3Ref = useRef<boolean>(autoApproveLevel3);
+  autoApproveLevel3Ref.current = autoApproveLevel3;
 
   useEffect(() => {
     const handleStatusChange = (online: boolean) => {
@@ -132,6 +135,10 @@ export const AutoPilotProvider = ({ children }: { children: ReactNode }) => {
   }, [log]);
 
   const requestApproval = useCallback((prompt: string): Promise<boolean> => {
+    if (autoApproveLevel3Ref.current) {
+      log(`[Auto-Approve] Automatically approved request: "${prompt}"`, 'info');
+      return Promise.resolve(true);
+    }
     return new Promise((resolve) => {
       setMission(prev => prev ? { ...prev, status: 'waiting_approval' } : prev);
       setFloatingVisible(true);
@@ -579,7 +586,9 @@ Write a very brief, friendly 1-2 sentence completion message to the user as if y
       inputGoal,
       setInputGoal,
       isListening,
-      toggleListen
+      toggleListen,
+      autoApproveLevel3,
+      setAutoApproveLevel3
     }}>
       {children}
     </AutoPilotContext.Provider>

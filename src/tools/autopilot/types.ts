@@ -89,5 +89,7 @@ export interface AutoPilotContextType {
   setInputGoal: React.Dispatch<React.SetStateAction<string>>;
   isListening: boolean;
   toggleListen: () => void;
+  autoApproveLevel3: boolean;
+  setAutoApproveLevel3: (enabled: boolean) => void;
 }
 
