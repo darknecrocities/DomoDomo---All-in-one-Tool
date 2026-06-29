@@ -257,14 +257,28 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
-        name: 'check_pull_status',
-        description: 'Poll the status of an in-progress direct-to-HDD model download started by pull_model_direct.',
+        name: 'simulate_keystroke',
+        description: 'Simulate keyboard typing or shortcut key combination on the host OS.',
         inputSchema: {
           type: 'object',
           properties: {
-            statusFile: { type: 'string', description: 'Absolute path to the status JSON file returned by pull_model_direct' },
+            keys: { type: 'string', description: 'Keys to type (e.g. hello, or return, tab, enter)' },
+            modifier: { type: 'string', description: 'Optional modifier key: cmd, ctrl, shift, alt' },
           },
-          required: ['statusFile'],
+          required: ['keys'],
+        },
+      },
+      {
+        name: 'simulate_click',
+        description: 'Simulate a mouse movement and click event at specific screen coordinates.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            x: { type: 'number', description: 'Target X coordinate' },
+            y: { type: 'number', description: 'Target Y coordinate' },
+            type: { type: 'string', description: 'Click type: left, right, double' },
+          },
+          required: ['x', 'y'],
         },
       },
     ],
@@ -748,6 +762,103 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
 
+
+      case 'simulate_keystroke': {
+        const keys = ((args as any).keys || '').replace(/"/g, '\\"');
+        const modifier = (args as any).modifier; // cmd, ctrl, shift, alt
+
+        return new Promise((resolve) => {
+          let command = '';
+          if (process.platform === 'darwin') {
+            if (modifier) {
+              const modKey = modifier === 'cmd' ? 'command down' : modifier === 'ctrl' ? 'control down' : modifier === 'shift' ? 'shift down' : 'option down';
+              command = `osascript -e 'tell application "System Events" to keystroke "${keys}" using {${modKey}}'`;
+            } else {
+              command = `osascript -e 'tell application "System Events" to keystroke "${keys}"'`;
+            }
+          } else if (process.platform === 'win32') {
+            let modifierChar = '';
+            if (modifier) {
+              if (modifier === 'shift') modifierChar = '+';
+              else if (modifier === 'ctrl') modifierChar = '^';
+              else if (modifier === 'alt') modifierChar = '%';
+            }
+            command = `powershell.exe -c "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.SendKeys]::SendWait('${modifierChar}${keys}')"`;
+          } else {
+            command = modifier 
+              ? `xdotool key ${modifier}+${keys}`
+              : `xdotool type "${keys}"`;
+          }
+
+          exec(command, (error, stdout, stderr) => {
+            resolve({
+              content: [{ type: 'text', text: error ? `Keystroke Error: ${stderr}` : 'Keystroke simulation triggered successfully.' }],
+              isError: !!error,
+            });
+          });
+        });
+      }
+
+      case 'simulate_click': {
+        const x = Number((args as any).x);
+        const y = Number((args as any).y);
+        const clickType = (args as any).type || 'left';
+
+        return new Promise((resolve) => {
+          let command = '';
+          if (process.platform === 'darwin') {
+            const pyScript = [
+              'import sys',
+              'from Quartz.CoreGraphics import CGEventCreateMouseEvent, CGEventPost, kCGEventMouseMoved, kCGEventLeftMouseDown, kCGEventLeftMouseUp, kCGEventRightMouseDown, kCGEventRightMouseUp, kCGMouseButtonLeft, kCGMouseButtonRight, kCGHIDEventTap',
+              `x = ${x}`,
+              `y = ${y}`,
+              'def click(x, y, button="left"):',
+              '    move = CGEventCreateMouseEvent(None, kCGEventMouseMoved, (x, y), 0)',
+              '    CGEventPost(kCGHIDEventTap, move)',
+              '    if button == "left":',
+              '        down = CGEventCreateMouseEvent(None, kCGEventLeftMouseDown, (x, y), kCGMouseButtonLeft)',
+              '        up = CGEventCreateMouseEvent(None, kCGEventLeftMouseUp, (x, y), kCGMouseButtonLeft)',
+              '    else:',
+              '        down = CGEventCreateMouseEvent(None, kCGEventRightMouseDown, (x, y), kCGMouseButtonRight)',
+              '        up = CGEventCreateMouseEvent(None, kCGEventRightMouseUp, (x, y), kCGMouseButtonRight)',
+              '    CGEventPost(kCGHIDEventTap, down)',
+              '    CGEventPost(kCGHIDEventTap, up)',
+              `click(x, y, "${clickType}")`
+            ].join('\n');
+            command = `python3 -c '${pyScript}'`;
+          } else if (process.platform === 'win32') {
+            const psScript = [
+              '$Signature = @\'',
+              '[DllImport("user32.dll")]',
+              'public static extern bool SetCursorPos(int X, int Y);',
+              '[DllImport("user32.dll")]',
+              'public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);',
+              '\'@;',
+              '$User32 = Add-Type -MemberDefinition $Signature -Name "Win32Mouse" -Namespace "Win32" -PassThru;',
+              `$User32::SetCursorPos(${x}, ${y});`,
+              clickType === 'right' 
+                ? '$User32::mouse_event(0x0008, 0, 0, 0, 0); $User32::mouse_event(0x0010, 0, 0, 0, 0);' 
+                : clickType === 'double'
+                  ? '$User32::mouse_event(0x0002, 0, 0, 0, 0); $User32::mouse_event(0x0004, 0, 0, 0, 0); $User32::mouse_event(0x0002, 0, 0, 0, 0); $User32::mouse_event(0x0004, 0, 0, 0, 0);'
+                  : '$User32::mouse_event(0x0002, 0, 0, 0, 0); $User32::mouse_event(0x0004, 0, 0, 0, 0);'
+            ].join(' ');
+            const encoded = Buffer.from(psScript, 'utf16le').toString('base64');
+            command = `powershell.exe -NoProfile -WindowStyle Hidden -EncodedCommand ${encoded}`;
+          } else {
+            const btn = clickType === 'right' ? '3' : '1';
+            command = clickType === 'double'
+              ? `xdotool mousemove ${x} ${y} click --double 1`
+              : `xdotool mousemove ${x} ${y} click ${btn}`;
+          }
+
+          exec(command, (error, stdout, stderr) => {
+            resolve({
+              content: [{ type: 'text', text: error ? `Click Error: ${stderr}` : 'Click simulation triggered successfully.' }],
+              isError: !!error,
+            });
+          });
+        });
+      }
 
       case 'select_local_directory': {
 

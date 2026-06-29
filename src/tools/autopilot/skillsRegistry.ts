@@ -346,9 +346,18 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     execute: async (args, ctx) => {
       const approved = await ctx.requestApproval(`Allow Auto-Pilot to physically type "${args.keys}" on your computer?`);
       if (!approved) throw new Error('User denied keystroke simulation.');
-      ctx.log(`Typing: ${args.keys}`, 'action');
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      return { success: true, status: 'Mock keystroke complete. Desktop bridge required for live OS typing.' };
+      ctx.log(`OS Typing: ${args.keys}`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          await mcpClient.callTool('simulate_keystroke', { keys: args.keys, modifier: args.modifier });
+          ctx.log(`Successfully typed keys.`, 'success');
+          return { success: true };
+        } catch (err: any) {
+          ctx.log(`MCP simulate_keystroke failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Keystroke simulation is disabled.');
     }
   },
   'os_simulate_click': {
@@ -364,9 +373,18 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
     execute: async (args, ctx) => {
       const approved = await ctx.requestApproval(`Allow Auto-Pilot to move your mouse and click at (${args.x}, ${args.y})?`);
       if (!approved) throw new Error('User denied mouse control.');
-      ctx.log(`Moving mouse and clicking at ${args.x}, ${args.y}`, 'action');
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      return { success: true, status: 'Mock click complete. Desktop bridge required for live OS mouse control.' };
+      ctx.log(`OS Clicking mouse at (${args.x}, ${args.y})`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          await mcpClient.callTool('simulate_click', { x: Number(args.x), y: Number(args.y), type: args.type });
+          ctx.log(`Successfully clicked mouse.`, 'success');
+          return { success: true };
+        } catch (err: any) {
+          ctx.log(`MCP simulate_click failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Mouse click simulation is disabled.');
     }
   },
   'os_list_directory': {
