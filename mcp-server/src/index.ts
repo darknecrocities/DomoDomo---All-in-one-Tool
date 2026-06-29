@@ -8,6 +8,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { exec, spawn } from 'child_process';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 
 // Root path configuration (default to domodomo workspace root)
@@ -279,6 +280,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             type: { type: 'string', description: 'Click type: left, right, double' },
           },
           required: ['x', 'y'],
+        },
+      },
+      {
+        name: 'get_system_info',
+        description: 'Scan and return operating system details, device architecture, memory, CPU metrics, and home path of the host computer.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
         },
       },
     ],
@@ -761,7 +770,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
       }
 
-
+      case 'get_system_info': {
+        const info = {
+          platform: process.platform,
+          arch: process.arch,
+          osRelease: os.release(),
+          hostname: os.hostname(),
+          username: os.userInfo().username,
+          homeDir: os.userInfo().homedir,
+          cpuCount: os.cpus().length,
+          cpuModel: os.cpus()[0]?.model || 'Unknown CPU',
+          totalMemoryGB: Math.round(os.totalmem() / (1024 * 1024 * 1024)),
+          freeMemoryGB: Math.round(os.freemem() / (1024 * 1024 * 1024)),
+          shell: process.env.SHELL || (process.platform === 'win32' ? 'powershell.exe' : '/bin/sh'),
+        };
+        return {
+          content: [{ type: 'text', text: JSON.stringify(info) }]
+        };
+      }
 
       case 'simulate_keystroke': {
         const keys = ((args as any).keys || '').replace(/"/g, '\\"');

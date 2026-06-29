@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { AutoPilotContext } from './AutoPilotContext';
 import type { Mission, MissionLog, PermissionLevel, ExecutionContext, AutoPilotContextType, UploadedFile } from './types';
 import { skillsRegistry } from './skillsRegistry';
 import { aiService } from '../../utils/aiService';
@@ -50,7 +51,7 @@ function extractJson(text: string): any {
   }
 }
 
-const AutoPilotContext = createContext<AutoPilotContextType | undefined>(undefined);
+// AutoPilotContext is now imported from ./AutoPilotContext
 
 export const AutoPilotProvider = ({ children }: { children: ReactNode }) => {
   const [mission, setMission] = useState<Mission | null>(null);
@@ -84,20 +85,44 @@ export const AutoPilotProvider = ({ children }: { children: ReactNode }) => {
   uploadedFilesRef.current = uploadedFiles;
   const autoApproveLevel3Ref = useRef<boolean>(autoApproveLevel3);
   autoApproveLevel3Ref.current = autoApproveLevel3;
+  const [systemInfo, setSystemInfo] = useState<any | null>(null);
+  const systemInfoRef = useRef<any | null>(null);
+  systemInfoRef.current = systemInfo;
+
+  const fetchSystemInfo = useCallback(async () => {
+    if (mcpClient.isOnline()) {
+      try {
+        const res = await mcpClient.callTool('get_system_info', {});
+        const parsed = JSON.parse(res.content?.[0]?.text || '{}');
+        setSystemInfo(parsed);
+      } catch (err) {
+        console.warn('Could not fetch system info:', err);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const handleStatusChange = (online: boolean) => {
       setMcpOnline(online);
       setAvailableMcpTools(mcpClient.getTools().map(t => t.name));
+      if (online) {
+        fetchSystemInfo();
+      }
     };
     mcpClient.addStatusListener(handleStatusChange);
+    if (mcpClient.isOnline()) {
+      fetchSystemInfo();
+    }
     return () => mcpClient.removeStatusListener(handleStatusChange);
-  }, []);
+  }, [fetchSystemInfo]);
 
   const syncMcp = async () => {
     const connected = await mcpClient.connect();
     setMcpOnline(connected);
     setAvailableMcpTools(mcpClient.getTools().map(t => t.name));
+    if (connected) {
+      await fetchSystemInfo();
+    }
     return connected;
   };
 
@@ -236,6 +261,17 @@ ${uploadedFilesRef.current.map(f => `- ${f.name} (type: ${f.type}, size: ${f.siz
 CRITICAL: If the user asks to analyze an uploaded image, you MUST use the 'analyze_uploaded_image' skill. If they ask to read a text/JSON/CSV file, you MUST use the 'read_uploaded_file' skill.`
         : '';
 
+      const systemInfoContext = systemInfoRef.current
+        ? `[CURRENT HOST MACHINE ENVIRONMENT]
+Operating System: ${systemInfoRef.current.platform} (${systemInfoRef.current.osRelease})
+Architecture: ${systemInfoRef.current.arch}
+Active Shell: ${systemInfoRef.current.shell}
+Host Name: ${systemInfoRef.current.hostname}
+Current Logged-in User: ${systemInfoRef.current.username}
+Home Directory: ${systemInfoRef.current.homeDir}
+Hardware Specs: ${systemInfoRef.current.cpuCount} Core CPU (${systemInfoRef.current.cpuModel}), ${systemInfoRef.current.totalMemoryGB} GB RAM`
+        : '';
+
       let prompt = '';
       if (!isFollowUp) {
         prompt = `You are the Auto-Pilot Planner. Break down the following goal into a JSON array of sequential steps.
@@ -246,10 +282,14 @@ ${allowedSkills.join('\n')}
 
 ${memoryContext}
 
+${systemInfoContext}
+
 ${filesContext}
 
 CRITICAL PLANNING CONSTRAINTS: 
 - You MUST only use the skills listed above. Do not invent skills.
+- To open external web pages, search engines, or generic internet links (e.g. GitHub, YouTube, Google, Facebook), you MUST use the 'open_web_link' skill. Do NOT use the 'open_domo_tool' skill for external links.
+- Only use the 'open_domo_tool' skill to open native DomoDomo application features (like 'about', 'docs', or specific tools listed in its ID description).
 - The User Activity History is already fully available to you in the prompt context. Do NOT generate steps to "read local files", "load history", or "access user actions" to read this history.
 - Do NOT use the 'read_uploaded_file' or 'analyze_uploaded_image' skills unless the user has explicitly uploaded a file/image and you are querying its content.
 - If the user's request is simple navigation (e.g. "go to about page", "open pdf merger"), you ONLY need to generate EXACTLY ONE step using the 'open_domo_tool' skill. Do NOT follow it up with redundant UI interactions or clicking links.
@@ -273,10 +313,14 @@ New User Follow-up Request: "${goal}"
 Available Skills (Filtered to Level ${permissionLevelRef.current}): 
 ${allowedSkills.join('\n')}
 
+${systemInfoContext}
+
 ${filesContext}
 
 CRITICAL PLANNING CONSTRAINTS:
 - You MUST only use the skills listed above. Do not invent skills.
+- To open external web pages, search engines, or generic internet links (e.g. GitHub, YouTube, Google, Facebook), you MUST use the 'open_web_link' skill. Do NOT use the 'open_domo_tool' skill for external links.
+- Only use the 'open_domo_tool' skill to open native DomoDomo application features (like 'about', 'docs', or specific tools listed in its ID description).
 - The User Activity History is already fully available to you in the prompt context. Do NOT generate steps to "read local files", "load history", or "access user actions" to read this history.
 - Do NOT use the 'read_uploaded_file' or 'analyze_uploaded_image' skills unless the user has explicitly uploaded a file/image and you are querying its content.
 - If the user's request is simple navigation (e.g. "go to about page", "open pdf merger"), you ONLY need to generate EXACTLY ONE step using the 'open_domo_tool' skill. Do NOT follow it up with redundant UI interactions or clicking links.
@@ -595,11 +639,5 @@ Write a very brief, friendly 1-2 sentence completion message to the user as if y
   );
 };
 
-export const useAutoPilotEngine = () => {
-  const context = useContext(AutoPilotContext);
-  if (context === undefined) {
-    throw new Error('useAutoPilotEngine must be used within an AutoPilotProvider');
-  }
-  return context;
-};
+// useAutoPilotEngine is now imported from ./AutoPilotContext
 

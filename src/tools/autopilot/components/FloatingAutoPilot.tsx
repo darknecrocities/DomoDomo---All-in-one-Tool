@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAutoPilotEngine } from '../AutoPilotProvider';
+import { useAutoPilotEngine } from '../AutoPilotContext';
 import { MissionConsole } from './MissionConsole';
 import { X, Minimize2, Maximize2 } from 'lucide-react';
 

@@ -487,19 +487,23 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
       throw new Error('MCP server is offline. Absolute file writing is disabled.');
     }
   },
-  'os_open_browser': {
-    id: 'os_open_browser',
+  'open_web_link': {
+    id: 'open_web_link',
     name: 'Open Link in Browser',
-    description: 'Opens a web URL or searches a query in the default system web browser (Level 3).',
-    level: 3,
+    description: 'Opens a web URL or searches a query in the system web browser (Level 1).',
+    level: 1,
     parameters: {
       url: 'The target web link/URL or search phrase requested by the user.'
     },
     execute: async (args, ctx) => {
       let target = args.url || '';
+      const hasTld = /\.[a-z]{2,6}(\/|$)/i.test(target);
       if (!target.startsWith('http://') && !target.startsWith('https://')) {
-        // If it's not a URL, make it a Google search query!
-        target = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
+        if (hasTld) {
+          target = 'https://' + target;
+        } else {
+          target = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
+        }
       }
       
       const approved = await ctx.requestApproval(`Open browser to: ${target}?`);

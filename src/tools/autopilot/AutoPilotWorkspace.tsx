@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useAutoPilotEngine } from './AutoPilotProvider';
+import { useAutoPilotEngine } from './AutoPilotContext';
 import { MissionConsole } from './components/MissionConsole';
 import { Mic, Send, ShieldAlert, BookOpen, Layers, RefreshCw, FileDown, FolderSync, Trash2, ShieldCheck, Terminal, Upload, Paperclip, X } from 'lucide-react';
 import { triggerTextDownload } from '../../utils/sharedHelpers';
