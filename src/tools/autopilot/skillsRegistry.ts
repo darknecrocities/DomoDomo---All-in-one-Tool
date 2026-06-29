@@ -468,5 +468,47 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
       }
       throw new Error('MCP server is offline. Absolute file writing is disabled.');
     }
+  },
+  'os_open_browser': {
+    id: 'os_open_browser',
+    name: 'Open Link in Browser',
+    description: 'Opens a web URL or searches a query in the default system web browser (Level 3).',
+    level: 3,
+    parameters: {
+      url: 'The URL to open (e.g. "https://facebook.com"), or a search query (e.g. "facebook").'
+    },
+    execute: async (args, ctx) => {
+      let target = args.url || '';
+      if (!target.startsWith('http://') && !target.startsWith('https://')) {
+        // If it's not a URL, make it a Google search query!
+        target = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
+      }
+      
+      const approved = await ctx.requestApproval(`Open browser to: ${target}?`);
+      if (!approved) throw new Error('User denied browser request.');
+      
+      ctx.log(`Opening browser: ${target}`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          let cmd = '';
+          if (process.platform === 'win32') {
+            cmd = `start "" "${target}"`;
+          } else if (process.platform === 'darwin') {
+            cmd = `open "${target}"`;
+          } else {
+            cmd = `xdg-open "${target}"`;
+          }
+          await mcpClient.callTool('execute_command', { command: cmd });
+          ctx.log(`Successfully opened browser to: ${target}`, 'success');
+          return { success: true };
+        } catch (err: any) {
+          ctx.log(`MCP open failed: ${err.message}`, 'error');
+        }
+      }
+      
+      // Fallback: try opening it using browser window.open if running in frontend context
+      window.open(target, '_blank');
+      return { success: true };
+    }
   }
 };
