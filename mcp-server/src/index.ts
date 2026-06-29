@@ -125,22 +125,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: 'read_file',
-        description: 'Read the contents of a local file in the workspace.',
+        description: 'Read the contents of a file on the local machine (absolute paths supported).',
         inputSchema: {
           type: 'object',
           properties: {
-            path: { type: 'string', description: 'Relative path of the file to read' },
+            path: { type: 'string', description: 'Relative or absolute path of the file to read' },
           },
           required: ['path'],
         },
       },
       {
         name: 'write_file',
-        description: 'Create or overwrite a file in the workspace.',
+        description: 'Create or overwrite a file on the local machine (absolute paths supported).',
         inputSchema: {
           type: 'object',
           properties: {
-            path: { type: 'string', description: 'Relative path of the target file' },
+            path: { type: 'string', description: 'Relative or absolute path of the target file' },
             content: { type: 'string', description: 'Full code/text content to write' },
           },
           required: ['path', 'content'],
@@ -167,10 +167,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: 'list_directory',
-        description: 'List all files and subdirectories recursively in the local workspace.',
+        description: 'List all files and subdirectories recursively in a folder (defaults to workspace root, absolute paths supported).',
         inputSchema: {
           type: 'object',
-          properties: {},
+          properties: {
+            path: { type: 'string', description: 'Optional relative or absolute directory path to list' },
+          },
+        },
+      },
+      {
+        name: 'search_files',
+        description: 'Search recursively for files matching a query term on the machine.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            rootPath: { type: 'string', description: 'Optional absolute or relative path to search from' },
+            query: { type: 'string', description: 'Query term to match in filenames' },
+          },
+          required: ['query'],
         },
       },
       {
@@ -265,7 +279,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (name) {
       case 'read_file': {
         const relPath = (args as any).path;
-        const absPath = path.resolve(WORKSPACE_ROOT, relPath);
+        const absPath = path.isAbsolute(relPath) ? relPath : path.resolve(WORKSPACE_ROOT, relPath);
         if (!fs.existsSync(absPath)) {
           return { content: [{ type: 'text', text: `Error: File not found at ${relPath}` }], isError: true };
         }
@@ -274,12 +288,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'write_file': {
-        let relPath = (args as any).path;
+        const relPath = (args as any).path;
         const content = (args as any).content;
-        
-        // Strip leading slashes and relative path indicators to prevent resolving outside workspace
-        relPath = relPath.replace(/^(\.\/|\/)+/, '');
-        const absPath = path.resolve(WORKSPACE_ROOT, relPath);
+        const absPath = path.isAbsolute(relPath) ? relPath : path.resolve(WORKSPACE_ROOT, relPath.replace(/^(\.\/|\/)+/, ''));
         
         // Ensure folder directory exists
         const dir = path.dirname(absPath);
@@ -288,7 +299,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         
         fs.writeFileSync(absPath, content, 'utf-8');
-        return { content: [{ type: 'text', text: `Successfully wrote file: ${relPath}` }] };
+        return { content: [{ type: 'text', text: `Successfully wrote file: ${absPath}` }] };
       }
 
       case 'execute_command': {
@@ -320,7 +331,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const relPath = (args as any).path;
         const searchContent = (args as any).searchContent;
         const replacementContent = (args as any).replacementContent;
-        const absPath = path.resolve(WORKSPACE_ROOT, relPath);
+        const absPath = path.isAbsolute(relPath) ? relPath : path.resolve(WORKSPACE_ROOT, relPath);
 
         if (!fs.existsSync(absPath)) {
           return { content: [{ type: 'text', text: `Error: Target file not found at ${relPath}` }], isError: true };
@@ -345,45 +356,97 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'list_directory': {
+        const customPath = (args as any).path;
+        const targetDir = customPath 
+          ? (path.isAbsolute(customPath) ? customPath : path.resolve(WORKSPACE_ROOT, customPath))
+          : WORKSPACE_ROOT;
+
         const getFiles = (dir: string, baseDir: string = ''): any[] => {
           const results: any[] = [];
           if (!fs.existsSync(dir)) return [];
-          const list = fs.readdirSync(dir);
-          list.forEach((file) => {
-            const absPath = path.join(dir, file);
-            const relPath = baseDir ? `${baseDir}/${file}` : file;
-            
-            // Skip node_modules, .git, and build artifacts
-            if (file === 'node_modules' || file === '.git' || file === 'dist' || file === '.gemini' || file === 'build') {
-              return;
-            }
-            
-            try {
-              const stat = fs.statSync(absPath);
-              if (stat && stat.isDirectory()) {
-                results.push({
-                  name: file,
-                  path: relPath,
-                  kind: 'directory',
-                  children: getFiles(absPath, relPath)
-                });
-              } else {
-                results.push({
-                  name: file,
-                  path: relPath,
-                  kind: 'file'
-                });
+          try {
+            const list = fs.readdirSync(dir);
+            list.forEach((file) => {
+              const absPath = path.join(dir, file);
+              const relPath = baseDir ? `${baseDir}/${file}` : file;
+              
+              // Skip common system / massive folders to prevent memory bloat
+              if (file === 'node_modules' || file === '.git' || file === 'dist' || file === '.gemini' || file === 'build' || file === 'Library' || file === 'System') {
+                return;
               }
-            } catch (err) {
-              // skip unreadable files/symlinks
-            }
-          });
+              
+              try {
+                const stat = fs.statSync(absPath);
+                if (stat && stat.isDirectory()) {
+                  results.push({
+                    name: file,
+                    path: absPath, // Return absolute path to frontend for level 3 navigation
+                    kind: 'directory',
+                    children: getFiles(absPath, relPath)
+                  });
+                } else {
+                  results.push({
+                    name: file,
+                    path: absPath,
+                    kind: 'file'
+                  });
+                }
+              } catch (err) {
+                // skip unreadable files/symlinks
+              }
+            });
+          } catch {}
           return results;
         };
 
         try {
-          const files = getFiles(WORKSPACE_ROOT);
+          const files = getFiles(targetDir);
           return { content: [{ type: 'text', text: JSON.stringify(files) }] };
+        } catch (e: any) {
+          return { content: [{ type: 'text', text: `Error: ${e.message}` }], isError: true };
+        }
+      }
+
+      case 'search_files': {
+        const query = ((args as any).query || '').trim();
+        const rootPath = (args as any).rootPath;
+        const targetDir = rootPath 
+          ? (path.isAbsolute(rootPath) ? rootPath : path.resolve(WORKSPACE_ROOT, rootPath))
+          : WORKSPACE_ROOT;
+
+        if (!fs.existsSync(targetDir)) {
+          return { content: [{ type: 'text', text: `Error: Search root folder not found at ${targetDir}` }], isError: true };
+        }
+
+        const maxResults = 100;
+        const searchFilesRecursively = (dir: string): string[] => {
+          let results: string[] = [];
+          try {
+            const list = fs.readdirSync(dir);
+            for (const file of list) {
+              if (results.length >= maxResults) break;
+              const absPath = path.join(dir, file);
+              try {
+                const stat = fs.statSync(absPath);
+                if (stat.isDirectory()) {
+                  if (file === 'node_modules' || file === '.git' || file === 'dist' || file === '.gemini' || file === 'build' || file === 'Library' || file === 'System') {
+                    continue;
+                  }
+                  results = results.concat(searchFilesRecursively(absPath));
+                } else {
+                  if (file.toLowerCase().includes(query.toLowerCase())) {
+                    results.push(absPath);
+                  }
+                }
+              } catch {}
+            }
+          } catch {}
+          return results;
+        };
+
+        try {
+          const matched = searchFilesRecursively(targetDir);
+          return { content: [{ type: 'text', text: JSON.stringify(matched) }] };
         } catch (e: any) {
           return { content: [{ type: 'text', text: `Error: ${e.message}` }], isError: true };
         }

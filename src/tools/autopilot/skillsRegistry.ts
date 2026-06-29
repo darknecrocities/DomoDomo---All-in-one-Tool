@@ -368,5 +368,105 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
       await new Promise(resolve => setTimeout(resolve, 1500));
       return { success: true, status: 'Mock click complete. Desktop bridge required for live OS mouse control.' };
     }
+  },
+  'os_list_directory': {
+    id: 'os_list_directory',
+    name: 'OS List Directory',
+    description: 'Lists all files and folders recursively inside any absolute directory path on the computer (Level 3).',
+    level: 3,
+    parameters: {
+      path: 'The absolute directory path to list (e.g., "/Users/username/Documents" or "C:\\Users").'
+    },
+    execute: async (args, ctx) => {
+      const dirPath = args.path || '';
+      ctx.log(`OS Listing directory: ${dirPath}`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('list_directory', { path: dirPath });
+          const content = JSON.parse(res.content?.[0]?.text || '[]');
+          ctx.log(`Successfully listed directory contents (${content.length} items found).`, 'success');
+          return { success: true, files: content };
+        } catch (err: any) {
+          ctx.log(`MCP list_directory failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Absolute folder listing is disabled.');
+    }
+  },
+  'os_search_files': {
+    id: 'os_search_files',
+    name: 'OS Search Files',
+    description: 'Searches recursively for files matching a query string starting from an absolute root path on the computer (Level 3).',
+    level: 3,
+    parameters: {
+      query: 'Term to find in filenames.',
+      rootPath: 'Optional absolute starting path (e.g., "/Users/username" or "C:\\Users").'
+    },
+    execute: async (args, ctx) => {
+      ctx.log(`OS Searching files for: "${args.query}" under "${args.rootPath || 'Workspace'}"`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('search_files', { query: args.query, rootPath: args.rootPath });
+          const matched = JSON.parse(res.content?.[0]?.text || '[]');
+          ctx.log(`Search complete. Found ${matched.length} matches.`, 'success');
+          return { success: true, matches: matched };
+        } catch (err: any) {
+          ctx.log(`MCP search_files failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Global OS search is disabled.');
+    }
+  },
+  'os_read_file': {
+    id: 'os_read_file',
+    name: 'OS Read File',
+    description: 'Reads the text content of any file on the computer using an absolute file path (Level 3).',
+    level: 3,
+    parameters: {
+      path: 'The absolute file path to read (e.g., "/Users/username/Documents/notes.txt").'
+    },
+    execute: async (args, ctx) => {
+      ctx.log(`OS Reading file: ${args.path}`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('read_file', { path: args.path });
+          const content = res.content?.[0]?.text || '';
+          ctx.log(`Successfully read OS file (${content.length} characters).`, 'success');
+          return { success: true, content };
+        } catch (err: any) {
+          ctx.log(`MCP read_file failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Absolute file reading is disabled.');
+    }
+  },
+  'os_write_file': {
+    id: 'os_write_file',
+    name: 'OS Write File',
+    description: 'Writes/Saves content to any file on the computer using an absolute file path (Level 3). Will ask for confirmation.',
+    level: 3,
+    parameters: {
+      path: 'The absolute file path to write to.',
+      content: 'The content to write.'
+    },
+    execute: async (args, ctx) => {
+      const approved = await ctx.requestApproval(`Write to absolute file path: ${args.path}?`);
+      if (!approved) throw new Error('User denied OS file write.');
+      ctx.log(`OS Writing file: ${args.path}`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          await mcpClient.callTool('write_file', { path: args.path, content: args.content });
+          ctx.log(`Successfully wrote to absolute file: ${args.path}`, 'success');
+          return { success: true };
+        } catch (err: any) {
+          ctx.log(`MCP write_file failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Absolute file writing is disabled.');
+    }
   }
 };
