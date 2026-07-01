@@ -70,6 +70,9 @@ export const LocalAIChatTool = () => {
     setStatusMsg('Preparing response...');
     const startTime = performance.now();
 
+    // Append a placeholder message for the AI's streaming response
+    setMessages(prev => [...prev, { sender: 'ai', text: '', timestamp: nowStr }]);
+
     try {
       const response = await aiService.generateText(
         userText,
@@ -80,12 +83,34 @@ export const LocalAIChatTool = () => {
         selectedModel || undefined,
         {
           systemPrompt,
-          temperature
+          temperature,
+          onStream: (streamText) => {
+            if (abortFlagRef.current) return;
+            setMessages(prev => {
+              const updated = [...prev];
+              if (updated.length > 0) {
+                updated[updated.length - 1] = {
+                  ...updated[updated.length - 1],
+                  text: streamText
+                };
+              }
+              return updated;
+            });
+          }
         }
       );
 
       if (abortFlagRef.current) {
-        setMessages(prev => [...prev, { sender: 'ai', text: 'Generation cancelled by user.', timestamp: nowStr }]);
+        setMessages(prev => {
+          const updated = [...prev];
+          if (updated.length > 0) {
+            updated[updated.length - 1] = {
+              ...updated[updated.length - 1],
+              text: 'Generation cancelled by user.'
+            };
+          }
+          return updated;
+        });
         return;
       }
 
@@ -101,10 +126,29 @@ export const LocalAIChatTool = () => {
         durationMs
       });
 
-      setMessages(prev => [...prev, { sender: 'ai', text: cleanResponse, timestamp: nowStr }]);
+      // Update the placeholder message with the final cleaned response
+      setMessages(prev => {
+        const updated = [...prev];
+        if (updated.length > 0) {
+          updated[updated.length - 1] = {
+            ...updated[updated.length - 1],
+            text: cleanResponse
+          };
+        }
+        return updated;
+      });
     } catch (err: any) {
       if (!abortFlagRef.current) {
-        setMessages(prev => [...prev, { sender: 'ai', text: `Sorry, I encountered an error: ${err.message || err}`, timestamp: nowStr }]);
+        setMessages(prev => {
+          const updated = [...prev];
+          if (updated.length > 0) {
+            updated[updated.length - 1] = {
+              ...updated[updated.length - 1],
+              text: `Sorry, I encountered an error: ${err.message || err}`
+            };
+          }
+          return updated;
+        });
       }
     } finally {
       setLoading(false);

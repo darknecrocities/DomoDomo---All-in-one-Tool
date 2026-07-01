@@ -6,6 +6,7 @@ import json
 import hashlib
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel, Field, Session, select
 from pydantic import BaseModel
@@ -312,16 +313,41 @@ class ChatRequest(BaseModel):
     prompt: str
     system_prompt: Optional[str] = None
     temperature: Optional[float] = 0.7
+    stream: Optional[bool] = False
 
 @app.post("/api/chat")
 async def chat_proxy(req: ChatRequest):
+    system_instruction = req.system_prompt or "You are a helpful local assistant."
+
+    if req.stream:
+        async def stream_generator():
+            try:
+                async with httpx.AsyncClient(timeout=60.0) as client:
+                    async with client.stream("POST", f"{OLLAMA_BASE_URL}/api/generate", json={
+                        "model": req.model,
+                        "prompt": f"{system_instruction}\n\nUser: {req.prompt}\nAssistant:",
+                        "stream": True,
+                        "options": {
+                            "temperature": req.temperature
+                        }
+                    }) as r:
+                        if r.status_code != 200:
+                            yield f"data: {json.dumps({'error': 'Ollama error status ' + str(r.status_code)})}\n\n"
+                            return
+                        async for line in r.aiter_lines():
+                            if line.strip():
+                                yield f"data: {line.strip()}\n\n"
+            except Exception as e:
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+        return StreamingResponse(stream_generator(), media_type="text/event-stream")
+
     cache_key = f"{req.model}:{req.prompt}:{req.system_prompt}"
     if cache_key in prompt_cache:
         entry = prompt_cache[cache_key]
         if time.time() - entry["timestamp"] < 300: # 5 minutes TTL
             return {"response": entry["response"], "cached": True}
 
-    system_instruction = req.system_prompt or "You are a helpful local assistant."
     payload = {
         "model": req.model,
         "prompt": f"{system_instruction}\n\nUser: {req.prompt}\nAssistant:",

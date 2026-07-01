@@ -275,24 +275,67 @@ export const aiService = {
     }
   },
 
-  getHardwareRecommendation() {
+  getHardwareRecommendation(installedModels: string[] = []) {
     const ram = (navigator as any).deviceMemory ? `${(navigator as any).deviceMemory} GB` : 'Unknown (estimated 8GB)';
     const ramValue = (navigator as any).deviceMemory || 8;
     const cores = navigator.hardwareConcurrency || 4;
     const hasWebGPU = !!(navigator as any).gpu;
 
     let tier: 'low' | 'medium' | 'high' = 'medium';
-    let recommendedModel = 'llama3.2:1b';
+    let recommendedModel = 'llama3.2:1b-instruct';
     let explanation = 'Balanced model offering good performance with low resource usage.';
 
     if (ramValue < 8 || cores < 6) {
       tier = 'low';
-      recommendedModel = 'qwen2.5:0.5b';
+      recommendedModel = 'qwen2.5:1.5b-instruct';
       explanation = 'Recommended for lighter hardware setups to ensure fast response times and low memory footprint.';
     } else if (ramValue >= 16) {
       tier = 'high';
-      recommendedModel = 'llama3:8b';
+      recommendedModel = 'qwen2.5:7b-instruct';
       explanation = 'High performance model offering advanced accuracy and contextual understanding on your machine.';
+    } else {
+      recommendedModel = 'llama3.2:3b-instruct';
+    }
+
+    // Adaptive Recommendation: Pick the best matching local model they already have downloaded!
+    if (installedModels.length > 0) {
+      const getModelSize = (name: string): number => {
+        const match = name.match(/(\d+(?:\.\d+)?)[bB]/);
+        return match ? parseFloat(match[1]) : 3.0; // default to 3B if unknown
+      };
+
+      let bestMatch = '';
+      if (tier === 'low') {
+        const lowModels = installedModels.filter(m => getModelSize(m) <= 2.5);
+        if (lowModels.length > 0) {
+          const instruct = lowModels.find(m => m.includes('instruct'));
+          bestMatch = instruct || lowModels[0];
+        }
+      } else if (tier === 'medium') {
+        const medModels = installedModels.filter(m => {
+          const s = getModelSize(m);
+          return s > 2 && s <= 5;
+        });
+        if (medModels.length > 0) {
+          const instruct = medModels.find(m => m.includes('instruct'));
+          bestMatch = instruct || medModels[0];
+        }
+      } else {
+        const highModels = installedModels.filter(m => getModelSize(m) >= 6);
+        if (highModels.length > 0) {
+          const instruct = highModels.find(m => m.includes('instruct'));
+          bestMatch = instruct || highModels[0];
+        }
+      }
+
+      if (bestMatch) {
+        recommendedModel = bestMatch;
+        explanation = `Selected from your local models (${bestMatch}) based on your system performance specs.`;
+      } else {
+        const instruct = installedModels.find(m => m.includes('instruct'));
+        recommendedModel = instruct || installedModels[0];
+        explanation = `Matched from your downloaded models (${recommendedModel}) to fit your active environment.`;
+      }
     }
 
     return { ram, cores, hasWebGPU, tier, recommendedModel, explanation };
@@ -340,17 +383,20 @@ export const aiService = {
       topK?: number;
       topP?: number;
       images?: string[];
+      onStream?: (chunk: string) => void;
     }
   ): Promise<string> {
     const savedModel = this.getSelectedOllamaModel();
     const model = modelOverride || savedModel || 'llama3.2:1b';
     
-    // Check prompt Cache first
+    // Check prompt Cache first (skip cache if streaming is requested)
     const cacheKey = `${model}:${prompt}:${options?.systemPrompt || ''}:${options?.temperature || 0.7}`;
-    const cached = generateTextCache[cacheKey];
-    if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
-      onProgress?.('Retrieved from local response cache...', 100);
-      return cached.response;
+    if (!options?.onStream) {
+      const cached = generateTextCache[cacheKey];
+      if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+        onProgress?.('Retrieved from local response cache...', 100);
+        return cached.response;
+      }
     }
 
     const provider = this.getProviderForModel(model);
@@ -364,22 +410,24 @@ export const aiService = {
     localMemory.logActivity('AI Chat Inquiry', 'Local AI', prompt.slice(0, 60) + (prompt.length > 60 ? '...' : ''));
     unifiedMemory.recordAction('AI Chat Inquiry', 'Local AI', prompt.slice(0, 60) + (prompt.length > 60 ? '...' : ''));
 
-    // Inject local memory context
+    // Inject local memory context into the SYSTEM prompt rather than user prompt
     const memoryContext = localMemory.getActivityContextString();
     const recallContext = await unifiedMemory.getRecallContext(prompt);
-    const augmentedPrompt = `${memoryContext}\n${recallContext}\n\nUser Request:\n${prompt}`;
+    
+    const baseSystem = options?.systemPrompt || "You are Domo, a helpful offline AI Assistant. Respond briefly and friendly.";
+    const dynamicSystemPrompt = `${baseSystem}\n\n[Domo Cognitive Context]\n${memoryContext}\n${recallContext}\n\nStrict Guidelines:\n- Incorporate the above user persona & history details naturally in your response if asked.\n- You are Domo, an offline assistant. Never claim to be made by third party cloud entities like Alibaba, OpenAI, or Google.`;
 
     try {
       let result = '';
       if (provider.type === 'local') {
         if (provider.id === 'ollama') {
-          result = await this.generateTextOllama(model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
+          result = await this.generateTextOllama(model, prompt, maxTokens, dynamicSystemPrompt, { ...options, onStream: options?.onStream });
         } else if (provider.id === 'lm_studio' || provider.id === 'vllm') {
           // OpenAI-compatible endpoint
-          result = await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
+          result = await this.callOpenAICompatible(endpoint, apiKey, model, prompt, maxTokens, dynamicSystemPrompt, { ...options, onStream: options?.onStream });
         } else if (provider.id === 'llamacpp') {
           // llama.cpp simple completion format
-          result = await this.callLlamaCpp(endpoint, augmentedPrompt, maxTokens, options?.systemPrompt);
+          result = await this.callLlamaCpp(endpoint, prompt, maxTokens, dynamicSystemPrompt);
         }
       } else {
         // Cloud providers
@@ -388,19 +436,21 @@ export const aiService = {
         }
 
         if (provider.id === 'openai' || provider.id === 'groq' || provider.id === 'together' || provider.id === 'openrouter') {
-          result = await this.callOpenAICompatible(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt, options);
+          result = await this.callOpenAICompatible(endpoint, apiKey, model, prompt, maxTokens, dynamicSystemPrompt, { ...options, onStream: options?.onStream });
         } else if (provider.id === 'gemini') {
-          result = await this.callGemini(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
+          result = await this.callGemini(endpoint, apiKey, model, prompt, maxTokens, dynamicSystemPrompt);
         } else if (provider.id === 'anthropic') {
-          result = await this.callAnthropic(endpoint, apiKey, model, augmentedPrompt, maxTokens, options?.systemPrompt);
+          result = await this.callAnthropic(endpoint, apiKey, model, prompt, maxTokens, dynamicSystemPrompt);
         }
       }
 
-      // Store success in cache
-      generateTextCache[cacheKey] = {
-        response: result,
-        timestamp: Date.now()
-      };
+      // Store success in cache (only if not streaming)
+      if (!options?.onStream) {
+        generateTextCache[cacheKey] = {
+          response: result,
+          timestamp: Date.now()
+        };
+      }
       return result;
     } catch (err: any) {
       console.warn(`Primary model invocation failed: ${err.message || err}. Initiating Local Ollama fallback.`);
@@ -412,12 +462,14 @@ export const aiService = {
         if (ollamaInfo.status && ollamaInfo.models.length > 0) {
           const fallbackModel = ollamaInfo.models.includes('qwen2.5:0.5b') ? 'qwen2.5:0.5b' : ollamaInfo.models[0];
           onProgress?.(`Offline fallback: generating via Ollama (${fallbackModel})...`, 80);
-          const fallbackRes = await this.generateTextOllama(fallbackModel, prompt, maxTokens, options?.systemPrompt, options);
+          const fallbackRes = await this.generateTextOllama(fallbackModel, prompt, maxTokens, dynamicSystemPrompt, { ...options, onStream: options?.onStream });
           
-          generateTextCache[cacheKey] = {
-            response: fallbackRes,
-            timestamp: Date.now()
-          };
+          if (!options?.onStream) {
+            generateTextCache[cacheKey] = {
+              response: fallbackRes,
+              timestamp: Date.now()
+            };
+          }
           return fallbackRes;
         }
       } catch (fallbackErr: any) {
@@ -427,10 +479,22 @@ export const aiService = {
       // If everything failed, return structured mock response so the user interface can continue to demo flawlessly
       onProgress?.('⚠️ Offline Simulation Mode activated...', 90);
       const simulationRes = this.simulateAgentCoding(prompt, model);
-      generateTextCache[cacheKey] = {
-        response: simulationRes,
-        timestamp: Date.now()
-      };
+      if (!options?.onStream) {
+        generateTextCache[cacheKey] = {
+          response: simulationRes,
+          timestamp: Date.now()
+        };
+      } else {
+        // Trigger progressive token updates for simulation mode
+        let currentText = '';
+        const words = simulationRes.split(' ');
+        for (let i = 0; i < words.length; i++) {
+          currentText += (i === 0 ? '' : ' ') + words[i];
+          options.onStream(currentText);
+          // Small sync delay simulation
+          await new Promise(r => setTimeout(r, 15));
+        }
+      }
       return simulationRes;
     }
 
@@ -442,8 +506,10 @@ export const aiService = {
     prompt: string,
     numPredict: number = 800,
     systemPrompt?: string,
-    options?: { temperature?: number; topK?: number; topP?: number; images?: string[] }
+    options?: { temperature?: number; topK?: number; topP?: number; images?: string[]; onStream?: (chunk: string) => void }
   ): Promise<string> {
+    const isStreaming = !!options?.onStream;
+
     // 1. Try routing through the local Python backend proxy (bypasses CORS & has caching)
     try {
       const proxyRes = await fetchWithTimeout('http://localhost:8000/api/chat', {
@@ -453,12 +519,41 @@ export const aiService = {
           model: model,
           prompt: prompt,
           system_prompt: systemPrompt,
-          temperature: options?.temperature || 0.7
+          temperature: options?.temperature || 0.7,
+          stream: isStreaming
         })
-      }, 12000);
+      }, 15000);
+
       if (proxyRes.ok) {
-        const data = await proxyRes.json();
-        return data.response || '';
+        if (isStreaming && proxyRes.body) {
+          const reader = proxyRes.body.getReader();
+          const decoder = new TextDecoder();
+          let responseText = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            
+            // SSE parse lines (each line starts with "data: ")
+            const lines = chunk.split('\n');
+            for (const line of lines) {
+              const cleaned = line.trim();
+              if (cleaned.startsWith('data:')) {
+                try {
+                  const parsed = JSON.parse(cleaned.slice(5).trim());
+                  if (parsed.response) {
+                    responseText += parsed.response;
+                    options.onStream?.(responseText);
+                  }
+                } catch (e) {}
+              }
+            }
+          }
+          return responseText;
+        } else {
+          const data = await proxyRes.json();
+          return data.response || '';
+        }
       }
     } catch (e) {
       // Local Python backend is offline, fall back to direct Ollama
@@ -474,7 +569,7 @@ export const aiService = {
         prompt: prompt,
         system: systemPrompt,
         images: options?.images,
-        stream: false,
+        stream: isStreaming,
         options: {
           num_predict: numPredict,
           temperature: options?.temperature || 0.7,
@@ -482,10 +577,39 @@ export const aiService = {
           top_p: options?.topP
         }
       })
-    }, 12000);
+    }, 15000);
+
     if (!res.ok) throw new Error('Ollama failed to generate text');
-    const data = await res.json();
-    return data.response || '';
+
+    if (isStreaming && res.body) {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let responseText = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        
+        // Ollama raw stream splits by newline
+        const lines = chunk.split('\n');
+        for (const line of lines) {
+          const cleaned = line.trim();
+          if (cleaned) {
+            try {
+              const parsed = JSON.parse(cleaned);
+              if (parsed.response) {
+                responseText += parsed.response;
+                options.onStream?.(responseText);
+              }
+            } catch (e) {}
+          }
+        }
+      }
+      return responseText;
+    } else {
+      const data = await res.json();
+      return data.response || '';
+    }
   },
 
   async callOpenAICompatible(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens: number, systemPrompt?: string, options?: any) {

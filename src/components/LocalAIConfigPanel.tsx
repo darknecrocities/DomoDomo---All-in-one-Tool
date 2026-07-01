@@ -74,8 +74,12 @@ export const LocalAIConfigPanel = ({
     };
 
     checkOllama();
-    setHardware(aiService.getHardwareRecommendation());
   }, [selectedModel, onModelChange]);
+
+  // Update hardware recommendation dynamically when models list resolves
+  useEffect(() => {
+    setHardware(aiService.getHardwareRecommendation(ollamaModels));
+  }, [ollamaModels]);
 
   const handleModelChange = (model: string) => {
     if (onModelChange) onModelChange(model);
