@@ -743,13 +743,13 @@ export const aiService = {
       setTimeout(() => reject(new Error('Local embedding generation timed out')), 3000)
     );
     
-    const embeddingPromise = (async () => {
+    const embeddingPromise: Promise<number[]> = (async () => {
       const pipe = await this.initEmbedder();
       const result = await pipe(text, { pooling: 'mean', normalize: true });
       return Array.from(result.data) as number[];
     })();
     
-    return Promise.race([embeddingPromise, timeoutPromise]);
+    return Promise.race<number[]>([embeddingPromise, timeoutPromise]);
   },
 
   // 3. Classification Pipeline - DistilBERT Sentiment
