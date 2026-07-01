@@ -33,3 +33,8 @@ backend/*.db
 backend/*.db-journal
 backend/*.db-wal
 backend/*.db-shm
+
+# Python Cache
+__pycache__/
+*.pyc
+**/__pycache__/
