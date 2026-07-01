@@ -12,6 +12,7 @@ import { BlogContainer } from './pages/BlogContainer';
 import { BlogPost } from './pages/BlogPost';
 import { AutoPilotProvider } from './tools/autopilot/AutoPilotProvider';
 import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilot';
+import { ScrollToTop } from './components/ScrollToTop';
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -33,6 +34,7 @@ function App() {
       <DoorSplash />
       {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />
