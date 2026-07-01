@@ -746,7 +746,7 @@ export const aiService = {
     const embeddingPromise = (async () => {
       const pipe = await this.initEmbedder();
       const result = await pipe(text, { pooling: 'mean', normalize: true });
-      return Array.from(result.data);
+      return Array.from(result.data) as number[];
     })();
     
     return Promise.race([embeddingPromise, timeoutPromise]);
