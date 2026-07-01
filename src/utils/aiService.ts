@@ -427,6 +427,27 @@ export const aiService = {
     systemPrompt?: string,
     options?: { temperature?: number; topK?: number; topP?: number; images?: string[] }
   ): Promise<string> {
+    // 1. Try routing through the local Python backend proxy (bypasses CORS & has caching)
+    try {
+      const proxyRes = await fetch('http://localhost:8000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: model,
+          prompt: prompt,
+          system_prompt: systemPrompt,
+          temperature: options?.temperature || 0.7
+        })
+      });
+      if (proxyRes.ok) {
+        const data = await proxyRes.json();
+        return data.response || '';
+      }
+    } catch (e) {
+      // Local Python backend is offline, fall back to direct Ollama
+    }
+
+    // 2. Direct fallback to Ollama endpoint (Port 11434)
     const endpoint = this.getCustomEndpoint('ollama') || 'http://localhost:11434';
     const res = await fetch(`${endpoint}/api/generate`, {
       method: 'POST',
@@ -576,9 +597,18 @@ export const aiService = {
   },
 
   async getEmbedding(text: string): Promise<number[]> {
-    const pipe = await this.initEmbedder();
-    const result = await pipe(text, { pooling: 'mean', normalize: true });
-    return Array.from(result.data);
+    // 3-second timeout prevents slow CDN loading from hanging the UI
+    const timeoutPromise = new Promise<number[]>((_, reject) => 
+      setTimeout(() => reject(new Error('Local embedding generation timed out')), 3000)
+    );
+    
+    const embeddingPromise = (async () => {
+      const pipe = await this.initEmbedder();
+      const result = await pipe(text, { pooling: 'mean', normalize: true });
+      return Array.from(result.data);
+    })();
+    
+    return Promise.race([embeddingPromise, timeoutPromise]);
   },
 
   // 3. Classification Pipeline - DistilBERT Sentiment
