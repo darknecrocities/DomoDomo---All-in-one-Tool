@@ -234,7 +234,7 @@ export const Documentation = () => {
               </p>
 
               {/* Cognitive Flow SVG Diagram */}
-              <div className="bg-[#111213] border border-[#2A2D30] p-6 rounded-2xl flex items-center justify-center overflow-x-auto">
+              <div className="bg-[#111213] border border-[#2A2D30] p-6 rounded-2xl flex flex-col items-center justify-center overflow-x-auto gap-4">
                 <svg width="600" height="340" viewBox="0 0 600 340" fill="none" className="min-w-[500px]">
                   {/* Outer boundary */}
                   <rect x="10" y="10" width="580" height="320" rx="12" fill="#18191B" stroke="#2A2D30" strokeWidth="2" />
@@ -285,11 +285,96 @@ export const Documentation = () => {
                     </marker>
                   </defs>
                 </svg>
+
+                {/* Storage Schema SVG */}
+                <svg width="600" height="280" viewBox="0 0 600 280" fill="none" className="min-w-[500px] border-t border-[#2A2D30] pt-4">
+                  <rect x="10" y="10" width="580" height="260" rx="12" fill="#18191B" stroke="#2A2D30" strokeWidth="2" />
+                  <text x="30" y="38" fill="#72706C" fontSize="9" fontFamily="monospace" fontWeight="bold">COGNITIVE DATA STORES & STORAGE SCHEMAS</text>
+
+                  {/* Group 1: Browser Storage */}
+                  <rect x="30" y="65" width="160" height="180" rx="8" fill="#111213" stroke="#2A2D30" />
+                  <text x="110" y="85" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Browser client (IndexedDB)</text>
+                  <rect x="45" y="105" width="130" height="30" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="110" y="123" fill="#A3A09B" fontSize="9" textAnchor="middle">User Identity / Profiles</text>
+                  <rect x="45" y="145" width="130" height="30" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="110" y="163" fill="#A3A09B" fontSize="9" textAnchor="middle">Recent Action Timelines</text>
+                  <rect x="45" y="185" width="130" height="30" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="110" y="203" fill="#A3A09B" fontSize="9" textAnchor="middle">Knowledge Vault Cache</text>
+
+                  {/* Arrow IDB -> SQLite */}
+                  <path d="M190 155 H230" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#schema-arrow)" />
+
+                  {/* Group 2: Local Python SQL Database */}
+                  <rect x="230" y="65" width="160" height="180" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <text x="310" y="85" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Python Backend (SQLite)</text>
+                  <rect x="245" y="105" width="130" height="40" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="310" y="121" fill="#A3A09B" fontSize="9" textAnchor="middle">Activity DB Events</text>
+                  <text x="310" y="136" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Table: activityevent</text>
+                  <rect x="245" y="160" width="130" height="55" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
+                  <text x="310" y="176" fill="#ECEBE9" fontSize="9" textAnchor="middle" fontWeight="bold">Vector Thoughts Table</text>
+                  <text x="310" y="191" fill="#3C6B4D" fontSize="8" fontFamily="monospace" textAnchor="middle">content + embedding_json</text>
+                  <text x="310" y="203" fill="#72706C" fontSize="7" fontFamily="monospace" textAnchor="middle">Table: thought</text>
+
+                  {/* Arrow SQLite -> MD Journal */}
+                  <path d="M390 155 H430" stroke="#E29E2D" strokeWidth="1.5" markerEnd="url(#schema-arrow)" />
+
+                  {/* Group 3: Local Workspace File */}
+                  <rect x="430" y="65" width="140" height="180" rx="8" fill="#111213" stroke="#E29E2D" strokeWidth="1" />
+                  <text x="500" y="85" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Local Workspace</text>
+                  <rect x="442" y="115" width="116" height="85" rx="4" fill="#18191B" stroke="#E29E2D" />
+                  <text x="500" y="140" fill="#ECEBE9" fontSize="10" textAnchor="middle" fontWeight="bold">domo_journal.md</text>
+                  <text x="500" y="160" fill="#A3A09B" fontSize="8" textAnchor="middle">AI Cognitive Reflections</text>
+                  <text x="500" y="175" fill="#72706C" fontSize="8" textAnchor="middle">Append-Only / Plain-text</text>
+
+                  <defs>
+                    <marker id="schema-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                    </marker>
+                  </defs>
+                </svg>
               </div>
 
-              {/* Advantages section */}
-              <div className="flex flex-col gap-3.5 text-xs text-left">
-                <h3 className="font-bold text-[#ECEBE9] text-sm">Comparison & Architecture Advantages</h3>
+              {/* Core Component Specifications Deep-Dives */}
+              <div className="flex flex-col gap-6 text-xs text-left">
+                {/* 1. Unified Memory Systems */}
+                <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
+                  <span className="text-xs uppercase tracking-wider text-[#3C6B4D] font-bold">1. Unified Memory Architecture</span>
+                  <p className="text-[#A3A09B] leading-relaxed">
+                    DomoDomo's memory layout combines fast IndexedDB caching (for lightweight dashboard timelines, preferred tools, and user profile metadata) with a local SQLite database running Write-Ahead Logging (WAL) mode for complex semantic vector operations:
+                  </p>
+                  <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
+                    <li><strong className="text-[#ECEBE9]">Profile & Habit Engine</strong>: Built over browser IndexedDB, saving telemetry-free event hashes (e.g. tools accessed, categories). The client dynamically compiles a user habit string summarizing the work environment (e.g. <i>"Frequent PDF tool user active in dev hours"</i>).</li>
+                    <li><strong className="text-[#ECEBE9]">SQLite WAL Vector Store</strong>: In the backend, python models store user thoughts/logs alongside their vector embeddings. Using math vector dot-products normalized for length, it computes cosine similarities locally in under 5ms, avoiding the need for dedicated vector database servers.</li>
+                    <li><strong className="text-[#ECEBE9]">Deterministic Hashing Fallback</strong>: If the local Ollama embeddings pipeline is offline or not installed, the engine hashes text into stable mock arrays. This keeps similarity metrics functional for offline testing.</li>
+                  </ul>
+                </div>
+
+                {/* 2. Persistent Cognitive Journals */}
+                <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
+                  <span className="text-xs uppercase tracking-wider text-[#E29E2D] font-bold">2. Local AI Cognitive Journals</span>
+                  <p className="text-[#A3A09B] leading-relaxed">
+                    Rather than keeping AI interactions locked inside ephemeral database tables or browser memory, DomoDomo compiles history dynamically into an append-only Markdown document <code className="text-[#E29E2D] font-mono text-[10px]">domo_journal.md</code> located in the root of your workspace:
+                  </p>
+                  <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
+                    <li><strong className="text-[#ECEBE9]">LLM Self-Reflection Logs</strong>: The backend triggers a background task prompting your active Ollama model to write a journal reflection about the interaction. This log documents the AI's internal thoughts, feelings, and learnings in first-person (<i>"I felt..."</i>) to establish cognitive continuity.</li>
+                    <li><strong className="text-[#ECEBE9]">Git-Ignored Sovereignty</strong>: The journal file is strictly listed under <code className="text-[#E29E2D] font-mono text-[10px] bg-[#18191B] px-1 py-0.5 rounded">.gitignore</code>, ensuring it remains local and private, never uploaded to GitHub or shared origins.</li>
+                  </ul>
+                </div>
+
+                {/* 3. Local Artifacts & Agent Knowledge */}
+                <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
+                  <span className="text-xs uppercase tracking-wider text-[#72706C] font-bold">3. Local Artifacts & Agent Knowledge</span>
+                  <p className="text-[#A3A09B] leading-relaxed">
+                    Local documents and parsed assets act as context artifacts that feed back into the AI. RAG searches retrieve matches from SQLite, inject them into the system prompt constraints, and guide the local model's responses:
+                  </p>
+                  <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
+                    <li><strong className="text-[#ECEBE9]">System Prompt Injection</strong>: Memories and RAG documents are injected into the system prompt parameters of the Ollama request. This protects smaller, lightweight local models from hallucination and prompt confusion.</li>
+                    <li><strong className="text-[#ECEBE9]">Document Parsing Artifacts</strong>: File inputs are parsed locally via client WASM (e.g. PDF token streams) or HTML5 Canvas coordinates. These parsed strings are formatted as structured knowledge chunks, providing immediate background facts to guide your chat prompts.</li>
+                  </ul>
+                </div>
+
+                {/* Advantages section */}
+                <h3 className="font-bold text-[#ECEBE9] text-sm mt-3">Comparison & Architecture Advantages</h3>
                 <p className="text-[#A3A09B] leading-relaxed">
                   Compared to traditional cloud-based AI solutions (like ChatGPT Plus or Claude Web UI) or generic local wrappers, DomoDomo's localized cognitive architecture offers key security and performance advantages:
                 </p>
