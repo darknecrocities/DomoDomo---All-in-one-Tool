@@ -33,6 +33,8 @@ backend/*.db
 backend/*.db-journal
 backend/*.db-wal
 backend/*.db-shm
+domo_journal.md
+
 
 # Python Cache
 __pycache__/
