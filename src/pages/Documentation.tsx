@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, BookOpen, Cpu, Shield, Terminal, Settings, GitBranch, Lock, Server, Layers } from 'lucide-react';
+import { ArrowLeft, BookOpen, Cpu, Shield, Terminal, Settings, GitBranch, Lock, Server, Layers, Brain } from 'lucide-react';
 import { TOOLS_DOCS } from '../utils/ToolDocsData';
 import type { ToolCategory } from '../utils/ToolDocsData';
 
-type SectionId = 'intro' | 'sys-archi' | 'offline-flow' | 'tools-ref' | 'setup-guide' | 'core-engines' | 'compliance';
+type SectionId = 'intro' | 'sys-archi' | 'offline-flow' | 'local-ai-spec' | 'tools-ref' | 'setup-guide' | 'core-engines' | 'compliance';
 
 export const Documentation = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ export const Documentation = () => {
     { id: 'intro', label: 'Introduction', icon: BookOpen },
     { id: 'sys-archi', label: 'System Architecture', icon: GitBranch },
     { id: 'offline-flow', label: 'Offline Flowchart', icon: Cpu },
+    { id: 'local-ai-spec', label: 'Local AI & Cognitive Flow', icon: Brain },
     { id: 'tools-ref', label: 'Tools Reference', icon: Layers },
     { id: 'setup-guide', label: 'Setup & Install', icon: Terminal },
     { id: 'core-engines', label: 'Core Web Engines', icon: Settings },
@@ -221,6 +222,116 @@ export const Documentation = () => {
                     </marker>
                   </defs>
                 </svg>
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'local-ai-spec' && (
+            <div className="flex flex-col gap-6">
+              <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">Local AI & Cognitive Flow</h2>
+              <p className="text-[#A3A09B] text-xs md:text-sm leading-relaxed">
+                DomoDomo implements a zero-cloud local RAG (Retrieval-Augmented Generation) loop and a persistent, append-only markdown journal. This combines high-speed, CORS-free proxying with asynchronous AI cognitive logs.
+              </p>
+
+              {/* Cognitive Flow SVG Diagram */}
+              <div className="bg-[#111213] border border-[#2A2D30] p-6 rounded-2xl flex items-center justify-center overflow-x-auto">
+                <svg width="600" height="340" viewBox="0 0 600 340" fill="none" className="min-w-[500px]">
+                  {/* Outer boundary */}
+                  <rect x="10" y="10" width="580" height="320" rx="12" fill="#18191B" stroke="#2A2D30" strokeWidth="2" />
+                  <text x="30" y="38" fill="#72706C" fontSize="9" fontFamily="monospace" fontWeight="bold">LOCAL COGNITIVE MEMORY & RAG PROCESS FLOW</text>
+
+                  {/* Node 1: User Input */}
+                  <rect x="30" y="130" width="110" height="60" rx="8" fill="#111213" stroke="#2A2D30" />
+                  <text x="85" y="152" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">User Request</text>
+                  <text x="85" y="170" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Chat / Log event</text>
+
+                  {/* Arrow 1: User -> Ollama Proxy */}
+                  <path d="M140 160 H210" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+
+                  {/* Node 2: Ollama Proxy */}
+                  <rect x="210" y="125" width="130" height="70" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <text x="275" y="145" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Ollama Proxy</text>
+                  <text x="275" y="163" fill="#3C6B4D" fontSize="8" fontFamily="monospace" textAnchor="middle">FastAPI (Port 8000)</text>
+                  <text x="275" y="178" fill="#A3A09B" fontSize="8" fontFamily="sans-serif" textAnchor="middle">Bypasses CORS & Caches</text>
+
+                  {/* Arrow 2: Proxy -> SQLite Vector DB */}
+                  <path d="M275 125 V75 H370" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+                  <text x="310" y="70" fill="#72706C" fontSize="8" fontFamily="sans-serif">Vector Search</text>
+
+                  {/* Node 3: SQLite Vector Store */}
+                  <rect x="370" y="45" width="180" height="60" rx="8" fill="#111213" stroke="#2A2D30" />
+                  <text x="460" y="67" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">SQLite DB (WAL Mode)</text>
+                  <text x="460" y="85" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Cosine Similarity / RAG</text>
+
+                  {/* Arrow 3: SQLite -> Proxy (Context injection) */}
+                  <path d="M370 90 H300 V125" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+
+                  {/* Arrow 4: Proxy -> Local Journal (Async task) */}
+                  <path d="M275 195 V255 H370" stroke="#E29E2D" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#cog-arrow)" />
+                  <text x="310" y="248" fill="#E29E2D" fontSize="8" fontFamily="sans-serif">Async Logging</text>
+
+                  {/* Node 4: Cognitive Journal */}
+                  <rect x="370" y="225" width="180" height="60" rx="8" fill="#111213" stroke="#E29E2D" />
+                  <text x="460" y="247" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">domo_journal.md</text>
+                  <text x="460" y="265" fill="#E29E2D" fontSize="8" fontFamily="monospace" textAnchor="middle">Append-Only MD Logs</text>
+
+                  {/* Return Arrow: Proxy -> User */}
+                  <path d="M210 175 H140" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+                  <text x="175" y="188" fill="#3C6B4D" fontSize="8" fontFamily="sans-serif" textAnchor="middle">SSE Stream</text>
+
+                  <defs>
+                    <marker id="cog-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                    </marker>
+                  </defs>
+                </svg>
+              </div>
+
+              {/* Advantages section */}
+              <div className="flex flex-col gap-3.5 text-xs text-left">
+                <h3 className="font-bold text-[#ECEBE9] text-sm">Comparison & Architecture Advantages</h3>
+                <p className="text-[#A3A09B] leading-relaxed">
+                  Compared to traditional cloud-based AI solutions (like ChatGPT Plus or Claude Web UI) or generic local wrappers, DomoDomo's localized cognitive architecture offers key security and performance advantages:
+                </p>
+
+                <div className="overflow-x-auto mt-2">
+                  <table className="w-full text-left border-collapse border border-[#2A2D30] text-[11px]">
+                    <thead>
+                      <tr className="bg-[#111213] border-b border-[#2A2D30] text-[#ECEBE9]">
+                        <th className="p-3 border-r border-[#2A2D30] font-bold">Feature Metric</th>
+                        <th className="p-3 border-r border-[#2A2D30] font-bold text-[#3C6B4D]">DomoDomo Local RAG</th>
+                        <th className="p-3 font-bold text-[#E29E2D]">Standard Cloud AI Systems</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-[#A3A09B] divide-y divide-[#2A2D30]">
+                      <tr className="hover:bg-[#111213]/40">
+                        <td className="p-3 font-bold text-[#ECEBE9] border-r border-[#2A2D30]">Data Sovereignty</td>
+                        <td className="p-3 border-r border-[#2A2D30] text-[#ECEBE9]">100% Client-Side. No files or chat entries leave localhost.</td>
+                        <td className="p-3">Data transmitted to third-party endpoints, raising leak risks.</td>
+                      </tr>
+                      <tr className="hover:bg-[#111213]/40">
+                        <td className="p-3 font-bold text-[#ECEBE9] border-r border-[#2A2D30]">Operational Cost</td>
+                        <td className="p-3 border-r border-[#2A2D30] text-[#ECEBE9]">Zero subscription fees. Free unlimited local compute.</td>
+                        <td className="p-3">Requires monthly subscriptions or pay-per-token API credits.</td>
+                      </tr>
+                      <tr className="hover:bg-[#111213]/40">
+                        <td className="p-3 font-bold text-[#ECEBE9] border-r border-[#2A2D30]">Offline Capability</td>
+                        <td className="p-3 border-r border-[#2A2D30] text-[#ECEBE9]">Runs fully offline. Network is not required to chat or query vectors.</td>
+                        <td className="p-3">Becomes useless if internet connection drops or API servers go down.</td>
+                      </tr>
+                      <tr className="hover:bg-[#111213]/40">
+                        <td className="p-3 font-bold text-[#ECEBE9] border-r border-[#2A2D30]">CORS & Loading Latency</td>
+                        <td className="p-3 border-r border-[#2A2D30] text-[#ECEBE9]">Bypassed via local proxy. Streaming chunks render under 300ms.</td>
+                        <td className="p-3">Blocked by browser CORS or high queuing latency during traffic peaks.</td>
+                      </tr>
+                      <tr className="hover:bg-[#111213]/40">
+                        <td className="p-3 font-bold text-[#ECEBE9] border-r border-[#2A2D30]">Memory Persistence</td>
+                        <td className="p-3 border-r border-[#2A2D30] text-[#ECEBE9]">Structured sqlite vector tables synced dynamically to a plain-text journal.</td>
+                        <td className="p-3">Volatile memory or server-managed databases with no plain-text access.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
