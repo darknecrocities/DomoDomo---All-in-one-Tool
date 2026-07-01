@@ -14,6 +14,23 @@ const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
 // Progress callback interface
 export type LoadingProgressCallback = (status: string, progress: number) => void;
 
+// Helper to fetch with an explicit timeout (in milliseconds) to prevent hangs
+async function fetchWithTimeout(url: string, options: any = {}, timeoutMs = 8000): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+}
+
 // Get or dynamically import Transformers.js from CDN
 export async function getTransformers() {
   if (transformersModule) return transformersModule;
@@ -169,7 +186,7 @@ export const aiService = {
   async checkOllama(): Promise<{ status: boolean; models: string[] }> {
     try {
       const endpoint = this.getCustomEndpoint('ollama') || 'http://localhost:11434';
-      const res = await fetch(`${endpoint}/api/tags`);
+      const res = await fetchWithTimeout(`${endpoint}/api/tags`, {}, 1500);
       if (!res.ok) return { status: false, models: [] };
       const data = await res.json();
       const models = (data.models || []).map((m: any) => m.name);
@@ -429,7 +446,7 @@ export const aiService = {
   ): Promise<string> {
     // 1. Try routing through the local Python backend proxy (bypasses CORS & has caching)
     try {
-      const proxyRes = await fetch('http://localhost:8000/api/chat', {
+      const proxyRes = await fetchWithTimeout('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -438,7 +455,7 @@ export const aiService = {
           system_prompt: systemPrompt,
           temperature: options?.temperature || 0.7
         })
-      });
+      }, 12000);
       if (proxyRes.ok) {
         const data = await proxyRes.json();
         return data.response || '';
@@ -449,7 +466,7 @@ export const aiService = {
 
     // 2. Direct fallback to Ollama endpoint (Port 11434)
     const endpoint = this.getCustomEndpoint('ollama') || 'http://localhost:11434';
-    const res = await fetch(`${endpoint}/api/generate`, {
+    const res = await fetchWithTimeout(`${endpoint}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -465,7 +482,7 @@ export const aiService = {
           top_p: options?.topP
         }
       })
-    });
+    }, 12000);
     if (!res.ok) throw new Error('Ollama failed to generate text');
     const data = await res.json();
     return data.response || '';
@@ -479,7 +496,7 @@ export const aiService = {
     if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
     messages.push({ role: 'user', content: prompt });
 
-    const res = await fetch(`${endpoint}/chat/completions`, {
+    const res = await fetchWithTimeout(`${endpoint}/chat/completions`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -488,7 +505,7 @@ export const aiService = {
         max_tokens: maxTokens,
         temperature: options?.temperature || 0.7
       })
-    });
+    }, 15000);
     if (!res.ok) throw new Error(`OpenAI compatibility endpoint failed: ${res.statusText}`);
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '';
@@ -500,7 +517,7 @@ export const aiService = {
     const contents = [{ parts: [{ text: prompt }] }];
     const systemInstruction = systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined;
 
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -511,7 +528,7 @@ export const aiService = {
           temperature: 0.7
         }
       })
-    });
+    }, 15000);
     if (!res.ok) throw new Error(`Gemini API failed: ${res.statusText}`);
     const data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -519,7 +536,7 @@ export const aiService = {
 
   async callAnthropic(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens: number, systemPrompt?: string) {
     // Note: Browser fetch to Anthropic usually triggers CORS block. We implement this for completeness.
-    const res = await fetch(`${endpoint}/messages`, {
+    const res = await fetchWithTimeout(`${endpoint}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -533,7 +550,7 @@ export const aiService = {
         system: systemPrompt,
         messages: [{ role: 'user', content: prompt }]
       })
-    });
+    }, 15000);
     if (!res.ok) throw new Error(`Anthropic API failed: ${res.statusText}`);
     const data = await res.json();
     return data.content?.[0]?.text || '';
@@ -541,14 +558,14 @@ export const aiService = {
 
   async callLlamaCpp(endpoint: string, prompt: string, maxTokens: number, systemPrompt?: string) {
     const fullPrompt = systemPrompt ? `${systemPrompt}\n\nUser: ${prompt}\nAssistant:` : prompt;
-    const res = await fetch(`${endpoint}/completion`, {
+    const res = await fetchWithTimeout(`${endpoint}/completion`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: fullPrompt,
         n_predict: maxTokens
       })
-    });
+    }, 15000);
     if (!res.ok) throw new Error(`llama.cpp completion failed: ${res.statusText}`);
     const data = await res.json();
     return data.content || '';
