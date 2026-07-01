@@ -382,7 +382,6 @@ export const unifiedMemory = {
 
   async searchKnowledge(queryText: string, limit = 4): Promise<Array<{ text: string; score: number; source: string }>> {
     try {
-      await aiService.initEmbedder();
       const queryEmbedding = await aiService.getEmbedding(queryText);
 
       const allChunks = await getCachedChunks();
