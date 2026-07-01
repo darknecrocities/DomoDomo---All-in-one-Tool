@@ -332,6 +332,49 @@ export const Documentation = () => {
                     </marker>
                   </defs>
                 </svg>
+
+                {/* Vector Similarity Sequence SVG */}
+                <svg width="600" height="300" viewBox="0 0 600 300" fill="none" className="min-w-[500px] border-t border-[#2A2D30] pt-4">
+                  <rect x="10" y="10" width="580" height="280" rx="12" fill="#18191B" stroke="#2A2D30" strokeWidth="2" />
+                  <text x="30" y="38" fill="#72706C" fontSize="9" fontFamily="monospace" fontWeight="bold">VECTOR EMBEDDING & COSINE SIMILARITY PIPELINE</text>
+
+                  {/* Input Query */}
+                  <rect x="30" y="125" width="100" height="50" rx="6" fill="#111213" stroke="#2A2D30" />
+                  <text x="80" y="145" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Input String</text>
+                  <text x="80" y="160" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">"coding sports"</text>
+
+                  {/* Arrow 1 */}
+                  <path d="M130 150 H180" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#sim-arrow)" />
+
+                  {/* Embedding Generator */}
+                  <rect x="180" y="115" width="140" height="70" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <text x="250" y="135" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Embedding Engine</text>
+                  <text x="250" y="153" fill="#3C6B4D" fontSize="8" fontFamily="monospace" textAnchor="middle">all-MiniLM-L6-v2</text>
+                  <text x="250" y="168" fill="#A3A09B" fontSize="8" fontFamily="sans-serif" textAnchor="middle">384-Dimension Vector</text>
+
+                  {/* Arrow 2 */}
+                  <path d="M320 150 H370" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#sim-arrow)" />
+
+                  {/* Vector Array Output */}
+                  <rect x="370" y="125" width="120" height="50" rx="6" fill="#111213" stroke="#2A2D30" />
+                  <text x="430" y="143" fill="#ECEBE9" fontSize="9" fontFamily="monospace" textAnchor="middle" fontWeight="bold">[0.12, -0.45, 0.78, ...]</text>
+                  <text x="430" y="158" fill="#72706C" fontSize="8" fontFamily="sans-serif" textAnchor="middle">Float32 Bounding Array</text>
+
+                  {/* Formula Calculation Box */}
+                  <rect x="140" y="215" width="340" height="50" rx="8" fill="#111213" stroke="#E29E2D" strokeDasharray="3 3" />
+                  <text x="310" y="235" fill="#ECEBE9" fontSize="9" fontFamily="monospace" textAnchor="middle">Cosine Similarity = (A • B) / (||A|| * ||B||)</text>
+                  <text x="310" y="250" fill="#E29E2D" fontSize="8" fontFamily="sans-serif" textAnchor="middle">Evaluated in Python via SqlModel in &lt; 5ms</text>
+
+                  {/* Link vector to formula */}
+                  <path d="M430 175 V215" stroke="#E29E2D" strokeWidth="1" strokeDasharray="2 2" />
+                  <path d="M250 185 V215" stroke="#E29E2D" strokeWidth="1" strokeDasharray="2 2" />
+
+                  <defs>
+                    <marker id="sim-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                    </marker>
+                  </defs>
+                </svg>
               </div>
 
               {/* Core Component Specifications Deep-Dives */}
@@ -340,12 +383,12 @@ export const Documentation = () => {
                 <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
                   <span className="text-xs uppercase tracking-wider text-[#3C6B4D] font-bold">1. Unified Memory Architecture</span>
                   <p className="text-[#A3A09B] leading-relaxed">
-                    DomoDomo's memory layout combines fast IndexedDB caching (for lightweight dashboard timelines, preferred tools, and user profile metadata) with a local SQLite database running Write-Ahead Logging (WAL) mode for complex semantic vector operations:
+                    DomoDomo's memory layout coordinates browser-local caches and background SQL systems to ensure context continuity:
                   </p>
                   <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
-                    <li><strong className="text-[#ECEBE9]">Profile & Habit Engine</strong>: Built over browser IndexedDB, saving telemetry-free event hashes (e.g. tools accessed, categories). The client dynamically compiles a user habit string summarizing the work environment (e.g. <i>"Frequent PDF tool user active in dev hours"</i>).</li>
-                    <li><strong className="text-[#ECEBE9]">SQLite WAL Vector Store</strong>: In the backend, python models store user thoughts/logs alongside their vector embeddings. Using math vector dot-products normalized for length, it computes cosine similarities locally in under 5ms, avoiding the need for dedicated vector database servers.</li>
-                    <li><strong className="text-[#ECEBE9]">Deterministic Hashing Fallback</strong>: If the local Ollama embeddings pipeline is offline or not installed, the engine hashes text into stable mock arrays. This keeps similarity metrics functional for offline testing.</li>
+                    <li><strong className="text-[#ECEBE9]">Dual-Database Synapse Model</strong>: Combines client-side IndexedDB databases (timelines, logs, settings) with a python-side SQLite database running in Write-Ahead Logging (WAL) mode for complex semantic vector operations and SQLModel schemas.</li>
+                    <li><strong className="text-[#ECEBE9]">Cosine Similarity Mechanics</strong>: Calculates cosine similarities locally using dot product vector multiplication. Prompts trigger searches matching query vector A against database vector B to score similarity values.</li>
+                    <li><strong className="text-[#ECEBE9]">Deterministic Array Fallbacks</strong>: Generates stable, deterministic float arrays if transformers.js or local ports hit a 3-second network deadline, maintaining logical stability.</li>
                   </ul>
                 </div>
 
@@ -353,11 +396,12 @@ export const Documentation = () => {
                 <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
                   <span className="text-xs uppercase tracking-wider text-[#E29E2D] font-bold">2. Local AI Cognitive Journals</span>
                   <p className="text-[#A3A09B] leading-relaxed">
-                    Rather than keeping AI interactions locked inside ephemeral database tables or browser memory, DomoDomo compiles history dynamically into an append-only Markdown document <code className="text-[#E29E2D] font-mono text-[10px]">domo_journal.md</code> located in the root of your workspace:
+                    DomoDomo compiles user session reflections and AI insights into a persistent, append-only Markdown document <code className="text-[#E29E2D] font-mono text-[10px]">domo_journal.md</code> located in the root of your workspace:
                   </p>
                   <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
-                    <li><strong className="text-[#ECEBE9]">LLM Self-Reflection Logs</strong>: The backend triggers a background task prompting your active Ollama model to write a journal reflection about the interaction. This log documents the AI's internal thoughts, feelings, and learnings in first-person (<i>"I felt..."</i>) to establish cognitive continuity.</li>
-                    <li><strong className="text-[#ECEBE9]">Git-Ignored Sovereignty</strong>: The journal file is strictly listed under <code className="text-[#E29E2D] font-mono text-[10px] bg-[#18191B] px-1 py-0.5 rounded">.gitignore</code>, ensuring it remains local and private, never uploaded to GitHub or shared origins.</li>
+                    <li><strong className="text-[#ECEBE9]">Asynchronous Background Workers</strong>: Logs are written using FastAPI's <code className="text-[#ECEBE9] font-mono text-[10px]">BackgroundTasks</code> worker threads. Reflections compile after the server delivers the client stream, keeping response times snappy.</li>
+                    <li><strong className="text-[#ECEBE9]">Model Reflection Persona</strong>: Prompts command Ollama to write in the first-person as a reflective, offline AI, recording its internal state, feelings, and learnings.</li>
+                    <li><strong className="text-[#ECEBE9]">Git-Ignored Isolation</strong>: Listed under the root <code className="text-[#E29E2D] font-mono text-[10px] bg-[#18191B] px-1 py-0.5 rounded">.gitignore</code> file to prevent telemetry or private logging leaks to public version control.</li>
                   </ul>
                 </div>
 
@@ -368,8 +412,9 @@ export const Documentation = () => {
                     Local documents and parsed assets act as context artifacts that feed back into the AI. RAG searches retrieve matches from SQLite, inject them into the system prompt constraints, and guide the local model's responses:
                   </p>
                   <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
-                    <li><strong className="text-[#ECEBE9]">System Prompt Injection</strong>: Memories and RAG documents are injected into the system prompt parameters of the Ollama request. This protects smaller, lightweight local models from hallucination and prompt confusion.</li>
-                    <li><strong className="text-[#ECEBE9]">Document Parsing Artifacts</strong>: File inputs are parsed locally via client WASM (e.g. PDF token streams) or HTML5 Canvas coordinates. These parsed strings are formatted as structured knowledge chunks, providing immediate background facts to guide your chat prompts.</li>
+                    <li><strong className="text-[#ECEBE9]">RAG Prompt Constraints</strong>: Selects matching thought nodes with a similarity score greater than or equal to 0.35 and isolates the top 3 matches to keep prompt payloads under model context limits.</li>
+                    <li><strong className="text-[#ECEBE9]">System Prompt Shielding</strong>: Injects memory blocks into the system prompt parameters instead of appending them to the user message. This protects smaller local models from context drift.</li>
+                    <li><strong className="text-[#ECEBE9]">Document Parsing Artifacts</strong>: Parses files natively via WebAssembly (PDF stream readers) and HTML5 Canvas coordinate matrices. These strings serve as factual artifacts to augment chat responses.</li>
                   </ul>
                 </div>
 
