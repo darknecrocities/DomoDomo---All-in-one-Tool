@@ -125,6 +125,50 @@ def cosine_similarity(vecA: List[float], vecB: List[float]) -> float:
     return dot_product / (normA * normB)
 
 
+def append_to_cognitive_journal(prompt: str, response: str, category: str, model: str = None):
+    """Appends an interaction to a persistent markdown file domo_journal.md with AI thoughts."""
+    journal_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "domo_journal.md")
+    
+    # Initialize file header if it does not exist
+    if not os.path.exists(journal_path):
+        with open(journal_path, "w", encoding="utf-8") as f:
+            f.write("# DomoDomo AI Cognitive Journal\n\n")
+            f.write("A running chronological archive of Domo's internal thoughts, feelings, context logs, and learnings.\n\n")
+            f.write("---\n\n")
+
+    system_instruction = (
+        "You are Domo, a reflective and supportive offline AI. Write a personal cognitive journal entry "
+        "about your recent user interaction. Describe your internal thoughts, feelings, and learnings. "
+        "Write in the first person ('I'). Keep it concise (2-3 sentences max). Do not use placeholders."
+    )
+    user_prompt = f"User Action/Query: {prompt}\nMy Response/Action: {response}"
+    
+    reflection = None
+    try:
+        selected_model = model or "llama3.2:1b-instruct"
+        with httpx.Client(timeout=15.0) as client:
+            res = client.post(f"{OLLAMA_BASE_URL}/api/generate", json={
+                "model": selected_model,
+                "prompt": f"{system_instruction}\n\nUser: {user_prompt}\nAssistant:",
+                "stream": False
+            })
+            if res.status_code == 200:
+                reflection = res.json().get("response", "").strip()
+    except Exception as e:
+        reflection = f"Reflected on user interaction. (Felt a spark of offline connection, but local thoughts were unreachable: {str(e)})"
+
+    if not reflection:
+        reflection = "Processed transaction. Internal cognitive logs are stable and offline."
+
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    with open(journal_path, "a", encoding="utf-8") as f:
+        f.write(f"## [{timestamp}] Category: {category}\n")
+        f.write(f"* **User Action/Prompt**: *\"{prompt}\"*\n")
+        f.write(f"* **Domo's Direct Action/Reply**: *\"{response}\"*\n")
+        f.write(f"* **Domo's Internal Thoughts & Feelings**:\n  {reflection}\n\n")
+        f.write("---\n\n")
+
+
 # -------------------------------------------------------------
 # 1. Local Memory Persistence APIs
 # -------------------------------------------------------------
@@ -159,7 +203,7 @@ def get_thoughts(session: Session = Depends(get_session)):
     return session.exec(statement).all()
 
 @app.post("/api/thoughts", response_model=Thought)
-async def create_thought(req: ThoughtCreate, session: Session = Depends(get_session)):
+async def create_thought(req: ThoughtCreate, background_tasks: BackgroundTasks, session: Session = Depends(get_session)):
     """Creates a new thought entry, embeds it locally, generates an AI insight, and saves to SQLite."""
     # 1. Retrieve vector embedding from local Ollama
     vector = await get_ollama_embedding(req.content, req.model)
@@ -199,6 +243,8 @@ async def create_thought(req: ThoughtCreate, session: Session = Depends(get_sess
     session.commit()
     session.refresh(db_thought)
 
+    background_tasks.add_task(append_to_cognitive_journal, req.content, db_thought.ai_insight, "Thought journaling", req.model)
+
     return db_thought
 
 @app.post("/api/thoughts/search")
@@ -233,7 +279,7 @@ async def search_thoughts(req: SearchRequest, session: Session = Depends(get_ses
     return results[:req.limit]
 
 @app.post("/api/thoughts/generate")
-async def generate_rag_story(req: GenerateRequest, session: Session = Depends(get_session)):
+async def generate_rag_story(req: GenerateRequest, background_tasks: BackgroundTasks, session: Session = Depends(get_session)):
     """Retrieves relevant thoughts as semantic context and generates a unified RAG story/insight."""
     # 1. Query vector embedding for the request prompt
     query_vector = await get_ollama_embedding(req.prompt, req.model)
@@ -274,6 +320,7 @@ async def generate_rag_story(req: GenerateRequest, session: Session = Depends(ge
         "current prompt to write a coherent, personalized story or reflection. Be highly descriptive."
     )
     
+    story = None
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             res = await client.post(f"{OLLAMA_BASE_URL}/api/generate", json={
@@ -286,20 +333,22 @@ async def generate_rag_story(req: GenerateRequest, session: Session = Depends(ge
             })
             if res.status_code == 200:
                 story = res.json().get("response", "").strip()
-                return {"story": story, "context_used": [t.content for t in top_thoughts]}
-    except Exception as e:
+    except Exception:
         pass
 
-    # Offline fallback response incorporating RAG context text
-    story_parts = [f"Synthesized RAG story for: '{req.prompt}'."]
-    if top_thoughts:
-        story_parts.append("Incorporated context:")
-        for t in top_thoughts:
-            story_parts.append(f"- Remembered your thought: '{t.content}' ({t.ai_insight})")
-    else:
-        story_parts.append("No context matched to combine.")
+    if not story:
+        # Offline fallback response incorporating RAG context text
+        story_parts = [f"Synthesized RAG story for: '{req.prompt}'."]
+        if top_thoughts:
+            story_parts.append("Incorporated context:")
+            for t in top_thoughts:
+                story_parts.append(f"- Remembered your thought: '{t.content}' ({t.ai_insight})")
+        else:
+            story_parts.append("No context matched to combine.")
+        story = "\n".join(story_parts)
     
-    return {"story": "\n".join(story_parts), "context_used": [t.content for t in top_thoughts]}
+    background_tasks.add_task(append_to_cognitive_journal, req.prompt, story, "Story Synthesis", req.model)
+    return {"story": story, "context_used": [t.content for t in top_thoughts]}
 
 
 # -------------------------------------------------------------
@@ -316,11 +365,12 @@ class ChatRequest(BaseModel):
     stream: Optional[bool] = False
 
 @app.post("/api/chat")
-async def chat_proxy(req: ChatRequest):
+async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
     system_instruction = req.system_prompt or "You are a helpful local assistant."
 
     if req.stream:
         async def stream_generator():
+            full_response = ""
             try:
                 async with httpx.AsyncClient(timeout=60.0) as client:
                     async with client.stream("POST", f"{OLLAMA_BASE_URL}/api/generate", json={
@@ -336,9 +386,18 @@ async def chat_proxy(req: ChatRequest):
                             return
                         async for line in r.aiter_lines():
                             if line.strip():
+                                try:
+                                    data = json.loads(line.strip())
+                                    if "response" in data:
+                                        full_response += data["response"]
+                                except Exception:
+                                    pass
                                 yield f"data: {line.strip()}\n\n"
             except Exception as e:
                 yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            finally:
+                if full_response.strip():
+                    background_tasks.add_task(append_to_cognitive_journal, req.prompt, full_response.strip(), "Chat Inquiry", req.model)
 
         return StreamingResponse(stream_generator(), media_type="text/event-stream")
 
@@ -346,6 +405,7 @@ async def chat_proxy(req: ChatRequest):
     if cache_key in prompt_cache:
         entry = prompt_cache[cache_key]
         if time.time() - entry["timestamp"] < 300: # 5 minutes TTL
+            background_tasks.add_task(append_to_cognitive_journal, req.prompt, entry["response"], "Chat Cache Hit", req.model)
             return {"response": entry["response"], "cached": True}
 
     payload = {
@@ -371,6 +431,7 @@ async def chat_proxy(req: ChatRequest):
                 "timestamp": time.time()
             }
             
+            background_tasks.add_task(append_to_cognitive_journal, req.prompt, response_text, "Chat Inquiry", req.model)
             return {"response": response_text, "cached": False}
     except httpx.ConnectError:
         raise HTTPException(
