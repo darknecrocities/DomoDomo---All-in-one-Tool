@@ -26,3 +26,10 @@ domodomo_knowledge.json
 *.njsproj
 *.sln
 *.sw?
+
+# Local Python & Database files
+.venv/
+backend/*.db
+backend/*.db-journal
+backend/*.db-wal
+backend/*.db-shm
