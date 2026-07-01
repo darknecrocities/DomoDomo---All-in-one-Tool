@@ -12,6 +12,22 @@ DomoDomo operates on a **zero-leak mandate**. Standard SaaS utilities require up
 - **`/src/pages`**: Handles routing, the primary tool frame containers, and the main visual dashboard.
 - **`/src/tools`**: Categorized directory holding React/TypeScript components for all utility modules.
 - **`/src/utils`**: Core service files containing brand tokens, helpers, and singleton API layers.
+- **`/backend`**: FastAPI Python server providing local persistence, vector searches, and caching.
+
+### 🧠 Unified Memory & Cognitive Core
+DomoDomo coordinates memory and knowledge context across multiple local layers:
+1. **Unified Memory Hub (IndexedDB + SQLite WAL)**: 
+   * **Client Timeline**: Uses browser IndexedDB to cache user profiles and debounced activity events.
+   * **SQLite WAL Database**: A lightweight SQL database running in Write-Ahead Logging (WAL) mode handles semantic vector tables (`thought` schema) and activity timeline tracking natively.
+2. **Local AI Cognitive Journal (`domo_journal.md`)**:
+   * Every time you use the AI chat, log a thought, or compile a story, DomoDomo schedules a background worker task.
+   * The worker prompts the active local Ollama model to write a reflective cognitive journal entry in first-person (`I`) detailing its feelings, internal thoughts, and lessons learned.
+   * Logs are appended to a root-level markdown file `domo_journal.md`. This file is listed under `.gitignore` to protect privacy.
+3. **CORS-Free SSE Stream Proxy**:
+   * The Python backend proxy `/api/chat` coordinates server-sent event (SSE) streams and NDJSON packages from Ollama.
+   * It caches prompt queries (5-minute TTL) and yields tokens progressively, reducing the perceived initial loading latency to under 300ms.
+4. **Adaptive Model recommendation Engine**:
+   * Inspects the user's downloaded local models dynamically and matches system RAM and CPU core threads to recommend the best instruct-tuned model variant available.
 
 ---
 
@@ -133,7 +149,7 @@ Get DomoDomo running locally in less than 2 minutes:
    cd DomoDomo---All-in-one-Tool
    ```
 
-2. **Install dependencies**:
+2. **Install node dependencies**:
    ```bash
    npm install
    ```
@@ -142,11 +158,14 @@ Get DomoDomo running locally in less than 2 minutes:
    ```bash
    npm run dev
    ```
+   > [!NOTE]
+   > Running `npm run dev` automatically invokes a Python virtual environment controller. The system will detect your system's Python installation, configure a isolated `.venv/` virtualenv if it is missing, verify and install requirements from `backend/requirements.txt` dynamically if updated, and launch the Vite client, local MCP server, and FastAPI backend concurrently.
 
-4. **Build for production**:
+4. **Build for production & Prerender**:
    ```bash
    npm run build
    ```
+   *Compiles strict type-checking checks, bundles static client assets, generates site maps, and prerenders static snapshots for all 377 tool variations.*
 
 ---
 
