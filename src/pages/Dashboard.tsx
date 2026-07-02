@@ -390,32 +390,31 @@ export const Dashboard = () => {
               <div className="w-12" /> {/* spacer */}
             </div>
             
-            {/* Console specs grid */}
-            <div className="p-4 grid grid-cols-2 gap-3 text-left font-mono text-[10px] text-[#A3A09B]">
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">sandbox_host</span>
-                <span className="text-[#ECEBE9] font-bold">localhost</span>
+            {/* Console terminal instructions */}
+            <div className="p-5 flex flex-col gap-3 text-left font-mono text-[10px] text-[#A3A09B] overflow-y-auto max-h-[195px] min-h-[195px]">
+              <div className="flex flex-col gap-1">
+                <span className="text-[#72706C] font-semibold"># 1. Clone the project and install dependencies</span>
+                <span className="text-[#ECEBE9] flex items-center gap-1">
+                  <span className="text-[#3C6B4D] font-bold">$</span> git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+                </span>
+                <span className="text-[#ECEBE9] flex items-center gap-1">
+                  <span className="text-[#3C6B4D] font-bold">$</span> cd DomoDomo---All-in-one-Tool && npm install
+                </span>
               </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">data_security</span>
-                <span className="text-[#3C6B4D] font-bold">100% client_side</span>
+              <div className="flex flex-col gap-1 mt-1 border-t border-[#2A2D30]/60 pt-2.5">
+                <span className="text-[#72706C] font-semibold"># 2. Start developer workshop server</span>
+                <span className="text-[#ECEBE9] flex items-center gap-1">
+                  <span className="text-[#3C6B4D] font-bold">$</span> npm run dev
+                </span>
+                <span className="text-[#72706C] text-[9px] pl-4">➜ Local:   http://localhost:5173/</span>
+                <span className="text-[#72706C] text-[9px] pl-4">➜ mcp:     http://localhost:3001/</span>
               </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">system_threads</span>
-                <span className="text-[#ECEBE9] font-bold">{navigator.hardwareConcurrency || 4} available</span>
-              </div>
-              <div className="bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex flex-col gap-0.5">
-                <span className="text-[#72706C] font-semibold">wasm_runtime</span>
-                <span className="text-[#ECEBE9] font-bold">isolated_active</span>
-              </div>
-              <div className="col-span-2 bg-[#18191B]/40 p-2.5 rounded-lg border border-[#2A2D30]/60 flex justify-between items-center">
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[#72706C] font-semibold">cloud_telemetry</span>
-                  <span className="text-[#ECEBE9] font-bold">disabled_no_servers</span>
-                </div>
-                <div className="px-2 py-0.5 rounded bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/35 font-bold uppercase tracking-wider text-[8px]">
-                  Secure
-                </div>
+              <div className="flex flex-col gap-1 mt-1 border-t border-[#2A2D30]/60 pt-2.5">
+                <span className="text-[#72706C] font-semibold"># 3. Setup and pull local AI tools (via Ollama)</span>
+                <span className="text-[#ECEBE9] flex items-center gap-1">
+                  <span className="text-[#3C6B4D] font-bold">$</span> ollama run llama3.2:3b
+                </span>
+                <span className="text-[#3C6B4D] text-[9px] pl-4">✓ Local AI bridge connected and secure!</span>
               </div>
             </div>
           </div>

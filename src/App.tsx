@@ -6,7 +6,6 @@ import { ToolContainer } from './pages/ToolContainer';
 import { AboutApplication } from './pages/AboutApplication';
 import { DoorSplash } from './components/DoorSplash';
 import { OnboardingModal } from './components/OnboardingModal';
-import { Documentation } from './pages/Documentation';
 import { LibraryApi } from './pages/LibraryApi';
 import { BlogContainer } from './pages/BlogContainer';
 import { BlogPost } from './pages/BlogPost';
@@ -41,7 +40,7 @@ function App() {
             <Route path="about" element={<AboutApplication />} />
             <Route path="tool/:id" element={<ToolContainer />} />
             <Route path="tool/:id/:variation" element={<ToolContainer />} />
-            <Route path="docs" element={<Documentation />} />
+            <Route path="docs" element={<AboutApplication defaultTab="docs" />} />
             <Route path="library-api" element={<LibraryApi />} />
             <Route path="blog" element={<BlogContainer />} />
             <Route path="blog/:slug" element={<BlogPost />} />

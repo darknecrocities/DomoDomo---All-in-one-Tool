@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
-import { ShieldAlert, ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2 } from 'lucide-react';
+import { ServerCrash, Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2 } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
 import { unifiedMemory } from '../utils/unifiedMemory';
@@ -286,12 +286,6 @@ export const Shell = () => {
               <span>Feedback Report</span>
             </a>
 
-            <div 
-              className="hidden sm:flex items-center justify-center h-8 w-8 rounded-lg bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#3C6B4D] cursor-help transition-colors"
-              title="Sandbox Local Environment"
-            >
-              <ShieldAlert size={14} />
-            </div>
 
             <a
               href="https://www.facebook.com/profile.php?id=61590872807465"

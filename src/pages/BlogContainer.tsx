@@ -99,9 +99,20 @@ export const BlogContainer = () => {
               className="group flex flex-col justify-between rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/30 p-6 transition-all duration-300 shadow-sm relative overflow-hidden"
             >
               <div className="flex flex-col gap-3 text-left">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#4E8E5E]">
-                  {post.category}
-                </span>
+                <div className="flex justify-between items-center w-full">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#4E8E5E]">
+                    {post.category}
+                  </span>
+                  {post.isAiGenerated !== false ? (
+                    <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[#FF5E5B]/10 border border-[#FF5E5B]/25 text-[#FF5E5B] uppercase tracking-wide">
+                      AI Generated
+                    </span>
+                  ) : (
+                    <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#4E8E5E] uppercase tracking-wide">
+                      By {post.author || "Arron Kian"}
+                    </span>
+                  )}
+                </div>
                 <Link to={`/blog/${post.slug}`} className="hover:underline">
                   <h2 className="text-lg font-extrabold text-[#ECEBE9] leading-snug group-hover:text-[#4E8E5E] transition-colors">
                     {post.title}

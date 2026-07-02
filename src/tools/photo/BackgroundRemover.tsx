@@ -1,6 +1,6 @@
 import { FileUploadWrapper, triggerDownload } from '../../utils/sharedHelpers';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Download, Upload, Undo2, Redo2, Paintbrush, Scissors, Pipette, Trash2, Check, RefreshCw, ImagePlus } from 'lucide-react';
+import { Download, Upload, Undo2, Redo2, Paintbrush, Scissors, Pipette, Trash2, Check, RefreshCw, ImagePlus, Eye, HelpCircle, Sparkles, ChevronRight, ChevronLeft, X } from 'lucide-react';
 
 export const BackgroundRemoverTool = () => {
   const [imageUrl, setImageUrl] = useState('');
@@ -12,6 +12,50 @@ export const BackgroundRemoverTool = () => {
   // Trace tool states
   const [tracePoints, setTracePoints] = useState<{x: number, y: number}[]>([]);
   const [traceAction, setTraceAction] = useState<'keep' | 'remove'>('keep');
+
+  // Onboarding & Compare states
+  const [showOriginal, setShowOriginal] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+  const [guideStep, setGuideStep] = useState(0);
+
+  const samples = [
+    { id: 'portrait', label: 'Portrait', url: '/sample-portrait.png' },
+    { id: 'product', label: 'Sneaker', url: '/sample-product.png' },
+    { id: 'pet', label: 'Puppy Dog', url: '/sample-pet.png' },
+  ];
+
+  const handleLoadSample = useCallback((url: string) => {
+    setSelectedColor(null);
+    setTracePoints([]);
+    setActiveTool('key');
+    historyRef.current = [];
+    setHistoryIndex(-1);
+    manualMaskCanvasRef.current = null;
+    setImageUrl(url);
+  }, []);
+
+  const guideSteps = [
+    {
+      title: "1. Select your Image",
+      description: "Upload a photo from your device, or click one of our preset sample images at the bottom to test the tools immediately.",
+      icon: <Upload className="w-8 h-8" />,
+    },
+    {
+      title: "2. Key Out the Background",
+      description: "Use the Chroma Key tool (Pipette) to click and sample any background color. Use the Match Tolerance slider to widen or narrow the range of matching shades to erase.",
+      icon: <Pipette className="w-8 h-8" />,
+    },
+    {
+      title: "3. Refine with Eraser or Lasso",
+      description: "Use the Eraser brush to sweep away leftover pixels manually. Or select Trace Lasso to draw custom boundary points around complex subjects for a clean cutout.",
+      icon: <Paintbrush className="w-8 h-8" />,
+    },
+    {
+      title: "4. Customize & Download",
+      description: "Export with a transparent background, or choose solid color fills and upload custom background scenes, then download your high-quality PNG instantly.",
+      icon: <Download className="w-8 h-8" />,
+    }
+  ];
   
   // Background replacement settings
   const [bgMode, setBgMode] = useState<'transparent' | 'color' | 'image'>('transparent');
@@ -158,6 +202,10 @@ export const BackgroundRemoverTool = () => {
 
     // 1. Draw Background Layer
     ctx.clearRect(0, 0, width, height);
+    if (showOriginal) {
+      ctx.drawImage(oc, 0, 0, width, height);
+      return;
+    }
     if (bgMode === 'color') {
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
@@ -262,7 +310,7 @@ export const BackgroundRemoverTool = () => {
 
     drawForeground();
 
-  }, [imageUrl, selectedColor, tolerance, bgMode, bgColor, bgImageUrl, redrawCounter, activeTool, tracePoints, mouseHoverPos]);
+  }, [imageUrl, selectedColor, tolerance, bgMode, bgColor, bgImageUrl, redrawCounter, activeTool, tracePoints, mouseHoverPos, showOriginal]);
 
   // Click handler for color picking and tracing
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -396,17 +444,83 @@ export const BackgroundRemoverTool = () => {
     setSelectedColor(null);
     setTracePoints([]);
     triggerRedraw();
-  };
-
-  return (
+  };  return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       <div className="lg:col-span-8 glass-card p-6 flex flex-col justify-center min-h-[400px] relative overflow-hidden">
         <div className="absolute inset-0 bg-[#0B0F19]" style={{ backgroundImage: 'radial-gradient(#1e293b 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
         <div className="relative z-10 w-full flex flex-col justify-center">
           {!imageUrl ? (
-            <FileUploadWrapper onUpload={handleNewImage} />
+            <div className="flex flex-col gap-6 py-4 px-2 w-full max-w-2xl mx-auto animate-fadeIn">
+              <div className="text-center flex flex-col gap-1.5 animate-slideDown">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-full w-fit mx-auto shadow-sm">
+                  <Sparkles size={12} className="animate-pulse" />
+                  <span>Free & Local</span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight mt-1">
+                  Erase Image Backgrounds Instantly
+                </h2>
+                <p className="text-slate-400 text-sm max-w-md mx-auto">
+                  No sign-up or server uploads. Your photos are processed safely in your browser.
+                </p>
+              </div>
+
+              <div className="glass-card bg-slate-900/40 border border-slate-800 p-8 flex flex-col items-center justify-center rounded-2xl hover:border-slate-700/60 transition-all duration-200 shadow-inner group">
+                <FileUploadWrapper onUpload={handleNewImage} />
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                    Try our samples:
+                  </span>
+                  <button
+                    onClick={() => { setShowGuide(true); setGuideStep(0); }}
+                    className="text-xs text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1 transition-colors"
+                  >
+                    <HelpCircle size={13} /> Learn how it works
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  {samples.map((sample) => (
+                    <button
+                      key={sample.id}
+                      onClick={() => handleLoadSample(sample.url)}
+                      className="group relative flex flex-col items-center gap-2 p-2 bg-slate-950/40 hover:bg-slate-900/50 border border-slate-850 hover:border-slate-700 rounded-xl transition-all duration-200 shadow-md active:scale-95 animate-fadeIn"
+                    >
+                      <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-slate-800/80 bg-slate-900">
+                        <img
+                          src={sample.url}
+                          alt={sample.label}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                          <span className="px-2.5 py-1 bg-teal-500/90 text-[10px] font-bold text-slate-950 rounded shadow-md uppercase tracking-wider">
+                            Try Sample
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-400 group-hover:text-slate-200 transition-colors">
+                        {sample.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="relative mx-auto">
+              {/* Floating Toolbar Contextual Tips */}
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 bg-slate-900/90 border border-slate-800 px-4 py-1.5 rounded-full shadow-lg text-[10px] md:text-[11px] text-slate-200 font-medium tracking-wide whitespace-nowrap pointer-events-none flex items-center gap-2 backdrop-blur-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping" />
+                <span>
+                  {activeTool === 'key' && "Chroma Key: Click background color to erase it."}
+                  {activeTool === 'eraser' && "Eraser: Drag on canvas to manually clear background."}
+                  {activeTool === 'trace' && "Trace Lasso: Click points on image, then close path to cutout."}
+                </span>
+              </div>
+
               <canvas
                 ref={canvasRef}
                 onClick={handleCanvasClick}
@@ -439,7 +553,7 @@ export const BackgroundRemoverTool = () => {
               />
               
               {activeTool === 'trace' && tracePoints.length > 0 && (
-                <div className="absolute top-2 left-2 flex gap-2">
+                <div className="absolute top-12 left-2 flex gap-2 z-10">
                   <button onClick={applyTrace} className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-xs font-bold shadow flex items-center gap-1 transition-colors">
                     <Check size={12} /> Apply Cutout
                   </button>
@@ -449,7 +563,22 @@ export const BackgroundRemoverTool = () => {
                 </div>
               )}
 
-              {/* Replace Image button */}
+              {/* Floating Compare and Replace buttons */}
+              <div className="absolute bottom-2 left-2 z-10">
+                <button
+                  onMouseDown={() => setShowOriginal(true)}
+                  onMouseUp={() => setShowOriginal(false)}
+                  onMouseLeave={() => setShowOriginal(false)}
+                  onTouchStart={() => setShowOriginal(true)}
+                  onTouchEnd={() => setShowOriginal(false)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/90 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold shadow-lg select-none transition-colors border border-slate-700 backdrop-blur-sm"
+                  title="Hold to view original image"
+                >
+                  <Eye size={13} />
+                  <span>Compare Original</span>
+                </button>
+              </div>
+
               <div className="absolute bottom-2 right-2 z-10">
                 <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/90 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold shadow-lg cursor-pointer transition-colors backdrop-blur-sm border border-slate-700">
                   <ImagePlus size={13} /> Replace Image
@@ -465,7 +594,16 @@ export const BackgroundRemoverTool = () => {
       <div className="lg:col-span-4 flex flex-col gap-6">
         <div className="glass-card p-6 flex flex-col gap-4">
           <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-            <h3 className="text-teal-400 font-bold">Background Remover</h3>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-teal-400 font-bold">Background Remover</h3>
+              <button
+                onClick={() => { setShowGuide(true); setGuideStep(0); }}
+                className="text-slate-500 hover:text-slate-350 p-0.5 rounded transition-colors"
+                title="How to use guide"
+              >
+                <HelpCircle size={15} />
+              </button>
+            </div>
             {imageUrl && (
               <button 
                 onClick={handleReset}
@@ -627,6 +765,77 @@ export const BackgroundRemoverTool = () => {
           )}
         </div>
       </div>
+
+      {/* Onboarding Guide Modal */}
+      {showGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+          <div className="relative bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col gap-4">
+            <button
+              onClick={() => setShowGuide(false)}
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-350 transition-colors p-1"
+              title="Close guide"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <Sparkles size={16} className="text-teal-400" />
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                How to Remove Backgrounds
+              </h4>
+            </div>
+
+            <div className="flex flex-col items-center text-center py-4 gap-3 min-h-[180px]">
+              <div className="p-3 bg-teal-500/10 rounded-2xl border border-teal-500/20 text-teal-400 mb-1">
+                {guideSteps[guideStep].icon}
+              </div>
+              <h5 className="text-base font-bold text-white">
+                {guideSteps[guideStep].title}
+              </h5>
+              <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+                {guideSteps[guideStep].description}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-slate-800 pt-4 mt-2">
+              <div className="flex gap-1.5">
+                {guideSteps.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${guideStep === i ? 'bg-teal-400 w-4' : 'bg-slate-700'}`}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-2">
+                {guideStep > 0 && (
+                  <button
+                    onClick={() => setGuideStep(p => p - 1)}
+                    className="px-3 py-1.5 bg-slate-850 hover:bg-slate-800 text-slate-300 hover:text-slate-100 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                  >
+                    <ChevronLeft size={14} /> Back
+                  </button>
+                )}
+                {guideStep < guideSteps.length - 1 ? (
+                  <button
+                    onClick={() => setGuideStep(p => p + 1)}
+                    className="px-3 py-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                  >
+                    Next <ChevronRight size={14} />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowGuide(false)}
+                    className="px-4 py-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-lg text-xs font-bold transition-all"
+                  >
+                    Got it!
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+;

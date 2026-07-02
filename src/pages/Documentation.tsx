@@ -7,7 +7,7 @@ import type { ToolCategory } from '../utils/ToolDocsData';
 
 type SectionId = 'intro' | 'sys-archi' | 'offline-flow' | 'local-ai-spec' | 'tools-ref' | 'setup-guide' | 'core-engines' | 'compliance';
 
-export const Documentation = () => {
+export const Documentation = ({ integrated = false }: { integrated?: boolean }) => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<SectionId>('intro');
   const [activeToolCategory, setActiveToolCategory] = useState<ToolCategory>('pdf');
@@ -30,38 +30,42 @@ export const Documentation = () => {
   ] as const;
 
   return (
-    <div className="flex flex-col gap-8 text-left">
-      <Helmet>
-        <title>DomoDomo Documentation - Technical Guides & Spec</title>
-        <meta name="description" content="Read the technical specifications of DomoDomo. Understand how WebAssembly (WASM), WebGPU, Web Audio, and local browser sandboxes execute private tools offline." />
-        <link rel="canonical" href="https://domodomo.site/docs" />
-      </Helmet>
-      {/* Docs Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#2A2D30]">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#72706C] uppercase tracking-wider">
-            <span>DomoDomo Hub</span>
-            <span>/</span>
-            <span className="text-[#A3A09B]">Documentation</span>
+    <div className={integrated ? "w-full text-left" : "flex flex-col gap-8 text-left"}>
+      {!integrated && (
+        <>
+          <Helmet>
+            <title>DomoDomo Documentation - Technical Guides & Spec</title>
+            <meta name="description" content="Read the technical specifications of DomoDomo. Understand how WebAssembly (WASM), WebGPU, Web Audio, and local browser sandboxes execute private tools offline." />
+            <link rel="canonical" href="https://domodomo.site/docs" />
+          </Helmet>
+          {/* Docs Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-[#2A2D30]">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#72706C] uppercase tracking-wider">
+                <span>DomoDomo Hub</span>
+                <span>/</span>
+                <span className="text-[#A3A09B]">Documentation</span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight mt-1">
+                Technical Specification & Guides
+              </h1>
+              <p className="text-[#A3A09B] text-sm max-w-2xl leading-relaxed">
+                Understand how DomoDomo executes complex file modifications, neural queries, and compression pipelines locally inside your browser sandbox.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/')}
+              className="btn-secondary py-2 px-4 text-xs font-bold shrink-0"
+            >
+              <ArrowLeft size={14} />
+              <span>Dashboard</span>
+            </button>
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight mt-1">
-            Technical Specification & Guides
-          </h1>
-          <p className="text-[#A3A09B] text-sm max-w-2xl leading-relaxed">
-            Understand how DomoDomo executes complex file modifications, neural queries, and compression pipelines locally inside your browser sandbox.
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/')}
-          className="btn-secondary py-2 px-4 text-xs font-bold shrink-0"
-        >
-          <ArrowLeft size={14} />
-          <span>Dashboard</span>
-        </button>
-      </div>
+        </>
+      )}
 
       {/* Docs Split Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
         {/* Left Sidebar Keywords */}
         <div className="lg:col-span-3 flex flex-col gap-2 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl lg:sticky lg:top-24">
           <span className="text-[10px] uppercase tracking-wider text-[#72706C] font-bold px-3 mb-2 block">Keywords & Topics</span>
