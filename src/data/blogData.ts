@@ -622,7 +622,7 @@ Open the [AI Chat Tool](https://domodomo.site/tool/ai-chat). The dashboard will 
     readTime: '3 min read',
     category: 'Privacy & Tech',
     keywords: 'local-first, privacy, client-side, webassembly, offline web app, zero upload limits',
-    author: 'Arron Kian',
+    author: 'Arron Parejas',
     isAiGenerated: false,
     content: `
 # Why Local-First Processing Wins: The Privacy and Speed Advantage
@@ -664,7 +664,7 @@ Cloud servers enforce strict file size caps (e.g., "10MB limit for free tier") t
     readTime: '4 min read',
     category: 'Privacy & Tech',
     keywords: 'cloud saas vs local, domodomo local comparison, data security, subscription fees, offline usability',
-    author: 'Arron Kian',
+    author: 'Arron Parejas',
     isAiGenerated: false,
     content: `
 # Cloud SaaS vs. DomoDomo Local: A Detailed Matrix Comparison

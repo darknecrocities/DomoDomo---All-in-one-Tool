@@ -224,7 +224,7 @@ export const BlogPost = () => {
               </span>
             ) : (
               <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#4E8E5E] uppercase tracking-wide">
-                By {post.author || "Arron Kian"}
+                By {post.author || "Arron Parejas"}
               </span>
             )}
           </div>
