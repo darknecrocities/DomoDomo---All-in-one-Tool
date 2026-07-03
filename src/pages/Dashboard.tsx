@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight, Star, Copy, Check } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
@@ -171,7 +171,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', status: 'functional' },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', category: 'ai', description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', status: 'functional', requiresOllama: true },
   { id: 'model-migrator', name: 'Ollama Model Migrator', category: 'ai', description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', status: 'functional', requiresOllama: true },
-  
+
   // Security Tools (10 Standard)
   { id: 'hash-checker', name: 'File Hash Checker', category: 'security', description: 'Verify file integrity using SHA-256, SHA-512, MD5 locally.', icon: 'ShieldAlert', status: 'functional' },
   { id: 'password-analyzer', name: 'Password Analyzer', category: 'security', description: 'Analyze password strength, entropy, and dictionary matches offline.', icon: 'Lock', status: 'functional' },
@@ -210,7 +210,14 @@ export const Dashboard = () => {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [downloadError, setDownloadError] = useState('');
   const [showManageModels, setShowManageModels] = useState(false);
-  
+
+  const [copiedTerminalIndex, setCopiedTerminalIndex] = useState<number | null>(null);
+  const handleCopyTerminalCommand = (command: string, index: number) => {
+    navigator.clipboard.writeText(command);
+    setCopiedTerminalIndex(index);
+    setTimeout(() => setCopiedTerminalIndex(null), 1500);
+  };
+
   const searchInputRef = useRef<HTMLInputElement>(null);
   const categoryScrollRef = useRef<HTMLDivElement>(null);
 
@@ -234,7 +241,7 @@ export const Dashboard = () => {
     if ('deviceMemory' in navigator) {
       ram = `${(navigator as any).deviceMemory} GB`;
     }
-    
+
     let hasWebGPU = false;
     if ('gpu' in navigator) {
       hasWebGPU = true;
@@ -325,9 +332,9 @@ export const Dashboard = () => {
       activeCategory === 'all' ||
       (activeCategory === 'popular' && tool.popular) ||
       tool.category === activeCategory;
-    
+
     // No longer hiding DomoGuard AI tools here. We want to show them as "Tease" cards if Ollama isn't active.
-    
+
     return matchesSearch && matchesCategory;
   });
 
@@ -355,6 +362,45 @@ export const Dashboard = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
 
         <div className="lg:col-span-7 flex flex-col gap-4 text-left z-10">
+          <a
+            href="https://www.appbuildersph.com/apps/domodomo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="gold-shining-border inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/badge w-fit"
+            title="Featured on App Builders PH"
+          >
+            <div className="relative flex items-center justify-center shrink-0 w-8 h-8">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow">
+                {/* Ribbons */}
+                <path d="M10 18L6 28L12 26L15 20" fill="#d4af37" />
+                <path d="M22 18L26 28L20 26L17 20" fill="#aa7c11" />
+                {/* Medal Outer Circle */}
+                <circle cx="16" cy="14" r="10" fill="url(#silverGradient)" stroke="#8a8a8a" strokeWidth="0.5" />
+                {/* Medal Inner Circle */}
+                <circle cx="16" cy="14" r="7.5" fill="url(#silverInnerGradient)" />
+                {/* Number 2 */}
+                <text x="16" y="17.5" fontFamily="system-ui, -apple-system, sans-serif" fontSize="10.5" fontWeight="800" fill="#ffffff" textAnchor="middle">2</text>
+                <defs>
+                  <linearGradient id="silverGradient" x1="6" y1="4" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#f0f0f0" />
+                    <stop offset="50%" stopColor="#c5c5c5" />
+                    <stop offset="100%" stopColor="#8e8e8e" />
+                  </linearGradient>
+                  <linearGradient id="silverInnerGradient" x1="9" y1="7" x2="23" y2="21" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="100%" stopColor="#a0a0a0" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">AppBuilders PH</span>
+              <span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
+                #2 on the Leaderboards of All Time
+              </span>
+            </div>
+          </a>
+
           <div className="flex flex-wrap gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
               <Globe size={12} />
@@ -389,31 +435,67 @@ export const Dashboard = () => {
               <span className="text-[10px] font-mono text-[#72706C] font-semibold">domodomo-terminal v1.0.0</span>
               <div className="w-12" /> {/* spacer */}
             </div>
-            
+
             {/* Console terminal instructions */}
             <div className="p-5 flex flex-col gap-3 text-left font-mono text-[10px] text-[#A3A09B] overflow-y-auto max-h-[195px] min-h-[195px]">
               <div className="flex flex-col gap-1">
                 <span className="text-[#72706C] font-semibold"># 1. Clone the project and install dependencies</span>
-                <span className="text-[#ECEBE9] flex items-center gap-1">
-                  <span className="text-[#3C6B4D] font-bold">$</span> git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
-                </span>
-                <span className="text-[#ECEBE9] flex items-center gap-1">
-                  <span className="text-[#3C6B4D] font-bold">$</span> cd DomoDomo---All-in-one-Tool && npm install
-                </span>
+                <div className="flex justify-between items-center group/line">
+                  <span className="text-[#ECEBE9] flex items-center gap-1">
+                    <span className="text-[#3C6B4D] font-bold">$</span> git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+                  </span>
+                  <button
+                    onClick={() => handleCopyTerminalCommand("git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git", 0)}
+                    className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+                    title="Copy command"
+                  >
+                    {copiedTerminalIndex === 0 ? <Check size={10} className="text-[#3C6B4D]" /> : <Copy size={10} />}
+                  </button>
+                </div>
+                <div className="flex justify-between items-center group/line">
+                  <span className="text-[#ECEBE9] flex items-center gap-1">
+                    <span className="text-[#3C6B4D] font-bold">$</span> cd DomoDomo---All-in-one-Tool && npm install
+                  </span>
+                  <button
+                    onClick={() => handleCopyTerminalCommand("cd DomoDomo---All-in-one-Tool && npm install", 1)}
+                    className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+                    title="Copy command"
+                  >
+                    {copiedTerminalIndex === 1 ? <Check size={10} className="text-[#3C6B4D]" /> : <Copy size={10} />}
+                  </button>
+                </div>
               </div>
               <div className="flex flex-col gap-1 mt-1 border-t border-[#2A2D30]/60 pt-2.5">
                 <span className="text-[#72706C] font-semibold"># 2. Start developer workshop server</span>
-                <span className="text-[#ECEBE9] flex items-center gap-1">
-                  <span className="text-[#3C6B4D] font-bold">$</span> npm run dev
-                </span>
+                <div className="flex justify-between items-center group/line">
+                  <span className="text-[#ECEBE9] flex items-center gap-1">
+                    <span className="text-[#3C6B4D] font-bold">$</span> npm run dev
+                  </span>
+                  <button
+                    onClick={() => handleCopyTerminalCommand("npm run dev", 2)}
+                    className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+                    title="Copy command"
+                  >
+                    {copiedTerminalIndex === 2 ? <Check size={10} className="text-[#3C6B4D]" /> : <Copy size={10} />}
+                  </button>
+                </div>
                 <span className="text-[#72706C] text-[9px] pl-4">➜ Local:   http://localhost:5173/</span>
                 <span className="text-[#72706C] text-[9px] pl-4">➜ mcp:     http://localhost:3001/</span>
               </div>
               <div className="flex flex-col gap-1 mt-1 border-t border-[#2A2D30]/60 pt-2.5">
                 <span className="text-[#72706C] font-semibold"># 3. Setup and pull local AI tools (via Ollama)</span>
-                <span className="text-[#ECEBE9] flex items-center gap-1">
-                  <span className="text-[#3C6B4D] font-bold">$</span> ollama run llama3.2:3b
-                </span>
+                <div className="flex justify-between items-center group/line">
+                  <span className="text-[#ECEBE9] flex items-center gap-1">
+                    <span className="text-[#3C6B4D] font-bold">$</span> ollama run llama3.2:3b
+                  </span>
+                  <button
+                    onClick={() => handleCopyTerminalCommand("ollama run llama3.2:3b", 3)}
+                    className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+                    title="Copy command"
+                  >
+                    {copiedTerminalIndex === 3 ? <Check size={10} className="text-[#3C6B4D]" /> : <Copy size={10} />}
+                  </button>
+                </div>
                 <span className="text-[#3C6B4D] text-[9px] pl-4">✓ Local AI bridge connected and secure!</span>
               </div>
             </div>
@@ -437,7 +519,7 @@ export const Dashboard = () => {
             <ChevronLeft size={14} />
           </button>
 
-          <div 
+          <div
             ref={categoryScrollRef}
             className="flex-1 flex gap-1 overflow-x-auto pb-2 -mb-2 md:pb-0 md:mb-0 scrollbar-none scroll-smooth pr-1"
           >
@@ -449,13 +531,12 @@ export const Dashboard = () => {
                 <button
                   key={cat.id}
                   onClick={() => handleCategoryChange(cat.id)}
-                  className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
-                    activeCategory === cat.id
+                  className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${activeCategory === cat.id
                       ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm'
                       : isUnavailable
                         ? 'bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]'
                         : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]'
-                  }`}
+                    }`}
                 >
                   {isUnavailable && <Lock size={12} className="text-[#E29E2D] animate-pulse" />}
                   <span>{displayName}</span>
@@ -524,7 +605,7 @@ export const Dashboard = () => {
               </p>
               <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">
-{`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+                  {`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
 cd DomoDomo---All-in-one-Tool
 npm install
 npm run dev`}
@@ -542,7 +623,7 @@ npm run dev`}
               </p>
               <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">
-{`# 1. Install Ollama from ollama.com
+                  {`# 1. Install Ollama from ollama.com
 # 2. Run your preferred model:
 ollama run llama3`}
                 </pre>
@@ -562,7 +643,7 @@ ollama run llama3`}
               <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
                 <span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">macOS</span>
                 <pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
-{`launchctl setenv OLLAMA_ORIGINS "*"`}
+                  {`launchctl setenv OLLAMA_ORIGINS "*"`}
                 </pre>
                 <p className="text-[9px] text-[#72706C] mt-2">Restart the Ollama application afterward.</p>
               </div>
@@ -575,7 +656,7 @@ ollama run llama3`}
               <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
                 <span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">Linux</span>
                 <pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
-{`systemctl edit ollama.service
+                  {`systemctl edit ollama.service
 # Add:
 # [Service]
 # Environment="OLLAMA_ORIGINS=*"`}
@@ -594,7 +675,7 @@ ollama run llama3`}
                 <span className="text-[10px] text-[#72706C] block">Pinging http://localhost:11434/api/tags every 5s</span>
               </div>
             </div>
-            <button 
+            <button
               onClick={async () => {
                 const res = await aiService.checkOllama();
                 setHasOllama(res.status);
@@ -607,228 +688,225 @@ ollama run llama3`}
         </div>
       ) : activeCategory === 'ai' && ollamaModels.length === 0 ? (
         <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B]">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
-                    <Cpu size={24} className={downloadingModel ? "animate-spin" : ""} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">Local Ollama Model Downloader</h2>
-                    <p className="text-[#A3A09B] text-xs mt-1">Ollama is active, but no models are installed. Download one below to begin.</p>
-                  </div>
-                </div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+                <Cpu size={24} className={downloadingModel ? "animate-spin" : ""} />
               </div>
-
-              {/* Hardware Specs Panel */}
-              <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] text-[#72706C] uppercase font-semibold tracking-wider">Detected System Specifications</span>
-                  <div className="flex flex-wrap gap-4 text-xs font-semibold text-[#A3A09B] mt-0.5">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#72706C]">RAM:</span>
-                      <span className="text-[#3C6B4D]">{hardware.ram}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#72706C]">Cores:</span>
-                      <span className="text-[#3C6B4D]">{hardware.cores} threads</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#72706C]">WebGPU:</span>
-                      <span className={hardware.hasWebGPU ? "text-[#3C6B4D]" : "text-[#E29E2D]"}>
-                        {hardware.hasWebGPU ? "Supported" : "Not supported"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
-                  <span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
-                  <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
-                    Based on your specs, we recommend running <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
-                  </p>
-                </div>
+              <div>
+                <h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">Local Ollama Model Downloader</h2>
+                <p className="text-[#A3A09B] text-xs mt-1">Ollama is active, but no models are installed. Download one below to begin.</p>
               </div>
+            </div>
+          </div>
 
-              {/* Models list */}
-              <div className="flex flex-col gap-4">
-                <h3 className="font-bold text-[#ECEBE9] text-sm">Select a model to download directly:</h3>
-                {downloadingModel && (
-                  <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col gap-3">
-                    <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-[#3C6B4D] flex items-center gap-2">
-                        <span className="animate-spin w-3 h-3 border-2 border-[#3C6B4D] border-t-transparent rounded-full"></span>
-                        <span>Downloading {downloadingModel}...</span>
-                      </span>
-                      <span className="text-[#ECEBE9]">{downloadProgress}%</span>
-                    </div>
-                    <div className="w-full bg-[#18191B] rounded-full h-2 overflow-hidden border border-[#2A2D30]">
-                      <div 
-                        className="bg-[#3C6B4D] h-full transition-all duration-300"
-                        style={{ width: `${downloadProgress}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] font-mono text-[#72706C]">{downloadStatus}</span>
-                  </div>
-                )}
-
-                {downloadError && (
-                  <div className="bg-rose-500/10 border border-rose-500/25 p-4 rounded-xl text-xs text-rose-450 font-semibold leading-relaxed">
-                    {downloadError}
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { name: 'qwen2.5:0.5b', size: '397 MB', desc: 'Ultra lightweight. Excellent for low-spec or quick test runs.', tier: 'low' },
-                    { name: 'llama3.2:1b', size: '1.3 GB', desc: 'Balanced small model. Good comprehension and response times.', tier: 'medium' },
-                    { name: 'gemma2:2b', size: '1.6 GB', desc: 'Google-optimized small model. High accuracy for text generation.', tier: 'medium' },
-                    { name: 'llama3:8b', size: '4.7 GB', desc: 'Powerful industry standard. Requires 8GB+ RAM.', tier: 'high' },
-                    { name: 'mistral:7b', size: '4.1 GB', desc: 'High quality reasoning model. Requires 8GB+ RAM.', tier: 'high' }
-                  ].map((model) => {
-                    const isRecommended = model.name === hardware.recommendedModel;
-                    return (
-                      <div 
-                        key={model.name}
-                        className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${
-                          isRecommended ? 'border-[#3C6B4D]/40 bg-[#3C6B4D]/5' : 'border-[#2A2D30] hover:border-[#2E533B]/40'
-                        }`}
-                      >
-                        {isRecommended && (
-                          <span className="absolute -top-2.5 right-4 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
-                            Recommended
-                          </span>
-                        )}
-                        <div className="flex flex-col gap-1 text-left">
-                          <span className="font-bold text-[#ECEBE9] text-sm block font-mono">{model.name}</span>
-                          <span className="text-[10px] text-[#72706C] block font-semibold">Download Size: {model.size}</span>
-                          <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-2">{model.desc}</p>
-                        </div>
-                        <button
-                          onClick={() => handlePullModel(model.name)}
-                          disabled={!!downloadingModel}
-                          className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${
-                            isRecommended 
-                              ? 'bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] disabled:opacity-40' 
-                              : 'bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#A3A09B] disabled:opacity-40'
-                          }`}
-                        >
-                          {downloadingModel === model.name ? 'Downloading...' : 'Install Model'}
-                        </button>
-                      </div>
-                    );
-                  })}
+          {/* Hardware Specs Panel */}
+          <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[10px] text-[#72706C] uppercase font-semibold tracking-wider">Detected System Specifications</span>
+              <div className="flex flex-wrap gap-4 text-xs font-semibold text-[#A3A09B] mt-0.5">
+                <div className="flex items-center gap-1">
+                  <span className="text-[#72706C]">RAM:</span>
+                  <span className="text-[#3C6B4D]">{hardware.ram}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[#72706C]">Cores:</span>
+                  <span className="text-[#3C6B4D]">{hardware.cores} threads</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-[#72706C]">WebGPU:</span>
+                  <span className={hardware.hasWebGPU ? "text-[#3C6B4D]" : "text-[#E29E2D]"}>
+                    {hardware.hasWebGPU ? "Supported" : "Not supported"}
+                  </span>
                 </div>
               </div>
             </div>
-          ) : (
+            <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
+              <span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">Hardware Recommendation</span>
+              <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
+                Based on your specs, we recommend running <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong>. {hardware.explanation}
+              </p>
+            </div>
+          </div>
+
+          {/* Models list */}
+          <div className="flex flex-col gap-4">
+            <h3 className="font-bold text-[#ECEBE9] text-sm">Select a model to download directly:</h3>
+            {downloadingModel && (
+              <div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col gap-3">
+                <div className="flex justify-between items-center text-xs font-semibold">
+                  <span className="text-[#3C6B4D] flex items-center gap-2">
+                    <span className="animate-spin w-3 h-3 border-2 border-[#3C6B4D] border-t-transparent rounded-full"></span>
+                    <span>Downloading {downloadingModel}...</span>
+                  </span>
+                  <span className="text-[#ECEBE9]">{downloadProgress}%</span>
+                </div>
+                <div className="w-full bg-[#18191B] rounded-full h-2 overflow-hidden border border-[#2A2D30]">
+                  <div
+                    className="bg-[#3C6B4D] h-full transition-all duration-300"
+                    style={{ width: `${downloadProgress}%` }}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-[#72706C]">{downloadStatus}</span>
+              </div>
+            )}
+
+            {downloadError && (
+              <div className="bg-rose-500/10 border border-rose-500/25 p-4 rounded-xl text-xs text-rose-450 font-semibold leading-relaxed">
+                {downloadError}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { name: 'qwen2.5:0.5b', size: '397 MB', desc: 'Ultra lightweight. Excellent for low-spec or quick test runs.', tier: 'low' },
+                { name: 'llama3.2:1b', size: '1.3 GB', desc: 'Balanced small model. Good comprehension and response times.', tier: 'medium' },
+                { name: 'gemma2:2b', size: '1.6 GB', desc: 'Google-optimized small model. High accuracy for text generation.', tier: 'medium' },
+                { name: 'llama3:8b', size: '4.7 GB', desc: 'Powerful industry standard. Requires 8GB+ RAM.', tier: 'high' },
+                { name: 'mistral:7b', size: '4.1 GB', desc: 'High quality reasoning model. Requires 8GB+ RAM.', tier: 'high' }
+              ].map((model) => {
+                const isRecommended = model.name === hardware.recommendedModel;
+                return (
+                  <div
+                    key={model.name}
+                    className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${isRecommended ? 'border-[#3C6B4D]/40 bg-[#3C6B4D]/5' : 'border-[#2A2D30] hover:border-[#2E533B]/40'
+                      }`}
+                  >
+                    {isRecommended && (
+                      <span className="absolute -top-2.5 right-4 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
+                        Recommended
+                      </span>
+                    )}
+                    <div className="flex flex-col gap-1 text-left">
+                      <span className="font-bold text-[#ECEBE9] text-sm block font-mono">{model.name}</span>
+                      <span className="text-[10px] text-[#72706C] block font-semibold">Download Size: {model.size}</span>
+                      <p className="text-[#A3A09B] text-[11px] leading-relaxed mt-2">{model.desc}</p>
+                    </div>
+                    <button
+                      onClick={() => handlePullModel(model.name)}
+                      disabled={!!downloadingModel}
+                      className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${isRecommended
+                          ? 'bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] disabled:opacity-40'
+                          : 'bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#A3A09B] disabled:opacity-40'
+                        }`}
+                    >
+                      {downloadingModel === model.name ? 'Downloading...' : 'Install Model'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      ) : (
         <div className="flex flex-col gap-6 w-full text-left">
           {activeCategory === 'ai' && (
             <div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
-                        <Cpu size={18} />
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">Active LLM Model</span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-sm font-bold text-[#ECEBE9] font-mono">{selectedOllamaModel || 'None'}</span>
-                          <span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
-                            Ollama Active
-                          </span>
-                        </div>
-                      </div>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+                    <Cpu size={18} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">Active LLM Model</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-sm font-bold text-[#ECEBE9] font-mono">{selectedOllamaModel || 'None'}</span>
+                      <span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
+                        Ollama Active
+                      </span>
                     </div>
+                  </div>
+                </div>
 
-                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                      <select
-                        value={selectedOllamaModel}
-                        onChange={(e) => {
-                          setSelectedOllamaModel(e.target.value);
-                          aiService.setSelectedOllamaModel(e.target.value);
-                        }}
-                        className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
-                      >
-                        {ollamaModels.map(m => (
-                          <option key={m} value={m}>{m}</option>
-                        ))}
-                      </select>
-                      
-                      <button
-                        onClick={() => setShowManageModels(!showManageModels)}
-                        className="btn-secondary py-2 px-4 text-xs font-semibold w-full md:w-auto shrink-0 flex items-center justify-center gap-1.5"
-                      >
-                        <ChevronDown size={14} className={`transform transition-transform ${showManageModels ? 'rotate-180' : ''}`} />
-                        <span>Download More Models</span>
-                      </button>
+                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                  <select
+                    value={selectedOllamaModel}
+                    onChange={(e) => {
+                      setSelectedOllamaModel(e.target.value);
+                      aiService.setSelectedOllamaModel(e.target.value);
+                    }}
+                    className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
+                  >
+                    {ollamaModels.map(m => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+
+                  <button
+                    onClick={() => setShowManageModels(!showManageModels)}
+                    className="btn-secondary py-2 px-4 text-xs font-semibold w-full md:w-auto shrink-0 flex items-center justify-center gap-1.5"
+                  >
+                    <ChevronDown size={14} className={`transform transition-transform ${showManageModels ? 'rotate-180' : ''}`} />
+                    <span>Download More Models</span>
+                  </button>
+                </div>
+              </div>
+
+              {showManageModels && (
+                <div className="border-t border-[#2A2D30] pt-5 mt-2 flex flex-col gap-4">
+                  <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div>
+                      <span className="text-[10px] text-[#72706C] uppercase font-semibold block">Hardware Recommendation System</span>
+                      <span className="text-xs text-[#A3A09B] block mt-1">
+                        System RAM: <strong className="text-[#3C6B4D]">{hardware.ram}</strong> | CPU Cores: <strong className="text-[#3C6B4D]">{hardware.cores}</strong>
+                      </span>
+                    </div>
+                    <div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
+                      We recommend <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong> for your hardware.
                     </div>
                   </div>
 
-                  {showManageModels && (
-                    <div className="border-t border-[#2A2D30] pt-5 mt-2 flex flex-col gap-4">
-                      <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <div>
-                          <span className="text-[10px] text-[#72706C] uppercase font-semibold block">Hardware Recommendation System</span>
-                          <span className="text-xs text-[#A3A09B] block mt-1">
-                            System RAM: <strong className="text-[#3C6B4D]">{hardware.ram}</strong> | CPU Cores: <strong className="text-[#3C6B4D]">{hardware.cores}</strong>
-                          </span>
-                        </div>
-                        <div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
-                          We recommend <strong className="text-[#ECEBE9] font-mono">{hardware.recommendedModel}</strong> for your hardware.
-                        </div>
+                  {downloadingModel && (
+                    <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
+                      <div className="flex justify-between items-center text-xs font-semibold">
+                        <span className="text-[#3C6B4D]">Downloading {downloadingModel}...</span>
+                        <span>{downloadProgress}%</span>
                       </div>
-
-                      {downloadingModel && (
-                        <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
-                          <div className="flex justify-between items-center text-xs font-semibold">
-                            <span className="text-[#3C6B4D]">Downloading {downloadingModel}...</span>
-                            <span>{downloadProgress}%</span>
-                          </div>
-                          <div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
-                            <div className="bg-[#3C6B4D] h-full" style={{ width: `${downloadProgress}%` }} />
-                          </div>
-                        </div>
-                      )}
-
-                      {downloadError && (
-                        <div className="bg-rose-500/10 border border-rose-500/25 p-3 rounded-lg text-xs text-rose-450 font-semibold">
-                          {downloadError}
-                        </div>
-                      )}
-
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                        {[
-                          { name: 'qwen2.5:0.5b', size: '397MB' },
-                          { name: 'llama3.2:1b', size: '1.3GB' },
-                          { name: 'gemma2:2b', size: '1.6GB' },
-                          { name: 'llama3:8b', size: '4.7GB' },
-                          { name: 'mistral:7b', size: '4.1GB' }
-                        ].map((m) => {
-                          const alreadyInstalled = ollamaModels.includes(m.name);
-                          return (
-                            <div key={m.name} className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl flex flex-col justify-between gap-3">
-                              <div className="text-left">
-                                <span className="text-[11px] font-bold text-[#ECEBE9] block font-mono truncate">{m.name}</span>
-                                <span className="text-[9px] text-[#72706C] block font-semibold mt-0.5">{m.size}</span>
-                              </div>
-                              <button
-                                onClick={() => handlePullModel(m.name)}
-                                disabled={alreadyInstalled || !!downloadingModel}
-                                className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${
-                                  alreadyInstalled
-                                    ? 'bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]'
-                                    : 'bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20'
-                                }`}
-                              >
-                                {alreadyInstalled ? 'Installed' : downloadingModel === m.name ? 'Downloading' : 'Download'}
-                              </button>
-                            </div>
-                          );
-                        })}
+                      <div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
+                        <div className="bg-[#3C6B4D] h-full" style={{ width: `${downloadProgress}%` }} />
                       </div>
                     </div>
                   )}
+
+                  {downloadError && (
+                    <div className="bg-rose-500/10 border border-rose-500/25 p-3 rounded-lg text-xs text-rose-450 font-semibold">
+                      {downloadError}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    {[
+                      { name: 'qwen2.5:0.5b', size: '397MB' },
+                      { name: 'llama3.2:1b', size: '1.3GB' },
+                      { name: 'gemma2:2b', size: '1.6GB' },
+                      { name: 'llama3:8b', size: '4.7GB' },
+                      { name: 'mistral:7b', size: '4.1GB' }
+                    ].map((m) => {
+                      const alreadyInstalled = ollamaModels.includes(m.name);
+                      return (
+                        <div key={m.name} className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl flex flex-col justify-between gap-3">
+                          <div className="text-left">
+                            <span className="text-[11px] font-bold text-[#ECEBE9] block font-mono truncate">{m.name}</span>
+                            <span className="text-[9px] text-[#72706C] block font-semibold mt-0.5">{m.size}</span>
+                          </div>
+                          <button
+                            onClick={() => handlePullModel(m.name)}
+                            disabled={alreadyInstalled || !!downloadingModel}
+                            className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${alreadyInstalled
+                                ? 'bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]'
+                                : 'bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20'
+                              }`}
+                          >
+                            {alreadyInstalled ? 'Installed' : downloadingModel === m.name ? 'Downloading' : 'Download'}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
+            </div>
+          )}
           {activeCategory === 'security' && (!isLocal || !hasOllama) && (
             <div className="bg-[#E29E2D]/10 border border-[#E29E2D]/20 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
               <div>
@@ -848,91 +926,87 @@ ollama run llama3`}
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredTools.slice(0, activeCategory === 'all' ? visibleCount : undefined).map((tool) => {
-            const isReady = tool.status === 'functional';
-            const isTeased = tool.requiresOllama && (!isLocal || !hasOllama);
+              const isReady = tool.status === 'functional';
+              const isTeased = tool.requiresOllama && (!isLocal || !hasOllama);
 
-            return (
-              <div
-                key={tool.id}
-                onClick={() => isReady && !isTeased && navigate(`/tool/${tool.id}`)}
-                className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
-                  isReady && !isTeased
-                    ? tool.popular
-                      ? 'glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]'
-                      : 'glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50'
-                    : 'opacity-60 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
-                } transition-all duration-200`}
-              >
-                <div className="flex flex-col gap-4">
-                  <div className="flex justify-between items-start">
-                    <div className={`p-3 rounded-xl border ${
-                      isReady && !isTeased
-                        ? tool.popular
-                          ? 'bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform'
-                          : 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform' 
-                        : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
-                    }`}>
-                      <DynamicIcon name={tool.icon} size={22} />
-                    </div>
-                    {isTeased ? (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
-                        <Cpu size={10} />
-                        Needs Local AI
-                      </span>
-                    ) : isReady ? (
-                      <div className="flex items-center gap-1.5">
-                        {tool.popular && (
-                          <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
-                            <Star size={10} className="fill-[#D4AF37]" />
-                            <span>Popular</span>
-                          </span>
-                        )}
-                        <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-                          Ready
-                        </span>
+              return (
+                <div
+                  key={tool.id}
+                  onClick={() => isReady && !isTeased && navigate(`/tool/${tool.id}`)}
+                  className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${isReady && !isTeased
+                      ? tool.popular
+                        ? 'glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]'
+                        : 'glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50'
+                      : 'opacity-60 border-dashed border-[#2A2D30] select-none bg-[#111213]/40'
+                    } transition-all duration-200`}
+                >
+                  <div className="flex flex-col gap-4">
+                    <div className="flex justify-between items-start">
+                      <div className={`p-3 rounded-xl border ${isReady && !isTeased
+                          ? tool.popular
+                            ? 'bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform'
+                            : 'bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform'
+                          : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
+                        }`}>
+                        <DynamicIcon name={tool.icon} size={22} />
                       </div>
-                    ) : (
-                      <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
-                        Planned
+                      {isTeased ? (
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
+                          <Cpu size={10} />
+                          Needs Local AI
+                        </span>
+                      ) : isReady ? (
+                        <div className="flex items-center gap-1.5">
+                          {tool.popular && (
+                            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
+                              <Star size={10} className="fill-[#D4AF37]" />
+                              <span>Popular</span>
+                            </span>
+                          )}
+                          <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+                            Ready
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+                          Planned
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <h3 className={`font-bold text-lg text-[#ECEBE9] ${tool.popular ? 'group-hover:text-[#D4AF37]' : 'group-hover:text-[#3C6B4D]'
+                        } transition-colors`}>
+                        {tool.name}
+                      </h3>
+                      <p className="text-[#A3A09B] text-xs leading-relaxed">
+                        {tool.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card Footer badges */}
+                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
+                    <span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+                      {tool.category} Tool
+                    </span>
+
+                    {isReady && !isTeased && (
+                      <span className={`text-xs font-semibold ${tool.popular ? 'text-[#D4AF37]' : 'text-[#3C6B4D]'
+                        } group-hover:translate-x-1 transition-transform flex items-center gap-1`}>
+                        <span>Open</span>
+                        <span>→</span>
+                      </span>
+                    )}
+                    {isTeased && (
+                      <span className="text-[10px] font-bold text-[#E29E2D] flex items-center gap-1">
+                        <ShieldAlert size={12} />
+                        Unlock in Dashboard
                       </span>
                     )}
                   </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className={`font-bold text-lg text-[#ECEBE9] ${
-                      tool.popular ? 'group-hover:text-[#D4AF37]' : 'group-hover:text-[#3C6B4D]'
-                    } transition-colors`}>
-                      {tool.name}
-                    </h3>
-                    <p className="text-[#A3A09B] text-xs leading-relaxed">
-                      {tool.description}
-                    </p>
-                  </div>
                 </div>
-
-                {/* Card Footer badges */}
-                <div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
-                  <span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
-                    {tool.category} Tool
-                  </span>
-                  
-                  {isReady && !isTeased && (
-                    <span className={`text-xs font-semibold ${
-                      tool.popular ? 'text-[#D4AF37]' : 'text-[#3C6B4D]'
-                    } group-hover:translate-x-1 transition-transform flex items-center gap-1`}>
-                      <span>Open</span>
-                      <span>→</span>
-                    </span>
-                  )}
-                  {isTeased && (
-                    <span className="text-[10px] font-bold text-[#E29E2D] flex items-center gap-1">
-                      <ShieldAlert size={12} />
-                      Unlock in Dashboard
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
+              );
             })}
 
             {filteredTools.length === 0 && (

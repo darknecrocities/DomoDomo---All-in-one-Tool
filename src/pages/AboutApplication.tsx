@@ -133,18 +133,6 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <Shield size={12} />
               <span>About DomoDomo</span>
             </div>
-            
-            {/* AppBuilders PH Product Hunt Badge */}
-            <a
-              href="https://www.appbuildersph.com/apps/domodomo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1 bg-[#FF6154]/10 border border-[#FF6154]/25 hover:border-[#FF6154]/50 hover:bg-[#FF6154]/20 text-[#FF6154] hover:text-[#ECEBE9] rounded-lg transition-all text-[11px] font-bold shadow-sm animate-pulse"
-              title="Featured on App Builders PH"
-            >
-              <span>▲</span>
-              <span className="font-extrabold">#2 on the Leaderboards of All Time on AppBuilders PH</span>
-            </a>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight font-heading">
             Everything About the Local-First Application
@@ -174,38 +162,35 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
         {/* Sticky Sidebar Navigation */}
         <div className="lg:col-span-3 flex flex-col gap-2.5 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl lg:sticky lg:top-24">
           <span className="text-[10px] uppercase tracking-wider text-[#72706C] font-bold px-3 mb-1 block">Navigation</span>
-          
+
           <button
             onClick={() => handleTabChange('about')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${
-              activeTab === 'about'
-                ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
-                : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
-            }`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'about'
+              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
+              }`}
           >
             <Shield size={14} className={activeTab === 'about' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
             <span>About Page</span>
           </button>
-          
+
           <button
             onClick={() => handleTabChange('updates')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${
-              activeTab === 'updates'
-                ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
-                : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
-            }`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'updates'
+              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
+              }`}
           >
             <Sparkles size={14} className={activeTab === 'updates' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
             <span>Updates & Patches</span>
           </button>
-          
+
           <button
             onClick={() => handleTabChange('docs')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${
-              activeTab === 'docs'
-                ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
-                : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
-            }`}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'docs'
+              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
+              }`}
           >
             <Terminal size={14} className={activeTab === 'docs' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
             <span>Local Docs</span>
@@ -245,15 +230,15 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                 </div>
 
                 <div className="relative overflow-hidden w-full pt-1">
-                  <div 
+                  <div
                     className="flex transition-transform duration-500 ease-in-out"
-                    style={{ 
+                    style={{
                       transform: `translateX(-${currentIdx * (100 / itemsPerView)}%)`
                     }}
                   >
                     {testimonials.map((test, idx) => (
-                      <div 
-                        key={idx} 
+                      <div
+                        key={idx}
                         className="px-2.5 shrink-0"
                         style={{ width: `${100 / itemsPerView}%` }}
                       >
@@ -269,16 +254,15 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Indicators dots */}
                   <div className="flex justify-center gap-1.5 mt-4">
                     {Array.from({ length: testimonials.length - itemsPerView + 1 }).map((_, dIdx) => (
                       <button
                         key={dIdx}
                         onClick={() => setCurrentIdx(dIdx)}
-                        className={`w-1.5 h-1.5 rounded-full transition-all ${
-                          currentIdx === dIdx ? 'bg-[#3C6B4D] w-3.5' : 'bg-[#2A2D30] hover:bg-[#72706C]'
-                        }`}
+                        className={`w-1.5 h-1.5 rounded-full transition-all ${currentIdx === dIdx ? 'bg-[#3C6B4D] w-3.5' : 'bg-[#2A2D30] hover:bg-[#72706C]'
+                          }`}
                         title={`Go to slide ${dIdx + 1}`}
                       />
                     ))}
@@ -383,7 +367,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                             <span>{faq.q}</span>
                             <ChevronDown size={14} className={`text-[#72706C] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
                           </button>
-                          <div 
+                          <div
                             className={`transition-all duration-200 ease-in-out ${isOpen ? 'max-h-32 opacity-100 border-t border-[#2A2D30]/65 p-4' : 'max-h-0 opacity-0'}`}
                             style={{ overflow: 'hidden' }}
                           >
@@ -412,7 +396,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                   Track our latest commits, updates, patches, and client-side feature rollouts.
                 </p>
               </div>
-              
+
               <div className="flex flex-col gap-6">
                 {[
                   {
