@@ -17242,5 +17242,4658 @@
     "https": true,
     "cors": "yes",
     "link": "https://github.com/jakejas/pse-api"
+  },
+  {
+    "name": "DOH Covid-19 Tracker",
+    "description": "Historical case records, hospital bed occupancy rates, and vaccine counts compiled from the Department of Health.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH"
+  },
+  {
+    "name": "PH COVID-19 Cases API",
+    "description": "Real-time unofficial dashboard feeding global databases with Philippine infection rates and localized status.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://covid19-api-philippines.herokuapp.com/"
+  },
+  {
+    "name": "PhilAtlas Geo PSGC API",
+    "description": "Provides provincial, municipal, and city level geo-coordinates and administrative mapping data for the Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data"
+  },
+  {
+    "name": "OpenStreetMap PH Geodata API",
+    "description": "Philippine country-specific vector map files, road networks, transit lines, and land use outlines from Geofabrik.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://download.geofabrik.de/asia/philippines.html"
+  },
+  {
+    "name": "National Museum PH Collections",
+    "description": "Browse national heritage metadata, historic artifacts databases, and digitized art archives in Philippine museums.",
+    "category": "Culture & Holidays",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/museums-ph/collections-api"
+  },
+  {
+    "name": "PH SSS Contributions API",
+    "description": "Helper calculator utility endpoint estimating Social Security System monthly contributions for employees and self-employed.",
+    "category": "Calculators & Rates",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-developers/sss-calculator-api"
+  },
+  {
+    "name": "PhilHealth Contributions API",
+    "description": "Provides updated monthly health premium contribution calculations matching latest PhilHealth brackets.",
+    "category": "Calculators & Rates",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-developers/philhealth-calculator-api"
+  },
+  {
+    "name": "Pag-IBIG Contribution Rates",
+    "description": "Utility endpoints computing Pag-IBIG HDMF mandatory monthly premiums based on basic salary brackets.",
+    "category": "Calculators & Rates",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-developers/pagibig-calculator-api"
+  },
+  {
+    "name": "Bayan Muna Bill Tracker",
+    "description": "Curated dataset tracking Philippine Senate and House bills, current readings, sponsors, and progress statuses.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/gov-ph-watch/bills-tracker"
+  },
+  {
+    "name": "MMDA Live Traffic Alerts",
+    "description": "Unofficial MMDA live transit speed scraping API showing EDSA, C5, and key Metro Manila road traffic congestion logs.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mmda-traffic/live-alerts-api"
+  },
+  {
+    "name": "Philippine School Directory",
+    "description": "List of elementary, secondary, and tertiary public/private institutions registered under DEPED and CHED.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api"
+  },
+  {
+    "name": "PH Internet Speed Logs",
+    "description": "Open database archive logs tracking average internet speed metrics (fixed and mobile) by region/telecom in PH.",
+    "category": "Technology & Telecom",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/telco-ph/speed-database"
+  },
+  {
+    "name": "PH Gov Open Data Portal",
+    "description": "Aggregated links and directory metadata from data.gov.ph encompassing public statistics, budgets, and census records.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/gov-ph-watch/data-gov-ph-directory"
+  },
+  {
+    "name": "NCR PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for National Capital Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/ncr.json"
+  },
+  {
+    "name": "CAR PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Cordillera Administrative Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/car.json"
+  },
+  {
+    "name": "Region I PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Ilocos Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regioni.json"
+  },
+  {
+    "name": "Region II PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Cagayan Valley.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionii.json"
+  },
+  {
+    "name": "Region III PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Central Luzon.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regioniii.json"
+  },
+  {
+    "name": "Region IV-A PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for CALABARZON.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regioniva.json"
+  },
+  {
+    "name": "Mimaropa PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for MIMAROPA Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/mimaropa.json"
+  },
+  {
+    "name": "Region V PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Bicol Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionv.json"
+  },
+  {
+    "name": "Region VI PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Western Visayas.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionvi.json"
+  },
+  {
+    "name": "Region VII PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Central Visayas.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionvii.json"
+  },
+  {
+    "name": "Region VIII PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Eastern Visayas.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionviii.json"
+  },
+  {
+    "name": "Region IX PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Zamboanga Peninsula.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionix.json"
+  },
+  {
+    "name": "Region X PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Northern Mindanao.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionx.json"
+  },
+  {
+    "name": "Region XI PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Davao Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionxi.json"
+  },
+  {
+    "name": "Region XII PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for SOCCSKSARGEN.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionxii.json"
+  },
+  {
+    "name": "Region XIII PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Caraga Region.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/regionxiii.json"
+  },
+  {
+    "name": "BARMM PSGC Boundary Map API",
+    "description": "Public geographic boundary geo-coordinates and administrative boundaries for Bangsamoro Autonomous Region in Muslim Mindanao.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api/blob/main/data/barmm.json"
+  },
+  {
+    "name": "Abra Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Abra.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/abra"
+  },
+  {
+    "name": "Agusan del Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Agusan del Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/agusan-del-norte"
+  },
+  {
+    "name": "Agusan del Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Agusan del Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/agusan-del-sur"
+  },
+  {
+    "name": "Aklan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Aklan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/aklan"
+  },
+  {
+    "name": "Albay Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Albay.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/albay"
+  },
+  {
+    "name": "Antique Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Antique.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/antique"
+  },
+  {
+    "name": "Apayao Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Apayao.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/apayao"
+  },
+  {
+    "name": "Aurora Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Aurora.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/aurora"
+  },
+  {
+    "name": "Basilan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Basilan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/basilan"
+  },
+  {
+    "name": "Bataan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Bataan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/bataan"
+  },
+  {
+    "name": "Batanes Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Batanes.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/batanes"
+  },
+  {
+    "name": "Batangas Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Batangas.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/batangas"
+  },
+  {
+    "name": "Benguet Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Benguet.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/benguet"
+  },
+  {
+    "name": "Biliran Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Biliran.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/biliran"
+  },
+  {
+    "name": "Bohol Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Bohol.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/bohol"
+  },
+  {
+    "name": "Bukidnon Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Bukidnon.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/bukidnon"
+  },
+  {
+    "name": "Bulacan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Bulacan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/bulacan"
+  },
+  {
+    "name": "Cagayan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Cagayan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/cagayan"
+  },
+  {
+    "name": "Camarines Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Camarines Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/camarines-norte"
+  },
+  {
+    "name": "Camarines Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Camarines Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/camarines-sur"
+  },
+  {
+    "name": "Camiguin Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Camiguin.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/camiguin"
+  },
+  {
+    "name": "Capiz Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Capiz.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/capiz"
+  },
+  {
+    "name": "Catanduanes Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Catanduanes.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/catanduanes"
+  },
+  {
+    "name": "Cavite Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Cavite.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/cavite"
+  },
+  {
+    "name": "Cebu Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Cebu.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/cebu"
+  },
+  {
+    "name": "Cotabato Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Cotabato.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/cotabato"
+  },
+  {
+    "name": "Davao de Oro Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Davao de Oro.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/davao-de-oro"
+  },
+  {
+    "name": "Davao del Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Davao del Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/davao-del-norte"
+  },
+  {
+    "name": "Davao del Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Davao del Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/davao-del-sur"
+  },
+  {
+    "name": "Davao Occidental Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Davao Occidental.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/davao-occidental"
+  },
+  {
+    "name": "Davao Oriental Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Davao Oriental.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/davao-oriental"
+  },
+  {
+    "name": "Dinagat Islands Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Dinagat Islands.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/dinagat-islands"
+  },
+  {
+    "name": "Eastern Samar Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Eastern Samar.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/eastern-samar"
+  },
+  {
+    "name": "Guimaras Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Guimaras.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/guimaras"
+  },
+  {
+    "name": "Ifugao Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Ifugao.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/ifugao"
+  },
+  {
+    "name": "Ilocos Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Ilocos Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/ilocos-norte"
+  },
+  {
+    "name": "Ilocos Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Ilocos Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/ilocos-sur"
+  },
+  {
+    "name": "Iloilo Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Iloilo.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/iloilo"
+  },
+  {
+    "name": "Isabela Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Isabela.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/isabela"
+  },
+  {
+    "name": "Kalinga Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Kalinga.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/kalinga"
+  },
+  {
+    "name": "La Union Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of La Union.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/la-union"
+  },
+  {
+    "name": "Laguna Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Laguna.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/laguna"
+  },
+  {
+    "name": "Lanao del Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Lanao del Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/lanao-del-norte"
+  },
+  {
+    "name": "Lanao del Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Lanao del Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/lanao-del-sur"
+  },
+  {
+    "name": "Leyte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Leyte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/leyte"
+  },
+  {
+    "name": "Maguindanao Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Maguindanao.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/maguindanao"
+  },
+  {
+    "name": "Marinduque Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Marinduque.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/marinduque"
+  },
+  {
+    "name": "Masbate Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Masbate.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/masbate"
+  },
+  {
+    "name": "Misamis Occidental Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Misamis Occidental.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/misamis-occidental"
+  },
+  {
+    "name": "Misamis Oriental Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Misamis Oriental.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/misamis-oriental"
+  },
+  {
+    "name": "Mountain Province Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Mountain Province.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/mountain-province"
+  },
+  {
+    "name": "Negros Occidental Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Negros Occidental.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/negros-occidental"
+  },
+  {
+    "name": "Negros Oriental Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Negros Oriental.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/negros-oriental"
+  },
+  {
+    "name": "Northern Samar Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Northern Samar.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/northern-samar"
+  },
+  {
+    "name": "Nueva Ecija Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Nueva Ecija.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/nueva-ecija"
+  },
+  {
+    "name": "Nueva Vizcaya Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Nueva Vizcaya.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/nueva-vizcaya"
+  },
+  {
+    "name": "Occidental Mindoro Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Occidental Mindoro.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/occidental-mindoro"
+  },
+  {
+    "name": "Oriental Mindoro Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Oriental Mindoro.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/oriental-mindoro"
+  },
+  {
+    "name": "Palawan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Palawan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/palawan"
+  },
+  {
+    "name": "Pampanga Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Pampanga.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/pampanga"
+  },
+  {
+    "name": "Pangasinan Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Pangasinan.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/pangasinan"
+  },
+  {
+    "name": "Quezon Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Quezon.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/quezon"
+  },
+  {
+    "name": "Quirino Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Quirino.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/quirino"
+  },
+  {
+    "name": "Rizal Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Rizal.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/rizal"
+  },
+  {
+    "name": "Romblon Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Romblon.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/romblon"
+  },
+  {
+    "name": "Samar Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Samar.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/samar"
+  },
+  {
+    "name": "Sarangani Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Sarangani.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/sarangani"
+  },
+  {
+    "name": "Siquijor Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Siquijor.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/siquijor"
+  },
+  {
+    "name": "Sorsogon Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Sorsogon.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/sorsogon"
+  },
+  {
+    "name": "South Cotabato Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of South Cotabato.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/south-cotabato"
+  },
+  {
+    "name": "Southern Leyte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Southern Leyte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/southern-leyte"
+  },
+  {
+    "name": "Sultan Kudarat Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Sultan Kudarat.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/sultan-kudarat"
+  },
+  {
+    "name": "Sulu Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Sulu.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/sulu"
+  },
+  {
+    "name": "Surigao del Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Surigao del Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/surigao-del-norte"
+  },
+  {
+    "name": "Surigao del Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Surigao del Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/surigao-del-sur"
+  },
+  {
+    "name": "Tarlac Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Tarlac.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/tarlac"
+  },
+  {
+    "name": "Tawi-Tawi Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Tawi-Tawi.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/tawi-tawi"
+  },
+  {
+    "name": "Zambales Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Zambales.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/zambales"
+  },
+  {
+    "name": "Zamboanga del Norte Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Zamboanga del Norte.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/zamboanga-del-norte"
+  },
+  {
+    "name": "Zamboanga del Sur Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Zamboanga del Sur.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/zamboanga-del-sur"
+  },
+  {
+    "name": "Zamboanga Sibugay Provincial Profile Data",
+    "description": "Open-access database containing administrative code mapping, municipal listings, and population metrics for the province of Zamboanga Sibugay.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philatlas/philippine-geographic-data/tree/main/provinces/zamboanga-sibugay"
+  },
+  {
+    "name": "Manila City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Manila, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Manila"
+  },
+  {
+    "name": "Manila LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Manila.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/manila"
+  },
+  {
+    "name": "Quezon City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Quezon City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Quezon City"
+  },
+  {
+    "name": "Quezon City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Quezon City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/quezon-city"
+  },
+  {
+    "name": "Caloocan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Caloocan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Caloocan"
+  },
+  {
+    "name": "Caloocan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Caloocan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/caloocan"
+  },
+  {
+    "name": "Las Pinas City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Las Pinas, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Las Pinas"
+  },
+  {
+    "name": "Las Pinas LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Las Pinas.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/las-pinas"
+  },
+  {
+    "name": "Makati City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Makati, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Makati"
+  },
+  {
+    "name": "Makati LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Makati.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/makati"
+  },
+  {
+    "name": "Malabon City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Malabon, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Malabon"
+  },
+  {
+    "name": "Malabon LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Malabon.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/malabon"
+  },
+  {
+    "name": "Mandaluyong City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Mandaluyong, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Mandaluyong"
+  },
+  {
+    "name": "Mandaluyong LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Mandaluyong.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/mandaluyong"
+  },
+  {
+    "name": "Marikina City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Marikina, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Marikina"
+  },
+  {
+    "name": "Marikina LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Marikina.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/marikina"
+  },
+  {
+    "name": "Muntinlupa City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Muntinlupa, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Muntinlupa"
+  },
+  {
+    "name": "Muntinlupa LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Muntinlupa.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/muntinlupa"
+  },
+  {
+    "name": "Navotas City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Navotas, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Navotas"
+  },
+  {
+    "name": "Navotas LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Navotas.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/navotas"
+  },
+  {
+    "name": "Paranaque City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Paranaque, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Paranaque"
+  },
+  {
+    "name": "Paranaque LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Paranaque.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/paranaque"
+  },
+  {
+    "name": "Pasay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Pasay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Pasay"
+  },
+  {
+    "name": "Pasay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Pasay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/pasay"
+  },
+  {
+    "name": "Pasig City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Pasig, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Pasig"
+  },
+  {
+    "name": "Pasig LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Pasig.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/pasig"
+  },
+  {
+    "name": "San Juan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of San Juan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=San Juan"
+  },
+  {
+    "name": "San Juan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for San Juan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/san-juan"
+  },
+  {
+    "name": "Taguig City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Taguig, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Taguig"
+  },
+  {
+    "name": "Taguig LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Taguig.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/taguig"
+  },
+  {
+    "name": "Valenzuela City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Valenzuela, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Valenzuela"
+  },
+  {
+    "name": "Valenzuela LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Valenzuela.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/valenzuela"
+  },
+  {
+    "name": "Cebu City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cebu City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cebu City"
+  },
+  {
+    "name": "Cebu City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cebu City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cebu-city"
+  },
+  {
+    "name": "Davao City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Davao City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Davao City"
+  },
+  {
+    "name": "Davao City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Davao City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/davao-city"
+  },
+  {
+    "name": "Baguio City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Baguio, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Baguio"
+  },
+  {
+    "name": "Baguio LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Baguio.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/baguio"
+  },
+  {
+    "name": "Vigan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Vigan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Vigan"
+  },
+  {
+    "name": "Vigan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Vigan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/vigan"
+  },
+  {
+    "name": "Angeles City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Angeles, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Angeles"
+  },
+  {
+    "name": "Angeles LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Angeles.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/angeles"
+  },
+  {
+    "name": "San Fernando City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of San Fernando, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=San Fernando"
+  },
+  {
+    "name": "San Fernando LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for San Fernando.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/san-fernando"
+  },
+  {
+    "name": "Dagupan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Dagupan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Dagupan"
+  },
+  {
+    "name": "Dagupan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Dagupan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/dagupan"
+  },
+  {
+    "name": "Olongapo City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Olongapo, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Olongapo"
+  },
+  {
+    "name": "Olongapo LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Olongapo.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/olongapo"
+  },
+  {
+    "name": "Batangas City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Batangas City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Batangas City"
+  },
+  {
+    "name": "Batangas City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Batangas City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/batangas-city"
+  },
+  {
+    "name": "Lipa City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Lipa, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Lipa"
+  },
+  {
+    "name": "Lipa LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Lipa.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/lipa"
+  },
+  {
+    "name": "Calamba City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Calamba, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Calamba"
+  },
+  {
+    "name": "Calamba LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Calamba.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/calamba"
+  },
+  {
+    "name": "San Pablo City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of San Pablo, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=San Pablo"
+  },
+  {
+    "name": "San Pablo LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for San Pablo.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/san-pablo"
+  },
+  {
+    "name": "Santa Rosa City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Santa Rosa, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Santa Rosa"
+  },
+  {
+    "name": "Santa Rosa LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Santa Rosa.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/santa-rosa"
+  },
+  {
+    "name": "Imus City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Imus, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Imus"
+  },
+  {
+    "name": "Imus LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Imus.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/imus"
+  },
+  {
+    "name": "Bacoor City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bacoor, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bacoor"
+  },
+  {
+    "name": "Bacoor LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bacoor.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bacoor"
+  },
+  {
+    "name": "Tagaytay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tagaytay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tagaytay"
+  },
+  {
+    "name": "Tagaytay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tagaytay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tagaytay"
+  },
+  {
+    "name": "Lucena City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Lucena, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Lucena"
+  },
+  {
+    "name": "Lucena LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Lucena.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/lucena"
+  },
+  {
+    "name": "Naga City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Naga, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Naga"
+  },
+  {
+    "name": "Naga LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Naga.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/naga"
+  },
+  {
+    "name": "Legazpi City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Legazpi, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Legazpi"
+  },
+  {
+    "name": "Legazpi LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Legazpi.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/legazpi"
+  },
+  {
+    "name": "Iloilo City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Iloilo City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Iloilo City"
+  },
+  {
+    "name": "Iloilo City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Iloilo City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/iloilo-city"
+  },
+  {
+    "name": "Bacodol City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bacodol, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bacodol"
+  },
+  {
+    "name": "Bacodol LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bacodol.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bacodol"
+  },
+  {
+    "name": "Dumaguete City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Dumaguete, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Dumaguete"
+  },
+  {
+    "name": "Dumaguete LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Dumaguete.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/dumaguete"
+  },
+  {
+    "name": "Tacloban City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tacloban, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tacloban"
+  },
+  {
+    "name": "Tacloban LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tacloban.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tacloban"
+  },
+  {
+    "name": "Ormoc City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Ormoc, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Ormoc"
+  },
+  {
+    "name": "Ormoc LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Ormoc.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/ormoc"
+  },
+  {
+    "name": "Zamboanga City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Zamboanga City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Zamboanga City"
+  },
+  {
+    "name": "Zamboanga City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Zamboanga City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/zamboanga-city"
+  },
+  {
+    "name": "Cagayan de Oro City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cagayan de Oro, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cagayan de Oro"
+  },
+  {
+    "name": "Cagayan de Oro LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cagayan de Oro.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cagayan-de-oro"
+  },
+  {
+    "name": "Iligan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Iligan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Iligan"
+  },
+  {
+    "name": "Iligan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Iligan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/iligan"
+  },
+  {
+    "name": "Butuan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Butuan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Butuan"
+  },
+  {
+    "name": "Butuan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Butuan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/butuan"
+  },
+  {
+    "name": "General Santos City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of General Santos, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=General Santos"
+  },
+  {
+    "name": "General Santos LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for General Santos.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/general-santos"
+  },
+  {
+    "name": "Koronadal City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Koronadal, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Koronadal"
+  },
+  {
+    "name": "Koronadal LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Koronadal.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/koronadal"
+  },
+  {
+    "name": "Cotabato City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cotabato City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cotabato City"
+  },
+  {
+    "name": "Cotabato City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cotabato City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cotabato-city"
+  },
+  {
+    "name": "Marawi City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Marawi, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Marawi"
+  },
+  {
+    "name": "Marawi LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Marawi.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/marawi"
+  },
+  {
+    "name": "Pagadian City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Pagadian, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Pagadian"
+  },
+  {
+    "name": "Pagadian LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Pagadian.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/pagadian"
+  },
+  {
+    "name": "Tagum City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tagum, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tagum"
+  },
+  {
+    "name": "Tagum LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tagum.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tagum"
+  },
+  {
+    "name": "Digos City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Digos, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Digos"
+  },
+  {
+    "name": "Digos LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Digos.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/digos"
+  },
+  {
+    "name": "Panabo City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Panabo, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Panabo"
+  },
+  {
+    "name": "Panabo LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Panabo.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/panabo"
+  },
+  {
+    "name": "Samal City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Samal, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Samal"
+  },
+  {
+    "name": "Samal LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Samal.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/samal"
+  },
+  {
+    "name": "Mati City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Mati, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Mati"
+  },
+  {
+    "name": "Mati LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Mati.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/mati"
+  },
+  {
+    "name": "Kidapawan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Kidapawan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Kidapawan"
+  },
+  {
+    "name": "Kidapawan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Kidapawan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/kidapawan"
+  },
+  {
+    "name": "Tacurong City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tacurong, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tacurong"
+  },
+  {
+    "name": "Tacurong LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tacurong.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tacurong"
+  },
+  {
+    "name": "Surigao City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Surigao City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Surigao City"
+  },
+  {
+    "name": "Surigao City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Surigao City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/surigao-city"
+  },
+  {
+    "name": "Bislig City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bislig, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bislig"
+  },
+  {
+    "name": "Bislig LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bislig.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bislig"
+  },
+  {
+    "name": "Cabadbaran City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cabadbaran, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cabadbaran"
+  },
+  {
+    "name": "Cabadbaran LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cabadbaran.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cabadbaran"
+  },
+  {
+    "name": "Bayugan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bayugan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bayugan"
+  },
+  {
+    "name": "Bayugan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bayugan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bayugan"
+  },
+  {
+    "name": "El Salvador City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of El Salvador, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=El Salvador"
+  },
+  {
+    "name": "El Salvador LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for El Salvador.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/el-salvador"
+  },
+  {
+    "name": "Gingoog City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Gingoog, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Gingoog"
+  },
+  {
+    "name": "Gingoog LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Gingoog.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/gingoog"
+  },
+  {
+    "name": "Valencia City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Valencia, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Valencia"
+  },
+  {
+    "name": "Valencia LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Valencia.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/valencia"
+  },
+  {
+    "name": "Malaybalay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Malaybalay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Malaybalay"
+  },
+  {
+    "name": "Malaybalay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Malaybalay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/malaybalay"
+  },
+  {
+    "name": "Oroquieta City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Oroquieta, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Oroquieta"
+  },
+  {
+    "name": "Oroquieta LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Oroquieta.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/oroquieta"
+  },
+  {
+    "name": "Ozamiz City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Ozamiz, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Ozamiz"
+  },
+  {
+    "name": "Ozamiz LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Ozamiz.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/ozamiz"
+  },
+  {
+    "name": "Tangub City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tangub, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tangub"
+  },
+  {
+    "name": "Tangub LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tangub.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tangub"
+  },
+  {
+    "name": "Dapitan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Dapitan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Dapitan"
+  },
+  {
+    "name": "Dapitan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Dapitan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/dapitan"
+  },
+  {
+    "name": "Dipolog City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Dipolog, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Dipolog"
+  },
+  {
+    "name": "Dipolog LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Dipolog.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/dipolog"
+  },
+  {
+    "name": "Isabela City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Isabela City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Isabela City"
+  },
+  {
+    "name": "Isabela City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Isabela City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/isabela-city"
+  },
+  {
+    "name": "Baybay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Baybay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Baybay"
+  },
+  {
+    "name": "Baybay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Baybay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/baybay"
+  },
+  {
+    "name": "Catbalogan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Catbalogan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Catbalogan"
+  },
+  {
+    "name": "Catbalogan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Catbalogan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/catbalogan"
+  },
+  {
+    "name": "Borongan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Borongan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Borongan"
+  },
+  {
+    "name": "Borongan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Borongan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/borongan"
+  },
+  {
+    "name": "Maasin City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Maasin, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Maasin"
+  },
+  {
+    "name": "Maasin LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Maasin.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/maasin"
+  },
+  {
+    "name": "Bais City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bais, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bais"
+  },
+  {
+    "name": "Bais LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bais.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bais"
+  },
+  {
+    "name": "Bayawan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bayawan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bayawan"
+  },
+  {
+    "name": "Bayawan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bayawan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bayawan"
+  },
+  {
+    "name": "Canlaon City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Canlaon, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Canlaon"
+  },
+  {
+    "name": "Canlaon LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Canlaon.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/canlaon"
+  },
+  {
+    "name": "Guihulngan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Guihulngan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Guihulngan"
+  },
+  {
+    "name": "Guihulngan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Guihulngan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/guihulngan"
+  },
+  {
+    "name": "Tanjay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tanjay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tanjay"
+  },
+  {
+    "name": "Tanjay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tanjay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tanjay"
+  },
+  {
+    "name": "Bago City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Bago, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Bago"
+  },
+  {
+    "name": "Bago LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Bago.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/bago"
+  },
+  {
+    "name": "Cadiz City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cadiz, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cadiz"
+  },
+  {
+    "name": "Cadiz LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cadiz.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cadiz"
+  },
+  {
+    "name": "Escalante City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Escalante, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Escalante"
+  },
+  {
+    "name": "Escalante LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Escalante.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/escalante"
+  },
+  {
+    "name": "Himamaylan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Himamaylan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Himamaylan"
+  },
+  {
+    "name": "Himamaylan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Himamaylan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/himamaylan"
+  },
+  {
+    "name": "Kabankalan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Kabankalan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Kabankalan"
+  },
+  {
+    "name": "Kabankalan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Kabankalan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/kabankalan"
+  },
+  {
+    "name": "La Carlota City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of La Carlota, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=La Carlota"
+  },
+  {
+    "name": "La Carlota LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for La Carlota.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/la-carlota"
+  },
+  {
+    "name": "Sagay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Sagay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Sagay"
+  },
+  {
+    "name": "Sagay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Sagay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/sagay"
+  },
+  {
+    "name": "San Carlos City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of San Carlos, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=San Carlos"
+  },
+  {
+    "name": "San Carlos LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for San Carlos.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/san-carlos"
+  },
+  {
+    "name": "Sipalay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Sipalay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Sipalay"
+  },
+  {
+    "name": "Sipalay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Sipalay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/sipalay"
+  },
+  {
+    "name": "Talisay City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Talisay, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Talisay"
+  },
+  {
+    "name": "Talisay LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Talisay.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/talisay"
+  },
+  {
+    "name": "Victorias City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Victorias, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Victorias"
+  },
+  {
+    "name": "Victorias LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Victorias.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/victorias"
+  },
+  {
+    "name": "Passi City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Passi, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Passi"
+  },
+  {
+    "name": "Passi LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Passi.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/passi"
+  },
+  {
+    "name": "Roxas City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Roxas City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Roxas City"
+  },
+  {
+    "name": "Roxas City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Roxas City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/roxas-city"
+  },
+  {
+    "name": "Ligao City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Ligao, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Ligao"
+  },
+  {
+    "name": "Ligao LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Ligao.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/ligao"
+  },
+  {
+    "name": "Tabaco City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tabaco, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tabaco"
+  },
+  {
+    "name": "Tabaco LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tabaco.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tabaco"
+  },
+  {
+    "name": "Iriga City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Iriga, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Iriga"
+  },
+  {
+    "name": "Iriga LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Iriga.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/iriga"
+  },
+  {
+    "name": "Masbate City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Masbate City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Masbate City"
+  },
+  {
+    "name": "Masbate City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Masbate City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/masbate-city"
+  },
+  {
+    "name": "Sorsogon City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Sorsogon City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Sorsogon City"
+  },
+  {
+    "name": "Sorsogon City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Sorsogon City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/sorsogon-city"
+  },
+  {
+    "name": "Tayabas City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tayabas, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tayabas"
+  },
+  {
+    "name": "Tayabas LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tayabas.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tayabas"
+  },
+  {
+    "name": "Calapan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Calapan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Calapan"
+  },
+  {
+    "name": "Calapan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Calapan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/calapan"
+  },
+  {
+    "name": "Puerto Princesa City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Puerto Princesa, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Puerto Princesa"
+  },
+  {
+    "name": "Puerto Princesa LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Puerto Princesa.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/puerto-princesa"
+  },
+  {
+    "name": "Cavite City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cavite City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cavite City"
+  },
+  {
+    "name": "Cavite City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cavite City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cavite-city"
+  },
+  {
+    "name": "Dasmariñas City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Dasmariñas, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Dasmariñas"
+  },
+  {
+    "name": "Dasmariñas LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Dasmariñas.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/dasmari-as"
+  },
+  {
+    "name": "General Trias City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of General Trias, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=General Trias"
+  },
+  {
+    "name": "General Trias LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for General Trias.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/general-trias"
+  },
+  {
+    "name": "Trece Martires City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Trece Martires, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Trece Martires"
+  },
+  {
+    "name": "Trece Martires LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Trece Martires.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/trece-martires"
+  },
+  {
+    "name": "Antipolo City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Antipolo, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Antipolo"
+  },
+  {
+    "name": "Antipolo LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Antipolo.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/antipolo"
+  },
+  {
+    "name": "San Jose del Monte City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of San Jose del Monte, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=San Jose del Monte"
+  },
+  {
+    "name": "San Jose del Monte LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for San Jose del Monte.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/san-jose-del-monte"
+  },
+  {
+    "name": "Malolos City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Malolos, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Malolos"
+  },
+  {
+    "name": "Malolos LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Malolos.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/malolos"
+  },
+  {
+    "name": "Meycauayan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Meycauayan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Meycauayan"
+  },
+  {
+    "name": "Meycauayan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Meycauayan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/meycauayan"
+  },
+  {
+    "name": "Tarlac City City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Tarlac City, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Tarlac City"
+  },
+  {
+    "name": "Tarlac City LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Tarlac City.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/tarlac-city"
+  },
+  {
+    "name": "Balanga City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Balanga, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Balanga"
+  },
+  {
+    "name": "Balanga LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Balanga.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/balanga"
+  },
+  {
+    "name": "Mabalacat City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Mabalacat, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Mabalacat"
+  },
+  {
+    "name": "Mabalacat LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Mabalacat.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/mabalacat"
+  },
+  {
+    "name": "Gapan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Gapan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Gapan"
+  },
+  {
+    "name": "Gapan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Gapan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/gapan"
+  },
+  {
+    "name": "Muñoz City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Muñoz, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Muñoz"
+  },
+  {
+    "name": "Muñoz LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Muñoz.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/mu-oz"
+  },
+  {
+    "name": "Palayan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Palayan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Palayan"
+  },
+  {
+    "name": "Palayan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Palayan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/palayan"
+  },
+  {
+    "name": "Cabanatuan City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Cabanatuan, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Cabanatuan"
+  },
+  {
+    "name": "Cabanatuan LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Cabanatuan.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/cabanatuan"
+  },
+  {
+    "name": "San Jose City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of San Jose, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=San Jose"
+  },
+  {
+    "name": "San Jose LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for San Jose.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/san-jose"
+  },
+  {
+    "name": "Alaminos City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Alaminos, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Alaminos"
+  },
+  {
+    "name": "Alaminos LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Alaminos.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/alaminos"
+  },
+  {
+    "name": "Urdaneta City ZIP Code Registry",
+    "description": "Postal ZIP codes and subdivision index dataset for the city of Urdaneta, Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes/search?q=Urdaneta"
+  },
+  {
+    "name": "Urdaneta LGU Open Data Directory",
+    "description": "Public transparency disclosures, local ordinance listings, and LGU geographic mapping files for Urdaneta.",
+    "category": "Government & Politics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://data.gov.ph/organization/urdaneta"
+  },
+  {
+    "name": "DEPED NCR School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the National Capital Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/ncr"
+  },
+  {
+    "name": "DEPED CAR School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Cordillera Administrative Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/car"
+  },
+  {
+    "name": "DEPED Region I School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Ilocos Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regioni"
+  },
+  {
+    "name": "DEPED Region II School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Cagayan Valley division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionii"
+  },
+  {
+    "name": "DEPED Region III School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Central Luzon division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regioniii"
+  },
+  {
+    "name": "DEPED Region IV-A School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the CALABARZON division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regioniva"
+  },
+  {
+    "name": "DEPED Mimaropa School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the MIMAROPA Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/mimaropa"
+  },
+  {
+    "name": "DEPED Region V School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Bicol Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionv"
+  },
+  {
+    "name": "DEPED Region VI School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Western Visayas division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionvi"
+  },
+  {
+    "name": "DEPED Region VII School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Central Visayas division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionvii"
+  },
+  {
+    "name": "DEPED Region VIII School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Eastern Visayas division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionviii"
+  },
+  {
+    "name": "DEPED Region IX School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Zamboanga Peninsula division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionix"
+  },
+  {
+    "name": "DEPED Region X School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Northern Mindanao division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionx"
+  },
+  {
+    "name": "DEPED Region XI School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Davao Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionxi"
+  },
+  {
+    "name": "DEPED Region XII School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the SOCCSKSARGEN division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionxii"
+  },
+  {
+    "name": "DEPED Region XIII School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Caraga Region division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/regionxiii"
+  },
+  {
+    "name": "DEPED BARMM School Directory Portal",
+    "description": "DEPED database index listing public elementary and secondary schools in the Bangsamoro Autonomous Region in Muslim Mindanao division.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/tree/main/regions/barmm"
+  },
+  {
+    "name": "University of the Philippines System Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at University of the Philippines System.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=University%20of%20the%20Philippines%20System"
+  },
+  {
+    "name": "Polytechnic University of the Philippines Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Polytechnic University of the Philippines.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Polytechnic%20University%20of%20the%20Philippines"
+  },
+  {
+    "name": "Technological University of the Philippines Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Technological University of the Philippines.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Technological%20University%20of%20the%20Philippines"
+  },
+  {
+    "name": "Philippine Normal University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Philippine Normal University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Philippine%20Normal%20University"
+  },
+  {
+    "name": "Rizal Technological University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Rizal Technological University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Rizal%20Technological%20University"
+  },
+  {
+    "name": "Batangas State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Batangas State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Batangas%20State%20University"
+  },
+  {
+    "name": "Bulacan State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Bulacan State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Bulacan%20State%20University"
+  },
+  {
+    "name": "Cebu Technological University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Cebu Technological University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Cebu%20Technological%20University"
+  },
+  {
+    "name": "Central Luzon State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Central Luzon State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Central%20Luzon%20State%20University"
+  },
+  {
+    "name": "Don Mariano Marcos Memorial State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Don Mariano Marcos Memorial State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Don%20Mariano%20Marcos%20Memorial%20State%20University"
+  },
+  {
+    "name": "Mariano Marcos State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Mariano Marcos State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Mariano%20Marcos%20State%20University"
+  },
+  {
+    "name": "Mindanao State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Mindanao State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Mindanao%20State%20University"
+  },
+  {
+    "name": "West Visayas State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at West Visayas State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=West%20Visayas%20State%20University"
+  },
+  {
+    "name": "Western Mindanao State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Western Mindanao State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Western%20Mindanao%20State%20University"
+  },
+  {
+    "name": "Leyte Normal University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Leyte Normal University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Leyte%20Normal%20University"
+  },
+  {
+    "name": "Pangasinan State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Pangasinan State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Pangasinan%20State%20University"
+  },
+  {
+    "name": "Bicol University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Bicol University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Bicol%20University"
+  },
+  {
+    "name": "Bukidnon State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Bukidnon State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Bukidnon%20State%20University"
+  },
+  {
+    "name": "Cagayan State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Cagayan State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Cagayan%20State%20University"
+  },
+  {
+    "name": "Caraga State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Caraga State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Caraga%20State%20University"
+  },
+  {
+    "name": "Cavite State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Cavite State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Cavite%20State%20University"
+  },
+  {
+    "name": "Central Mindanao University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Central Mindanao University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Central%20Mindanao%20University"
+  },
+  {
+    "name": "Eastern Visayas State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Eastern Visayas State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Eastern%20Visayas%20State%20University"
+  },
+  {
+    "name": "Eulogio Amang Rodriguez Institute of Science and Technology Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Eulogio Amang Rodriguez Institute of Science and Technology.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Eulogio%20Amang%20Rodriguez%20Institute%20of%20Science%20and%20Technology"
+  },
+  {
+    "name": "Philippine State College of Aeronautics Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Philippine State College of Aeronautics.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Philippine%20State%20College%20of%20Aeronautics"
+  },
+  {
+    "name": "Catanduanes State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Catanduanes State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Catanduanes%20State%20University"
+  },
+  {
+    "name": "Camarines Norte State College Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Camarines Norte State College.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Camarines%20Norte%20State%20College"
+  },
+  {
+    "name": "Central Bicol State University of Agriculture Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Central Bicol State University of Agriculture.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Central%20Bicol%20State%20University%20of%20Agriculture"
+  },
+  {
+    "name": "Marinduque State College Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Marinduque State College.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Marinduque%20State%20College"
+  },
+  {
+    "name": "Mindoro State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Mindoro State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Mindoro%20State%20University"
+  },
+  {
+    "name": "Palawan State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Palawan State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Palawan%20State%20University"
+  },
+  {
+    "name": "Romblon State University Publications Database",
+    "description": "Open access index and digital directory for institutional thesis catalogs, research registers, and publications at Romblon State University.",
+    "category": "Education & Schools",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-ph/school-directory-api/search?q=Romblon%20State%20University"
+  },
+  {
+    "name": "DOH NCR Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in National Capital Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/ncr"
+  },
+  {
+    "name": "PhilHealth NCR Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in National Capital Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-ncr"
+  },
+  {
+    "name": "DOH CAR Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Cordillera Administrative Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/car"
+  },
+  {
+    "name": "PhilHealth CAR Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Cordillera Administrative Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-car"
+  },
+  {
+    "name": "DOH Region I Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Ilocos Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regioni"
+  },
+  {
+    "name": "PhilHealth Region I Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Ilocos Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regioni"
+  },
+  {
+    "name": "DOH Region II Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Cagayan Valley.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionii"
+  },
+  {
+    "name": "PhilHealth Region II Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Cagayan Valley.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionii"
+  },
+  {
+    "name": "DOH Region III Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Central Luzon.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regioniii"
+  },
+  {
+    "name": "PhilHealth Region III Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Central Luzon.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regioniii"
+  },
+  {
+    "name": "DOH Region IV-A Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in CALABARZON.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regioniva"
+  },
+  {
+    "name": "PhilHealth Region IV-A Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in CALABARZON.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regioniva"
+  },
+  {
+    "name": "DOH Mimaropa Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in MIMAROPA Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/mimaropa"
+  },
+  {
+    "name": "PhilHealth Mimaropa Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in MIMAROPA Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-mimaropa"
+  },
+  {
+    "name": "DOH Region V Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Bicol Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionv"
+  },
+  {
+    "name": "PhilHealth Region V Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Bicol Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionv"
+  },
+  {
+    "name": "DOH Region VI Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Western Visayas.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionvi"
+  },
+  {
+    "name": "PhilHealth Region VI Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Western Visayas.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionvi"
+  },
+  {
+    "name": "DOH Region VII Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Central Visayas.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionvii"
+  },
+  {
+    "name": "PhilHealth Region VII Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Central Visayas.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionvii"
+  },
+  {
+    "name": "DOH Region VIII Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Eastern Visayas.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionviii"
+  },
+  {
+    "name": "PhilHealth Region VIII Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Eastern Visayas.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionviii"
+  },
+  {
+    "name": "DOH Region IX Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Zamboanga Peninsula.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionix"
+  },
+  {
+    "name": "PhilHealth Region IX Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Zamboanga Peninsula.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionix"
+  },
+  {
+    "name": "DOH Region X Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Northern Mindanao.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionx"
+  },
+  {
+    "name": "PhilHealth Region X Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Northern Mindanao.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionx"
+  },
+  {
+    "name": "DOH Region XI Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Davao Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionxi"
+  },
+  {
+    "name": "PhilHealth Region XI Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Davao Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionxi"
+  },
+  {
+    "name": "DOH Region XII Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in SOCCSKSARGEN.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionxii"
+  },
+  {
+    "name": "PhilHealth Region XII Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in SOCCSKSARGEN.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionxii"
+  },
+  {
+    "name": "DOH Region XIII Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Caraga Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/regionxiii"
+  },
+  {
+    "name": "PhilHealth Region XIII Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Caraga Region.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-regionxiii"
+  },
+  {
+    "name": "DOH BARMM Health Center Directory",
+    "description": "Public catalog of active barangay health centers, rural health units, and public clinics in Bangsamoro Autonomous Region in Muslim Mindanao.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/tree/main/barmm"
+  },
+  {
+    "name": "PhilHealth BARMM Accredited Providers",
+    "description": "Open registry of certified secondary and tertiary hospital facilities under the National Health Insurance Program in Bangsamoro Autonomous Region in Muslim Mindanao.",
+    "category": "Health & Medicine",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/Simperfy/Covid-19-API-Philippines-DOH/accredited-barmm"
+  },
+  {
+    "name": "NCR Science Garden Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from NCR Science Garden.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/ncr-science-garden"
+  },
+  {
+    "name": "NCR Science Garden Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at NCR Science Garden.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/ncr-science-garden"
+  },
+  {
+    "name": "Baguio Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Baguio Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/baguio-synoptic-station"
+  },
+  {
+    "name": "Baguio Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Baguio Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/baguio-synoptic-station"
+  },
+  {
+    "name": "Laoag Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Laoag Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/laoag-synoptic-station"
+  },
+  {
+    "name": "Laoag Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Laoag Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/laoag-synoptic-station"
+  },
+  {
+    "name": "Tuguegarao Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Tuguegarao Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/tuguegarao-synoptic"
+  },
+  {
+    "name": "Tuguegarao Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Tuguegarao Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/tuguegarao-synoptic"
+  },
+  {
+    "name": "Casiguran Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Casiguran Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/casiguran-station"
+  },
+  {
+    "name": "Casiguran Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Casiguran Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/casiguran-station"
+  },
+  {
+    "name": "Iba Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Iba Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/iba-synoptic-station"
+  },
+  {
+    "name": "Iba Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Iba Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/iba-synoptic-station"
+  },
+  {
+    "name": "Subic Radar Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Subic Radar Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/subic-radar-station"
+  },
+  {
+    "name": "Subic Radar Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Subic Radar Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/subic-radar-station"
+  },
+  {
+    "name": "Sangley Point Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Sangley Point.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/sangley-point"
+  },
+  {
+    "name": "Sangley Point Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Sangley Point.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/sangley-point"
+  },
+  {
+    "name": "Ambulong Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Ambulong Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/ambulong-station"
+  },
+  {
+    "name": "Ambulong Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Ambulong Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/ambulong-station"
+  },
+  {
+    "name": "Tayabas Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Tayabas Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/tayabas-synoptic"
+  },
+  {
+    "name": "Tayabas Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Tayabas Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/tayabas-synoptic"
+  },
+  {
+    "name": "Daet Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Daet Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/daet-synoptic-station"
+  },
+  {
+    "name": "Daet Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Daet Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/daet-synoptic-station"
+  },
+  {
+    "name": "Legazpi Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Legazpi Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/legazpi-synoptic-station"
+  },
+  {
+    "name": "Legazpi Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Legazpi Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/legazpi-synoptic-station"
+  },
+  {
+    "name": "Virac Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Virac Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/virac-synoptic"
+  },
+  {
+    "name": "Virac Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Virac Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/virac-synoptic"
+  },
+  {
+    "name": "Masbate Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Masbate Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/masbate-station"
+  },
+  {
+    "name": "Masbate Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Masbate Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/masbate-station"
+  },
+  {
+    "name": "Romblon Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Romblon Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/romblon-synoptic"
+  },
+  {
+    "name": "Romblon Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Romblon Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/romblon-synoptic"
+  },
+  {
+    "name": "Roxas Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Roxas Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/roxas-synoptic-station"
+  },
+  {
+    "name": "Roxas Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Roxas Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/roxas-synoptic-station"
+  },
+  {
+    "name": "Iloilo Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Iloilo Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/iloilo-synoptic-station"
+  },
+  {
+    "name": "Iloilo Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Iloilo Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/iloilo-synoptic-station"
+  },
+  {
+    "name": "Dumaguete Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Dumaguete Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/dumaguete-synoptic"
+  },
+  {
+    "name": "Dumaguete Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Dumaguete Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/dumaguete-synoptic"
+  },
+  {
+    "name": "Mactan Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Mactan Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/mactan-synoptic"
+  },
+  {
+    "name": "Mactan Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Mactan Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/mactan-synoptic"
+  },
+  {
+    "name": "Tacloban Radar Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Tacloban Radar Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/tacloban-radar-station"
+  },
+  {
+    "name": "Tacloban Radar Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Tacloban Radar Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/tacloban-radar-station"
+  },
+  {
+    "name": "Catbalogan Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Catbalogan Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/catbalogan-synoptic"
+  },
+  {
+    "name": "Catbalogan Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Catbalogan Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/catbalogan-synoptic"
+  },
+  {
+    "name": "Maasin Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Maasin Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/maasin-synoptic-station"
+  },
+  {
+    "name": "Maasin Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Maasin Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/maasin-synoptic-station"
+  },
+  {
+    "name": "Tagbilaran Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Tagbilaran Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/tagbilaran-synoptic"
+  },
+  {
+    "name": "Tagbilaran Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Tagbilaran Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/tagbilaran-synoptic"
+  },
+  {
+    "name": "Surigao Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Surigao Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/surigao-synoptic"
+  },
+  {
+    "name": "Surigao Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Surigao Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/surigao-synoptic"
+  },
+  {
+    "name": "Butuan Synoptic Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Butuan Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/butuan-synoptic-station"
+  },
+  {
+    "name": "Butuan Synoptic Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Butuan Synoptic Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/butuan-synoptic-station"
+  },
+  {
+    "name": "Cagayan de Oro Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Cagayan de Oro Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/cagayan-de-oro-synoptic"
+  },
+  {
+    "name": "Cagayan de Oro Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Cagayan de Oro Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/cagayan-de-oro-synoptic"
+  },
+  {
+    "name": "Hinatuan Radar Station Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Hinatuan Radar Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/hinatuan-radar-station"
+  },
+  {
+    "name": "Hinatuan Radar Station Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Hinatuan Radar Station.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/hinatuan-radar-station"
+  },
+  {
+    "name": "Cotabato Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Cotabato Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/cotabato-synoptic"
+  },
+  {
+    "name": "Cotabato Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Cotabato Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/cotabato-synoptic"
+  },
+  {
+    "name": "Zamboanga Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Zamboanga Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/zamboanga-synoptic"
+  },
+  {
+    "name": "Zamboanga Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Zamboanga Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/zamboanga-synoptic"
+  },
+  {
+    "name": "General Santos Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from General Santos Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/general-santos-synoptic"
+  },
+  {
+    "name": "General Santos Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at General Santos Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/general-santos-synoptic"
+  },
+  {
+    "name": "Davao Airport Synoptic Real-Time Feed",
+    "description": "Automated meteorological observation records tracking atmospheric pressure, relative humidity, and rainfall rates from Davao Airport Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/tree/main/stations/davao-airport-synoptic"
+  },
+  {
+    "name": "Davao Airport Synoptic Historic Rainfall Dataset",
+    "description": "Archived monthly cumulative rainfall statistics and typhoon weather alert logs from the station at Davao Airport Synoptic.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData/archive/stations/davao-airport-synoptic"
+  },
+  {
+    "name": "Banco de Oro Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Banco de Oro.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Banco%20de%20Oro"
+  },
+  {
+    "name": "Banco de Oro Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Banco de Oro.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/banco-de-oro"
+  },
+  {
+    "name": "Bank of the Philippine Islands Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Bank of the Philippine Islands.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Bank%20of%20the%20Philippine%20Islands"
+  },
+  {
+    "name": "Bank of the Philippine Islands Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Bank of the Philippine Islands.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/bank-of-the-philippine-islands"
+  },
+  {
+    "name": "Metropolitan Bank and Trust Company Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Metropolitan Bank and Trust Company.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Metropolitan%20Bank%20and%20Trust%20Company"
+  },
+  {
+    "name": "Metropolitan Bank and Trust Company Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Metropolitan Bank and Trust Company.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/metropolitan-bank-and-trust-company"
+  },
+  {
+    "name": "Land Bank of the Philippines Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Land Bank of the Philippines.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Land%20Bank%20of%20the%20Philippines"
+  },
+  {
+    "name": "Land Bank of the Philippines Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Land Bank of the Philippines.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/land-bank-of-the-philippines"
+  },
+  {
+    "name": "Security Bank Corporation Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Security Bank Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Security%20Bank%20Corporation"
+  },
+  {
+    "name": "Security Bank Corporation Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Security Bank Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/security-bank-corporation"
+  },
+  {
+    "name": "Rizal Commercial Banking Corporation Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Rizal Commercial Banking Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Rizal%20Commercial%20Banking%20Corporation"
+  },
+  {
+    "name": "Rizal Commercial Banking Corporation Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Rizal Commercial Banking Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/rizal-commercial-banking-corporation"
+  },
+  {
+    "name": "Union Bank of the Philippines Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Union Bank of the Philippines.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Union%20Bank%20of%20the%20Philippines"
+  },
+  {
+    "name": "Union Bank of the Philippines Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Union Bank of the Philippines.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/union-bank-of-the-philippines"
+  },
+  {
+    "name": "China Banking Corporation Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at China Banking Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=China%20Banking%20Corporation"
+  },
+  {
+    "name": "China Banking Corporation Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at China Banking Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/china-banking-corporation"
+  },
+  {
+    "name": "East West Banking Corporation Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at East West Banking Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=East%20West%20Banking%20Corporation"
+  },
+  {
+    "name": "East West Banking Corporation Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at East West Banking Corporation.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/east-west-banking-corporation"
+  },
+  {
+    "name": "Development Bank of the Philippines Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Development Bank of the Philippines.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Development%20Bank%20of%20the%20Philippines"
+  },
+  {
+    "name": "Development Bank of the Philippines Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Development Bank of the Philippines.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/development-bank-of-the-philippines"
+  },
+  {
+    "name": "Philtrust Bank Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Philtrust Bank.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Philtrust%20Bank"
+  },
+  {
+    "name": "Philtrust Bank Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Philtrust Bank.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/philtrust-bank"
+  },
+  {
+    "name": "Philippine Bank of Communications Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Philippine Bank of Communications.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Philippine%20Bank%20of%20Communications"
+  },
+  {
+    "name": "Philippine Bank of Communications Loan Interest Rates Guide",
+    "description": "Open documentation reference details of consumer loan products, housing financing rates, and auto-loan parameters at Philippine Bank of Communications.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/loans/philippine-bank-of-communications"
+  },
+  {
+    "name": "Asia United Bank Branch Swift-Code API",
+    "description": "Routing catalog and SWIFT bank identification code list for electronic funds transfers at Asia United Bank.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks/search?q=Asia%20United%20Bank"
   }
 ]
