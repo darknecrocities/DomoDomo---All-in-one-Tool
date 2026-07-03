@@ -802,6 +802,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         technicalSpecs: 'Executes digests client-side. Best suited for security hashes verification.'
       },
       {
+        id: 'sql-workbench',
+        name: 'SQL Workbench & Data Analyzer',
+        engine: 'AlaSQL client-side database',
+        details: 'Loads CSV/JSON file buffers into an in-memory SQL database, enabling advanced queries and dynamic chart creations.',
+        functionality: 'Runs SQL queries locally. Automatic table schemas, query editor console, visual charting (bar/line/pie), and table exporters.',
+        howItWorks: '1. Ingests CSV or JSON files. 2. Maps columns and registers tables. 3. Runs query in AlaSQL. 4. Visualizes using SVG charts.',
+        technicalSpecs: 'Executes entirely in-memory. Supports standard SQL joins, groupings, and aggregation functions.'
+      },
+      {
         id: 'api-tester',
         name: 'API Tester',
         engine: 'fetch Client API',

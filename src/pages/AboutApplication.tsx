@@ -329,6 +329,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                     date: "July 2, 2026",
                     title: "Security Suite & Onboarding Enhancements",
                     changes: [
+                      "SQL Workbench & Data Analyzer: Added a client-side SQL editor running in-memory on CSV/JSON file buffers with automated visual charting.",
                       "Sandboxed Local Background Remover: Redesigned the tool dashboard to feature interactive sample presets, visual step-by-step tutorial sliders, contextual toolbars, and comparison interactions.",
                       "DomoGuard AI Security: Local security tools integrated connecting directly to offline Ollama models including Threat Intel Chat, Incident Reporting, and Code Auditing.",
                       "10 New Developer Tools: SQL Formatter, YAML-JSON Converter, Glassmorphism Designer, Cron Expression Parser, and Base Number Converter."

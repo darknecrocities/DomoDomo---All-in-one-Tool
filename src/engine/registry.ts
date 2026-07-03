@@ -123,6 +123,7 @@ import { HTMLMinifierTool } from '../tools/dev/HTMLMinifier';
 import { ColorConverterTool } from '../tools/dev/ColorConverter';
 import { CronParserTool } from '../tools/dev/CronParser';
 import { SQLFormatterTool } from '../tools/dev/SQLFormatter';
+import { SQLWorkbenchTool } from '../tools/dev/SQLWorkbench';
 import { YamlJsonConverterTool } from '../tools/dev/YamlJsonConverter';
 import { MarkdownTableGeneratorTool } from '../tools/dev/MarkdownTableGenerator';
 import { DiffCheckerTool } from '../tools/dev/DiffChecker';
@@ -286,6 +287,7 @@ export const TOOLS: Tool[] = [
   { id: 'color-converter', name: 'Color Converter', category: 'dev', description: 'Convert color hex values to color spaces.', icon: 'Hammer', run: async (i) => i, component: ColorConverterTool },
   { id: 'cron-parser', name: 'Cron Expression Parser', category: 'dev', description: 'Parse cron schedules or generate expressions interactively.', icon: 'Hammer', run: async (i) => i, component: CronParserTool },
   { id: 'sql-formatter', name: 'SQL Formatter', category: 'dev', description: 'Format and beautify SQL queries with custom spacing.', icon: 'Hammer', run: async (i) => i, component: SQLFormatterTool },
+  { id: 'sql-workbench', name: 'SQL Workbench & Data Analyzer', category: 'dev', description: 'Run SQLite queries locally on your JSON and CSV files and build visual charts in-browser.', icon: 'Database', seoTitle: 'Local SQL Query Workbench & Data Analyzer Online | DomoDomo', keywords: 'sql workbench, local sql runner, sqlite query browser, csv sql query online, browser database tool', run: async (i) => i, component: SQLWorkbenchTool },
   { id: 'yaml-json', name: 'YAML ↔ JSON Converter', category: 'dev', description: 'Convert configuration structures between YAML and JSON.', icon: 'Hammer', run: async (i) => i, component: YamlJsonConverterTool },
   { id: 'md-table-gen', name: 'Markdown Table Generator', category: 'dev', description: 'Interactive layout to design and generate Markdown tables.', icon: 'Hammer', run: async (i) => i, component: MarkdownTableGeneratorTool },
   { id: 'diff-checker', name: 'Diff Checker', category: 'dev', description: 'Diff checker online free — compare two texts side-by-side to highlight differences. Find changes between code versions, documents, and configs.', icon: 'Hammer', seoTitle: 'Diff Checker Online Free — Compare Text & Code | DomoDomo', keywords: 'diff checker, compare text, text diff, code diff, find differences', run: async (i) => i, component: DiffCheckerTool },

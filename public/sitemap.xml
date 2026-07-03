@@ -116,6 +116,12 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://domodomo.site/blog/local-sql-workbench-data-analytics-wasm</loc>
+    <lastmod>2026-07-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   
   <url>
     <loc>https://domodomo.site/tool/format-converter/png-to-jpg</loc>
@@ -2946,6 +2952,12 @@
   </url>
   <url>
     <loc>https://domodomo.site/tool/sql-formatter</loc>
+    <lastmod>2026-07-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/tool/sql-workbench</loc>
     <lastmod>2026-07-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

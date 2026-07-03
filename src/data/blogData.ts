@@ -695,6 +695,63 @@ By shifting processing from expensive remote servers back to the user's local de
 - Users gain absolute data ownership and leak-proof security compliance.
 - Speed is maximized by removing latency and upload pipes.
 `
+  },
+  {
+    slug: 'local-sql-workbench-data-analytics-wasm',
+    title: 'Unleashing Serverless Data Analytics: The SQL Workbench in Your Browser',
+    excerpt: 'Introducing the new DomoDomo SQL Workbench: run complex SQLite queries on raw CSV/JSON files, join multiple datasets, and generate visual charts fully client-side.',
+    date: 'July 3, 2026',
+    readTime: '3 min read',
+    category: 'Privacy & Tech',
+    keywords: 'sql workbench, local sql, client-side database, csv queries, parquet web query, alasql browser',
+    author: 'Arron Parejas',
+    isAiGenerated: false,
+    content: `
+# Unleashing Serverless Data Analytics: The SQL Workbench in Your Browser
+
+Data analysts, developers, and product managers are constantly dealing with CSV exports, customer lists, and raw JSON logs. Usually, parsing these files requires writing a custom Python/Pandas script or uploading files to remote SaaS tools.
+
+DomoDomo’s new **SQL Workbench & Data Analyzer** changes the game. It brings a full SQL workspace directly into your browser tab—100% serverless, private, and offline-first.
+
+---
+
+## 🔒 Absolute Privacy for Sensitive Data
+
+Uploading financial reports, user records, or server logs to external cloud converters introduces critical data leak compliance risks. With our SQL Workbench:
+1. **Zero Data Uploads:** Your CSV and JSON files are loaded directly as JavaScript array buffers in memory.
+2. **Local Processing:** Query execution is handled entirely on your client CPU via in-memory SQL execution.
+3. **Inspectable Security:** Run it fully offline to ensure no trackers or endpoints ingest your data.
+
+---
+
+## ⚡ What You Can Do
+
+### 1. Ingest Multiple Files & Run SQL Joins
+Unlike simple CSV viewers, the SQL Workbench supports adding multiple files as separate database tables. You can join, union, or filter datasets using standard SQL:
+
+\`\`\`sql
+SELECT e.employee_id, e.name, d.department_name
+FROM employees e
+JOIN departments d ON e.dept_id = d.id
+WHERE e.salary > 75000
+ORDER BY e.salary DESC;
+\`\`\`
+
+### 2. Group & Aggregate Metrics
+Instantly summarize massive datasets with SQL aggregations:
+
+\`\`\`sql
+SELECT category, SUM(price * quantity) AS revenue, AVG(price) AS average_price
+FROM sales
+GROUP BY category;
+\`\`\`
+
+### 3. Generate Visual Charts Instantly
+Visualizing query outputs is crucial. The workbench includes a custom charting engine:
+- Toggles between **Bar**, **Line**, and **Pie** charts.
+- Allows select mapping of keys for both X and Y axes.
+- Automatically handles scales and bounds on the fly.
+`
   }
 ];
 
