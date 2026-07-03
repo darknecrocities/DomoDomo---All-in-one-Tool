@@ -564,8 +564,8 @@ If your combined PDF is too large to email (often above 20MB or 25MB), you can c
     readTime: '6 min read',
     category: 'AI & Cybersecurity',
     keywords: 'local ai tools, offline chatbot, private ai assistant, ollama model library, secure coding assistant',
-    isAiGenerated: true,
-    author: 'DomoAI',
+    isAiGenerated: false,
+    author: 'Arron Parejas',
     content: `
 # Why Local AI is the Future of Secure Developer Workspaces
 

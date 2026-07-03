@@ -218,15 +218,9 @@ export const BlogPost = () => {
             <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#4E8E5E]">
               {post.category}
             </span>
-            {post.isAiGenerated !== false ? (
-              <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-[#FF5E5B]/10 border border-[#FF5E5B]/25 text-[#FF5E5B] uppercase tracking-wide">
-                AI Generated
-              </span>
-            ) : (
-              <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#4E8E5E] uppercase tracking-wide">
-                By {post.author || "Arron Parejas"}
-              </span>
-            )}
+            <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#4E8E5E] uppercase tracking-wide">
+              By {post.author || "Arron Parejas"}
+            </span>
           </div>
           <h1 className="text-2xl md:text-4xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1">
             {post.title}
