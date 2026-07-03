@@ -14,10 +14,81 @@ const stats = [
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
 
+const testimonials = [
+  {
+    name: 'Mary Anne',
+    role: 'Digital Content Manager',
+    quote: 'DomoDomo has completely replaced multiple online file converters for me. Knowing my sensitive PDFs and client photos are processed 100% locally in my browser gives me complete peace of mind.'
+  },
+  {
+    name: 'James Mendoza',
+    role: 'Software Engineer',
+    quote: 'A masterclass in local-first browser engineering. DomoDomo proves that you don\'t need heavy cloud infrastructures to build robust, secure, and incredibly fast tools.'
+  },
+  {
+    name: 'Emmanuel Millave',
+    role: 'Maker',
+    quote: 'solid neto'
+  },
+  {
+    name: 'Diana Vanessa',
+    role: 'Fullstack Engineer',
+    quote: 'Omg! this so useful! Thanks for this!'
+  },
+  {
+    name: 'Dale Ogbac',
+    role: 'proud vibe coder 🤪',
+    quote: 'support to this!!! very helpful and still keeps growing.🔥💪'
+  },
+  {
+    name: 'Ant Real',
+    role: 'Maker',
+    quote: 'Nice to see DomoDomo getting more visibility here too! 🙌 The strong community feedback and its privacy-first, local-first direction really stood out — that’s why it is currently listed as a Featured Pick on Stage by Ant.'
+  },
+  {
+    name: 'fox hub',
+    role: 'Maker',
+    quote: 'ang dami paid tools out there but this app has it alll, tysm'
+  },
+  {
+    name: 'gerald domingo',
+    role: 'Maker',
+    quote: 'usefull opensource project'
+  },
+  {
+    name: 'elmer gonzales',
+    role: 'Maker',
+    quote: 'this app helps me a lot and i like the jarvis features, kudos to the dev team🙏'
+  }
+];
+
 export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about' | 'updates' | 'docs' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryTab = searchParams.get('tab') as 'about' | 'updates' | 'docs';
   const [activeTab, setActiveTab] = useState<'about' | 'updates' | 'docs'>(queryTab || defaultTab);
+
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const itemsPerView = windowWidth >= 1024 ? 3 : windowWidth >= 768 ? 2 : 1;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIdx((prev) => {
+        if (prev >= testimonials.length - itemsPerView) {
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [itemsPerView]);
 
   // Sync tab state with query parameters
   useEffect(() => {
@@ -173,24 +244,45 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
-                  <div className="bg-[#111213] p-5 rounded-2xl border border-[#2A2D30] flex flex-col justify-between gap-4">
-                    <p className="text-xs text-[#A3A09B] italic leading-relaxed">
-                      "DomoDomo has completely replaced multiple online file converters for me. Knowing my sensitive PDFs and client photos are processed 100% locally in my browser gives me complete peace of mind."
-                    </p>
-                    <div>
-                      <span className="block text-xs font-bold text-[#ECEBE9]">Mary Anne</span>
-                      <span className="block text-[10px] text-[#72706C]">Digital Content Manager</span>
-                    </div>
+                <div className="relative overflow-hidden w-full pt-1">
+                  <div 
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ 
+                      transform: `translateX(-${currentIdx * (100 / itemsPerView)}%)`,
+                      width: `${(testimonials.length / itemsPerView) * 100}%` 
+                    }}
+                  >
+                    {testimonials.map((test, idx) => (
+                      <div 
+                        key={idx} 
+                        className="px-2.5 shrink-0"
+                        style={{ width: `${100 / testimonials.length}%` }}
+                      >
+                        <div className="bg-[#111213] p-5 rounded-2xl border border-[#2A2D30] hover:border-[#3C6B4D]/25 transition-colors flex flex-col justify-between gap-4 min-h-[175px] text-left">
+                          <p className="text-xs text-[#A3A09B] italic leading-relaxed line-clamp-5">
+                            "{test.quote}"
+                          </p>
+                          <div>
+                            <span className="block text-xs font-bold text-[#ECEBE9]">{test.name}</span>
+                            <span className="block text-[10px] text-[#72706C]">{test.role}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="bg-[#111213] p-5 rounded-2xl border border-[#2A2D30] flex flex-col justify-between gap-4">
-                    <p className="text-xs text-[#A3A09B] italic leading-relaxed">
-                      "A masterclass in local-first browser engineering. DomoDomo proves that you don't need heavy cloud infrastructures to build robust, secure, and incredibly fast tools."
-                    </p>
-                    <div>
-                      <span className="block text-xs font-bold text-[#ECEBE9]">James Mendoza</span>
-                      <span className="block text-[10px] text-[#72706C]">Software Engineer</span>
-                    </div>
+                  
+                  {/* Indicators dots */}
+                  <div className="flex justify-center gap-1.5 mt-4">
+                    {Array.from({ length: testimonials.length - itemsPerView + 1 }).map((_, dIdx) => (
+                      <button
+                        key={dIdx}
+                        onClick={() => setCurrentIdx(dIdx)}
+                        className={`w-1.5 h-1.5 rounded-full transition-all ${
+                          currentIdx === dIdx ? 'bg-[#3C6B4D] w-3.5' : 'bg-[#2A2D30] hover:bg-[#72706C]'
+                        }`}
+                        title={`Go to slide ${dIdx + 1}`}
+                      />
+                    ))}
                   </div>
                 </div>
               </section>
