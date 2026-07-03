@@ -65,14 +65,14 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
             
             {/* AppBuilders PH Product Hunt Badge */}
             <a
-              href="https://appbuilders.ph"
+              href="https://www.appbuildersph.com/apps/domodomo"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-3 py-1 bg-[#FF6154]/10 border border-[#FF6154]/25 hover:border-[#FF6154]/50 hover:bg-[#FF6154]/20 text-[#FF6154] hover:text-[#ECEBE9] rounded-lg transition-all text-[11px] font-bold shadow-sm animate-pulse"
               title="Featured on App Builders PH"
             >
               <span>▲</span>
-              <span className="font-extrabold">#2 Product of the Day on AppBuilders PH</span>
+              <span className="font-extrabold">#2 on the Leaderboards of All Time on AppBuilders PH</span>
             </a>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight font-heading">
