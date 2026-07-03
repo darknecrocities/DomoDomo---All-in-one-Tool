@@ -248,15 +248,14 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                   <div 
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{ 
-                      transform: `translateX(-${currentIdx * (100 / itemsPerView)}%)`,
-                      width: `${(testimonials.length / itemsPerView) * 100}%` 
+                      transform: `translateX(-${currentIdx * (100 / itemsPerView)}%)`
                     }}
                   >
                     {testimonials.map((test, idx) => (
                       <div 
                         key={idx} 
                         className="px-2.5 shrink-0"
-                        style={{ width: `${100 / testimonials.length}%` }}
+                        style={{ width: `${100 / itemsPerView}%` }}
                       >
                         <div className="bg-[#111213] p-5 rounded-2xl border border-[#2A2D30] hover:border-[#3C6B4D]/25 transition-colors flex flex-col justify-between gap-4 min-h-[175px] text-left">
                           <p className="text-xs text-[#A3A09B] italic leading-relaxed line-clamp-5">
