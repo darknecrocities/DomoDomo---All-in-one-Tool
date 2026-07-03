@@ -189,7 +189,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                     </p>
                     <div>
                       <span className="block text-xs font-bold text-[#ECEBE9]">James Mendoza</span>
-                      <span className="block text-[10px] text-[#72706C]">App Builders PH Core Curator</span>
+                      <span className="block text-[10px] text-[#72706C]">Software Engineer</span>
                     </div>
                   </div>
                 </div>
