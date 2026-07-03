@@ -19,6 +19,194 @@ import {
 } from 'lucide-react';
 import PUBLIC_APIS_DATA from '../assets/public-apis.json';
 
+const LOCAL_APIS = [
+  {
+    name: "Fetch Activity Logs",
+    method: "GET",
+    endpoint: "http://localhost:8000/api/memory",
+    description: "Retrieves the user's recent local activity events logged in the SQLite memory database (last 15 records). Used to power the activity feed on the main dashboard.",
+    headers: [
+      { key: "Accept", value: "application/json" }
+    ],
+    payload: null,
+    response: `{
+  "events": [
+    {
+      "id": 1,
+      "timestamp": "2026-07-03 10:30:12",
+      "action": "SQL Execution",
+      "category": "dev",
+      "detail": "Queried sales database table"
+    }
+  ]
+}`
+  },
+  {
+    name: "Save Activity Log",
+    method: "POST",
+    endpoint: "http://localhost:8000/api/memory",
+    description: "Clears past activity events history and persists a new batch of event logs to the local SQLite database.",
+    headers: [
+      { key: "Content-Type", value: "application/json" }
+    ],
+    payload: `{
+  "events": [
+    {
+      "timestamp": "2026-07-03 10:30:12",
+      "action": "SQL Execution",
+      "category": "dev",
+      "detail": "Queried sales database table"
+    }
+  ]
+}`,
+    response: `{
+  "status": "success"
+}`
+  },
+  {
+    name: "Retrieve Journal Thoughts",
+    method: "GET",
+    endpoint: "http://localhost:8000/api/thoughts",
+    description: "Fetches user journal entries, cognitive reflections, and AI insights from SQLite sorted chronologically in descending order.",
+    headers: [
+      { key: "Accept", value: "application/json" }
+    ],
+    payload: null,
+    response: `[
+  {
+    "id": 1,
+    "content": "Building local-first SQLite query tool today.",
+    "embedding_json": "[0.024, -0.118, ...]",
+    "category": "journal",
+    "ai_insight": "Local database workflows provide zero network latencies.",
+    "created_at": 1783003096.8
+  }
+]`
+  },
+  {
+    name: "Create Journal Thought",
+    method: "POST",
+    endpoint: "http://localhost:8000/api/thoughts",
+    description: "Ingests a thought, requests a neural embedding vector from local Ollama LLM daemon, generates a constructive AI insight, and writes to SQLite database.",
+    headers: [
+      { key: "Content-Type", value: "application/json" }
+    ],
+    payload: `{
+  "content": "Building local-first SQLite query tool today.",
+  "category": "journal",
+  "model": "llama3.2"
+}`,
+    response: `{
+  "id": 1,
+  "content": "Building local-first SQLite query tool today.",
+  "embedding_json": "[0.024, -0.118, ...]",
+  "category": "journal",
+  "ai_insight": "Local database workflows provide zero network latencies.",
+  "created_at": 1783003096.8
+}`
+  },
+  {
+    name: "Semantic Vector Search",
+    method: "POST",
+    endpoint: "http://localhost:8000/api/thoughts/search",
+    description: "Performs client-side cosine similarity matching between a user search query vector and stored journal thought embeddings for semantic retrieval (RAG).",
+    headers: [
+      { key: "Content-Type", value: "application/json" }
+    ],
+    payload: `{
+  "query": "local SQLite data workbench",
+  "model": "llama3.2",
+  "threshold": 0.35,
+  "limit": 4
+}`,
+    response: `[
+  {
+    "id": 1,
+    "content": "Building local-first SQLite query tool today.",
+    "category": "journal",
+    "ai_insight": "Local database workflows provide zero network latencies.",
+    "created_at": 1783003096.8,
+    "score": 0.584
+  }
+]`
+  },
+  {
+    name: "Semantic RAG Generation",
+    method: "POST",
+    endpoint: "http://localhost:8000/api/thoughts/generate",
+    description: "Performs semantic vector search matching the prompt, wraps match nodes as context prompts, and runs local Ollama model to generate a unified RAG story.",
+    headers: [
+      { key: "Content-Type", value: "application/json" }
+    ],
+    payload: `{
+  "prompt": "Summarize my database progress.",
+  "model": "llama3.2",
+  "temperature": 0.7
+}`,
+    response: `{
+  "story": "You focused on serverless SQLite client-side components today, noting that local database workflows provide zero network latencies.",
+  "context_used": [
+    "Building local-first SQLite query tool today."
+  ]
+}`
+  },
+  {
+    name: "Ollama Chat Proxy",
+    method: "POST",
+    endpoint: "http://localhost:8000/api/chat",
+    description: "Direct proxy connecting to local Ollama endpoints. Handles text generation cache lookups, logging, and Server-Sent Events (SSE) stream responses.",
+    headers: [
+      { key: "Content-Type", value: "application/json" }
+    ],
+    payload: `{
+  "model": "llama3.2",
+  "prompt": "Hello Domo!",
+  "system_prompt": "You are a helpful assistant.",
+  "temperature": 0.7,
+  "stream": false
+}`,
+    response: `{
+  "response": "Hello! I am Domo, your offline local AI. How can I help you today?",
+  "cached": false
+}`
+  }
+];
+
+const getLocalCodeSnippet = (api: any, lang: 'js' | 'python' | 'curl') => {
+  const isPost = api.method === 'POST';
+  const bodyStr = api.payload ? `,\n  body: JSON.stringify(${api.payload.split('\n').join('\n  ')})` : '';
+
+  if (lang === 'js') {
+    return `// JavaScript Fetch Example
+fetch("${api.endpoint}"${isPost ? `, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  }${bodyStr}
+}` : ''})
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err));`;
+  } else if (lang === 'python') {
+    const dataStr = api.payload ? `\nimport json\npayload = ${api.payload}` : '';
+    return `# Python requests Example
+import requests${dataStr}
+
+url = "${api.endpoint}"
+try:
+    response = requests.${api.method.toLowerCase()}(url${api.payload ? ', json=payload' : ''})
+    response.raise_for_status()
+    print(response.json())
+except requests.exceptions.RequestException as e:
+    print("Error:", e)`;
+  } else {
+    const curlBody = api.payload ? ` \\\n  -d '${api.payload.replace(/\n/g, '').replace(/\s+/g, ' ')}'` : '';
+    return `# cURL Terminal Command
+curl -X ${api.method} "${api.endpoint}" \\
+  -H "Content-Type: application/json"${curlBody}`;
+  }
+};
+
 interface APIEntry {
   name: string;
   description: string;
@@ -37,6 +225,11 @@ export const LibraryApi = () => {
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'js' | 'python' | 'curl'>('js');
   const [drawerClosing, setDrawerClosing] = useState(false);
+
+  // Section States
+  const [currentSection, setCurrentSection] = useState<'public' | 'local'>('public');
+  const [selectedLocalIdx, setSelectedLocalIdx] = useState<number>(0);
+  const [activeLocalTab, setActiveLocalTab] = useState<'js' | 'python' | 'curl'>('js');
 
   const closeDrawer = useCallback(() => {
     setDrawerClosing(true);
@@ -179,179 +372,380 @@ curl -X GET "${endpoint}" \\
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        {/* Filters and Sidebar */}
-        <div className="space-y-6 lg:col-span-1">
-          {/* Search Box */}
-          <div className="glass-card p-4 space-y-3">
-            <h3 className="text-xs font-bold uppercase text-[#72706C] tracking-widest flex items-center gap-2">
-              <Search size={12} />
-              <span>Search APIs</span>
-            </h3>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Type to search..."
-                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] placeholder-[#72706C] focus:outline-none focus:border-[#3C6B4D]/50 transition-colors"
-              />
-              <Search size={14} className="absolute left-3 top-2.5 text-[#72706C]" />
-            </div>
-          </div>
+      {/* Section Tab Selector */}
+      <div className="flex border-b border-[#2A2D30] gap-6">
+        <button
+          onClick={() => setCurrentSection('public')}
+          className={`pb-3 font-bold text-sm transition-all relative ${
+            currentSection === 'public' ? 'text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9]'
+          }`}
+        >
+          <span>Public API Directory</span>
+          {currentSection === 'public' && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3C6B4D]" />
+          )}
+        </button>
+        <button
+          onClick={() => setCurrentSection('local')}
+          className={`pb-3 font-bold text-sm transition-all relative flex items-center gap-2 ${
+            currentSection === 'local' ? 'text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9]'
+          }`}
+        >
+          <span>Local Sandbox APIs</span>
+          <span className="px-1.5 py-0.5 rounded bg-[#3C6B4D]/15 text-[#4E8E5E] border border-[#3C6B4D]/25 text-[9px] font-bold uppercase tracking-wider">
+            Active
+          </span>
+          {currentSection === 'local' && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3C6B4D]" />
+          )}
+        </button>
+      </div>
 
-          {/* Auth Filter */}
-          <div className="glass-card p-4 space-y-3">
-            <h3 className="text-xs font-bold uppercase text-[#72706C] tracking-widest flex items-center gap-2">
-              <Shield size={12} />
-              <span>Auth Filter</span>
-            </h3>
-            <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto scrollbar-none">
-              {authTypes.map((authType) => (
-                <button
-                  key={authType}
-                  onClick={() => setSelectedAuth(authType)}
-                  className={`w-full text-left text-xs font-semibold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-between ${
-                    selectedAuth === authType
-                      ? 'bg-[#3C6B4D]/10 text-[#ECEBE9] border border-[#3C6B4D]/30'
-                      : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] border border-transparent'
-                  }`}
-                >
-                  <span>{authType === '' ? 'None' : authType}</span>
-                  {selectedAuth === authType && <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D]" />}
-                </button>
-              ))}
+      {currentSection === 'public' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+          {/* Filters and Sidebar */}
+          <div className="space-y-6 lg:col-span-1">
+            {/* Search Box */}
+            <div className="glass-card p-4 space-y-3">
+              <h3 className="text-xs font-bold uppercase text-[#72706C] tracking-widest flex items-center gap-2">
+                <Search size={12} />
+                <span>Search APIs</span>
+              </h3>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Type to search..."
+                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] placeholder-[#72706C] focus:outline-none focus:border-[#3C6B4D]/50 transition-colors"
+                />
+                <Search size={14} className="absolute left-3 top-2.5 text-[#72706C]" />
+              </div>
             </div>
-          </div>
 
-          {/* Category List */}
-          <div className="glass-card p-4 space-y-3">
-            <h3 className="text-xs font-bold uppercase text-[#72706C] tracking-widest flex items-center gap-2">
-              <Layers size={12} />
-              <span>Categories</span>
-            </h3>
-            <div className="flex flex-col gap-1 max-h-[450px] overflow-y-auto pr-1">
-              {categories.map((cat) => {
-                const count = cat === 'All' 
-                  ? PUBLIC_APIS_DATA.length 
-                  : PUBLIC_APIS_DATA.filter(a => a.category === cat).length;
-                
-                return (
+            {/* Auth Filter */}
+            <div className="glass-card p-4 space-y-3">
+              <h3 className="text-xs font-bold uppercase text-[#72706C] tracking-widest flex items-center gap-2">
+                <Shield size={12} />
+                <span>Auth Filter</span>
+              </h3>
+              <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto scrollbar-none">
+                {authTypes.map((authType) => (
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`w-full text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-between ${
-                      selectedCategory === cat
-                        ? 'bg-[#3C6B4D] text-[#ECEBE9] shadow-sm'
-                        : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    key={authType}
+                    onClick={() => setSelectedAuth(authType)}
+                    className={`w-full text-left text-xs font-semibold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-between ${
+                      selectedAuth === authType
+                        ? 'bg-[#3C6B4D]/10 text-[#ECEBE9] border border-[#3C6B4D]/30'
+                        : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] border border-transparent'
                     }`}
                   >
-                    <span className="truncate mr-2">{cat}</span>
-                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 ${
-                      selectedCategory === cat ? 'bg-[#2E533B] text-[#ECEBE9]' : 'bg-[#111213] text-[#72706C]'
-                    }`}>
-                      {count}
+                    <span>{authType === '' ? 'None' : authType}</span>
+                    {selectedAuth === authType && <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D]" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Category List */}
+            <div className="glass-card p-4 space-y-3">
+              <h3 className="text-xs font-bold uppercase text-[#72706C] tracking-widest flex items-center gap-2">
+                <Layers size={12} />
+                <span>Categories</span>
+              </h3>
+              <div className="flex flex-col gap-1 max-h-[450px] overflow-y-auto pr-1">
+                {categories.map((cat) => {
+                  const count = cat === 'All' 
+                    ? PUBLIC_APIS_DATA.length 
+                    : PUBLIC_APIS_DATA.filter(a => a.category === cat).length;
+                  
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`w-full text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-between ${
+                        selectedCategory === cat
+                          ? 'bg-[#3C6B4D] text-[#ECEBE9] shadow-sm'
+                          : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
+                    >
+                      <span className="truncate mr-2">{cat}</span>
+                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 ${
+                        selectedCategory === cat ? 'bg-[#2E533B] text-[#ECEBE9]' : 'bg-[#111213] text-[#72706C]'
+                      }`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* API Grid Explorer */}
+          <div className="lg:col-span-3 space-y-6">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-mono text-[#72706C]">
+                Showing {filteredApis.length} of {PUBLIC_APIS_DATA.length} results
+              </p>
+            </div>
+
+            {filteredApis.length === 0 ? (
+              <div className="glass-card p-12 text-center space-y-3">
+                <Database size={40} className="mx-auto text-[#72706C] stroke-[1.5]" />
+                <h3 className="text-sm font-bold text-[#ECEBE9]">No APIs Found</h3>
+                <p className="text-xs text-[#72706C] max-w-sm mx-auto">
+                  No public APIs matched your current category, search queries, or authorization filters. Try broadening your criteria.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {paginatedApis.map((api) => (
+                    <div
+                      key={`${api.name}-${api.category}`}
+                      onClick={() => setSelectedApi(api)}
+                      className="glass-card glass-card-hover p-5 flex flex-col justify-between gap-4 cursor-pointer relative overflow-hidden group"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded-md">
+                              {api.category}
+                            </span>
+                            <h3 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors mt-1.5">
+                              {api.name}
+                            </h3>
+                          </div>
+                          <ChevronRight size={16} className="text-[#72706C] group-hover:text-[#ECEBE9] transition-colors shrink-0" />
+                        </div>
+
+                        <p className="text-xs text-[#A3A09B] line-clamp-2 leading-relaxed">
+                          {api.description}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 border-t border-[#2A2D30]/50 flex flex-wrap gap-2 items-center text-[10px] font-mono text-[#72706C]">
+                        <span className="flex items-center gap-1">
+                          <Shield size={11} className={api.auth === 'No' || api.auth === 'none' ? 'text-[#3C6B4D]' : 'text-[#E29E2D]'} />
+                          Auth: {api.auth || 'None'}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Globe size={11} className="text-sky-500" />
+                          HTTPS: {api.https ? 'Yes' : 'No'}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Radio size={11} className="text-emerald-500" />
+                          CORS: {api.cors || 'unknown'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between pt-4 border-t border-[#2A2D30]">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                      className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft size={14} />
+                      <span>Previous</span>
+                    </button>
+                    
+                    <span className="text-xs font-mono text-[#A3A09B]">
+                      Page {currentPage} of {totalPages}
                     </span>
+
+                    <button
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                      className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start text-left w-full animate-fadeIn">
+          {/* Sidebar list of local endpoints */}
+          <div className="lg:col-span-4 flex flex-col gap-3">
+            <div className="glass-card p-4 space-y-2">
+              <span className="text-[10px] uppercase font-bold text-[#72706C] tracking-wider block">Backend Server</span>
+              <div className="flex items-center justify-between p-2.5 bg-[#111213] rounded-xl border border-[#2A2D30]">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs font-mono font-bold text-[#ECEBE9]">http://localhost:8000</span>
+                  <span className="text-[9px] text-[#72706C]">FastAPI Engine Port</span>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#4E8E5E] border border-[#3C6B4D]/25 text-[9px] font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-pulse" />
+                  <span>Active</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {LOCAL_APIS.map((api, idx) => {
+                const isSelected = selectedLocalIdx === idx;
+                const isPost = api.method === 'POST';
+                return (
+                  <button
+                    key={api.name}
+                    onClick={() => setSelectedLocalIdx(idx)}
+                    className={`w-full p-4 rounded-2xl border transition-all text-left flex flex-col gap-1.5 ${
+                      isSelected 
+                        ? 'bg-[#18191B] border-[#3C6B4D]/45 shadow-sm' 
+                        : 'bg-[#18191B] border-[#2A2D30] hover:border-[#3C6B4D]/25'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center w-full">
+                      <span className="font-bold text-[#ECEBE9] text-xs leading-snug">{api.name}</span>
+                      <span className={`text-[9px] font-mono px-2 py-0.5 rounded font-extrabold uppercase tracking-wide shrink-0 ${
+                        isPost 
+                          ? 'bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 text-[#4E8E5E]' 
+                          : 'bg-indigo-500/10 border border-indigo-500/25 text-indigo-400'
+                      }`}>
+                        {api.method}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[9px] text-[#72706C] truncate">{api.endpoint}</span>
                   </button>
                 );
               })}
             </div>
           </div>
-        </div>
 
-        {/* API Grid Explorer */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-mono text-[#72706C]">
-              Showing {filteredApis.length} of {PUBLIC_APIS_DATA.length} results
-            </p>
-          </div>
-
-          {filteredApis.length === 0 ? (
-            <div className="glass-card p-12 text-center space-y-3">
-              <Database size={40} className="mx-auto text-[#72706C] stroke-[1.5]" />
-              <h3 className="text-sm font-bold text-[#ECEBE9]">No APIs Found</h3>
-              <p className="text-xs text-[#72706C] max-w-sm mx-auto">
-                No public APIs matched your current category, search queries, or authorization filters. Try broadening your criteria.
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {paginatedApis.map((api) => (
-                  <div
-                    key={`${api.name}-${api.category}`}
-                    onClick={() => setSelectedApi(api)}
-                    className="glass-card glass-card-hover p-5 flex flex-col justify-between gap-4 cursor-pointer relative overflow-hidden group"
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded-md">
-                            {api.category}
-                          </span>
-                          <h3 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors mt-1.5">
-                            {api.name}
-                          </h3>
-                        </div>
-                        <ChevronRight size={16} className="text-[#72706C] group-hover:text-[#ECEBE9] transition-colors shrink-0" />
+          {/* Right side: Detailed inspector pane */}
+          <div className="lg:col-span-8 bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 flex flex-col gap-6 w-full animate-fadeIn min-h-[450px]">
+            {(() => {
+              const api = LOCAL_APIS[selectedLocalIdx];
+              const isPost = api.method === 'POST';
+              const localSnippet = getLocalCodeSnippet(api, activeLocalTab);
+              
+              return (
+                <>
+                  {/* Header */}
+                  <div className="flex justify-between items-start gap-4 pb-4 border-b border-[#2A2D30]">
+                    <div className="flex flex-col gap-1 text-left">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-extrabold uppercase tracking-wide ${
+                          isPost 
+                            ? 'bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 text-[#4E8E5E]' 
+                            : 'bg-indigo-500/10 border border-indigo-500/25 text-indigo-400'
+                        }`}>
+                          {api.method}
+                        </span>
+                        <span className="font-mono text-xs font-bold text-[#ECEBE9]">{api.endpoint}</span>
                       </div>
-
-                      <p className="text-xs text-[#A3A09B] line-clamp-2 leading-relaxed">
-                        {api.description}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 border-t border-[#2A2D30]/50 flex flex-wrap gap-2 items-center text-[10px] font-mono text-[#72706C]">
-                      <span className="flex items-center gap-1">
-                        <Shield size={11} className={api.auth === 'No' || api.auth === 'none' ? 'text-[#3C6B4D]' : 'text-[#E29E2D]'} />
-                        Auth: {api.auth || 'None'}
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Globe size={11} className="text-sky-500" />
-                        HTTPS: {api.https ? 'Yes' : 'No'}
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Radio size={11} className="text-emerald-500" />
-                        CORS: {api.cors || 'unknown'}
-                      </span>
+                      <h2 className="text-xl font-extrabold text-[#ECEBE9] tracking-tight mt-1">{api.name}</h2>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-4 border-t border-[#2A2D30]">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                    className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft size={14} />
-                    <span>Previous</span>
-                  </button>
-                  
-                  <span className="text-xs font-mono text-[#A3A09B]">
-                    Page {currentPage} of {totalPages}
-                  </span>
+                  {/* Description */}
+                  <div className="text-left space-y-1">
+                    <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider block">Description</span>
+                    <p className="text-xs text-[#A3A09B] leading-relaxed">{api.description}</p>
+                  </div>
 
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                    className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <span>Next</span>
-                    <ChevronRight size={14} />
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+                  {/* Request Headers & Payload */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider block">Request Headers</span>
+                      <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 font-mono text-[10px] text-[#A3A09B] space-y-1">
+                        {api.headers.map(h => (
+                          <div key={h.key} className="flex gap-1.5">
+                            <span className="text-[#ECEBE9] font-bold">{h.key}:</span>
+                            <span>{h.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {api.payload && (
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider block">Body Schema</span>
+                        <div className="relative group/payload">
+                          <pre className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 font-mono text-[9px] text-[#A3A09B] overflow-x-auto max-h-[120px] whitespace-pre-wrap leading-relaxed">
+                            {api.payload}
+                          </pre>
+                          <button
+                            onClick={() => handleCopy(api.payload!, 'payload')}
+                            className="absolute top-2 right-2 p-1.5 rounded-md bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] opacity-0 group-hover/payload:opacity-100 transition-all"
+                            title="Copy Payload"
+                          >
+                            {copiedSnippet === 'payload' ? <Check size={11} className="text-[#3C6B4D]" /> : <Copy size={11} />}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Code Snippets */}
+                  <div className="space-y-2 text-left">
+                    <div className="flex justify-between items-center border-b border-[#2A2D30] pb-2">
+                      <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">Code Execution Snippets</span>
+                      <div className="flex bg-[#111213] p-0.5 border border-[#2A2D30] rounded-lg">
+                        {(['js', 'python', 'curl'] as const).map(lang => (
+                          <button
+                            key={lang}
+                            onClick={() => setActiveLocalTab(lang)}
+                            className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase transition-all ${
+                              activeLocalTab === lang 
+                                ? 'bg-[#3C6B4D] text-[#ECEBE9]' 
+                                : 'text-[#72706C] hover:text-[#ECEBE9]'
+                            }`}
+                          >
+                            {lang === 'js' ? 'Fetch' : lang === 'python' ? 'Python' : 'cURL'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="relative group/snippet">
+                      <pre className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 font-mono text-[10px] text-[#A3A09B] overflow-x-auto max-h-[160px] leading-relaxed">
+                        {localSnippet}
+                      </pre>
+                      <button
+                        onClick={() => handleCopy(localSnippet, 'snippet')}
+                        className="absolute top-3.5 right-3.5 p-1.5 rounded-md bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] opacity-0 group-hover/snippet:opacity-100 transition-all"
+                        title="Copy snippet"
+                      >
+                        {copiedSnippet === 'snippet' ? <Check size={12} className="text-[#3C6B4D]" /> : <Copy size={12} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Response payload */}
+                  <div className="space-y-1.5 text-left">
+                    <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider block">Response Example (JSON)</span>
+                    <div className="relative group/response">
+                      <pre className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 font-mono text-[9px] text-[#A3A09B] overflow-x-auto max-h-[160px] leading-relaxed">
+                        {api.response}
+                      </pre>
+                      <button
+                        onClick={() => handleCopy(api.response, 'response')}
+                        className="absolute top-3.5 right-3.5 p-1.5 rounded-md bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] opacity-0 group-hover/response:opacity-100 transition-all"
+                        title="Copy response"
+                      >
+                        {copiedSnippet === 'response' ? <Check size={12} className="text-[#3C6B4D]" /> : <Copy size={12} />}
+                      </button>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Details Side-Drawer / Modal Overlay */}
       {selectedApi && createPortal(

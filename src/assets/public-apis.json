@@ -17170,5 +17170,77 @@
     "https": true,
     "cors": "yes",
     "link": "https://www.weatherapi.com/"
+  },
+  {
+    "name": "PH ZIP Codes",
+    "description": "Philippine postal ZIP codes list containing cities, provinces, and regions mapping.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mdebarros/philippines-zip-codes"
+  },
+  {
+    "name": "Philippine Holidays API",
+    "description": "Retrieve national and regional public holidays for the Philippines for any calendar year.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://date.nager.at/Api/v2/PublicHolidays/2026/PH"
+  },
+  {
+    "name": "PAGASA Weather Alerts",
+    "description": "Official PAGASA weather reports, typhoon bulletins, and heavy rainfall alerts.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/PAGASA-PRSD/PAGASA-OpenData"
+  },
+  {
+    "name": "Philippine Banks Directory",
+    "description": "Open-source reference directory for major Philippine bank identifiers, SWIFT codes, and electronic fund transfer routing keys.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/ph-banks"
+  },
+  {
+    "name": "Philippine Address PSGC Directory",
+    "description": "Full administrative geocoding mappings (regions, provinces, municipalities, barangays) in the Philippines.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/flores-jacob/philippines-psgc-api"
+  },
+  {
+    "name": "Philippine Peso exchange-rate",
+    "description": "Real-time Philippine Peso exchange rates against global currencies (USD, EUR, SGD, JPY).",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://open.er-api.com/v6/latest/PHP"
+  },
+  {
+    "name": "LTO plate-number decoder",
+    "description": "LTO registration plate prefixes geocoding reference to look up regional registration offices.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/lto-ph/plate-decoder"
+  },
+  {
+    "name": "PSE Stocks tracker",
+    "description": "Unofficial public endpoints to scrape and retrieve live stock listings prices on the Philippine Stock Exchange.",
+    "category": "Philippines",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jakejas/pse-api"
   }
 ]
