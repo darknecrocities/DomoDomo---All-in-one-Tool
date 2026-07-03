@@ -13,6 +13,46 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'why-is-open-source-important',
+    title: 'Why is Open Source Important',
+    excerpt: "Open source isn't just about free code—it’s a global philosophy of collaboration, transparency, and shared progress. Discover why the open-source movement matters and how it drives domodomo.",
+    date: 'July 3, 2026',
+    readTime: '3 min read',
+    category: 'Others',
+    author: 'Ram Guinto',
+    keywords: 'open source, open-source software, oss, collaboration, transparency, linux, domodomo',
+    content: `
+# Why is open source important
+
+Somewhere around October 2025, I fell down the Linux rabbit hole. (I started out on Arch and eventually moved over to Niri.) Originally, my motivation was simple: I was broke, as well as I don't like the direction on how microsoft was doing with windows. It's slow because we're force-fed AI on our throats, and I didn't have the money to drop on expensive, proprietary software licenses, and open-source software (OSS) felt like an absolute Godsend.
+
+The more I read about it, the more I'm intrigued by it. Open source isn’t just about free code, it’s a global philosophy of collaboration, transparency, and shared progress. Whether you are a business leader, a budding developer, or just someone who uses the internet, open source shapes your daily life. 
+
+As we build domodomo, we want the Filipino tech community to fully experience the wonders of open source. Here is why this movement matters so much to us, and how it drives everything we do at domodomo.
+
+---
+
+## 1. Speed
+- Because the code is public and you literally put it on GitHub, bugs are spotted and patched rapidly. Features are built, tested, and deployed at a pace that proprietary software teams can't match.
+
+## 2. Transparency
+- Linus’s Law states, "Given enough eyeballs, all bugs are shallow." Because anyone can audit open-source code, security vulnerabilities and hidden malware are caught much faster than in closed-source systems. Users don't have to "take a company's word" that their software is safe or private. They can look at the blueprint themselves. Here at domodomo, you can do that through our github.
+
+## 3. The Community
+- I really love the open source community because of it's collective brainpower and collaboration. It builds communities across borders, cultures, and time zones, united by the goal of making something useful for humanity.
+
+## 4. Longevity
+- If a corporation goes bankrupt, its proprietary software dies with it. With open source, if the original creators abandon a project, the community can "fork" it and keep it alive indefinitely.
+
+---
+
+## Join the Ecosystem
+The Linux and open-source ecosystem changed how I view technology. It took me from being just a consumer to being an active creator. We want to bring that same magic to the local scene.
+
+Check out our code, break it, fix it, or just see how it works. Visit the **domodomo** GitHub repository and let's build something great together. 🇵🇭
+`
+  },
+  {
     slug: 'domomulti-orchestration-parallel-ai-workflows',
     title: 'The Power of DomoMulti Orchestration: Running Parallel Offline AI Workflows',
     excerpt: 'Discover how DomoMulti Orchestration enables sequential and parallel agent workflows using local LLMs. Run complex developer tasks securely on your machine.',

@@ -306,3 +306,31 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Gold shining border effect */
+@keyframes gold-shine-sweep {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 0% 0%, -200% 0%;
+  }
+}
+
+.gold-shining-border {
+  position: relative;
+  border: 1.5px solid transparent;
+  background-image: linear-gradient(var(--card), var(--card)), 
+                    linear-gradient(90deg, #d4af37, #ffe58f, #d4af37, #966f1c, #d4af37);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-size: 200% 100%;
+  animation: gold-shine-sweep 4s linear infinite;
+  transition: all 0.3s ease;
+}
+
+.gold-shining-border:hover {
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
