@@ -188,8 +188,8 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                       "A masterclass in local-first browser engineering. DomoDomo proves that you don't need heavy cloud infrastructures to build robust, secure, and incredibly fast tools."
                     </p>
                     <div>
-                      <span className="block text-xs font-bold text-[#ECEBE9]">App Builders PH Team</span>
-                      <span className="block text-[10px] text-[#72706C]">Core Curator Group</span>
+                      <span className="block text-xs font-bold text-[#ECEBE9]">James Mendoza</span>
+                      <span className="block text-[10px] text-[#72706C]">App Builders PH Core Curator</span>
                     </div>
                   </div>
                 </div>
