@@ -179,7 +179,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                       "DomoDomo has completely replaced multiple online file converters for me. Knowing my sensitive PDFs and client photos are processed 100% locally in my browser gives me complete peace of mind."
                     </p>
                     <div>
-                      <span className="block text-xs font-bold text-[#ECEBE9]">Almira</span>
+                      <span className="block text-xs font-bold text-[#ECEBE9]">Mary Anne</span>
                       <span className="block text-[10px] text-[#72706C]">Digital Content Manager</span>
                     </div>
                   </div>
