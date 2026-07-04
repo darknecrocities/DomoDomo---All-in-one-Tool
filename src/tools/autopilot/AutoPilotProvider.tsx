@@ -249,8 +249,7 @@ export const AutoPilotProvider = ({ children }: { children: ReactNode }) => {
       log('Analyzing request and creating execution plan...', 'reasoning');
       
       const allowedSkills = Object.values(skillsRegistry)
-        .filter(skill => skill.level <= permissionLevelRef.current)
-        .map(skill => `${skill.id} (${skill.name}): ${skill.description}`);
+        .map(skill => `${skill.id} (${skill.name}) [Requires Level ${skill.level}]: ${skill.description}`);
 
       const memoryContext = localMemory.getActivityContextString();
       const filesContext = uploadedFilesRef.current.length > 0
@@ -277,7 +276,7 @@ Hardware Specs: ${systemInfoRef.current.cpuCount} Core CPU (${systemInfoRef.curr
         prompt = `You are the Auto-Pilot Planner. Break down the following goal into a JSON array of sequential steps.
 Goal: "${goal}"
 
-Available Skills (Filtered to Level ${permissionLevelRef.current}): 
+Available Skills (Current User Permission Level is Level ${permissionLevelRef.current}): 
 ${allowedSkills.join('\n')}
 
 ${memoryContext}
@@ -288,6 +287,7 @@ ${filesContext}
 
 CRITICAL PLANNING CONSTRAINTS: 
 - You MUST only use the skills listed above. Do not invent skills.
+- You are fully allowed and encouraged to use skills that require a higher permission level than the current level (e.g. Level 3 terminal command or OS control) if they are needed to accomplish the goal. The application will automatically prompt the user for permission elevation at runtime before execution.
 - To open external web pages, search engines, or generic internet links (e.g. GitHub, YouTube, Google, Facebook), you MUST use the 'open_web_link' skill. Do NOT use the 'open_domo_tool' skill for external links.
 - Only use the 'open_domo_tool' skill to open native DomoDomo application features (like 'about', 'docs', or specific tools listed in its ID description).
 - The User Activity History is already fully available to you in the prompt context. Do NOT generate steps to "read local files", "load history", or "access user actions" to read this history.
@@ -310,7 +310,7 @@ ${previousSteps.map(s => `- ${s.description} (status: ${s.status})`).join('\n')}
 We are continuing the conversation.
 New User Follow-up Request: "${goal}"
 
-Available Skills (Filtered to Level ${permissionLevelRef.current}): 
+Available Skills (Current User Permission Level is Level ${permissionLevelRef.current}): 
 ${allowedSkills.join('\n')}
 
 ${systemInfoContext}
@@ -319,6 +319,7 @@ ${filesContext}
 
 CRITICAL PLANNING CONSTRAINTS:
 - You MUST only use the skills listed above. Do not invent skills.
+- You are fully allowed and encouraged to use skills that require a higher permission level than the current level (e.g. Level 3 terminal command or OS control) if they are needed to accomplish the goal. The application will automatically prompt the user for permission elevation at runtime before execution.
 - To open external web pages, search engines, or generic internet links (e.g. GitHub, YouTube, Google, Facebook), you MUST use the 'open_web_link' skill. Do NOT use the 'open_domo_tool' skill for external links.
 - Only use the 'open_domo_tool' skill to open native DomoDomo application features (like 'about', 'docs', or specific tools listed in its ID description).
 - The User Activity History is already fully available to you in the prompt context. Do NOT generate steps to "read local files", "load history", or "access user actions" to read this history.

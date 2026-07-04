@@ -13,6 +13,77 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'whats-new-autopilot-mcp-agent-skills-creator',
+    title: 'What’s New: Level 3 OS AutoPilot, Orchestrator Fallbacks, and 16 New Agent Skills',
+    excerpt: 'DomoDomo gets a massive upgrade! Explore Level 3 OS AutoPilot, Multi-Agent Orchestrator auto-saves, and 16 new modular skill templates for visual AI agent customization.',
+    date: 'July 4, 2026',
+    readTime: '4 min read',
+    category: 'Product Updates',
+    author: 'Ram Guinto',
+    keywords: 'autopilot, level 3 autopilot, mcp server, agent skills, addy osmani, anthropic skills, domodomo updates',
+    content: `
+# What's New: Level 3 OS AutoPilot, Orchestrator Fallbacks, and 16 New Agent Skills
+
+Today, we are thrilled to roll out a major update to **DomoDomo**. This release brings deeper operating system integration, smarter multi-agent coordination, and a library of 16 professional agent skill templates to take your local AI experience to the next level.
+
+Here is everything new in this update.
+
+---
+
+## 🚀 1. Level 3 OS AutoPilot Integration
+
+The AutoPilot agent is no longer restricted to browser-only actions. With the new **Level 3: Host Execution** tier, the planner can run system-level operations directly on your macOS or Windows machine:
+- **Application Enumerate**: Automatically lists installed apps in \`/Applications\` (macOS) or via PowerShell \`Get-StartApps\` (Windows).
+- **Active Window Monitoring**: Resolves the foreground app name and title (e.g. tracking when you switch to VS Code or Chrome).
+- **Native Screen Capture**: Takes high-resolution screenshots of the host desktop and auto-adds them to your local artifacts folder.
+- **Clipboard Sync**: Integrates host copy/paste actions to pass text cleanly between your local OS and the planner.
+- **Platform setting shortcuts**: Automatically maps queries like "open system settings" to the correct OS settings screen (System Settings on macOS; \`ms-settings:\` on Windows).
+
+### 🔒 Built-in Guardrails & Fallbacks
+- **AppleScript Click Fallback**: If the Python environment is missing the \`Quartz\` (\`pyobjc\`) package, clicking operations automatically fall back to native AppleScript (\`osascript -e "tell application \\"System Events\\" to click at {x, y}"\`), preventing failures.
+- **Elevation Warnings**: If the agent attempts a Level 3 task while operating at a lower level (like Level 2), the UI automatically pops up a runtime approval overlay for permission elevation rather than silently skipping the action.
+
+---
+
+## 🧠 2. Smarter Multi-Agent Orchestrator Auto-Saves
+
+We've resolved a critical issue where files built by sequential or parallel agents were not saving because the model did not format them with exact \`[WRITE_FILE: path]\` tags. 
+
+- **Automatic \`ideFile\` Fallback**: If an agent finishes its work without generating explicit bracket tags, the system automatically saves the response content using the agent's configured filename in the UI (like \`architecture_plan.md\` for the Planner, or \`security_audit.log\` for the Auditor).
+- **Smart Code Block Extraction**: For code extensions (like \`.tsx\` or \`.py\`), the parser extracts the contents of the first markdown code block (e.g., \` \`\`\`python ... \`\`\` \`), discarding greetings or conversational text to ensure the output compiles with zero syntax errors.
+
+---
+
+## 🛠️ 3. 16 New Agent Skill Creator Templates
+
+We have expanded the **Domo Skill Creator** with 16 pre-made, production-grade templates inspired by public standards and engineering repositories:
+
+### 📄 Document & Utility Skills (Anthropic-inspired)
+- **Document Co-Authoring**: Collaborative editing, formatting, and drafting of rich-text articles.
+- **Spreadsheet Analyst (XLSX)**: Formulates math calculations and extracts cell data.
+- **Slide Deck Designer (PPTX)**: Maps presentation outlines and visual layouts.
+- **PDF Document Handler**: Splitting, merging, compressing, and executing scanned page OCR.
+- **Canvas Designer & Algorithmic Artist**: Vector drawing, relative coordinates mapping, and SVG vector code generation.
+
+### ⚙️ Production Engineering Lifecycle (Addy Osmani-inspired)
+- **Spec-Driven Developer**: Models API contracts and JSON schemas before coding.
+- **Test-Driven Developer (TDD)**: Orchestrates Red-Green-Refactor development flows.
+- **Context Engineering Specialist**: Selects precise codebase contexts, preventing token bloating.
+- **Incremental Code Builder**: Performs small, modular edits, compiling and checking constraints iteratively.
+- **Browser QA Tester**: Automates interactive page button clicking and locator assertions.
+- **Debugging & Error Recoverer**: Reads stack traces and applies targeted repair patches.
+- **Code Simplification Specialist**: Simplifies nested statements and removes duplicate layers.
+- **Deprecation & Shipper**: Safely updates deprecated APIs, runs package checks, and generates changelogs.
+
+---
+
+## ⚡ What's Next?
+Restart your dev server (\`npm run dev\`) to load the updated MCP server binaries, refresh your dashboard, and try these features out. All code changes compile with **0 warnings**, and all operations execute **100% locally and offline** on your computer.
+
+Let us know your feedback, and let's keep building! 🇵🇭
+`
+  },
+  {
     slug: 'why-is-open-source-important',
     title: 'Why is Open Source Important',
     excerpt: "Open source isn't just about free code—it’s a global philosophy of collaboration, transparency, and shared progress. Discover why the open-source movement matters and how it drives domodomo.",

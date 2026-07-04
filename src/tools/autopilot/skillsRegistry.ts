@@ -533,5 +533,144 @@ Use headers, lists, bullet points, tables, and formatted code blocks if relevant
       window.open(target, '_blank');
       return { success: true };
     }
+  },
+  'os_get_installed_apps': {
+    id: 'os_get_installed_apps',
+    name: 'OS Installed Apps List',
+    description: 'Retrieves a list of all user applications installed on macOS or Windows (Level 3).',
+    level: 3,
+    parameters: {},
+    execute: async (_args, ctx) => {
+      ctx.log('Scanning computer for installed applications...', 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('get_installed_apps', {});
+          const apps = JSON.parse(res.content?.[0]?.text || '[]');
+          ctx.log(`Scan completed. Found ${apps.length} applications.`, 'success', JSON.stringify(apps));
+          return { success: true, apps };
+        } catch (err: any) {
+          ctx.log(`MCP get_installed_apps failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Application scanning is disabled.');
+    }
+  },
+  'os_get_active_window': {
+    id: 'os_get_active_window',
+    name: 'OS Active Window Check',
+    description: 'Identifies the active application or window name currently in focus on the computer (Level 3).',
+    level: 3,
+    parameters: {},
+    execute: async (_args, ctx) => {
+      ctx.log('Checking foreground window status...', 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('get_active_window', {});
+          const winName = res.content?.[0]?.text || 'Unknown';
+          ctx.log(`Active window in focus: "${winName}"`, 'success');
+          return { success: true, active_window: winName };
+        } catch (err: any) {
+          ctx.log(`MCP get_active_window failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Active window tracking is disabled.');
+    }
+  },
+  'os_capture_screen': {
+    id: 'os_capture_screen',
+    name: 'Capture Screen Screenshot',
+    description: 'Takes a screenshot of the primary display. Returns base64 PNG data (Level 3).',
+    level: 3,
+    parameters: {},
+    execute: async (_args, ctx) => {
+      ctx.log('Capturing screen display...', 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('capture_screen', {});
+          const imgData = res.content?.[0]?.text || '';
+          if (imgData.startsWith('data:image')) {
+            ctx.log('Screenshot captured successfully.', 'success');
+            ctx.addArtifact('latest_screenshot.png', imgData.split(',')[1], 'image/png');
+            return { success: true, screenshot: imgData };
+          } else {
+            throw new Error(imgData);
+          }
+        } catch (err: any) {
+          ctx.log(`MCP capture_screen failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Screen capture is disabled.');
+    }
+  },
+  'os_open_target': {
+    id: 'os_open_target',
+    name: 'Open Application / File / Settings',
+    description: 'Launches any installed application on the system (e.g. "System Settings", "Safari", "Disk Utility", "Notes", "Spotify"), opens a file or folder path, or opens web links (Level 3).',
+    level: 3,
+    parameters: {
+      target: 'The name of the app (e.g. "System Settings", "Safari", "Spotify"), absolute folder/file path, or URL.'
+    },
+    execute: async (args, ctx) => {
+      const target = args.target || '';
+      const approved = await ctx.requestApproval(`Allow Auto-Pilot to open target: "${target}"?`);
+      if (!approved) throw new Error('User denied open request.');
+
+      ctx.log(`Launching target: "${target}"`, 'action');
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('open_target', { target });
+          const text = res.content?.[0]?.text || '';
+          ctx.log(text, 'success');
+          return { success: true, status: text };
+        } catch (err: any) {
+          ctx.log(`MCP open_target failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Application launching is disabled.');
+    }
+  },
+  'os_clipboard_sync': {
+    id: 'os_clipboard_sync',
+    name: 'Read/Write OS Clipboard',
+    description: 'Reads text from or writes text to the host system clipboard (Level 3).',
+    level: 3,
+    parameters: {
+      action: 'Either "read" or "write".',
+      text: 'The text value to write (if action is write).'
+    },
+    execute: async (args, ctx) => {
+      const action = args.action || 'read';
+      const text = args.text || '';
+      
+      if (action === 'write') {
+        const approved = await ctx.requestApproval(`Allow Auto-Pilot to copy text to your clipboard?`);
+        if (!approved) throw new Error('User denied clipboard write.');
+        ctx.log('Updating clipboard content...', 'action');
+      } else {
+        ctx.log('Reading clipboard content...', 'action');
+      }
+
+      if (mcpClient.isOnline()) {
+        try {
+          const res = await mcpClient.callTool('clipboard_sync', { action, text });
+          const textOut = res.content?.[0]?.text || '';
+          if (action === 'read') {
+            ctx.log('Clipboard content read successfully.', 'success', textOut);
+            return { success: true, text: textOut };
+          } else {
+            ctx.log('Clipboard content updated successfully.', 'success');
+            return { success: true };
+          }
+        } catch (err: any) {
+          ctx.log(`MCP clipboard_sync failed: ${err.message}`, 'error');
+          throw err;
+        }
+      }
+      throw new Error('MCP server is offline. Clipboard sync is disabled.');
+    }
   }
 };

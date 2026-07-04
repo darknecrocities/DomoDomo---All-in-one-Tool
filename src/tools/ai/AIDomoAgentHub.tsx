@@ -677,6 +677,37 @@ When you are fully finished with your task (or if no tool calls are needed), out
       }
     }
 
+    // 3. Fallback: If no files were found using tool-call format, but the agent has a designated ideFile,
+    // we fallback to saving the content under that ideFile name.
+    if (foundFiles.size === 0) {
+      const agentObj = agents.find(a => a.name === agentName);
+      if (agentObj && agentObj.ideFile && agentObj.ideFile.trim()) {
+        const fileName = getCorrectedFilePath(agentObj.ideFile.trim());
+        let fileContent = text.trim();
+        
+        // If it's a code file (e.g. .py, .tsx, .ts, .js, .html, .css) and there is a markdown code block,
+        // extract the code from the code block.
+        const extension = fileName.split('.').pop()?.toLowerCase();
+        const codeExtensions = ['py', 'js', 'ts', 'tsx', 'html', 'css', 'go', 'c', 'cpp', 'java', 'sh'];
+        
+        if (codeExtensions.includes(extension || '')) {
+          const codeBlockRegex = /```(?:\w*)\n([\s\S]*?)\n```/g;
+          const codeBlockMatch = codeBlockRegex.exec(text);
+          if (codeBlockMatch && codeBlockMatch[1].trim()) {
+            fileContent = codeBlockMatch[1].trim();
+          } else {
+            fileContent = cleanCodeContent(fileContent);
+          }
+        } else {
+          fileContent = cleanCodeContent(fileContent);
+        }
+        
+        if (fileName && fileContent) {
+          foundFiles.set(fileName, fileContent);
+        }
+      }
+    }
+
     for (const [fileName, content] of foundFiles.entries()) {
       const newArtifact = {
         id: Math.random().toString(36).substring(7),

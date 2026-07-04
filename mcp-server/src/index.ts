@@ -290,6 +290,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: 'get_installed_apps',
+        description: 'Retrieve a list of all user applications installed on macOS or Windows.',
+        inputSchema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'get_active_window',
+        description: 'Identify the application name and window title currently in focus.',
+        inputSchema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'capture_screen',
+        description: 'Takes a screenshot of the primary display. Returns base64 PNG data.',
+        inputSchema: { type: 'object', properties: {} }
+      },
+      {
+        name: 'open_target',
+        description: 'Opens an application, file, folder, setting panel, or web link.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            target: { type: 'string', description: 'The absolute file path, application name, web link, or protocol URI.' }
+          },
+          required: ['target']
+        }
+      },
+      {
+        name: 'clipboard_sync',
+        description: 'Read from or write text to the system clipboard.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            action: { type: 'string', enum: ['read', 'write'], description: 'Read or write to clipboard.' },
+            text: { type: 'string', description: 'The text value to copy (required if action is write).' }
+          },
+          required: ['action']
+        }
+      }
     ],
   };
 });
@@ -835,7 +873,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           if (process.platform === 'darwin') {
             const pyScript = [
               'import sys',
-              'from Quartz.CoreGraphics import CGEventCreateMouseEvent, CGEventPost, kCGEventMouseMoved, kCGEventLeftMouseDown, kCGEventLeftMouseUp, kCGEventRightMouseDown, kCGEventRightMouseUp, kCGMouseButtonLeft, kCGMouseButtonRight, kCGHIDEventTap',
+              'try:',
+              '    from Quartz.CoreGraphics import CGEventCreateMouseEvent, CGEventPost, kCGEventMouseMoved, kCGEventLeftMouseDown, kCGEventLeftMouseUp, kCGEventRightMouseDown, kCGEventRightMouseUp, kCGMouseButtonLeft, kCGMouseButtonRight, kCGHIDEventTap',
+              'except ImportError:',
+              '    sys.exit(1)',
               `x = ${x}`,
               `y = ${y}`,
               'def click(x, y, button="left"):',
@@ -852,6 +893,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               `click(x, y, "${clickType}")`
             ].join('\n');
             command = `python3 -c '${pyScript}'`;
+
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                const fallbackCmd = `osascript -e 'tell application "System Events" to click at {${x}, ${y}}'`;
+                exec(fallbackCmd, (fbError, fbStdout, fbStderr) => {
+                  resolve({
+                    content: [{ type: 'text', text: fbError ? `Click Error: ${fbStderr || fbError.message}` : 'Click simulation triggered successfully via AppleScript fallback.' }],
+                    isError: !!fbError,
+                  });
+                });
+              } else {
+                resolve({
+                  content: [{ type: 'text', text: 'Click simulation triggered successfully.' }],
+                  isError: false,
+                });
+              }
+            });
+            return;
           } else if (process.platform === 'win32') {
             const psScript = [
               '$Signature = @\'',
@@ -925,6 +984,207 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               resolve({ content: [{ type: 'text', text: selectedPath }] });
             }
           });
+        });
+      }
+
+      case 'get_installed_apps': {
+        return new Promise((resolve) => {
+          let command = '';
+          if (process.platform === 'darwin') {
+            command = `find /Applications /System/Applications -maxdepth 2 -name "*.app" 2>/dev/null | awk -F/ '{print $NF}' | sed 's/\\.app$//' | sort -u`;
+          } else if (process.platform === 'win32') {
+            command = `powershell.exe -NoProfile -Command "Get-StartApps | Select-Object Name | ConvertTo-Json"`;
+          } else {
+            command = `echo '["Terminal", "Firefox", "Files"]'`;
+          }
+
+          exec(command, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
+            if (error) {
+              resolve({ content: [{ type: 'text', text: `Error: ${stderr || error.message}` }], isError: true });
+              return;
+            }
+            let appsList: string[] = [];
+            try {
+              if (process.platform === 'win32') {
+                const parsed = JSON.parse(stdout);
+                appsList = Array.isArray(parsed) ? parsed.map((a: any) => a.Name) : (parsed ? [parsed.Name] : []);
+              } else {
+                appsList = stdout.split('\n').map(l => l.trim()).filter(Boolean);
+              }
+            } catch {
+              appsList = stdout.split('\n').map(l => l.trim()).filter(Boolean);
+            }
+            resolve({ content: [{ type: 'text', text: JSON.stringify(appsList) }] });
+          });
+        });
+      }
+
+      case 'get_active_window': {
+        return new Promise((resolve) => {
+          let command = '';
+          if (process.platform === 'darwin') {
+            command = `osascript -e 'tell application "System Events" to name of first application process whose frontmost is true'`;
+          } else if (process.platform === 'win32') {
+            command = `powershell.exe -NoProfile -Command "$code = @'\n[DllImport(\\"user32.dll\\")]\npublic static extern IntPtr GetForegroundWindow();\n[DllImport(\\"user32.dll\\")]\npublic static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);\n'@; Add-Type -MemberDefinition $code -Name Win32 -Namespace Win32API -PassThru; $hwnd = [Win32API.Win32]::GetForegroundWindow(); $title = New-Object System.Text.StringBuilder 256; [Win32API.Win32]::GetWindowText($hwnd, $title, 256) | Out-Null; $title.ToString()"`;
+          } else {
+            command = `xdotool getactivewindow getwindowname 2>/dev/null || echo 'Unknown Window'`;
+          }
+
+          exec(command, (error, stdout) => {
+            resolve({
+              content: [{ type: 'text', text: error ? 'Unknown UI Window' : stdout.trim() }]
+            });
+          });
+        });
+      }
+
+      case 'capture_screen': {
+        return new Promise((resolve) => {
+          const tmpPath = process.platform === 'win32'
+            ? path.join(os.tmpdir(), 'screenshot.png')
+            : '/tmp/screenshot.png';
+
+          let command = '';
+          if (process.platform === 'darwin') {
+            command = `screencapture -x "${tmpPath}"`;
+          } else if (process.platform === 'win32') {
+            command = `powershell.exe -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds; $bmp = New-Object System.Drawing.Bitmap $screen.Width, $screen.Height; $graphics = [System.Drawing.Graphics]::FromImage($bmp); $graphics.CopyFromScreen(0, 0, 0, 0, $bmp.Size); $bmp.Save('${tmpPath}', [System.Drawing.Imaging.ImageFormat]::Png); $graphics.Dispose(); $bmp.Dispose();"`;
+          } else {
+            command = `scrot "${tmpPath}" 2>/dev/null || gnome-screenshot -f "${tmpPath}" 2>/dev/null`;
+          }
+
+          exec(command, (error) => {
+            if (error) {
+              resolve({ content: [{ type: 'text', text: `Failed to capture screen: ${error.message}` }], isError: true });
+              return;
+            }
+            try {
+              if (fs.existsSync(tmpPath)) {
+                const base64Data = fs.readFileSync(tmpPath, { encoding: 'base64' });
+                fs.unlinkSync(tmpPath);
+                resolve({
+                  content: [
+                    { type: 'text', text: `data:image/png;base64,${base64Data}` }
+                  ]
+                });
+              } else {
+                resolve({ content: [{ type: 'text', text: 'Error: Screenshot file was not created.' }], isError: true });
+              }
+            } catch (err: any) {
+              resolve({ content: [{ type: 'text', text: `Failed to read screenshot: ${err.message}` }], isError: true });
+            }
+          });
+        });
+      }
+
+      case 'open_target': {
+        let target = (args as any).target || '';
+        return new Promise((resolve) => {
+          let command = '';
+          const normTarget = target.trim().toLowerCase();
+
+          if (process.platform === 'darwin') {
+            if (['settings', 'laptop settings', 'system settings', 'system preferences', 'preferences'].includes(normTarget)) {
+              command = `open -a "System Settings" 2>/dev/null || open -a "System Preferences"`;
+            } else {
+              if (target.startsWith('/Applications/')) {
+                try {
+                  if (!fs.existsSync(target)) {
+                    const systemPath = target.replace('/Applications/', '/System/Applications/');
+                    if (fs.existsSync(systemPath)) {
+                      target = systemPath;
+                    }
+                  }
+                } catch (e) {
+                  // Ignore check errors
+                }
+              }
+
+              if (!target.includes('/') && !target.endsWith('.app') && !target.startsWith('http://') && !target.startsWith('https://')) {
+                command = `open -a "${target}"`;
+              } else {
+                command = `open "${target}"`;
+              }
+            }
+          } else if (process.platform === 'win32') {
+            if (['settings', 'laptop settings', 'system settings', 'control panel'].includes(normTarget)) {
+              command = `powershell.exe -NoProfile -Command "Start-Process ms-settings:"`;
+            } else if (target.startsWith('ms-settings:') || target.startsWith('http://') || target.startsWith('https://')) {
+              command = `powershell.exe -NoProfile -Command "Start-Process '${target}'"`;
+            } else {
+              command = `explorer.exe "${target}"`;
+            }
+          } else {
+            if (['settings', 'laptop settings', 'system settings', 'control panel'].includes(normTarget)) {
+              command = `gnome-control-center || xdg-open "settings:" || systemsettings`;
+            } else {
+              command = `xdg-open "${target}"`;
+            }
+          }
+
+          exec(command, (error, stdout, stderr) => {
+            resolve({
+              content: [{
+                type: 'text',
+                text: error
+                  ? `Failed to open "${target}": ${stderr || error.message}`
+                  : `Successfully requested OS to open target: "${target}"`
+              }],
+              isError: !!error,
+            });
+          });
+        });
+      }
+
+      case 'clipboard_sync': {
+        const action = (args as any).action;
+        const text = (args as any).text || '';
+
+        return new Promise((resolve) => {
+          let command = '';
+          if (action === 'read') {
+            if (process.platform === 'darwin') {
+              command = `pbpaste`;
+            } else if (process.platform === 'win32') {
+              command = `powershell.exe -NoProfile -Command "Get-Clipboard"`;
+            } else {
+              command = `xclip -selection clipboard -o 2>/dev/null || xsel --clipboard --output 2>/dev/null || echo ''`;
+            }
+            exec(command, (error, stdout) => {
+              resolve({ content: [{ type: 'text', text: error ? '' : stdout }] });
+            });
+          } else {
+            if (process.platform === 'darwin') {
+              const proc = spawn('pbcopy');
+              proc.stdin.write(text);
+              proc.stdin.end();
+              proc.on('close', (code) => {
+                resolve({
+                  content: [{ type: 'text', text: code === 0 ? 'Clipboard updated successfully' : 'Failed to set clipboard' }],
+                  isError: code !== 0
+                });
+              });
+            } else if (process.platform === 'win32') {
+              const escapedText = text.replace(/'/g, "''");
+              command = `powershell.exe -NoProfile -Command "Set-Clipboard -Value '${escapedText}'"`;
+              exec(command, (error) => {
+                resolve({
+                  content: [{ type: 'text', text: error ? 'Failed to set clipboard' : 'Clipboard updated successfully' }],
+                  isError: !!error
+                });
+              });
+            } else {
+              const proc = spawn('xclip', ['-selection', 'clipboard']);
+              proc.stdin.write(text);
+              proc.stdin.end();
+              proc.on('close', (code) => {
+                resolve({
+                  content: [{ type: 'text', text: code === 0 ? 'Clipboard updated successfully' : 'Failed to set clipboard' }],
+                  isError: code !== 0
+                });
+              });
+            }
+          }
         });
       }
 
