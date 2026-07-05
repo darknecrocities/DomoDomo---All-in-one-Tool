@@ -6,6 +6,9 @@ import { exec, execSync } from 'child_process';
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    host: true
+  },
   plugins: [
     react(),
     {
