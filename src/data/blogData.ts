@@ -19,7 +19,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: 'July 5, 2026',
     readTime: '5 min read',
     category: 'Product Updates',
-    author: 'AppBuilders PH',
+    author: 'Arron Parejas',
     keywords: 'data visualizer, chart builder, csv pivot table, css keyframe animator, er schema designer, svg path editor, css grid builder, data masker, privacy anonymizer, domodomo',
     content: `
 # Introducing Data & Visualizer Studio: 10 Local-First Analytics and Layout Tools
