@@ -12,6 +12,15 @@ interface KeyframeProperties {
   color: string;
 }
 
+const easingValues: Record<string, string> = {
+  linear: 'linear',
+  ease: 'ease',
+  'ease-in': 'ease-in',
+  'ease-out': 'ease-out',
+  'ease-in-out': 'ease-in-out',
+  bezier: 'cubic-bezier(0.25, 0.1, 0.25, 1.0)'
+};
+
 export const CSSKeyframeAnimatorTool = () => {
   const [keyframes, setKeyframes] = useState<Record<number, KeyframeProperties>>({
     0: { rotate: 0, scale: 1, translateX: 0, translateY: 0, skewX: 0, opacity: 1, blur: 0, color: '#3C6B4D' },
@@ -25,16 +34,6 @@ export const CSSKeyframeAnimatorTool = () => {
   const [previewShape, setPreviewShape] = useState<'square' | 'circle'>('circle');
   const [copied, setCopied] = useState<boolean>(false);
   const [easingPreset, setEasingPreset] = useState<string>('ease-in-out');
-
-  // Easing presets details
-  const easingValues: Record<string, string> = {
-    linear: 'linear',
-    ease: 'ease',
-    'ease-in': 'ease-in',
-    'ease-out': 'ease-out',
-    'ease-in-out': 'ease-in-out',
-    bezier: 'cubic-bezier(0.25, 0.1, 0.25, 1.0)'
-  };
 
   const selectedProperties = keyframes[activePercent] || {
     rotate: 0, scale: 1, translateX: 0, translateY: 0, skewX: 0, opacity: 1, blur: 0, color: '#3C6B4D'

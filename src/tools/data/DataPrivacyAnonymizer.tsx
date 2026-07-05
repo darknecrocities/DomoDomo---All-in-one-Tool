@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 import { Sliders, Copy, Check, Download, AlertCircle, Play, EyeOff } from 'lucide-react';
 
+// Hardcoded mock dictionaries for fake replacement mapping locally
+const mockNames = ['Alice Carter', 'Bob Sterling', 'Charlie Green', 'David Miller', 'Emma Vance', 'Frank Reynolds'];
+const mockDomains = ['mockmail.net', 'anonprivacy.org', 'testbox.com', 'securepost.io'];
+
 export const DataPrivacyAnonymizerTool = () => {
   const [inputText, setInputText] = useState(`[
   {"id": 1, "name": "Arron Kian Parejas", "email": "arron@domodomo.site", "phone": "0917-123-4567", "city": "Manila"},
@@ -14,10 +18,6 @@ export const DataPrivacyAnonymizerTool = () => {
   // Field rules maps: field_name -> anonymization_type
   const [fieldRules, setFieldRules] = useState<Record<string, 'keep' | 'mask' | 'hash' | 'fake_name' | 'fake_email' | 'fake_phone'>>({});
   const [copied, setCopied] = useState<boolean>(false);
-
-  // Hardcoded mock dictionaries for fake replacement mapping locally
-  const mockNames = ['Alice Carter', 'Bob Sterling', 'Charlie Green', 'David Miller', 'Emma Vance', 'Frank Reynolds'];
-  const mockDomains = ['mockmail.net', 'anonprivacy.org', 'testbox.com', 'securepost.io'];
 
 
   const handleParse = () => {

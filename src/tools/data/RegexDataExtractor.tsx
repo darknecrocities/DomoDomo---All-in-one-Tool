@@ -26,7 +26,7 @@ export const RegexDataExtractorTool = () => {
       try {
         regex = new RegExp(regexPattern, regexFlags);
       } catch (err: any) {
-        throw new Error(`Invalid regex syntax: ${err.message}`);
+        throw new Error(`Invalid regex syntax: ${err.message}`, { cause: err });
       }
 
       const matches = [];
