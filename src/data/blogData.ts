@@ -13,7 +13,96 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'launching-data-visualizer-studio-offline-charts-grid-canvas-privacy',
+    title: 'Introducing Data & Visualizer Studio: 10 Local-First Analytics and Layout Tools',
+    excerpt: 'DomoDomo launches Data & Visualizer Studio! Build custom responsive charts, design CSS grids visually, sketch ER database schemas, edit SVG paths, and anonymize PII records 100% locally.',
+    date: 'July 5, 2026',
+    readTime: '5 min read',
+    category: 'Product Updates',
+    author: 'AppBuilders PH',
+    keywords: 'data visualizer, chart builder, csv pivot table, css keyframe animator, er schema designer, svg path editor, css grid builder, data masker, privacy anonymizer, domodomo',
+    content: `
+# Introducing Data & Visualizer Studio: 10 Local-First Analytics and Layout Tools
+
+We are thrilled to announce the launch of the **Data & Visualizer Studio** category in **DomoDomo**! This brand new suite of 10 highly interactive, offline-first utilities is designed to bridge the gap between local data analysis, visual markup editing, and developer layouts directly inside your browser sandbox.
+
+As always, all computations are executed 100% client-side. Your datasets, schema designs, logs, and private keys never leave your machine.
+
+---
+
+## 📊 1. JSON Chart Builder
+DomoDomo now lets you copy-paste raw JSON data streams and translate them into stunning interactive charts (Bar, Line, Pie, and Radar) without loading any bulky charting library dependencies:
+- Choose custom coordinate palettes (Emerald, Blue Lagoon, Sunset, Purple).
+- Toggle visual grid line backgrounds.
+- Select spline curves smoothing.
+- Download the generated charts directly as SVG vector files or copy code.
+
+## 🗂️ 2. CSV Pivot Table Analyzer
+Need to run pivot aggregates on a CSV document but don't want to upload files to Google Sheets or Excel? 
+- Load or paste raw CSV lines.
+- Map custom Row Groupings and Column Groupings.
+- Choose aggregates (SUM, COUNT, AVERAGE, MIN, MAX).
+- Compute grand totals and export the matrix back as CSV.
+
+## 🎬 3. Visual CSS Keyframe Animator
+Build animations visually and preview them in real-time:
+- Timeline ticks (0% to 100%) to add keyframe steps.
+- Visual parameters range controls (translate, rotate, scale, skew, opacity, and blur).
+- Interactive curves editor for easings presets.
+- Real-time CSS code generator.
+
+## 📝 4. Log Pattern & Analysis Dashboard
+Import logs (Nginx Combined, Apache, or custom logger formats) and display dashboard reports:
+- Error rates, warning counts, and unique client IP addresses.
+- Search query and level filters.
+
+## 🕸️ 5. Interactive ER Schema Designer
+Visual canvas database schema modeler:
+- Draw entity tables, add fields (Integer, Varchar, Timestamp, Boolean).
+- Visually drag foreign key relationship connectors.
+- Drag-and-drop tables to layout cards.
+- Export clean SQL script setups for PostgreSQL, SQLite, and MySQL.
+
+## 🖋️ 6. SVG Vector Path Inspector
+Vector coordinate editor:
+- Paste d="..." paths and visualize them in a grid map.
+- Click to add points, drag vertices, adjust quadratic bezier curves.
+- Copy optimized vector strings instantly.
+
+## 🔍 7. Regex Data Extractor & Table Builder
+Isolate fields from large datasets:
+- Input regular expressions with capture groups.
+- Tabulate matches with group column offsets.
+- Export as CSV tables.
+
+## 🗺️ 8. Interactive Flowchart & Mind Map Maker
+Outline hierarchical plans in simple indented Markdown:
+- Compiles lists into visual SVG tree diagrams.
+- Pan-and-zoom controls and image downloads.
+
+## 📐 9. CSS Grid Template Builder
+Configure grid properties:
+- Slider dimensions controls.
+- Click and drag cells to merge and assign named grid areas.
+- Copy container and children CSS layouts.
+
+## 🔒 10. Data Masker & Privacy Anonymizer
+Strip PII identifiers from database files:
+- Map privacy rules per JSON key.
+- Mask emails/phones, calculate hash values, or replace with mock values (random names, domains, numbers).
+- Export fully anonymized datasets.
+
+---
+
+## 🚀 How to Get Started
+To access these tools, refresh your DomoDomo local workspace, navigate to the main dashboard, and click the new **Data & Visualizer** tab in the filter list.
+
+All tools have **0 external API dependencies** and are ready to run completely offline. Let us know what you build, and happy coding! 🇵🇭
+`
+  },
+  {
     slug: 'whats-new-autopilot-mcp-agent-skills-creator',
+
     title: 'What’s New: Level 3 OS AutoPilot, Orchestrator Fallbacks, and 16 New Agent Skills',
     excerpt: 'DomoDomo gets a massive upgrade! Explore Level 3 OS AutoPilot, Multi-Agent Orchestrator auto-saves, and 16 new modular skill templates for visual AI agent customization.',
     date: 'July 4, 2026',

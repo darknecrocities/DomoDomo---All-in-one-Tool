@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data';
 
 export interface ToolDoc {
   id: string;
@@ -1249,5 +1249,102 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         technicalSpecs: 'Outputs YAML frontmatter-delimited Markdown skillsets.'
       }
     ]
+  },
+  data: {
+    title: 'Data & Visualizer Studio',
+    desc: 'Local-first client-side data parsing, layout formatting, SVG vector generation, and chart visualizations.',
+    list: [
+      {
+        id: 'json-chart-builder',
+        name: 'JSON Chart Builder',
+        engine: 'HTML5 SVG Vector Graphics',
+        details: 'Evaluates and parses local JSON data structures, mapping variables to geometric SVG shapes (bar rectangles, line path splines, radial wedges, and radar polygons) directly on the document object model.',
+        functionality: 'Generates responsive bar, line, pie, and radar charts. Customizes colors, grid lines, legends, and smooth spline lines. Downloads graphics as clean SVG.',
+        howItWorks: '1. User inputs a JSON string. 2. The parser maps properties to chart dimensions. 3. Formulates SVG paths and elements dynamically. 4. Previews the responsive diagram and allows file downloads.',
+        technicalSpecs: 'Runs 100% locally with no third-party charting dependencies.'
+      },
+      {
+        id: 'csv-pivot-analyzer',
+        name: 'CSV Pivot Table Analyzer',
+        engine: 'Local Tabular Pivots Aggregator',
+        details: 'Parses CSV data records, maps unique dimensions, aggregates selected values locally, and renders summary matrices.',
+        functionality: 'Drag and drop columns into rows and columns values grouping. Performs SUM, AVERAGE, COUNT, MIN, MAX aggregates.',
+        howItWorks: '1. Parses raw CSV values. 2. Groups rows by selected keys. 3. Computes aggregations. 4. Renders responsive matrices with grand totals and exports CSV.',
+        technicalSpecs: 'Handles large datasets entirely in the browser memory with no database server requirements.'
+      },
+      {
+        id: 'css-keyframe-animator',
+        name: 'Visual CSS Keyframe Animator',
+        engine: 'CSS Keyframe Animation Timeline Generator',
+        details: 'Creates CSS @keyframes styles based on visually configured animation steps.',
+        functionality: 'Builds timeline animations (0% to 100%). Modifies transforms (rotate, scale, translate, skew), opacity, blur filters, and background colors. Exports full CSS.',
+        howItWorks: '1. User selects/adds a keyframe percentage tick. 2. Modifies transform parameters via sliders. 3. Real-time preview container updates. 4. CSS rules are compiled.',
+        technicalSpecs: 'Generates standard W3C compliant CSS transitions and keyframes.'
+      },
+      {
+        id: 'log-pattern-analyzer',
+        name: 'Log Pattern & Analysis Dashboard',
+        engine: 'Regex Log Parser',
+        details: 'Runs regular expression filters on lines of console logs, grouping status metrics and patterns.',
+        functionality: 'Parses Nginx, Apache, or generic application logs. Calculates total logs count, warning frequencies, error rates, and isolates client IP coordinates.',
+        howItWorks: '1. Paste raw text log logs. 2. Select matching format preset. 3. Process logs. 4. View dashboard analytics and filter logs.',
+        technicalSpecs: 'Precompiled regex patterns ensure rapid parsing on thousands of log lines locally.'
+      },
+      {
+        id: 'er-schema-designer',
+        name: 'Interactive ER Schema Designer',
+        engine: 'Canvas Entity Relation Modeler',
+        details: 'SVG-rendered canvas table nodes with coordinates mapping and relationship anchor links.',
+        functionality: 'Draw tables visually, configure columns types (integer, varchar, timestamp), set primary and foreign keys, and generate DDL queries.',
+        howItWorks: '1. User adds tables and fields. 2. Positions cards on the screen. 3. Selects SQL dialect. 4. Compiles database setup scripts.',
+        technicalSpecs: 'Dialects supported: PostgreSQL, SQLite, and MySQL.'
+      },
+      {
+        id: 'svg-path-inspector',
+        name: 'SVG Vector Path Inspector',
+        engine: 'Interactive Vector Nodes Modeler',
+        details: 'Dynamic control vertices coordinate calculator generating SVG path strings.',
+        functionality: 'Visual grid canvas to inspect vector anchors. Click to add nodes, drag coordinates to modify paths, adjust quadratic control anchors, and copy code.',
+        howItWorks: '1. Visualizes anchor coordinates. 2. Computes line/curve segments. 3. Generates and optimizes XML path syntax.',
+        technicalSpecs: 'Direct coordinate manipulation generating clean XML vector paths.'
+      },
+      {
+        id: 'regex-data-extractor',
+        name: 'Regex Data Extractor & Table Builder',
+        engine: 'Regex Capturing Groups Tabulator',
+        details: 'Regex matcher identifying capturing groups patterns to generate exportable lists.',
+        functionality: 'Extracts custom patterns, categorizes matches into capture columns, and exports files.',
+        howItWorks: '1. Paste text and write regex. 2. Match loop executes. 3. Grid displays groups matches. 4. Download output CSV.',
+        technicalSpecs: 'Safe compile safeguards prevent browser lockups from backtracking regex.'
+      },
+      {
+        id: 'flowchart-mindmap-maker',
+        name: 'Interactive Flowchart & Mind Map Maker',
+        engine: 'Markdown Bullet Indentation Tree Layout Engine',
+        details: 'Calculates hierarchical tree structures from indention spaces, mapping curved bezier wires and nodes.',
+        functionality: 'Converts bullet lists into tree graphs. Features zoom/pan controls and SVG graphics export.',
+        howItWorks: '1. Paste indented outlines. 2. Parser builds parent/child arrays. 3. Organizes coordinates. 4. Generates visual SVG mindmaps.',
+        technicalSpecs: 'Client-side local graphics rendering with zero cloud rendering packages.'
+      },
+      {
+        id: 'css-grid-builder',
+        name: 'CSS Grid Template Builder',
+        engine: 'Visual Grid Designer',
+        details: 'Visual parameters editor converting grid grid arrays into CSS layouts.',
+        functionality: 'Configure rows/columns counts, set track sizes (px, %, fr), drag-select cells to assign named areas, and copy CSS classes.',
+        howItWorks: '1. Adjust dimensions sliders. 2. Click-drag to merge boxes. 3. Name custom areas. 4. Copy CSS declarations.',
+        technicalSpecs: 'Complies with CSS Grid Layout Module specifications.'
+      },
+      {
+        id: 'data-privacy-anonymizer',
+        name: 'Data Masker & Privacy Anonymizer',
+        engine: 'Local PII Anonymizer',
+        details: 'Client-side string replacement applying regex masking, hash integers calculations, and mock dictionary mapping.',
+        functionality: 'Sanitizes JSON/CSV database records. Masks emails/phones, hashes keys, or maps to fake names and locations.',
+        howItWorks: '1. Paste records. 2. Assign rule per field key. 3. Process records. 4. Download clean JSON.',
+        technicalSpecs: '100% offline, ensuring no sensitive data is leaked or sent online.'
+      }
+    ]
   }
 };
+
