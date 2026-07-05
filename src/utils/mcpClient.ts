@@ -18,10 +18,36 @@ class DomoMCPClient {
   private nextRequestId = 1;
   private tools: MCPTool[] = [];
   private onStatusChangeListeners = new Set<(online: boolean) => void>();
+  private logListeners = new Set<(msg: string) => void>();
 
   constructor() {
     // Proactively connect to the server
     this.connect();
+  }
+
+  public configure(url: string) {
+    let cleaned = url.trim();
+    if (cleaned.endsWith('/')) {
+      cleaned = cleaned.slice(0, -1);
+    }
+    if (cleaned.endsWith('/sse')) {
+      this.baseUri = cleaned.slice(0, -4);
+    } else {
+      this.baseUri = cleaned;
+    }
+  }
+
+  public addLogListener(listener: (msg: string) => void) {
+    this.logListeners.add(listener);
+  }
+
+  public removeLogListener(listener: (msg: string) => void) {
+    this.logListeners.delete(listener);
+  }
+
+  private log(msg: string) {
+    console.log(`[MCP Client] ${msg}`);
+    this.logListeners.forEach(listener => listener(msg));
   }
 
   public addStatusListener(listener: (online: boolean) => void) {
@@ -50,7 +76,7 @@ class DomoMCPClient {
 
     try {
       this.disconnect();
-      console.log('🔌 Connecting to local MCP server at http://localhost:3001/sse...');
+      this.log(`🔌 Connecting to local MCP server at ${this.baseUri}/sse...`);
       
       const sseUri = `${this.baseUri}/sse`;
       this.eventSource = new EventSource(sseUri);
@@ -69,13 +95,14 @@ class DomoMCPClient {
           this.postUrl = endpointPath.startsWith('http') 
             ? endpointPath 
             : `${this.baseUri}${endpointPath}`;
-          console.log('✅ Captured MCP message POST URL:', this.postUrl);
+          this.log(`✅ Captured MCP message POST URL: ${this.postUrl}`);
         });
 
         // Listen for messages from the SSE stream
         this.eventSource.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
+            this.log(`📥 Received RPC: ${JSON.stringify(data)}`);
             
             // Dispatch standard JSON-RPC responses
             if (data.id !== undefined && this.pendingRequests.has(data.id)) {
@@ -88,13 +115,13 @@ class DomoMCPClient {
                 reqResolve(data.result);
               }
             }
-          } catch (err) {
-            console.error('Error parsing SSE message:', err);
+          } catch (err: any) {
+            this.log(`⚠️ Error parsing SSE message: ${err.message}`);
           }
         };
 
         this.eventSource.onopen = async () => {
-          console.log('✅ SSE Stream connection opened. Initiating handshake...');
+          this.log('✅ SSE Stream connection opened. Initiating handshake...');
           
           // Wait a brief moment to ensure postUrl is received
           let retryCount = 0;
@@ -104,7 +131,7 @@ class DomoMCPClient {
           }
 
           if (!this.postUrl) {
-            console.error('❌ Failed to capture POST endpoint from SSE connection.');
+            this.log('❌ Failed to capture POST endpoint from SSE connection.');
             this.disconnect();
             if (!isResolved) {
               isResolved = true;
@@ -115,22 +142,22 @@ class DomoMCPClient {
 
           try {
             // 1. Send initialize request
-            const initResult = await this.sendRequest('initialize', {
+            await this.sendRequest('initialize', {
               protocolVersion: '2024-11-05',
               capabilities: {},
               clientInfo: { name: 'domodomo-client', version: '1.0.0' }
             });
 
-            console.log('🤝 Handshake step 1: initialize success', initResult);
+            this.log(`🤝 Handshake step 1: initialize success`);
 
             // 2. Send initialized notification
             await this.sendNotification('notifications/initialized');
-            console.log('🤝 Handshake step 2: initialized notification sent');
+            this.log('🤝 Handshake step 2: initialized notification sent');
 
             // 3. Query list of tools
             const toolsResult = await this.sendRequest('tools/list', {});
             this.tools = toolsResult.tools || [];
-            console.log(`🛠️ Connected to Domo MCP. Loaded ${this.tools.length} tools:`, this.tools);
+            this.log(`🛠️ Connected to Domo MCP. Loaded ${this.tools.length} tools.`);
 
             this.isConnected = true;
             this.notifyListeners();
@@ -138,8 +165,8 @@ class DomoMCPClient {
               isResolved = true;
               resolve(true);
             }
-          } catch (err) {
-            console.error('❌ Handshake failed:', err);
+          } catch (err: any) {
+            this.log(`❌ Handshake failed: ${err.message}`);
             this.disconnect();
             if (!isResolved) {
               isResolved = true;
@@ -148,8 +175,8 @@ class DomoMCPClient {
           }
         };
 
-        this.eventSource.onerror = (err) => {
-          console.warn('⚠️ MCP EventSource encountered an error:', err);
+        this.eventSource.onerror = () => {
+          this.log('⚠️ MCP EventSource encountered an error.');
           this.disconnect();
           if (!isResolved) {
             isResolved = true;
@@ -157,8 +184,8 @@ class DomoMCPClient {
           }
         };
       });
-    } catch (e) {
-      console.warn('❌ Failed to connect to MCP server:', e);
+    } catch (e: any) {
+      this.log(`❌ Failed to connect to MCP server: ${e.message}`);
       this.isConnected = false;
       this.notifyListeners();
       return false;
@@ -171,7 +198,10 @@ class DomoMCPClient {
       this.eventSource = null;
     }
     this.postUrl = null;
-    this.isConnected = false;
+    if (this.isConnected) {
+      this.isConnected = false;
+      this.log('🔌 Disconnected from MCP server.');
+    }
     this.tools = [];
     this.pendingRequests.forEach(({ reject }) => reject(new Error('MCP Disconnected')));
     this.pendingRequests.clear();
@@ -183,7 +213,7 @@ class DomoMCPClient {
       throw new Error('MCP Client is offline. Cannot execute tool.');
     }
     
-    console.log(`📦 Calling MCP Tool "${name}" with args:`, args);
+    this.log(`📦 Calling MCP Tool "${name}"...`);
     const response = await this.sendRequest('tools/call', {
       name,
       arguments: args
@@ -208,6 +238,8 @@ class DomoMCPClient {
       id
     };
 
+    this.log(`📤 Sending RPC request: ${method} (id: ${id})`);
+
     return new Promise((resolve, reject) => {
       this.pendingRequests.set(id, { resolve, reject });
 
@@ -217,6 +249,7 @@ class DomoMCPClient {
         body: JSON.stringify(payload)
       }).catch((err) => {
         this.pendingRequests.delete(id);
+        this.log(`❌ Network error sending RPC request (id: ${id}): ${err.message}`);
         reject(err);
       });
     });
@@ -231,12 +264,14 @@ class DomoMCPClient {
       params
     };
 
+    this.log(`📤 Sending RPC notification: ${method}`);
+
     await fetch(this.postUrl!, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).catch(err => {
-      console.warn('Failed to send MCP notification:', err);
+      this.log(`⚠️ Failed to send MCP notification: ${err.message}`);
     });
   }
 }

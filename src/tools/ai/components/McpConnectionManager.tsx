@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Terminal, Zap } from 'lucide-react';
+import { mcpClient } from '../../../utils/mcpClient';
 
 interface McpTool {
   name: string;
@@ -35,63 +36,8 @@ export const McpConnectionManager: React.FC<McpConnectionManagerProps> = ({
   };
 
   const handleConnectMcp = async () => {
-    addLog(`Connecting to MCP Server at ${mcpServerUrl}...`);
-    try {
-      // Connect to the Server-Sent Events endpoint
-      const eventSource = new EventSource(mcpServerUrl);
-      
-      eventSource.onopen = () => {
-        setMcpConnected(true);
-        addLog('✅ SSE channel established successfully.');
-        fetchTools();
-      };
-
-      eventSource.onerror = (e) => {
-        console.error('SSE Error:', e);
-        setMcpConnected(false);
-        addLog('❌ Connection to SSE endpoint failed. Is the MCP server running?');
-        eventSource.close();
-      };
-
-      // Listen for incoming messages from server
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          addLog(`📥 Received RPC: ${JSON.stringify(data)}`);
-        } catch (err) {
-          addLog(`📥 Raw Event: ${event.data}`);
-        }
-      };
-
-    } catch (err: any) {
-      addLog(`❌ Connection setup exception: ${err.message}`);
-    }
-  };
-
-  const fetchTools = async () => {
-    addLog('📤 Querying tools list (tools/list)...');
-    try {
-      const msgUrl = mcpServerUrl.replace('/sse', '/message');
-      const res = await fetch(msgUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/list',
-          id: 1
-        })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const toolsList = data.result?.tools || [];
-        setMcpTools(toolsList);
-        addLog(`✅ Successfully loaded ${toolsList.length} MCP tools.`);
-      } else {
-        addLog('❌ Failed loading tools list from post messages.');
-      }
-    } catch (err: any) {
-      addLog(`❌ Error fetching tools: ${err.message}`);
-    }
+    mcpClient.configure(mcpServerUrl);
+    await mcpClient.connect();
   };
 
   const handleRunTestCall = async () => {
@@ -102,48 +48,41 @@ export const McpConnectionManager: React.FC<McpConnectionManagerProps> = ({
 
     try {
       const parsedArgs = JSON.parse(testArgsJson);
-      const msgUrl = mcpServerUrl.replace('/sse', '/message');
-      
-      const res = await fetch(msgUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tools/call',
-          params: {
-            name: testToolName,
-            arguments: parsedArgs
-          },
-          id: 2
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.result?.isError) {
-          setTestResult(`Error: ${JSON.stringify(data.result, null, 2)}`);
-          addLog(`❌ Tool call error result received.`);
-        } else {
-          setTestResult(JSON.stringify(data.result || data, null, 2));
-          addLog(`✅ Tool call successfully resolved.`);
-        }
-      } else {
-        setTestResult(`HTTP error: ${res.statusText}`);
-        addLog(`❌ Tool call failed HTTP check.`);
-      }
+      const res = await mcpClient.callTool(testToolName, parsedArgs);
+      setTestResult(JSON.stringify(res.result || res, null, 2));
+      addLog(`✅ Tool call successfully resolved.`);
     } catch (err: any) {
-      setTestResult(`Exception: ${err.message}`);
-      addLog(`❌ Tool call exception: ${err.message}`);
+      setTestResult(`Error: ${err.message}`);
+      addLog(`❌ Tool call error: ${err.message}`);
     } finally {
       setIsRunningTest(false);
     }
   };
 
   useEffect(() => {
-    // Autoconnect check on load if URL is present
-    if (mcpServerUrl) {
-      handleConnectMcp();
+    // Listen to logs from the global mcpClient
+    const handleLog = (msg: string) => {
+      addLog(msg);
+    };
+    mcpClient.addLogListener(handleLog);
+
+    // Listen to connection status from global mcpClient
+    const handleStatusChange = (online: boolean) => {
+      setMcpConnected(online);
+      const tools = mcpClient.getTools();
+      setMcpTools(tools as any[]);
+    };
+    mcpClient.addStatusListener(handleStatusChange);
+
+    // If client is already online, populate current tools list
+    if (mcpClient.isOnline()) {
+      setMcpTools(mcpClient.getTools() as any[]);
     }
+
+    return () => {
+      mcpClient.removeLogListener(handleLog);
+      mcpClient.removeStatusListener(handleStatusChange);
+    };
   }, []);
 
   return (
@@ -174,10 +113,12 @@ export const McpConnectionManager: React.FC<McpConnectionManagerProps> = ({
                 className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] focus:outline-none"
               />
               <button
-                onClick={handleConnectMcp}
-                className="px-3 py-1.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold rounded-xl"
+                onClick={mcpConnected ? () => mcpClient.disconnect() : handleConnectMcp}
+                className={`px-3 py-1.5 text-white text-xs font-bold rounded-xl transition-colors ${
+                  mcpConnected ? 'bg-rose-600 hover:bg-rose-700' : 'bg-[#3C6B4D] hover:bg-[#2E533B]'
+                }`}
               >
-                Connect
+                {mcpConnected ? 'Disconnect' : 'Connect'}
               </button>
             </div>
             <span className="text-[9px] text-[#72706C] leading-normal block pt-1">
