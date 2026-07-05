@@ -873,8 +873,7 @@ OBJECTIVE: Implement interactive canvas containers, drawing vectors, and user in
 2. Structure Logic: Write rendering handlers, drawing functions, and vectors.
 3. Event Wiring: Add click, mouse movement, and touch listeners.
 4. Optimization: Prevent memory leaks by cleaning up loops and events.`
-  }
-  ,
+  },
   {
     name: 'Algorithmic Artist',
     description: 'Generates procedurally built visual assets, patterns, geometries, and mathematical diagrams (SVG/Mermaid).',
