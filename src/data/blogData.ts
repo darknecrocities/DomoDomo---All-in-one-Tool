@@ -13,6 +13,86 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'run-domodomo-in-docker-containerization-guide-innoh-reloza',
+    title: 'How to Run DomoDomo in Docker: A Step-by-Step Containerization Guide',
+    excerpt: 'DomoDomo gets seamless Docker containerization support! Learn how to run the Vite frontend, Python FastAPI backend, and Domo MCP server inside a single container, contributed by Mr. Innoh Reloza.',
+    date: 'July 6, 2026',
+    readTime: '4 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'docker, containerization, docker-compose, local-first ai, model context protocol, fastapi backend, innoh reloza, developer guide, domodomo',
+    content: `
+# How to Run DomoDomo in Docker: A Step-by-Step Containerization Guide
+
+We are excited to share a major quality-of-life update for the DomoDomo developer ecosystem: **full Docker containerization support**! 
+
+Setting up local development environments with multiple runtimes can be tedious. DomoDomo requires a Node.js runtime for the Vite frontend and MCP servers, and a Python environment for the FastAPI backend. 
+
+Thanks to a fantastic open-source contribution from **Mr. Innoh Reloza**, you can now spin up the entire DomoDomo workspace (Vite frontend, FastAPI backend, and MCP server) inside a single, pre-configured Docker container with a single command: \`docker compose up\`.
+
+---
+
+## 🛠️ Docker Container Architecture
+
+The containerization is built on top of a single multi-runtime base using **Node 22 (Bookworm)** and **Python 3**. Here is what is configured under the hood in the \`Dockerfile\`:
+
+1. **Base Environment**: Spins up Node 22 and installs system-level dependencies like Python 3, pip, venv, and Git.
+2. **Node Dependencies**: Performs a clean package installation for both the root Vite application and the standalone Model Context Protocol (MCP) server.
+3. **Python Virtual Environment**: Creates a local \`.venv\` inside the container and installs all required FastAPI libraries (FastAPI, Uvicorn, SQLModel, SQLAlchemy, etc.) from \`backend/requirements.txt\`.
+4. **Vite & Server Exposures**: Exposes port \`5173\` for the frontend client and port \`8000\` for the backend API.
+5. **Host Integration**: Configures \`OLLAMA_HOST\` to route LLM requests seamlessly to a local Ollama instance running on the host machine via \`http://host.docker.internal:11434\`.
+
+---
+
+## 🚀 Step-by-Step Setup Guide
+
+Getting DomoDomo running in Docker takes just a few steps.
+
+### Prerequisites
+Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed on your machine.
+
+### Step 1: Clone and Navigate to the Repository
+If you haven't already, clone the repository and navigate into the project directory:
+\`\`\`bash
+git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git domodomo
+cd domodomo
+\`\`\`
+
+### Step 2: Spin Up the Containers
+Run the Docker Compose command to build and launch the application:
+\`\`\`bash
+docker compose -f docker/docker-compose.yml up --build
+\`\`\`
+This command will build the image, compile the typescript assets for the MCP server, and launch the dev orchestration.
+
+### Step 3: Access DomoDomo
+Once the container starts, open your browser and navigate to:
+- 🌐 **Vite Frontend**: [http://localhost:5173](http://localhost:5173)
+- 🐍 **FastAPI Backend Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- 🛠️ **Domo MCP Endpoint**: [http://localhost:3001/sse](http://localhost:3001/sse) (inside the container network)
+
+---
+
+## 🔒 Accessing Host Services (Ollama & local LLMs)
+
+Since the application is running inside a Docker sandbox, it cannot connect to \`localhost:11434\` directly to talk to your Ollama models. 
+
+To bridge this, the container uses \`extra_hosts\` to map \`host.docker.internal\` to your host machine's gateway. If you are running Ollama on macOS or Windows, make sure to permit cross-origin requests by starting Ollama with the \`OLLAMA_ORIGINS\` environment variable set:
+
+\`\`\`bash
+# On macOS terminal
+OLLAMA_ORIGINS="*" ollama serve
+\`\`\`
+
+This ensures that your sandboxed DomoDomo agents can successfully stream local inference models from your host laptop!
+
+---
+
+## 🤝 Special Thanks
+A massive shout-out to **Mr. Innoh Reloza** for contributing this Docker configuration. This update simplifies onboarding, guarantees environment consistency, and makes it incredibly easy for developers to spin up DomoDomo with zero pre-configuration hurdles! 🇵🇭
+`
+  },
+  {
     slug: 'launching-data-visualizer-studio-offline-charts-grid-canvas-privacy',
     title: 'Introducing Data & Visualizer Studio: 10 Local-First Analytics and Layout Tools',
     excerpt: 'DomoDomo launches Data & Visualizer Studio! Build custom responsive charts, design CSS grids visually, sketch ER database schemas, edit SVG paths, and anonymize PII records 100% locally.',

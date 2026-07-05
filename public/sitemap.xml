@@ -27,6 +27,12 @@
   </url>
   
   <url>
+    <loc>https://domodomo.site/blog/run-domodomo-in-docker-containerization-guide-innoh-reloza</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://domodomo.site/blog/launching-data-visualizer-studio-offline-charts-grid-canvas-privacy</loc>
     <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
