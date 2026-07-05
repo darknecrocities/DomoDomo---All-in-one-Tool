@@ -375,20 +375,20 @@ export const Dashboard = () => {
                 <path d="M10 18L6 28L12 26L15 20" fill="#d4af37" />
                 <path d="M22 18L26 28L20 26L17 20" fill="#aa7c11" />
                 {/* Medal Outer Circle */}
-                <circle cx="16" cy="14" r="10" fill="url(#silverGradient)" stroke="#8a8a8a" strokeWidth="0.5" />
+                <circle cx="16" cy="14" r="10" fill="url(#goldGradient)" stroke="#d4af37" strokeWidth="0.5" />
                 {/* Medal Inner Circle */}
-                <circle cx="16" cy="14" r="7.5" fill="url(#silverInnerGradient)" />
-                {/* Number 2 */}
-                <text x="16" y="17.5" fontFamily="system-ui, -apple-system, sans-serif" fontSize="10.5" fontWeight="800" fill="#ffffff" textAnchor="middle">2</text>
+                <circle cx="16" cy="14" r="7.5" fill="url(#goldInnerGradient)" />
+                {/* Number 1 */}
+                <text x="16" y="17.5" fontFamily="system-ui, -apple-system, sans-serif" fontSize="10.5" fontWeight="800" fill="#ffffff" textAnchor="middle">1</text>
                 <defs>
-                  <linearGradient id="silverGradient" x1="6" y1="4" x2="26" y2="24" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#f0f0f0" />
-                    <stop offset="50%" stopColor="#c5c5c5" />
-                    <stop offset="100%" stopColor="#8e8e8e" />
+                  <linearGradient id="goldGradient" x1="6" y1="4" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#ffe066" />
+                    <stop offset="50%" stopColor="#d4af37" />
+                    <stop offset="100%" stopColor="#aa7c11" />
                   </linearGradient>
-                  <linearGradient id="silverInnerGradient" x1="9" y1="7" x2="23" y2="21" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#a0a0a0" />
+                  <linearGradient id="goldInnerGradient" x1="9" y1="7" x2="23" y2="21" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#fff2a3" />
+                    <stop offset="100%" stopColor="#b8860b" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -396,7 +396,7 @@ export const Dashboard = () => {
             <div className="flex flex-col text-left leading-tight">
               <span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">AppBuilders PH</span>
               <span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
-                #2 on the Leaderboards of All Time
+                #1 on the Leaderboards of All Time
               </span>
             </div>
           </a>
