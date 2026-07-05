@@ -26,6 +26,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Security Audit
+        run: npm audit --audit-level=high
+
       - name: TypeScript Compile Check
         run: npx tsc -b
 
@@ -75,3 +78,16 @@ jobs:
 
       - name: Build MCP Server
         run: npm --prefix mcp-server run build
+
+  docker_validation:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Test Docker Compose Build
+        run: docker compose -f docker/docker-compose.yml build
