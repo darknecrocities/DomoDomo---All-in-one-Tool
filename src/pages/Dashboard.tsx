@@ -28,6 +28,7 @@ const CATEGORIES = [
   { id: 'video', name: 'Video WASM' },
   { id: 'audio', name: 'Audio Web' },
   { id: 'dev', name: 'Developer Tools' },
+  { id: 'data', name: 'Data & Visualizer' },
   { id: 'ai', name: 'Local AI' },
   { id: 'security', name: 'Developer Security' }
 ];
@@ -171,6 +172,18 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', status: 'functional' },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', category: 'ai', description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', status: 'functional', requiresOllama: true },
   { id: 'model-migrator', name: 'Ollama Model Migrator', category: 'ai', description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', status: 'functional', requiresOllama: true },
+
+  // Data & Visualizer (10)
+  { id: 'json-chart-builder', name: 'JSON Chart Builder', category: 'data', description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', status: 'functional', popular: true },
+  { id: 'csv-pivot-analyzer', name: 'CSV Pivot Table Analyzer', category: 'data', description: 'Interactive dashboard to parse CSV spreadsheets and construct flexible tabular pivot reports locally.', icon: 'Hammer', status: 'functional' },
+  { id: 'css-keyframe-animator', name: 'Visual CSS Keyframe Animator', category: 'data', description: 'Timeline-based editor for CSS keyframe animations. Edit transform steps, adjust ease vectors, and copy CSS values.', icon: 'Hammer', status: 'functional' },
+  { id: 'log-pattern-analyzer', name: 'Log Pattern & Analysis Dashboard', category: 'data', description: 'Paste console outputs or web server log logs, map status codes, and analyze traffic metrics.', icon: 'Hammer', status: 'functional' },
+  { id: 'er-schema-designer', name: 'Interactive ER Schema Designer', category: 'data', description: 'Canvas-based entity-relationship database modeler. Draw tables, define foreign keys, and export SQL scripts.', icon: 'Hammer', status: 'functional', popular: true },
+  { id: 'svg-path-inspector', name: 'SVG Vector Path Inspector', category: 'data', description: 'Interactive SVG path editor. Edit path coordinates, adjust curve angles, and download vector markup.', icon: 'Hammer', status: 'functional' },
+  { id: 'regex-data-extractor', name: 'Regex Data Extractor & Table Builder', category: 'data', description: 'Extract match groups from raw text using regular expressions and export structured tabular CSV reports.', icon: 'Hammer', status: 'functional' },
+  { id: 'flowchart-mindmap-maker', name: 'Interactive Flowchart & Mind Map Maker', category: 'data', description: 'Compile structured bullet tree outlines into organized responsive mindmaps and SVG flowcharts.', icon: 'Hammer', status: 'functional' },
+  { id: 'css-grid-builder', name: 'CSS Grid Template Builder', category: 'data', description: 'Visual editor for responsive CSS Grids. Configure rows and columns, select grid cells, and copy grid layouts.', icon: 'Hammer', status: 'functional' },
+  { id: 'data-privacy-anonymizer', name: 'Data Masker & Privacy Anonymizer', category: 'data', description: 'Strip PII identifiers from JSON/CSV files. Apply masking, hashing, or mock replacements to database keys.', icon: 'Hammer', status: 'functional' },
 
   // Security Tools (10 Standard)
   { id: 'hash-checker', name: 'File Hash Checker', category: 'security', description: 'Verify file integrity using SHA-256, SHA-512, MD5 locally.', icon: 'ShieldAlert', status: 'functional' },

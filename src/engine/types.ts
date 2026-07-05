@@ -9,6 +9,7 @@ export type ToolCategory =
   | 'video'
   | 'audio'
   | 'dev'
+  | 'data'
   | 'security'
   | 'ai';
 

@@ -77,12 +77,29 @@ We have expanded the **Domo Skill Creator** with 16 pre-made, production-grade t
 
 ---
 
+## 📊 4. New "Data & Visualizer Studio" Category (10 Interactive Tools)
+
+We are introducing a completely new suite of tools dedicated to local-first data visualizers, analytics pivots, and styling sandboxes:
+- **JSON Chart Builder**: Paste data and generate interactive line, bar, pie, and radar graphs using custom responsive SVGs.
+- **CSV Pivot Table Analyzer**: Drag/map rows and columns dimensions to aggregate values (SUM, AVERAGE, COUNT, MIN, MAX) dynamically.
+- **Visual CSS Keyframe Animator**: Timeline-based editor for animating CSS properties (opacity, blur, scale, rotate) with custom easings.
+- **Log Pattern & Analysis Dashboard**: Count status codes frequencies and traffic logs stats.
+- **Interactive ER Schema Designer**: Visually sketch DB entity tables relationship schemas and export SQL scripts.
+- **SVG Vector Path Inspector**: Plot vector nodes visually, edit curves anchors interactively, and export path strings.
+- **Regex Data Extractor**: Extract pattern capturing groups into exportable tables.
+- **Interactive Flowchart & Mind Map Maker**: Markdown bullet outlines compile into SVG tree diagrams.
+- **CSS Grid Template Builder**: Visual grid editor to configure cells tracks and areas.
+- **Data Masker & Privacy Anonymizer**: Anonymize JSON/CSV files using masking, hashes, or mock records.
+
+---
+
 ## ⚡ What's Next?
 Restart your dev server (\`npm run dev\`) to load the updated MCP server binaries, refresh your dashboard, and try these features out. All code changes compile with **0 warnings**, and all operations execute **100% locally and offline** on your computer.
 
 Let us know your feedback, and let's keep building! 🇵🇭
 `
   },
+
   {
     slug: 'why-is-open-source-important',
     title: 'Why is Open Source Important',

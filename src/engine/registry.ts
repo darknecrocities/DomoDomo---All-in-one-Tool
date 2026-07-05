@@ -175,6 +175,19 @@ import { ModelMigrator } from '../tools/ai/ModelMigrator';
 import { DomoBrainControlCenter } from '../tools/ai/DomoBrainControlCenter';
 import { DomoMindMapperTool } from '../tools/ai/DomoMindMapper';
 
+// Data & Visualizer Tools Imports
+import { JSONChartBuilderTool } from '../tools/data/JSONChartBuilder';
+import { CSVPivotAnalyzerTool } from '../tools/data/CSVPivotAnalyzer';
+import { CSSKeyframeAnimatorTool } from '../tools/data/CSSKeyframeAnimator';
+import { LogPatternAnalyzerTool } from '../tools/data/LogPatternAnalyzer';
+import { ERSchemaDesignerTool } from '../tools/data/ERSchemaDesigner';
+import { SVGPathInspectorTool } from '../tools/data/SVGPathInspector';
+import { RegexDataExtractorTool } from '../tools/data/RegexDataExtractor';
+import { FlowchartMindmapMakerTool } from '../tools/data/FlowchartMindmapMaker';
+import { CSSGridBuilderTool } from '../tools/data/CSSGridBuilder';
+import { DataPrivacyAnonymizerTool } from '../tools/data/DataPrivacyAnonymizer';
+
+
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
   { id: 'background-remover', name: 'Background Remover', category: 'photo', description: 'Remove background from image free online — no sign up required. Use chroma key, manual eraser, or trace lasso to isolate subjects with transparent PNG export.', icon: 'Image', seoTitle: 'Remove Background from Image Free Online | DomoDomo', keywords: 'remove background, background remover, remove bg, transparent background, background eraser online', run: async (i) => i, component: BackgroundRemoverTool },
@@ -338,6 +351,18 @@ export const TOOLS: Tool[] = [
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', category: 'ai', description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', category: 'ai', description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', run: async (i) => i, component: AutoPilotWorkspace },
   { id: 'model-migrator', name: 'Ollama Model Migrator', category: 'ai', description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', run: async (i) => i, component: ModelMigrator },
+
+  // Data & Visualizer Suite Tools (10)
+  { id: 'json-chart-builder', name: 'JSON Chart Builder', category: 'data', description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', run: async (i) => i, component: JSONChartBuilderTool },
+  { id: 'csv-pivot-analyzer', name: 'CSV Pivot Table Analyzer', category: 'data', description: 'Interactive dashboard to parse CSV spreadsheets and construct flexible tabular pivot reports locally.', icon: 'Hammer', run: async (i) => i, component: CSVPivotAnalyzerTool },
+  { id: 'css-keyframe-animator', name: 'Visual CSS Keyframe Animator', category: 'data', description: 'Timeline-based editor for CSS keyframe animations. Edit transform steps, adjust ease vectors, and copy CSS values.', icon: 'Hammer', run: async (i) => i, component: CSSKeyframeAnimatorTool },
+  { id: 'log-pattern-analyzer', name: 'Log Pattern & Analysis Dashboard', category: 'data', description: 'Paste console outputs or web server log logs, map status codes, and analyze traffic metrics.', icon: 'Hammer', run: async (i) => i, component: LogPatternAnalyzerTool },
+  { id: 'er-schema-designer', name: 'Interactive ER Schema Designer', category: 'data', description: 'Canvas-based entity-relationship database modeler. Draw tables, define foreign keys, and export SQL scripts.', icon: 'Hammer', run: async (i) => i, component: ERSchemaDesignerTool },
+  { id: 'svg-path-inspector', name: 'SVG Vector Path Inspector', category: 'data', description: 'Interactive SVG path editor. Edit path coordinates, adjust curve angles, and download vector markup.', icon: 'Hammer', run: async (i) => i, component: SVGPathInspectorTool },
+  { id: 'regex-data-extractor', name: 'Regex Data Extractor & Table Builder', category: 'data', description: 'Extract match groups from raw text using regular expressions and export structured tabular CSV reports.', icon: 'Hammer', run: async (i) => i, component: RegexDataExtractorTool },
+  { id: 'flowchart-mindmap-maker', name: 'Interactive Flowchart & Mind Map Maker', category: 'data', description: 'Compile structured bullet tree outlines into organized responsive mindmaps and SVG flowcharts.', icon: 'Hammer', run: async (i) => i, component: FlowchartMindmapMakerTool },
+  { id: 'css-grid-builder', name: 'CSS Grid Template Builder', category: 'data', description: 'Visual editor for responsive CSS Grids. Configure rows and columns, select grid cells, and copy grid layouts.', icon: 'Hammer', run: async (i) => i, component: CSSGridBuilderTool },
+  { id: 'data-privacy-anonymizer', name: 'Data Masker & Privacy Anonymizer', category: 'data', description: 'Strip PII identifiers from JSON/CSV files. Apply masking, hashing, or mock replacements to database keys.', icon: 'Hammer', run: async (i) => i, component: DataPrivacyAnonymizerTool },
 
   // DomoGuard AI Security Tools
   { id: 'ai-code-auditor', name: 'DomoGuard Code Auditor', category: 'security', description: 'AI finds hardcoded secrets, SQLi, and XSS in developer projects.', icon: 'Code', run: async (i) => i, component: AICodeAuditorTool },
