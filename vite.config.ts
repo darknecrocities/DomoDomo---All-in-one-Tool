@@ -15,6 +15,14 @@ export default defineConfig({
       name: 'local-memory-db-middleware',
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
+          if (req.url?.startsWith('/api/git-')) {
+            if (req.headers['x-domo-local-request'] !== 'true') {
+              res.writeHead(403, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Forbidden: Missing X-Domo-Local-Request header' }));
+              return;
+            }
+          }
+
           if (req.url === '/api/memory' && req.method === 'POST') {
             let body = '';
             req.on('data', chunk => {
