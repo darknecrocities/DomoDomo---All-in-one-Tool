@@ -7,7 +7,7 @@ import { exec, execSync } from 'child_process';
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    host: true
+    host: process.env.HOST || '127.0.0.1'
   },
   plugins: [
     react(),
@@ -104,10 +104,23 @@ self.addEventListener('fetch', (event) => {
       name: 'local-memory-db-middleware',
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
+          if (req.url?.startsWith('/api/git-')) {
+            if (req.headers['x-domo-local-request'] !== 'true') {
+              res.writeHead(403, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Forbidden: Missing X-Domo-Local-Request header' }));
+              return;
+            }
+          }
+
           if (req.url === '/api/memory' && req.method === 'POST') {
             let body = '';
             req.on('data', chunk => {
               body += chunk;
+              if (body.length > 500 * 1024 * 1024) {
+                res.writeHead(413, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Payload Too Large' }));
+                req.connection.destroy();
+              }
             });
             req.on('end', () => {
               try {
