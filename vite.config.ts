@@ -7,7 +7,7 @@ import { exec, execSync } from 'child_process';
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    host: true
+    host: process.env.HOST || '127.0.0.1'
   },
   plugins: [
     react(),

@@ -8,8 +8,9 @@ services:
       dockerfile: docker/Dockerfile
     image: domodomo:latest
     ports:
-      - "5173:5173"
-      - "8000:8000"
+      # Bind exclusively to localhost for security
+      - "127.0.0.1:5173:5173"
+      - "127.0.0.1:8000:8000"
     environment:
       - HOST=0.0.0.0
       - OLLAMA_HOST=http://host.docker.internal:11434
