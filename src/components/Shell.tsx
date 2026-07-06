@@ -129,7 +129,9 @@ export const Shell = () => {
       }
 
       try {
-        const res = await fetch(`/api/git-check-updates?t=${Date.now()}`);
+        const res = await fetch(`/api/git-check-updates?t=${Date.now()}`, {
+          headers: { 'X-Domo-Local-Request': 'true' }
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.updateAvailable) {
@@ -165,7 +167,10 @@ export const Shell = () => {
 
     try {
       log('🔌 Connecting to local update service...');
-      const res = await fetch('/api/git-update', { method: 'POST' });
+      const res = await fetch('/api/git-update', { 
+        method: 'POST',
+        headers: { 'X-Domo-Local-Request': 'true' }
+      });
       if (!res.ok) {
         throw new Error('Local update service returned an error.');
       }
