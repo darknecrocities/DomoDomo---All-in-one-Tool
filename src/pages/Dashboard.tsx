@@ -123,6 +123,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 
   // Dev Tools (20)
   { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'Beautify and validate JSON strings.', icon: 'Hammer', status: 'functional', popular: true },
+  { id: 'json-visualizer', name: 'JSON Tree Visualizer', category: 'dev', description: 'Interactive JSON tree visualizer to explore data.', icon: 'FileJson', status: 'functional' },
   { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads offline.', icon: 'Hammer', status: 'functional', popular: true },
   { id: 'dev-base64', name: 'Base64 Tool', category: 'dev', description: 'Encode or decode base64 strings.', icon: 'Hammer', status: 'functional' },
   { id: 'regex-tester', name: 'Regex Tester', category: 'dev', description: 'Test expression matching patterns.', icon: 'Hammer', status: 'functional' },
