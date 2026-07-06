@@ -158,8 +158,9 @@ Get DomoDomo running locally in less than 2 minutes:
    ```bash
    npm run dev
    ```
-   > [!NOTE]
-   > Running `npm run dev` automatically invokes a Python virtual environment controller. The system will detect your system's Python installation, configure a isolated `.venv/` virtualenv if it is missing, verify and install requirements from `backend/requirements.txt` dynamically if updated, and launch the Vite client, local MCP server, and FastAPI backend concurrently.
+
+> [!NOTE]
+> Running `npm run dev` automatically invokes a Python virtual environment controller. The system will detect your system's Python installation, configure a isolated `.venv/` virtualenv if it is missing, verify and install requirements from `backend/requirements.txt` dynamically if updated, and launch the Vite client, local MCP server, and FastAPI backend concurrently.
 
 4. **Build for production & Prerender**:
    ```bash
@@ -175,7 +176,7 @@ There are two ways to run DomoDomo via Docker:
 If you just want to run the app immediately without saving generated files to your local hard drive, you can pull and run the image directly:
 
 ```bash
-docker run -d --name domodomo -p 5173:5173 -p 8000:8000 ghcr.io/darknecrocities/domodomo:latest
+docker run -d --name domodomo -p 5173:5173 -p 8000:8000 ghcr.io/darknecrocities/domodomo---all-in-one-tool:main
 ```
 *Access the app at `http://localhost:5173`.*
 
