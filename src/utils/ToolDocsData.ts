@@ -757,6 +757,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         technicalSpecs: 'Requires valid JSON formatting. Handles large strings without memory crashes.'
       },
       {
+        id: 'json-visualizer',
+        name: 'JSON Tree Visualizer',
+        engine: 'Custom React Recursive Renderer',
+        details: 'Parses JSON strings and renders them as a highly interactive, collapsible tree for deep exploration of nested data structures.',
+        functionality: 'Displays keys and values hierarchically with syntax highlighting. Allows collapsing and expanding nested objects and arrays.',
+        howItWorks: '1. Parses raw JSON input. 2. Maps JSON types to styled recursive components. 3. Tracks collapse state locally.',
+        technicalSpecs: 'Runs 100% offline. Safe for handling sensitive configuration structures.'
+      },
+      {
         id: 'jwt-decode',
         name: 'JWT Decoder',
         engine: 'Base64URL Decoder',

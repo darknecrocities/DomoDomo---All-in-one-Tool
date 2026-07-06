@@ -112,6 +112,7 @@ import { AudioVisualizerTool } from '../tools/audio/AudioVisualizer';
 
 // Dev Suite Imports
 import { JSONFormatterTool } from '../tools/dev/JSONFormatter';
+import { JSONVisualizerTool } from '../tools/dev/JSONVisualizer';
 import { JWTDecoderTool } from '../tools/dev/JWTDecoder';
 import { Base64Tool as DevBase64Tool } from '../tools/dev/Base64Tool';
 import { RegexTesterTool } from '../tools/dev/RegexTester';
@@ -289,6 +290,7 @@ export const TOOLS: Tool[] = [
 
   // Dev Tools (20)
   { id: 'json-format', name: 'JSON Formatter', category: 'dev', description: 'JSON formatter and validator online free — beautify, minify, and validate JSON data with syntax highlighting, tree view, and error detection.', icon: 'Hammer', seoTitle: 'JSON Formatter & Validator Online Free | DomoDomo', keywords: 'json formatter, json validator, format json, beautify json, json viewer online', run: async (i) => i, component: JSONFormatterTool },
+  { id: 'json-visualizer', name: 'JSON Tree Visualizer', category: 'dev', description: 'An interactive tool to explore, collapse, and seamlessly navigate deeply nested JSON structures right in your browser.', icon: 'FileJson', seoTitle: 'JSON Tree Visualizer Online Free | DomoDomo', keywords: 'json visualizer, json tree, json viewer online, interactive json', run: async (i) => i, component: JSONVisualizerTool },
   { id: 'jwt-decode', name: 'JWT Decoder', category: 'dev', description: 'Decode JWT headers and payloads locally with zero data leaks.', icon: 'Hammer', run: async (i) => i, component: JWTDecoderTool },
   { id: 'dev-base64', name: 'Base64 Tool', category: 'dev', description: 'Encode or decode base64 strings.', icon: 'Hammer', run: async (i) => i, component: DevBase64Tool },
   { id: 'regex-tester', name: 'Regex Tester', category: 'dev', description: 'Regex tester online free — test regular expression patterns with real-time matching, group highlighting, and cheat sheet reference.', icon: 'Hammer', seoTitle: 'Regex Tester Online Free — Test Regular Expressions | DomoDomo', keywords: 'regex tester, regular expression tester, regex checker, test regex online', run: async (i) => i, component: RegexTesterTool },
