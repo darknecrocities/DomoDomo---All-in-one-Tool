@@ -410,7 +410,7 @@ export const Dashboard = () => {
             <div className="flex flex-col text-left leading-tight">
               <span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">AppBuilders PH</span>
               <span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
-                #1 on the Leaderboards of All Time
+                #1 All Time Overall & in AI Categories
               </span>
             </div>
           </a>
