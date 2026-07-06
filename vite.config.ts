@@ -27,6 +27,11 @@ export default defineConfig({
             let body = '';
             req.on('data', chunk => {
               body += chunk;
+              if (body.length > 500 * 1024 * 1024) {
+                res.writeHead(413, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Payload Too Large' }));
+                req.connection.destroy();
+              }
             });
             req.on('end', () => {
               try {
