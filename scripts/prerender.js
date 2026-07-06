@@ -441,7 +441,8 @@ const staticPages = [
   { path: 'about', title: 'About DomoDomo - All-in-One Local Toolbox', desc: 'DomoDomo is a privacy-first local toolbox running 110+ secure developer, media, and document utilities inside a client-side browser tab sandbox.' },
   { path: 'docs', title: 'DomoDomo Documentation - Setup and API Reference', desc: 'Read the developer guides, architectural setup, and documentation for DomoDomo local tools.' },
   { path: 'library-api', title: 'Domo Local AI Library API Reference', desc: 'Integrate and call local AI model APIs (Ollama, WebNN) directly from DomoDomo dashboard.' },
-  { path: 'blog', title: 'DomoDomo SEO Content Hub & Guides | 110+ Local Tools', desc: 'Read our technical guides on file security, image background removal, PDF compression, and local offline AI setups. DomoDomo guides hub.' }
+  { path: 'blog', title: 'DomoDomo SEO Content Hub & Guides | 110+ Local Tools', desc: 'Read our technical guides on file security, image background removal, PDF compression, and local offline AI setups. DomoDomo guides hub.' },
+  { path: 'download', title: 'Download DomoDomo - Offline PWA App', desc: 'Download DomoDomo as a Progressive Web App (PWA) on Windows & macOS. Access 110+ secure developer, text, and media utilities offline.' }
 ];
 
 staticPages.forEach(page => {

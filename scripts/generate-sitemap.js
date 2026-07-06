@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 const BASE_URL = 'https://domodomo.site';
-const staticRoutes = ['', 'about', 'docs', 'library-api'];
+const staticRoutes = ['', 'about', 'docs', 'library-api', 'download'];
 
 // High priority tools to boost SEO ranking
 const HIGH_PRIORITY_TOOLS = [

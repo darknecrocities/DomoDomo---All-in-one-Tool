@@ -1,0 +1,17 @@
+{
+  "name": "DomoDomo - All-in-one Toolbox",
+  "short_name": "DomoDomo",
+  "description": "Free all-in-one browser utilities with local AI integration.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111213",
+  "theme_color": "#18191B",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

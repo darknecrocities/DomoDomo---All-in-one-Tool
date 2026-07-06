@@ -41,6 +41,36 @@ export const Shell = () => {
   const navigate = useNavigate();
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
 
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstallable(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to install prompt: ${outcome}`);
+    setDeferredPrompt(null);
+    setIsInstallable(false);
+  };
+
   const handleClearAIData = async () => {
     if (window.confirm("Are you sure you want to completely purge all local AI data (RAG documents, user habits, and identity preferences) from this device? This cannot be undone.")) {
       await unifiedMemory.clearHabits();
@@ -246,6 +276,15 @@ export const Shell = () => {
               About
             </NavLink>
             <NavLink
+              to="/download"
+              className={({ isActive }) =>
+                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                }`
+              }
+            >
+              Download
+            </NavLink>
+            <NavLink
               to="/library-api"
               className={({ isActive }) =>
                 `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
@@ -286,6 +325,17 @@ export const Shell = () => {
               <span>Feedback Report</span>
             </a>
 
+
+            {isInstallable && (
+              <button
+                onClick={handleInstallClick}
+                className="hidden md:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 transition-all text-[11px] font-bold shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse"
+                title="Download DomoDomo as Progressive Web App"
+              >
+                <Download size={13} className="shrink-0 animate-bounce" style={{ animationDuration: '2s' }} />
+                <span>Download App</span>
+              </button>
+            )}
 
             <a
               href="https://www.facebook.com/profile.php?id=61590872807465"
@@ -376,6 +426,16 @@ export const Shell = () => {
               >
                 About
               </NavLink>
+              <NavLink
+                to="/download"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
+              >
+                Download
+              </NavLink>
               <Link
                 to="/docs"
                 onClick={() => setMobileMenuOpen(false)}
@@ -432,6 +492,19 @@ export const Shell = () => {
                 <MessageSquare size={16} />
                 <span>Feedback Report</span>
               </a>
+              {isInstallable && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleInstallClick();
+                  }}
+                  className="mx-3 my-1 px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-400 text-emerald-400 hover:text-emerald-300 transition-all flex items-center gap-2"
+                >
+                  <Download size={16} />
+                  <span>Download App</span>
+                </button>
+              )}
+
               <button
                 onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
                 className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors flex items-center gap-2 text-left w-full"

@@ -9,6 +9,7 @@ import { OnboardingModal } from './components/OnboardingModal';
 import { LibraryApi } from './pages/LibraryApi';
 import { BlogContainer } from './pages/BlogContainer';
 import { BlogPost } from './pages/BlogPost';
+import { DownloadPage } from './pages/Download';
 import { AutoPilotProvider } from './tools/autopilot/AutoPilotProvider';
 import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilot';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />
             <Route path="about" element={<AboutApplication />} />
+            <Route path="download" element={<DownloadPage />} />
             <Route path="tool/:id" element={<ToolContainer />} />
             <Route path="tool/:id/:variation" element={<ToolContainer />} />
             <Route path="docs" element={<AboutApplication defaultTab="docs" />} />
