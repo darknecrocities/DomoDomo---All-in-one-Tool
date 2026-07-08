@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Play, FileCode, DollarSign } from 'lucide-react';
+import { Plus, Play, FileCode, DollarSign, Sparkles } from 'lucide-react';
 import type { SkillDef } from '../data/premadeSkills';
 
 interface AgentConfig {
@@ -30,6 +30,7 @@ interface MultiIdeDashboardProps {
   setOrchestratorPrompt: (prompt: string) => void;
   isOrchestrating: boolean;
   handleOrchestrate: () => void;
+  handleAutoGenAgents: () => void;
   blackboardLogs: Array<{ agentName: string; text: string; role: 'system' | 'agent'; timestamp: string }>;
   artifacts: Array<{ id: string; name: string; content: string; agentName: string }>;
   activeArtifact: { id: string; name: string; content: string; agentName: string } | null;
@@ -57,6 +58,7 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
   setOrchestratorPrompt,
   isOrchestrating,
   handleOrchestrate,
+  handleAutoGenAgents,
   blackboardLogs,
   artifacts,
   activeArtifact,
@@ -99,39 +101,38 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
                   </div>
                   <button
                     onClick={handleMountDirectory}
-                    className="px-2 py-0.5 bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/35 rounded hover:bg-[#3C6B4D]/25 text-[10px] font-bold transition-all"
+                    className="p-1 px-2 text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition-all font-mono font-bold"
                   >
-                    Mount Folder
+                    Mount Directory
                   </button>
                 </div>
               )}
-              {(dirHandle || mcpConnected) && (
-                <button
-                  onClick={handleMountDirectory}
-                  className="text-[9px] text-[#72706C] hover:text-[#ECEBE9] underline transition-all font-mono"
-                >
-                  Switch Directory
-                </button>
-              )}
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-1 flex gap-1">
+
+          <div className="flex items-center gap-3 self-end lg:self-center shrink-0">
+            <span className="text-xs text-[#72706C] font-semibold">Orchestration mode:</span>
+            <div className="bg-[#111213] p-1.5 rounded-xl border border-[#2A2D30] flex gap-1">
               {(['sequential', 'simultaneous', 'hybrid'] as const).map((mode) => (
                 <button
                   key={mode}
+                  disabled={isOrchestrating}
                   onClick={() => setOrchestrationMode(mode)}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all capitalize ${
-                    orchestrationMode === mode ? 'bg-[#3C6B4D] text-[#ECEBE9]' : 'text-[#72706C] hover:text-[#A3A09B]'
+                  className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase transition-all ${
+                    orchestrationMode === mode
+                      ? 'bg-[#3C6B4D] text-white'
+                      : 'bg-transparent text-[#72706C] hover:text-[#A3A09B]'
                   }`}
                 >
                   {mode}
                 </button>
               ))}
             </div>
+
             <button
               onClick={handleAddAgent}
-              className="py-1.5 px-3 bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/30 hover:bg-[#3C6B4D]/25 text-xs font-bold rounded-xl flex items-center gap-1"
+              disabled={isOrchestrating}
+              className="p-2 px-3 bg-[#111213] border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all"
             >
               <Plus size={12} />
               <span>Add Agent</span>
@@ -140,21 +141,31 @@ export const MultiIdeDashboard: React.FC<MultiIdeDashboardProps> = ({
         </div>
 
         {/* Prompt bar */}
-        <div className="relative mt-4">
+        <div className="mt-4 space-y-2">
           <textarea
             value={orchestratorPrompt}
             onChange={(e) => setOrchestratorPrompt(e.target.value)}
             placeholder="Ask your team to build a responsive site, clean data tables, or analyze python algorithms..."
             className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 font-mono text-xs text-[#ECEBE9] resize-none h-16 leading-relaxed focus:outline-none focus:border-[#3C6B4D]"
           />
-          <button
-            onClick={handleOrchestrate}
-            disabled={isOrchestrating || !orchestratorPrompt.trim()}
-            className="absolute right-3 bottom-3 p-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white rounded-lg transition-colors flex items-center gap-1 font-bold text-xs"
-          >
-            <Play size={12} className={isOrchestrating ? 'animate-spin' : ''} />
-            <span>Orchestrate Team</span>
-          </button>
+          <div className="flex justify-between items-center">
+            <button
+              onClick={handleAutoGenAgents}
+              disabled={isOrchestrating || !orchestratorPrompt.trim()}
+              className="px-3 py-1.5 bg-[#111213] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30] rounded-xl transition-all flex items-center gap-1.5 font-bold text-xs"
+            >
+              <Sparkles size={12} className="text-amber-400" />
+              <span>Optimize Workspace Roles</span>
+            </button>
+            <button
+              onClick={handleOrchestrate}
+              disabled={isOrchestrating || !orchestratorPrompt.trim()}
+              className="px-4 py-1.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-white rounded-xl transition-colors flex items-center gap-1.5 font-bold text-xs"
+            >
+              <Play size={12} className={isOrchestrating ? 'animate-spin' : ''} />
+              <span>Orchestrate Team</span>
+            </button>
+          </div>
         </div>
       </div>
 

@@ -22,6 +22,7 @@ import type { SkillDef } from './data/premadeSkills';
 import { AgentPermissionsManager } from './components/AgentPermissionsManager';
 import { MultiIdeDashboard } from './components/MultiIdeDashboard';
 import { McpConnectionManager } from './components/McpConnectionManager';
+import { DomoResearchWorkspace } from './components/DomoResearchWorkspace';
 
 interface FileNode {
   name: string;
@@ -92,7 +93,7 @@ const getCorrectedFilePath = (path: string) => {
 };
 
 export const AIDomoAgentHub = () => {
-  const [activeTab, setActiveTab] = useState<'ide' | 'orchestrator' | 'permissions' | 'models' | 'setup'>('ide');
+  const [activeTab, setActiveTab] = useState<'ide' | 'orchestrator' | 'permissions' | 'models' | 'setup' | 'research'>('ide');
   const [osTab, setOsTab] = useState<'mac' | 'win' | 'linux'>('mac');
   
   const [ollamaActive, setOllamaActive] = useState(false);
@@ -433,6 +434,102 @@ export const AIDomoAgentHub = () => {
     return `Error: Unknown tool type: ${type}`;
   };
 
+  const handleAutoGenAgents = async () => {
+    if (!orchestratorPrompt.trim()) return;
+    addActivityLog('analyze', `Optimizing workspace roles for: "${orchestratorPrompt.substring(0, 45)}..."`);
+
+    let plannerRole = 'System Architect & Planner';
+    let plannerFile = 'architecture_plan.md';
+    let plannerPrompt = 'You are the Planner. Break down the user prompt into structural specifications and file requirements.';
+
+    let devRole = 'Fullstack Coder';
+    let devFile = 'app.tsx';
+    let devPrompt = 'You are the Developer. Implement complete files based on structural specifications. Use the [WRITE_FILE: path] format. Place pure code inside the block without any markdown code block wrappers (like ```) or extra explanation comments/fillers.';
+
+    let auditorRole = 'Security Reviewer';
+    let auditorFile = 'security_audit.log';
+    let auditorPrompt = 'You are the Auditor. Review code structures and provide security/bug-fixes suggestions.';
+
+    const lowerPrompt = orchestratorPrompt.toLowerCase();
+
+    if (lowerPrompt.includes('python') || lowerPrompt.includes('script') || lowerPrompt.includes('scrap')) {
+      plannerRole = 'Python Architect';
+      plannerFile = 'requirements.txt';
+      devRole = 'Python Script Developer';
+      devFile = 'script.py';
+      devPrompt = 'You are the Python Script Developer. Implement full python scripts based on planning specifications. Use the [WRITE_FILE: filename.py] formatting.';
+      auditorRole = 'Python Code Auditor & Tester';
+      auditorFile = 'test_suite.py';
+      auditorPrompt = 'You are the Python Tester. Write pytest routines and audit syntax rules.';
+    } else if (lowerPrompt.includes('react') || lowerPrompt.includes('tailwind') || lowerPrompt.includes('ui') || lowerPrompt.includes('frontend') || lowerPrompt.includes('html')) {
+      plannerRole = 'UI/UX Designer & Architect';
+      plannerFile = 'wireframe_specs.md';
+      devRole = 'React Frontend Engineer';
+      devFile = 'App.tsx';
+      devPrompt = 'You are the React Frontend Engineer. Write components using Tailwind classes and responsive markup. Use the [WRITE_FILE: src/App.tsx] formats.';
+      auditorRole = 'CSS & Accessibility Auditor';
+      auditorFile = 'design_review.txt';
+      auditorPrompt = 'You are the UI Auditor. Review colors, contrast, styling alignment, and performance issues.';
+    } else if (lowerPrompt.includes('security') || lowerPrompt.includes('audit') || lowerPrompt.includes('exploit') || lowerPrompt.includes('vulnerab')) {
+      plannerRole = 'Threat Modeler';
+      plannerFile = 'threat_model.md';
+      devRole = 'Security Patch Specialist';
+      devFile = 'patch.diff';
+      devPrompt = 'You are the Security Patch Engineer. Produce target patch scripts and code remediations to fix vulnerabilities.';
+      auditorRole = 'DevSecOps Penetration Tester';
+      auditorFile = 'penetration_report.md';
+      auditorPrompt = 'You are the Pen Tester. Audit files for OWASP Top 10 vulnerabilities, insecure sanitization, and leak potentials.';
+    }
+
+    const optimizedAgents = [
+      {
+        id: 'agent-1',
+        name: 'Domo Planner',
+        role: plannerRole,
+        model: selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b'),
+        promptTemplate: plannerPrompt,
+        permissions: ['read_files'],
+        ideContent: '// Ready to plan...',
+        ideFile: plannerFile,
+        isExecuting: false,
+        timingsMs: 0,
+        tokensUsed: 0,
+        estimatedCost: 0
+      },
+      {
+        id: 'agent-2',
+        name: 'Domo Developer',
+        role: devRole,
+        model: selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b'),
+        promptTemplate: devPrompt,
+        permissions: ['read_files', 'write_files'],
+        ideContent: '// Ready to build...',
+        ideFile: devFile,
+        isExecuting: false,
+        timingsMs: 0,
+        tokensUsed: 0,
+        estimatedCost: 0
+      },
+      {
+        id: 'agent-3',
+        name: 'Domo Auditor',
+        role: auditorRole,
+        model: selectedModel || (downloadedModels.length > 0 ? downloadedModels[0] : 'qwen2.5:0.5b'),
+        promptTemplate: auditorPrompt,
+        permissions: ['read_files', 'execute_commands'],
+        ideContent: '// Ready to audit...',
+        ideFile: auditorFile,
+        isExecuting: false,
+        timingsMs: 0,
+        tokensUsed: 0,
+        estimatedCost: 0
+      }
+    ];
+
+    setAgents(optimizedAgents);
+    addActivityLog('success', 'Dynamically optimized 3 workspace agent configurations based on requirements.');
+  };
+
   // Multi-Agent pipeline executor (Multi-IDE layout)
   const handleOrchestrate = async () => {
     if (!orchestratorPrompt.trim() || isOrchestrating) return;
@@ -555,12 +652,26 @@ When you are fully finished with your task (or if no tool calls are needed), out
             }
 
             let toolOutputs = [];
+            let hasError = false;
+            let healingPrompt = '';
+
             for (const call of toolCalls) {
               const toolResult = await executeAgentTool(call.type, call.target, call.content || '', agent.name, agent.permissions);
+              const lowerRes = toolResult.toLowerCase();
+              
+              if (call.type === 'execute_command' && (lowerRes.includes('error') || lowerRes.includes('failed') || lowerRes.includes('not found') || lowerRes.includes('stderr') || lowerRes.includes('exception'))) {
+                hasError = true;
+                healingPrompt = `\n\n[Self-Healing Diagnostic]: A potential runtime, compiler, or test suite error was identified in execution: "${call.target}". Analyze this error, rewrite the relevant source files using the [WRITE_FILE] tool tags, and test the command again to ensure safety.`;
+              }
+              
               toolOutputs.push(`[TOOL RESULT: ${call.type.toUpperCase()} ${call.target || ''}]\n${toolResult}`);
             }
 
-            const combinedToolOutput = toolOutputs.join('\n\n');
+            if (hasError) {
+              addActivityLog('error', `[Self-Healing Loop] Diagnostic exception detected. Directing corrective actions.`);
+            }
+
+            const combinedToolOutput = toolOutputs.join('\n\n') + (hasError ? healingPrompt : '');
             agentHistory.push(`Agent Output:\n${responseText}`);
             agentHistory.push(`System Tool Output:\n${combinedToolOutput}\n\nPlease proceed based on the above tool results.`);
             
@@ -1254,7 +1365,7 @@ file_content
 
       {/* Navigation tabs */}
       <div className="flex border-b border-[#2A2D30] gap-4 overflow-x-auto">
-        {(['ide', 'orchestrator', 'permissions', 'models', 'setup'] as const).map((tab) => (
+        {(['ide', 'orchestrator', 'research', 'permissions', 'models', 'setup'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -1266,6 +1377,7 @@ file_content
           >
             {tab === 'ide' ? 'Agent Workspace' : 
              tab === 'orchestrator' ? 'Multi-Agent Orchestrator' : 
+             tab === 'research' ? 'Research Workspace' :
              tab === 'permissions' ? 'Boundaries & Permissions' : 
              tab === 'models' ? 'MCP & Catalog' : 'Setup Guide'}
           </button>
@@ -1436,6 +1548,7 @@ file_content
           setOrchestratorPrompt={setOrchestratorPrompt}
           isOrchestrating={isOrchestrating}
           handleOrchestrate={handleOrchestrate}
+          handleAutoGenAgents={handleAutoGenAgents}
           blackboardLogs={blackboardLogs}
           artifacts={artifacts}
           activeArtifact={activeArtifact}
@@ -1449,6 +1562,14 @@ file_content
           premadeSkills={PREMADE_SKILLS}
           unifiedMemory={unifiedMemory}
           setUnifiedMemory={setUnifiedMemory}
+        />
+      )}
+
+      {/* Research Workspace Tab (Subcomponent) */}
+      {activeTab === 'research' && (
+        <DomoResearchWorkspace
+          selectedModel={selectedModel}
+          downloadedModels={downloadedModels}
         />
       )}
 
