@@ -372,72 +372,74 @@ export const Dashboard = () => {
         <link rel="canonical" href="https://domodomo.site" />
       </Helmet>
       {/* Hero Welcome banner */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
         {/* Subtle grid backdrop decoration */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
 
-        <div className="lg:col-span-7 flex flex-col gap-4 text-left z-10">
-          <a
-            href="https://www.appbuildersph.com/apps/domodomo"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="gold-shining-border inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/badge w-fit"
-            title="Featured on App Builders PH"
-          >
-            <div className="relative flex items-center justify-center shrink-0 w-8 h-8">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow">
-                {/* Ribbons */}
-                <path d="M10 18L6 28L12 26L15 20" fill="#d4af37" />
-                <path d="M22 18L26 28L20 26L17 20" fill="#aa7c11" />
-                {/* Medal Outer Circle */}
-                <circle cx="16" cy="14" r="10" fill="url(#goldGradient)" stroke="#d4af37" strokeWidth="0.5" />
-                {/* Medal Inner Circle */}
-                <circle cx="16" cy="14" r="7.5" fill="url(#goldInnerGradient)" />
-                {/* Number 1 */}
-                <text x="16" y="17.5" fontFamily="system-ui, -apple-system, sans-serif" fontSize="10.5" fontWeight="800" fill="#ffffff" textAnchor="middle">1</text>
-                <defs>
-                  <linearGradient id="goldGradient" x1="6" y1="4" x2="26" y2="24" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#ffe066" />
-                    <stop offset="50%" stopColor="#d4af37" />
-                    <stop offset="100%" stopColor="#aa7c11" />
-                  </linearGradient>
-                  <linearGradient id="goldInnerGradient" x1="9" y1="7" x2="23" y2="21" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#fff2a3" />
-                    <stop offset="100%" stopColor="#b8860b" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">AppBuilders PH</span>
-              <span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
-                #1 All Time Overall & in AI Categories
-              </span>
-            </div>
-          </a>
+        <div className="lg:col-span-7 flex flex-col gap-4 text-left z-10 justify-center">
+          <div className="flex flex-wrap gap-3 items-center">
+            <a
+              href="https://www.appbuildersph.com/apps/domodomo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gold-shining-border inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/badge w-fit"
+              title="Featured on App Builders PH"
+            >
+              <div className="relative flex items-center justify-center shrink-0 w-8 h-8">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow">
+                  {/* Ribbons */}
+                  <path d="M10 18L6 28L12 26L15 20" fill="#d4af37" />
+                  <path d="M22 18L26 28L20 26L17 20" fill="#aa7c11" />
+                  {/* Medal Outer Circle */}
+                  <circle cx="16" cy="14" r="10" fill="url(#goldGradient)" stroke="#d4af37" strokeWidth="0.5" />
+                  {/* Medal Inner Circle */}
+                  <circle cx="16" cy="14" r="7.5" fill="url(#goldInnerGradient)" />
+                  {/* Number 1 */}
+                  <text x="16" y="17.5" fontFamily="system-ui, -apple-system, sans-serif" fontSize="10.5" fontWeight="800" fill="#ffffff" textAnchor="middle">1</text>
+                  <defs>
+                    <linearGradient id="goldGradient" x1="6" y1="4" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#ffe066" />
+                      <stop offset="50%" stopColor="#d4af37" />
+                      <stop offset="100%" stopColor="#aa7c11" />
+                    </linearGradient>
+                    <linearGradient id="goldInnerGradient" x1="9" y1="7" x2="23" y2="21" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#fff2a3" />
+                      <stop offset="100%" stopColor="#b8860b" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <div className="flex flex-col text-left leading-tight">
+                <span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">AppBuilders PH</span>
+                <span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
+                  #1 All Time Overall & in AI Categories
+                </span>
+              </div>
+            </a>
 
-          {/* BetterGov.ph Featured Badge */}
-          <a
-            href="https://web.facebook.com/share/p/17HgfjZoPk/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
-            title="As Featured on BetterGov.ph"
-          >
-            <div className="relative flex items-center justify-center shrink-0 w-8 h-8">
-              <img
-                src={betterGovLogo}
-                alt="BetterGov.ph Logo"
-                className="w-8 h-8 object-contain rounded-md"
-              />
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">As Featured on</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-[#4E8E5E] transition-colors">
-                BetterGov.ph
-              </span>
-            </div>
-          </a>
+            {/* BetterGov.ph Featured Badge */}
+            <a
+              href="https://web.facebook.com/share/p/17HgfjZoPk/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
+              title="As Featured on BetterGov.ph"
+            >
+              <div className="relative flex items-center justify-center shrink-0 w-8 h-8">
+                <img
+                  src={betterGovLogo}
+                  alt="BetterGov.ph Logo"
+                  className="w-8 h-8 object-contain rounded-md"
+                />
+              </div>
+              <div className="flex flex-col text-left leading-tight">
+                <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">As Featured on</span>
+                <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-[#4E8E5E] transition-colors">
+                  BetterGov.ph
+                </span>
+              </div>
+            </a>
+          </div>
 
           <div className="flex flex-wrap gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
@@ -461,8 +463,8 @@ export const Dashboard = () => {
         </div>
 
         {/* Right side mock status console */}
-        <div className="lg:col-span-5 w-full z-10">
-          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30">
+        <div className="lg:col-span-5 w-full z-10 flex flex-col">
+          <div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col">
             {/* Header console bar */}
             <div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -475,7 +477,7 @@ export const Dashboard = () => {
             </div>
 
             {/* Console terminal instructions */}
-            <div className="p-5 flex flex-col gap-3 text-left font-mono text-[10px] text-[#A3A09B] overflow-y-auto max-h-[195px] min-h-[195px]">
+            <div className="p-5 flex flex-col gap-3 text-left font-mono text-[10px] text-[#A3A09B] overflow-y-auto flex-1">
               <div className="flex flex-col gap-1">
                 <span className="text-[#72706C] font-semibold"># 1. Clone the project and install dependencies</span>
                 <div className="flex justify-between items-center group/line">
