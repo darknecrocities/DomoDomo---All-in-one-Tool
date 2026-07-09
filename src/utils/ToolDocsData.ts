@@ -1034,6 +1034,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Device emulator and media query inspector. Features layout rotate switches, user-agent overrides, and touch pointer overlay.',
         howItWorks: '1. Adjusts canvas scale zoom metrics. 2. Decodes user-agent strings. 3. Calculates file transfer times against speed options.',
         technicalSpecs: 'Computes download times against standard network bandwidth profiles.'
+      },
+      {
+        id: 'code-snapshot',
+        name: 'Code Snapshot',
+        engine: 'html-to-image DOM rasterizer',
+        details: 'Parses code with prismjs syntax highlighting and renders the DOM node as a high-resolution PNG using html-to-image.',
+        functionality: 'Code snippet image generator. Features multiple languages, customizable background themes, padding, and macOS window style.',
+        howItWorks: '1. User pastes code. 2. Prismjs highlights syntax. 3. html-to-image rasterizes the DOM element. 4. PNG file is downloaded.',
+        technicalSpecs: 'Outputs 2x pixel ratio PNGs for retina display compatibility.'
       }
     ]
   },
