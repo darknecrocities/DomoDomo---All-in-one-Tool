@@ -144,6 +144,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'base-converter', name: 'Base Converter', category: 'dev', description: 'Convert integers between decimal, binary, octal, and hex bases.', icon: 'Hammer', status: 'functional' },
   { id: 'glassmorphism-gen', name: 'Glassmorphism Generator', category: 'dev', description: 'Visual backdrop-filter designer generating modern glass assets.', icon: 'Hammer', status: 'functional' },
   { id: 'screen-info', name: 'Screen & Device Info', category: 'dev', description: 'Inspect hardware specs, viewport sizes, and client details.', icon: 'Hammer', status: 'functional' },
+  { id: 'code-snapshot', name: 'Code Snapshot', category: 'dev', description: 'Generate beautiful, high-res screenshots of your code snippets instantly.', icon: 'Camera', status: 'functional', popular: true },
 
   // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat offline with local Domo assistant.', icon: 'Hammer', status: 'functional' },

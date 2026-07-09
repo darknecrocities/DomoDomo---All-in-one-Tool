@@ -138,6 +138,7 @@ import { ScreenInfoTool } from '../tools/dev/ScreenInfo';
 import { JWTGeneratorTool } from '../tools/dev/additional/JWTGenerator';
 import { CaseConverterTool } from '../tools/dev/additional/CaseConverter';
 import { URLParserTool } from '../tools/dev/additional/URLParser';
+import { CodeSnapshotTool } from '../tools/dev/CodeSnapshot';
 import { FlexboxGridPlaygroundTool } from '../tools/dev/additional/FlexboxGridPlayground';
 import { SandboxConsoleTool } from '../tools/dev/additional/SandboxConsole';
 import { DockerBuilderTool } from '../tools/dev/additional/DockerBuilder';
@@ -323,6 +324,7 @@ export const TOOLS: Tool[] = [
   { id: 'http-header-inspector', name: 'HTTP Header Inspector', category: 'dev', description: 'Parse header logs, validate security compliance scores, and generate CORS rules.', icon: 'Hammer', run: async (i) => i, component: HeaderInspectorTool },
   { id: 'ip-subnetter', name: 'CIDR Subnet & Socket Calculator', category: 'dev', description: 'Calculate IP subnet mask addresses, usable host scopes, and lookup network ports.', icon: 'Hammer', run: async (i) => i, component: IPSubnetterTool },
   { id: 'viewport-ua-tester', name: 'Viewport & User-Agent Tester', category: 'dev', description: 'Simulate screen sizes responsive grids, rotate view orientations, and check network speeds.', icon: 'Hammer', run: async (i) => i, component: ViewportTesterTool },
+  { id: 'code-snapshot', name: 'Code Snapshot', category: 'dev', description: 'Generate beautiful, high-res screenshots of your code snippets instantly.', icon: 'Camera', seoTitle: 'Code Snapshot Tool | DomoDomo', keywords: 'code snippet screenshot, code image generator, carbon alternative', run: async (i) => i, component: CodeSnapshotTool },
 
   // AI Tools (20)
   { id: 'ai-chat', name: 'AI Chat', category: 'ai', description: 'Chat locally with Domo assistant under absolute leak-free security.', icon: 'Hammer', run: async (i) => i, component: LocalAIChatTool },
