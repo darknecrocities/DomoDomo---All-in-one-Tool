@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, BookOpen, ChevronRight, Search } from 'lucide-react';
+import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogData';
 import { useState } from 'react';
 import { AdSenseUnit } from '../components/AdSenseUnit';
+import betterGovLogo from '../assets/bettergov.png';
 
 export const BlogContainer = () => {
   const [search, setSearch] = useState('');
@@ -55,6 +56,40 @@ export const BlogContainer = () => {
           <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-2xl">
             Explore the latest feature releases, offline tutorials, and technical guides to get the most out of your private, local-first DomoDomo workspace.
           </p>
+        </div>
+
+        {/* BetterGov.ph Featured Highlight */}
+        <div className="lg:col-span-5 w-full z-10">
+          <a
+            href="https://web.facebook.com/share/p/17HgfjZoPk/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/bgov flex flex-col gap-4 p-5 rounded-2xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-lg hover:shadow-[#3C6B4D]/10 hover:shadow-xl h-full"
+          >
+            {/* Header with logo */}
+            <div className="flex items-center gap-3">
+              <img
+                src={betterGovLogo}
+                alt="BetterGov.ph"
+                className="w-10 h-10 object-contain rounded-lg"
+              />
+              <div className="flex flex-col">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-[#A3A09B]">As Featured On</span>
+                <span className="text-sm font-extrabold text-[#ECEBE9] group-hover/bgov:text-[#4E8E5E] transition-colors">BetterGov.ph</span>
+              </div>
+              <ExternalLink size={13} className="ml-auto text-[#72706C] group-hover/bgov:text-[#4E8E5E] transition-colors" />
+            </div>
+            {/* Quote from post */}
+            <blockquote className="border-l-2 border-[#3C6B4D]/50 pl-4 text-[#A3A09B] text-xs leading-relaxed italic">
+              "Subscriptions are outdated. Your data belongs to you. Domo is a 100% open-source, client-side productivity suite that runs entirely in your browser — no cloud, no accounts, and absolutely no data leaks."
+            </blockquote>
+            {/* Badges */}
+            <div className="flex flex-wrap gap-1.5 mt-auto">
+              <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E]">✔ Zero Subscriptions</span>
+              <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E]">✔ Total Privacy</span>
+              <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E]">✔ Open Source</span>
+            </div>
+          </a>
         </div>
       </div>
 

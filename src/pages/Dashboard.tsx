@@ -4,6 +4,7 @@ import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, 
 import { Helmet } from 'react-helmet-async';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
+import betterGovLogo from '../assets/bettergov.png';
 
 
 interface PlannedTool {
@@ -411,6 +412,29 @@ export const Dashboard = () => {
               <span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">AppBuilders PH</span>
               <span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
                 #1 All Time Overall & in AI Categories
+              </span>
+            </div>
+          </a>
+
+          {/* BetterGov.ph Featured Badge */}
+          <a
+            href="https://web.facebook.com/share/p/17HgfjZoPk/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
+            title="As Featured on BetterGov.ph"
+          >
+            <div className="relative flex items-center justify-center shrink-0 w-8 h-8">
+              <img
+                src={betterGovLogo}
+                alt="BetterGov.ph Logo"
+                className="w-8 h-8 object-contain rounded-md"
+              />
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">As Featured on</span>
+              <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-[#4E8E5E] transition-colors">
+                BetterGov.ph
               </span>
             </div>
           </a>
