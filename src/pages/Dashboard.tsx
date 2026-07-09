@@ -4,7 +4,7 @@ import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, 
 import { Helmet } from 'react-helmet-async';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
-import betterGovLogo from '../assets/bettergov.png';
+import betterGovLogo from '../assets/bettergovph.jpg';
 
 
 interface PlannedTool {

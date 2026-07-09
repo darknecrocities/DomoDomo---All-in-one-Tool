@@ -4,7 +4,7 @@ import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink } from 'l
 import { BLOG_POSTS } from '../data/blogData';
 import { useState } from 'react';
 import { AdSenseUnit } from '../components/AdSenseUnit';
-import betterGovLogo from '../assets/bettergov.png';
+import betterGovLogo from '../assets/bettergovph.jpg';
 
 export const BlogContainer = () => {
   const [search, setSearch] = useState('');
