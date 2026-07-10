@@ -21,7 +21,11 @@ const toolBlocks = registryContent.match(/\{\s*id:\s*['"][\s\S]*?component:\s*\w
 const tools = toolBlocks.map(block => {
   const id = (block.match(/id:\s*['"]([^'"]+)['"]/) || [])[1];
   const name = (block.match(/name:\s*['"]([^'"]+)['"]/) || [])[1];
-  const category = (block.match(/category:\s*['"]([^'"]+)['"]/) || [])[1];
+  
+  const categoriesRaw = (block.match(/categories:\s*\[([\s\S]*?)\]/) || [])[1] || '';
+  const categories = Array.from(categoriesRaw.matchAll(/['"]([^'"]+)['"]/g), m => m[1]);
+  const primaryCategory = categories[0] || 'general';
+
   const description = (block.match(/description:\s*['"]([^'"]+)['"]/) || [])[1];
   const seoTitle = (block.match(/seoTitle:\s*['"]([^'"]+)['"]/) || [])[1];
   const keywords = (block.match(/keywords:\s*['"]([^'"]+)['"]/) || [])[1];
@@ -29,10 +33,10 @@ const tools = toolBlocks.map(block => {
   return {
     id,
     name,
-    category,
+    categories,
     description,
     seoTitle: seoTitle || `${name} - Free Online Tool | DomoDomo`,
-    keywords: keywords || `${name?.toLowerCase()}, free ${name?.toLowerCase()}, online ${name?.toLowerCase()}, ${category} tools, domodomo`
+    keywords: keywords || `${name?.toLowerCase()}, free ${name?.toLowerCase()}, online ${name?.toLowerCase()}, ${primaryCategory} tools, domodomo`
   };
 }).filter(t => t.id);
 
@@ -52,7 +56,8 @@ function escapeHtml(str) {
 // 3. Prerender each tool page
 tools.forEach(tool => {
   const toolUrl = `${BASE_URL}/tool/${tool.id}`;
-  const categoryLabel = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
+  const primaryCategory = tool.categories[0] || 'general';
+  const categoryLabel = primaryCategory.charAt(0).toUpperCase() + primaryCategory.slice(1);
   const seoDesc = tool.description.length > 120 
     ? tool.description 
     : `${tool.description} Use ${tool.name} free online — runs 100% locally in your browser.`;
@@ -72,7 +77,7 @@ tools.forEach(tool => {
         "@type": "ListItem",
         "position": 2,
         "name": categoryLabel,
-        "item": `https://domodomo.site/?category=${tool.category}`
+        "item": `https://domodomo.site/?category=${primaryCategory}`
       },
       {
         "@type": "ListItem",
@@ -134,7 +139,7 @@ tools.forEach(tool => {
     <div id="seo-fallback" style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: sans-serif; color: #ecebe9; text-align: left;">
       <nav style="margin-bottom: 1rem; font-size: 0.85rem; color: #a3a09b;">
         <a href="/" style="color: #4e8e5e; text-decoration: none;">Dashboard</a> &gt; 
-        <a href="/?category=${tool.category}" style="color: #4e8e5e; text-decoration: none;">${categoryLabel}</a> &gt; 
+        <a href="/?category=${primaryCategory}" style="color: #4e8e5e; text-decoration: none;">${categoryLabel}</a> &gt; 
         <span>${tool.name}</span>
       </nav>
       <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #ecebe9;">${escapeHtml(tool.name)}</h1>
@@ -339,7 +344,8 @@ variations.forEach(v => {
   if (!tool) return;
 
   const toolUrl = `${BASE_URL}/tool/${v.toolId}/${v.variationId}`;
-  const categoryLabel = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
+  const primaryCategory = tool.categories[0] || 'general';
+  const categoryLabel = primaryCategory.charAt(0).toUpperCase() + primaryCategory.slice(1);
   const seoDesc = v.description.length > 120 
     ? v.description 
     : `${v.description} Use ${v.name} free online — runs 100% locally.`;
@@ -358,7 +364,7 @@ variations.forEach(v => {
         "@type": "ListItem",
         "position": 2,
         "name": categoryLabel,
-        "item": `https://domodomo.site/?category=${tool.category}`
+        "item": `https://domodomo.site/?category=${primaryCategory}`
       },
       {
         "@type": "ListItem",
@@ -407,7 +413,7 @@ variations.forEach(v => {
     <div id="seo-fallback" style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: sans-serif; color: #ecebe9; text-align: left;">
       <nav style="margin-bottom: 1rem; font-size: 0.85rem; color: #a3a09b;">
         <a href="/" style="color: #4e8e5e; text-decoration: none;">Dashboard</a> &gt; 
-        <a href="/?category=${tool.category}" style="color: #4e8e5e; text-decoration: none;">${categoryLabel}</a> &gt; 
+        <a href="/?category=${primaryCategory}" style="color: #4e8e5e; text-decoration: none;">${categoryLabel}</a> &gt; 
         <span>${v.name}</span>
       </nav>
       <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #ecebe9;">${escapeHtml(v.name)}</h1>

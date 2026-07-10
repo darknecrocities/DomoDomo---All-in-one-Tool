@@ -12,13 +12,14 @@ export const ToolContainer = () => {
   const { id, variation } = useParams<{ id: string; variation?: string }>();
   const navigate = useNavigate();
   const tool = id ? getToolById(id) : undefined;
+  const primaryCategory = tool?.categories[0] || 'general';
 
   useEffect(() => {
     if (tool) {
-      localMemory.logActivity('Opened Tool', tool.category, `${tool.name}${variation ? ' - ' + variation : ''}`);
-      unifiedMemory.recordAction('Opened Tool', tool.category, `${tool.name}${variation ? ' - ' + variation : ''}`);
+      localMemory.logActivity('Opened Tool', primaryCategory, `${tool.name}${variation ? ' - ' + variation : ''}`);
+      unifiedMemory.recordAction('Opened Tool', primaryCategory, `${tool.name}${variation ? ' - ' + variation : ''}`);
     }
-  }, [tool, variation]);
+  }, [tool, variation, primaryCategory]);
 
   if (!tool) {
     return (
@@ -50,8 +51,8 @@ export const ToolContainer = () => {
   const toolUrl = variation 
     ? `https://domodomo.site/tool/${tool.id}/${variation}`
     : `https://domodomo.site/tool/${tool.id}`;
-  const categoryLabel = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
-  const toolKeywords = matchedVariation ? matchedVariation.keywords : (tool.keywords || `${tool.name.toLowerCase()}, free ${tool.name.toLowerCase()}, online ${tool.name.toLowerCase()}, ${tool.category} tools, domodomo`);
+  const categoryLabel = primaryCategory.charAt(0).toUpperCase() + primaryCategory.slice(1);
+  const toolKeywords = matchedVariation ? matchedVariation.keywords : (tool.keywords || `${tool.name.toLowerCase()}, free ${tool.name.toLowerCase()}, online ${tool.name.toLowerCase()}, ${primaryCategory} tools, domodomo`);
 
   const schemaMarkup = {
     "@context": "https://schema.org",
@@ -85,7 +86,7 @@ export const ToolContainer = () => {
         "@type": "ListItem",
         "position": 2,
         "name": categoryLabel,
-        "item": `https://domodomo.site/?category=${tool.category}`
+        "item": `https://domodomo.site/?category=${primaryCategory}`
       },
       {
         "@type": "ListItem",
@@ -134,7 +135,7 @@ export const ToolContainer = () => {
               <span>Dashboard</span>
             </button>
             <span>/</span>
-            <span className="text-[#A3A09B]">{tool.category}</span>
+            <span className="text-[#A3A09B]">{primaryCategory}</span>
           </div>
 
           <div className="flex items-center gap-3 mt-1">

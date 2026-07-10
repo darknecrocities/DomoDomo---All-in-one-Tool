@@ -16,7 +16,7 @@ export type ToolCategory =
 export interface Tool {
   id: string;
   name: string;
-  category: ToolCategory;
+  categories: ToolCategory[];
   description: string;
   icon: string; // Lucide icon name, to resolve dynamically
   keywords?: string; // SEO keywords for meta tags
