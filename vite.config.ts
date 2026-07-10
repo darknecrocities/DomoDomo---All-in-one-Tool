@@ -12,6 +12,11 @@ export default defineConfig({
       usePolling: true,
     }
   },
+  resolve: {
+    alias: {
+      'pdf-lib': 'pdf-lib/dist/pdf-lib.esm.js',
+    }
+  },
   plugins: [
     react(),
     {
