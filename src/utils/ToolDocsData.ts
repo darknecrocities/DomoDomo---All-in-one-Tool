@@ -259,6 +259,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
     desc: 'Local text editors, document template generators, academic citations, and dictionaries.',
     list: [
       {
+        id: 'document-details-editor',
+        name: 'Document Details Editor',
+        engine: 'pdf-lib & JSZip',
+        details: 'Parses PDF dictionaries and OOXML core properties (docProps/core.xml) in memory. Enables bulk editing and removal of personal details (Authors, Title, Subject, Last saved by).',
+        functionality: 'Edit or remove hidden file details (metadata) from PDFs and Word/Excel/PowerPoint documents simultaneously. Includes batch editing and single-click privacy scrubbing.',
+        howItWorks: '1. User uploads files. 2. App detects format and extracts details via pdf-lib or JSZip. 3. User modifies or scrubs details. 4. App reconstructs the file binaries and downloads them.',
+        technicalSpecs: 'Operates completely locally in-browser. Capable of handling both PDF binary structures and Office ZIP archives seamlessly.'
+      },
+      {
         id: 'rich-text',
         name: 'Rich Text Editor',
         engine: 'HTML5 contentEditable API + DOM Compiler',

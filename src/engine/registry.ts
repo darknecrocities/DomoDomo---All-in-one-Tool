@@ -60,6 +60,7 @@ import { TranslatorTool } from '../tools/document/Translator';
 import { GrammarFixerTool } from '../tools/document/GrammarFixer';
 import { CitationGeneratorTool } from '../tools/document/CitationGenerator';
 import { CodeNotesTool } from '../tools/document/CodeNotes';
+import { DocumentDetailsEditorTool } from '../tools/document/DocumentDetailsEditor';
 
 // Converter Suite Imports
 import { JpgPngTool } from '../tools/converter/JpgPng';
@@ -239,6 +240,7 @@ export const TOOLS: Tool[] = [
   { id: 'grammar-fixer', name: 'Grammar Fixer', category: 'document', description: 'Fix syntax and grammatical spelling in browser.', icon: 'FileText', run: async (i) => i, component: GrammarFixerTool },
   { id: 'citation-gen', name: 'Citation Generator', category: 'document', description: 'Generate APA formatted academic bibliographies.', icon: 'FileText', run: async (i) => i, component: CitationGeneratorTool },
   { id: 'code-notes', name: 'Code Notes Editor', category: 'document', description: 'Write down programming logs and code blocks.', icon: 'FileText', run: async (i) => i, component: CodeNotesTool },
+  { id: 'document-details-editor', name: 'Document Details Editor', category: 'document', description: 'Edit or remove hidden file details (metadata) from PDFs and Word/Excel/PowerPoint documents.', icon: 'FileText', run: async (i) => i, component: DocumentDetailsEditorTool },
 
   // Converter Tools (10)
   { id: 'jpg-png', name: 'JPG ↔ PNG Converter', category: 'converter', description: 'Convert graphics between JPG and PNG formats.', icon: 'Hammer', run: async (i) => i, component: JpgPngTool },
