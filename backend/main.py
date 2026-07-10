@@ -448,3 +448,73 @@ async def run_ocr(image_name: str, background_tasks: BackgroundTasks):
 
     background_tasks.add_task(process_ocr, image_name)
     return {"status": "processing", "message": "OCR job added to local background queue"}
+
+
+# 5. Dual-Layer Sync Endpoints for RAG & Identity Profiles
+class ChunkPayload(BaseModel):
+    text: str
+    embedding: List[float]
+    source: str
+    category: Optional[str] = "knowledge"
+
+@app.post("/api/sync/knowledge")
+def sync_knowledge(chunks: List[ChunkPayload], session: Session = Depends(get_session)):
+    """Syncs vector knowledge chunks into the SQLite database."""
+    # Group by source to clean up duplicates
+    sources = list(set(c.source for c in chunks))
+    for src in sources:
+        statement = select(Thought).where(Thought.category == "knowledge", Thought.ai_insight == src)
+        existing = session.exec(statement).all()
+        for item in existing:
+            session.delete(item)
+    
+    for c in chunks:
+        thought = Thought(
+            content=c.text,
+            embedding_json=json.dumps(c.embedding),
+            category=c.category,
+            ai_insight=c.source
+        )
+        session.add(thought)
+    session.commit()
+    return {"status": "success", "count": len(chunks)}
+
+@app.get("/api/sync/knowledge")
+def get_sync_knowledge(session: Session = Depends(get_session)):
+    """Retrieves all vector knowledge chunks stored in SQLite."""
+    statement = select(Thought).where(Thought.category == "knowledge")
+    results = session.exec(statement).all()
+    out = []
+    for t in results:
+        try:
+            emb = json.loads(t.embedding_json) if t.embedding_json else []
+        except Exception:
+            emb = []
+        out.append({
+            "text": t.content,
+            "embedding": emb,
+            "source": t.ai_insight,
+            "category": t.category
+        })
+    return out
+
+@app.post("/api/sync/profile")
+def save_profile_sync(payload: dict):
+    """Backs up user identity and preferences to a workspace profile JSON file."""
+    profile_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "domodomo_profile_sync.json")
+    with open(profile_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
+    return {"status": "success"}
+
+@app.get("/api/sync/profile")
+def get_profile_sync():
+    """Retrieves workspace identity and preferences backup."""
+    profile_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "domodomo_profile_sync.json")
+    if os.path.exists(profile_path):
+        with open(profile_path, "r", encoding="utf-8") as f:
+            try:
+                return json.load(f)
+            except Exception:
+                return {}
+    return {}
+

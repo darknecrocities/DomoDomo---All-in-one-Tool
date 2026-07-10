@@ -165,6 +165,7 @@ export const unifiedMemory = {
       // Automatically compile profile summary
       await this.compileProfileSummary();
       window.dispatchEvent(new Event('domodomo_memory_updated'));
+      this.syncWithBackend();
     } catch (e) {
       console.warn('Failed to record user habit action:', e);
     }
@@ -292,6 +293,7 @@ export const unifiedMemory = {
         req.onerror = () => reject(req.error);
       });
       window.dispatchEvent(new Event('domodomo_memory_updated'));
+      this.syncWithBackend();
     } catch (e) {
       console.error('Failed to save user identity:', e);
     }
@@ -374,6 +376,7 @@ export const unifiedMemory = {
       invalidateChunksCache();
       onProgress?.('Knowledge base updated successfully.', 100);
       window.dispatchEvent(new Event('domodomo_memory_updated'));
+      this.syncWithBackend();
     } catch (e) {
       console.error('Failed to add knowledge to RAG store:', e);
       throw e;
@@ -487,5 +490,116 @@ export const unifiedMemory = {
     } catch {
       return '';
     }
+  },
+
+  async syncWithBackend(): Promise<void> {
+    try {
+      // 1. Sync User Profile & Identity
+      const identity = await this.getUserIdentity();
+      const habitsSummary = await this.getProfileSummary();
+      
+      const localProfilePayload = {
+        identity,
+        habitsSummary,
+        lastUpdated: new Date().toISOString()
+      };
+
+      // Try fetching remote profile sync
+      const remoteRes = await fetch('http://localhost:8000/api/sync/profile');
+      if (remoteRes.ok) {
+        const remoteData = await remoteRes.json();
+        if (remoteData.identity || remoteData.habitsSummary) {
+          if (!identity && remoteData.identity) {
+            await this.saveUserIdentity(remoteData.identity);
+          }
+          if (!habitsSummary && remoteData.habitsSummary) {
+            const db = await openDB();
+            const tx = db.transaction('user_profile', 'readwrite');
+            await new Promise<void>((resolve, reject) => {
+              const req = tx.objectStore('user_profile').put(remoteData.habitsSummary);
+              req.onsuccess = () => resolve();
+              req.onerror = () => reject(req.error);
+            });
+          }
+        }
+        
+        // Push local changes to backend if local has profile
+        if (identity || habitsSummary) {
+          await fetch('http://localhost:8000/api/sync/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(localProfilePayload)
+          });
+        }
+      }
+
+      // 2. Sync Knowledge chunks (RAG)
+      const localChunks = await this.getAllChunks();
+      const backendRes = await fetch('http://localhost:8000/api/sync/knowledge');
+      if (backendRes.ok) {
+        const backendChunks = await backendRes.json();
+        
+        // Find chunks in IndexedDB that are not in the backend and upload them
+        const backendKeys = new Set(backendChunks.map((c: any) => `${c.source}:${c.text.substring(0, 30)}`));
+        const toUpload = [];
+        
+        for (const lc of localChunks) {
+          const key = `${lc.metadata.source}:${lc.text.substring(0, 30)}`;
+          if (!backendKeys.has(key)) {
+            toUpload.push({
+              text: lc.text,
+              embedding: lc.embedding,
+              source: lc.metadata.source,
+              category: lc.metadata.category || 'general'
+            });
+          }
+        }
+        
+        if (toUpload.length > 0) {
+          await fetch('http://localhost:8000/api/sync/knowledge', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(toUpload)
+          });
+        }
+
+        // Find chunks in the backend that are not in IndexedDB and insert them locally
+        const localKeys = new Set(localChunks.map(c => `${c.metadata.source}:${c.text.substring(0, 30)}`));
+        const db = await openDB();
+        
+        for (const bc of backendChunks) {
+          const key = `${bc.source}:${bc.text.substring(0, 30)}`;
+          if (!localKeys.has(key)) {
+            const tx = db.transaction('knowledge_chunks', 'readwrite');
+            const store = tx.objectStore('knowledge_chunks');
+            const newChunk: KnowledgeChunk = {
+              text: bc.text,
+              embedding: bc.embedding,
+              metadata: {
+                source: bc.source,
+                timestamp: new Date().toISOString(),
+                category: bc.category
+              }
+            };
+            await new Promise<void>((resolve, reject) => {
+              const req = store.add(newChunk);
+              req.onsuccess = () => resolve();
+              req.onerror = () => reject(req.error);
+            });
+          }
+        }
+        
+        if (toUpload.length > 0 || backendChunks.length > localChunks.length) {
+          invalidateChunksCache();
+        }
+      }
+    } catch (e) {
+      console.warn('[Sync] Failed to perform background database sync:', e);
+    }
   }
 };
+
+// Proactively run sync when the brain module is loaded
+setTimeout(() => {
+  unifiedMemory.syncWithBackend();
+}, 2000);

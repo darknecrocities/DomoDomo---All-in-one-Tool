@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight, Star, Copy, Check } from 'lucide-react';
+import { Search, Cpu, ShieldAlert, Globe, Code, ChevronDown, Lock, ChevronLeft, ChevronRight, Star, Copy, Check, Sparkles } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { aiService } from '../utils/aiService';
@@ -216,6 +216,89 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [isSemanticSearch, setIsSemanticSearch] = useState(false);
+  const [semanticScores, setSemanticScores] = useState<Record<string, number>>({});
+  const [isSemanticLoading, setIsSemanticLoading] = useState(false);
+  const [semanticMsg, setSemanticMsg] = useState('');
+
+  const indexToolsSemantically = async () => {
+    setIsSemanticLoading(true);
+    setSemanticMsg('Initializing local embedding model...');
+    try {
+      await aiService.initEmbedder();
+      
+      const cached = localStorage.getItem('domodomo_tool_embeddings_cache');
+      let embeddings: Record<string, number[]> = {};
+      if (cached) {
+        try {
+          embeddings = JSON.parse(cached);
+        } catch (e) {}
+      }
+      
+      const missingTools = ALL_PLANNED_TOOLS.filter(t => !embeddings[t.id]);
+      if (missingTools.length > 0) {
+        for (let i = 0; i < missingTools.length; i++) {
+          const t = missingTools[i];
+          setSemanticMsg(`Indexing tools: ${i + 1}/${missingTools.length} (${t.name})`);
+          const textToEmbed = `${t.name}: ${t.description}`;
+          const vector = await aiService.getEmbedding(textToEmbed);
+          embeddings[t.id] = vector;
+          await new Promise(r => setTimeout(r, 10));
+        }
+        localStorage.setItem('domodomo_tool_embeddings_cache', JSON.stringify(embeddings));
+      }
+      
+      setSemanticMsg('Tool indexing completed!');
+      return embeddings;
+    } catch (err: any) {
+      console.error(err);
+      setSemanticMsg('Failed to initialize local embedding model.');
+      return {};
+    } finally {
+      setIsSemanticLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isSemanticSearch || !search.trim()) {
+      setSemanticScores({});
+      return;
+    }
+
+    const runSemanticMatch = async () => {
+      const embeddings = await indexToolsSemantically();
+      if (Object.keys(embeddings).length === 0) return;
+
+      try {
+        const queryVector = await aiService.getEmbedding(search);
+        const scores: Record<string, number> = {};
+        
+        for (const tool of ALL_PLANNED_TOOLS) {
+          const toolVector = embeddings[tool.id];
+          if (toolVector) {
+            let dot = 0;
+            let normA = 0;
+            let normB = 0;
+            for (let i = 0; i < queryVector.length; i++) {
+              dot += queryVector[i] * toolVector[i];
+              normA += queryVector[i] * queryVector[i];
+              normB += toolVector[i] * toolVector[i];
+            }
+            const score = normA === 0 || normB === 0 ? 0 : dot / (Math.sqrt(normA) * Math.sqrt(normB));
+            scores[tool.id] = score;
+          }
+        }
+        
+        setSemanticScores(scores);
+      } catch (e) {
+        console.error('Semantic search matching failed:', e);
+      }
+    };
+
+    const timer = setTimeout(runSemanticMatch, 500);
+    return () => clearTimeout(timer);
+  }, [search, isSemanticSearch]);
+
   const [activeCategory, setActiveCategory] = useState('all');
   const [visibleCount, setVisibleCount] = useState(12);
   const [hasOllama, setHasOllama] = useState(false);
@@ -337,22 +420,41 @@ export const Dashboard = () => {
     }
   };
 
-  const filteredTools = ALL_PLANNED_TOOLS.filter((tool) => {
-    const matchesSearch =
-      tool.name.toLowerCase().includes(search.toLowerCase()) ||
-      tool.description.toLowerCase().includes(search.toLowerCase());
-    if (activeCategory === 'all' && tool.category === 'ai') {
-      return false;
+  const getFilteredTools = () => {
+    const list = ALL_PLANNED_TOOLS.filter((tool) => {
+      if (activeCategory === 'all' && tool.category === 'ai') {
+        return false;
+      }
+      const matchesCategory =
+        activeCategory === 'all' ||
+        (activeCategory === 'popular' && tool.popular) ||
+        tool.category === activeCategory;
+
+      if (!matchesCategory) return false;
+
+      if (isSemanticSearch && search.trim()) {
+        const score = semanticScores[tool.id] || 0;
+        return score > 0.15; // match score threshold
+      }
+
+      const matchesSearch =
+        tool.name.toLowerCase().includes(search.toLowerCase()) ||
+        tool.description.toLowerCase().includes(search.toLowerCase());
+      return matchesSearch;
+    });
+
+    if (isSemanticSearch && search.trim()) {
+      return [...list].sort((a, b) => {
+        const scoreA = semanticScores[a.id] || 0;
+        const scoreB = semanticScores[b.id] || 0;
+        return scoreB - scoreA;
+      });
     }
-    const matchesCategory =
-      activeCategory === 'all' ||
-      (activeCategory === 'popular' && tool.popular) ||
-      tool.category === activeCategory;
 
-    // No longer hiding DomoGuard AI tools here. We want to show them as "Tease" cards if Ollama isn't active.
+    return list;
+  };
 
-    return matchesSearch && matchesCategory;
-  });
+  const filteredTools = getFilteredTools();
 
   return (
     <div className="flex flex-col gap-8">
@@ -600,22 +702,45 @@ export const Dashboard = () => {
         </div>
 
         {/* Search Field with keybind hint */}
-        <div className="relative shrink-0 w-full md:w-80 group">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors" />
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search local tools..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
-            <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">⌘</kbd>
-            <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">K</kbd>
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-1.5 shrink-0 bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1">
+            <button
+              onClick={() => setIsSemanticSearch(!isSemanticSearch)}
+              className={`flex items-center gap-1.5 py-1 px-2.5 rounded-lg text-[9px] font-bold uppercase transition-all ${
+                isSemanticSearch
+                  ? 'bg-[#3C6B4D]/25 border border-[#3C6B4D]/40 text-[#3C6B4D]'
+                  : 'bg-transparent text-[#72706C] hover:text-[#ECEBE9]'
+              }`}
+            >
+              <Sparkles size={10} className={isSemanticLoading ? 'animate-spin text-[#3C6B4D]' : ''} />
+              <span>AI Search</span>
+            </button>
+          </div>
+
+          <div className="relative shrink-0 w-full md:w-80 group">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder={isSemanticSearch ? "Ask AI for any tool functionality..." : "Search local tools..."}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
+              <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">⌘</kbd>
+              <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">K</kbd>
+            </div>
           </div>
         </div>
       </div>
+
+      {isSemanticLoading && (
+        <div className="text-[10px] text-[#A3A09B] font-mono text-left bg-[#18191B] border border-[#2A2D30] px-4 py-2.5 rounded-xl flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-ping" />
+          <span>{semanticMsg}</span>
+        </div>
+      )}
 
       {activeCategory === 'ai' && (!isLocal || !hasOllama) ? (
         <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto border-[#2A2D30] bg-[#18191B]">

@@ -12,7 +12,8 @@ import {
   Save,
   Plus,
   Terminal,
-  FileText
+  FileText,
+  Eye
 } from 'lucide-react';
 import { aiService, PROVIDERS } from '../../utils/aiService';
 
@@ -222,6 +223,43 @@ export const AIDomoAgentHub = () => {
   // Generated Artifacts list: files created or proposed
   const [artifacts, setArtifacts] = useState<{ id: string; name: string; content: string; agentName: string }[]>([]);
   const [activeArtifact, setActiveArtifact] = useState<{ id: string; name: string; content: string; agentName: string } | null>(null);
+
+  // Visual Diff Modal State
+  const [showDiffModal, setShowDiffModal] = useState(false);
+  const [diffOriginal, setDiffOriginal] = useState('');
+  const [diffModified, setDiffModified] = useState('');
+  const [diffFileName, setDiffFileName] = useState('');
+  const [diffArtifact, setDiffArtifact] = useState<{ id: string; name: string; content: string; agentName: string } | null>(null);
+
+  // Collapsible Terminal & Sandbox State
+  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalOutput, setTerminalOutput] = useState('Domo Console ready. Click "Run Build Test" to check workspace compilation.');
+  const [isCompiling, setIsCompiling] = useState(false);
+
+  const handleRunCompileSandbox = async () => {
+    if (!mcpConnected) {
+      setTerminalOutput('Error: MCP server is not connected. Build test requires an active local MCP connection.');
+      setShowTerminal(true);
+      return;
+    }
+    
+    setIsCompiling(true);
+    setTerminalOutput('Running compile sandbox...\n$ npm run build\n');
+    setShowTerminal(true);
+    
+    try {
+      const res = await callMcpTool('execute_command', { command: 'npm run build' });
+      if (res && res.content?.[0]?.text) {
+        setTerminalOutput(prev => prev + '\n' + res.content[0].text);
+      } else {
+        setTerminalOutput(prev => prev + '\n' + 'Build completed with no output.');
+      }
+    } catch (e: any) {
+      setTerminalOutput(prev => prev + '\n' + `Execution Error: ${e.message || e}`);
+    } finally {
+      setIsCompiling(false);
+    }
+  };
 
   // Custom agent creation helpers
   const handleAddAgent = () => {
@@ -855,13 +893,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
     }
   };
 
-  const handleWriteArtifactToWorkspace = async (artifact: { id: string; name: string; content: string; agentName: string } | null, silent = false) => {
-    if (!globalPermissions.write_files) {
-      setErrorMsg('Write permissions are globally locked.');
-      return;
-    }
-    if (!artifact) return;
-
+  const commitWriteToWorkspace = async (artifact: { id: string; name: string; content: string; agentName: string }, silent = false) => {
     // Use MCP write if connected
     if (mcpConnected && mcpTools.some(t => t.name === 'write_file')) {
       try {
@@ -900,6 +932,48 @@ When you are fully finished with your task (or if no tool calls are needed), out
       }
     } catch (e: any) {
       setErrorMsg(`Failed to write artifact: ${e.message || e}`);
+    }
+  };
+
+  const handleWriteArtifactToWorkspace = async (artifact: { id: string; name: string; content: string; agentName: string } | null, silent = false) => {
+    if (!globalPermissions.write_files) {
+      setErrorMsg('Write permissions are globally locked.');
+      return;
+    }
+    if (!artifact) return;
+
+    let existingContent = '';
+    let fileExists = false;
+    try {
+      if (mcpConnected && mcpTools.some(t => t.name === 'read_file')) {
+        const result = await callMcpTool('read_file', { path: artifact.name });
+        if (result && !result.isError && result.content?.[0]?.text) {
+          existingContent = result.content[0].text;
+          fileExists = true;
+        }
+      } else if (dirHandle) {
+        const parts = artifact.name.split('/');
+        let currentDir = dirHandle;
+        for (let i = 0; i < parts.length - 1; i++) {
+          currentDir = await currentDir.getDirectoryHandle(parts[i]);
+        }
+        const fileHandle = await currentDir.getFileHandle(parts[parts.length - 1]);
+        const file = await fileHandle.getFile();
+        existingContent = await file.text();
+        fileExists = true;
+      }
+    } catch (e) {
+      // File not found or failed to read
+    }
+
+    if (fileExists && !silent) {
+      setDiffOriginal(existingContent);
+      setDiffModified(artifact.content);
+      setDiffFileName(artifact.name);
+      setDiffArtifact(artifact);
+      setShowDiffModal(true);
+    } else {
+      await commitWriteToWorkspace(artifact, silent);
     }
   };
 
@@ -1740,6 +1814,159 @@ file_content
                     <p>Add <code>Environment="OLLAMA_ORIGINS=*"</code> under [Service], then reload and restart service.</p>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Collapsible Terminal Actions */}
+      <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2">
+        <button
+          onClick={() => handleRunCompileSandbox()}
+          disabled={isCompiling}
+          className="p-3 bg-[#3C6B4D] hover:bg-[#2E533B] text-white rounded-full shadow-lg flex items-center gap-2 text-xs font-bold transition-all disabled:opacity-50"
+          title="Run Build Test"
+        >
+          <Terminal size={14} className={isCompiling ? 'animate-spin' : ''} />
+          <span className="hidden sm:inline">Run Build Test</span>
+        </button>
+        
+        <button
+          onClick={() => setShowTerminal(!showTerminal)}
+          className="p-3 bg-[#18191B] border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] rounded-full shadow-lg flex items-center gap-2 text-xs font-bold transition-all"
+          title="Toggle Console"
+        >
+          <Eye size={14} />
+          <span className="hidden sm:inline">Console</span>
+        </button>
+      </div>
+
+      {/* Terminal Sandbox Console Drawer */}
+      {showTerminal && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#070809] border-t border-[#2A2D30] h-[35vh] flex flex-col shadow-2xl animate-slideUp">
+          <div className="flex justify-between items-center px-5 py-2.5 bg-[#111213] border-b border-[#2A2D30]">
+            <div className="flex items-center gap-2 text-[10px] font-mono text-[#72706C]">
+              <Terminal size={12} className="text-[#3C6B4D]" />
+              <span className="font-bold text-[#ECEBE9]">Local Build & Compiler Sandbox</span>
+              <span>(npm run build)</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleRunCompileSandbox()}
+                disabled={isCompiling}
+                className="px-2.5 py-1 bg-[#3C6B4D]/20 hover:bg-[#3C6B4D]/35 text-[#3C6B4D] border border-[#3C6B4D]/30 text-[9px] font-bold rounded uppercase disabled:opacity-50"
+              >
+                {isCompiling ? 'Running...' : 'Run Build'}
+              </button>
+              <button
+                onClick={() => setTerminalOutput('Domo Console cleared.')}
+                className="text-[9px] text-[#72706C] hover:text-[#ECEBE9] font-bold font-mono"
+              >
+                CLEAR
+              </button>
+              <button
+                onClick={() => setShowTerminal(false)}
+                className="text-[10px] text-[#72706C] hover:text-[#ECEBE9] font-bold font-mono"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 p-4 overflow-y-auto font-mono text-[10px] text-left text-emerald-400/90 whitespace-pre bg-[#070809] border-none outline-none">
+            {terminalOutput}
+          </div>
+        </div>
+      )}
+
+      {/* Visual Diff Modal */}
+      {showDiffModal && diffArtifact && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-5 border-b border-[#2A2D30] flex justify-between items-center bg-[#111213]">
+              <div className="space-y-1">
+                <span className="text-[9px] uppercase font-bold tracking-wider text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Review Code Diff</span>
+                <h3 className="text-sm font-bold text-[#ECEBE9] font-mono mt-1">{diffFileName}</h3>
+              </div>
+              <button
+                onClick={() => setShowDiffModal(false)}
+                className="text-[#72706C] hover:text-[#ECEBE9] text-xs font-bold font-mono p-1"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="flex-1 p-6 overflow-y-auto font-mono text-[10px] space-y-2 bg-[#0A0B0C]">
+              {(() => {
+                const origLines = diffOriginal.split('\n');
+                const modLines = diffModified.split('\n');
+                const max = Math.max(origLines.length, modLines.length);
+                const rows = [];
+                for (let i = 0; i < max; i++) {
+                  const o = origLines[i];
+                  const m = modLines[i];
+                  if (o === undefined) {
+                    rows.push(
+                      <div key={i} className="flex bg-emerald-950/20 text-emerald-400 border-l-4 border-emerald-500 pl-2 py-0.5">
+                        <span className="w-8 shrink-0 text-[#72706C] text-right select-none pr-2">{i+1}</span>
+                        <span className="w-8 shrink-0 text-emerald-500 text-center select-none pr-2">+</span>
+                        <pre className="whitespace-pre break-all">{m}</pre>
+                      </div>
+                    );
+                  } else if (m === undefined) {
+                    rows.push(
+                      <div key={i} className="flex bg-rose-950/20 text-rose-450 border-l-4 border-rose-500 pl-2 py-0.5">
+                        <span className="w-8 shrink-0 text-[#72706C] text-right select-none pr-2">{i+1}</span>
+                        <span className="w-8 shrink-0 text-rose-500 text-center select-none pr-2">-</span>
+                        <pre className="whitespace-pre break-all line-through opacity-70">{o}</pre>
+                      </div>
+                    );
+                  } else if (o !== m) {
+                    rows.push(
+                      <div key={`del-${i}`} className="flex bg-rose-950/15 text-rose-450/80 border-l-2 border-rose-500/40 pl-2 py-0.5 opacity-60">
+                        <span className="w-8 shrink-0 text-[#72706C] text-right select-none pr-2">{i+1}</span>
+                        <span className="w-8 shrink-0 text-rose-500/60 text-center select-none pr-2">-</span>
+                        <pre className="whitespace-pre break-all">{o}</pre>
+                      </div>
+                    );
+                    rows.push(
+                      <div key={`add-${i}`} className="flex bg-emerald-950/15 text-emerald-400/90 border-l-2 border-emerald-500/40 pl-2 py-0.5">
+                        <span className="w-8 shrink-0 text-[#72706C] text-right select-none pr-2">{i+1}</span>
+                        <span className="w-8 shrink-0 text-emerald-500/60 text-center select-none pr-2">+</span>
+                        <pre className="whitespace-pre break-all">{m}</pre>
+                      </div>
+                    );
+                  } else {
+                    rows.push(
+                      <div key={i} className="flex text-[#A3A09B] opacity-80 pl-2 py-0.5">
+                        <span className="w-8 shrink-0 text-[#72706C] text-right select-none pr-2">{i+1}</span>
+                        <span className="w-8 shrink-0 text-[#72706C] text-center select-none pr-2"> </span>
+                        <pre className="whitespace-pre break-all">{o}</pre>
+                      </div>
+                    );
+                  }
+                }
+                return rows;
+              })()}
+            </div>
+            
+            <div className="p-4 border-t border-[#2A2D30] flex justify-between items-center bg-[#111213]">
+              <span className="text-[10px] text-[#A3A09B]">Review carefully before writing. This operation will modify files on disk.</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowDiffModal(false)}
+                  className="px-4 py-2 bg-[#18191B] border border-[#2A2D30] hover:bg-[#25282B] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-bold rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    await commitWriteToWorkspace(diffArtifact, false);
+                    setShowDiffModal(false);
+                  }}
+                  className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold rounded-xl transition-colors"
+                >
+                  Confirm & Write Changes
+                </button>
               </div>
             </div>
           </div>

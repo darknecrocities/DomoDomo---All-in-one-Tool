@@ -10,6 +10,67 @@ export const AICodeAuditorTool: React.FC = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  interface HeuristicWarning {
+    line: number;
+    pattern: string;
+    severity: 'low' | 'medium' | 'high';
+    message: string;
+  }
+
+  const [heuristicWarnings, setHeuristicWarnings] = useState<HeuristicWarning[]>([]);
+
+  const runHeuristicScan = (codeToScan: string): HeuristicWarning[] => {
+    const lines = codeToScan.split('\n');
+    const warnings: HeuristicWarning[] = [];
+    
+    const secretsRegex = /(api_key|secret|password|passwd|private_key|token)\s*=\s*['"][a-zA-Z0-9_\-\+\/=]{16,}['"]/i;
+    const sqliRegex = /select\s+.*\s+from\s+.*\s+where\s+.*=\s*['"]\s*\+\s*\w+|execute\(\s*['"].*\$.*['"]\)/i;
+    const xssRegex = /innerHTML\s*=\s*|document\.write\(/i;
+    const cmdRegex = /exec\(\s*.*\+.*\)/i;
+    
+    lines.forEach((lineText, index) => {
+      const lineNum = index + 1;
+      
+      if (secretsRegex.test(lineText)) {
+        warnings.push({
+          line: lineNum,
+          pattern: 'Hardcoded Secret',
+          severity: 'high',
+          message: `Line ${lineNum}: Hardcoded credential or API private key assignment.`
+        });
+      }
+      
+      if (sqliRegex.test(lineText)) {
+        warnings.push({
+          line: lineNum,
+          pattern: 'SQL Injection',
+          severity: 'high',
+          message: `Line ${lineNum}: Raw query string concatenation. Use parameterized bindings.`
+        });
+      }
+      
+      if (xssRegex.test(lineText)) {
+        warnings.push({
+          line: lineNum,
+          pattern: 'XSS Injection',
+          severity: 'medium',
+          message: `Line ${lineNum}: Unsafe DOM write using innerHTML/document.write.`
+        });
+      }
+      
+      if (cmdRegex.test(lineText)) {
+        warnings.push({
+          line: lineNum,
+          pattern: 'Command Injection',
+          severity: 'high',
+          message: `Line ${lineNum}: Raw system command execution query concatenation.`
+        });
+      }
+    });
+    
+    return warnings;
+  };
+
   useEffect(() => {
     const fetchModels = async () => {
       const { status, models } = await aiService.checkOllama();
@@ -31,9 +92,19 @@ export const AICodeAuditorTool: React.FC = () => {
     setIsAnalyzing(true);
     setError(null);
     setResult(null);
+    
+    const warnings = runHeuristicScan(code);
+    setHeuristicWarnings(warnings);
+
+    let warningsPromptContext = '';
+    if (warnings.length > 0) {
+      warningsPromptContext = `\nNote: The local scanner found high-probability issues:\n` +
+        warnings.map(w => `- Line ${w.line}: [${w.pattern}] ${w.message}`).join('\n') +
+        `\nFocus first on confirming or dismissing these issues in your report, then identify other bugs.`;
+    }
 
     const systemPrompt = `You are a Senior Application Security Engineer and Code Auditor. 
-Your task is to review the provided source code for security vulnerabilities (e.g., OWASP Top 10 like SQLi, XSS, CSRF, hardcoded secrets, buffer overflows, or insecure crypto).
+Your task is to review the provided source code for security vulnerabilities (e.g., OWASP Top 10 like SQLi, XSS, CSRF, hardcoded secrets, buffer overflows, or insecure crypto).${warningsPromptContext}
 If you find vulnerabilities:
 1. Identify the exact vulnerability and explain why it is dangerous.
 2. Provide a secure code remediation example.
@@ -111,6 +182,27 @@ If the code is secure, explain why and what good practices were used. Keep your 
           )}
         </button>
       </div>
+
+      {heuristicWarnings.length > 0 && (
+        <div className="glass-card p-6 border-rose-500/25 bg-[#18191B] flex flex-col gap-4 text-left animate-fadeIn">
+          <div className="flex items-center gap-2 border-b border-[#2A2D30] pb-2.5">
+            <span className="bg-rose-500/10 text-rose-450 border border-rose-500/25 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Heuristic Findings</span>
+            <h4 className="font-bold text-[#ECEBE9] text-xs uppercase tracking-wider font-mono">Found {heuristicWarnings.length} Warnings</h4>
+          </div>
+          <div className="space-y-2.5 font-mono text-[10px]">
+            {heuristicWarnings.map((w, i) => (
+              <div key={i} className={`flex items-start gap-2 p-2.5 rounded-lg border bg-[#111213] ${w.severity === 'high' ? 'border-rose-500/20 text-rose-450' : 'border-amber-500/20 text-amber-550'}`}>
+                <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-extrabold uppercase text-[8px] border border-current px-1 py-0.25 rounded mr-2">{w.severity}</span>
+                  <span className="font-bold mr-1">[{w.pattern}]</span>
+                  <span>{w.message}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="bg-rose-500/10 border border-rose-500/25 p-4 rounded-xl text-xs text-rose-450 font-semibold flex items-start gap-2">
