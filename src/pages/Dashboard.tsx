@@ -72,6 +72,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'grammar-fixer', name: 'Grammar Fixer', category: 'document', description: 'Fix syntax and grammatical spelling in browser.', icon: 'FileText', status: 'functional' },
   { id: 'citation-gen', name: 'Citation Generator', category: 'document', description: 'Generate APA formatted academic bibliographies.', icon: 'FileText', status: 'functional' },
   { id: 'code-notes', name: 'Code Notes Editor', category: 'document', description: 'Write down programming logs and code blocks.', icon: 'FileText', status: 'functional' },
+  { id: 'document-details-editor', name: 'Document Details Editor', category: 'document', description: 'Edit or remove hidden file details from PDFs and Office docs.', icon: 'FileText', status: 'functional' },
 
   // Converter (10)
   { id: 'jpg-png', name: 'JPG ↔ PNG Converter', category: 'converter', description: 'Convert graphics between JPG and PNG formats.', icon: 'Hammer', status: 'functional' },
