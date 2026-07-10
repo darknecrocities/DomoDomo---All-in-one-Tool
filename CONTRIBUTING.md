@@ -136,6 +136,37 @@ To maintain clean and high-quality code across our client-side tools, please adh
 
 ---
 
+## 🧪 CI/CD & Testing Requirements
+
+To ensure project stability and prevent regression across the toolbox's 110+ client-side utilities, all pull requests (PRs) must meet the following automated verification criteria before they can be merged:
+
+### 1. Compilation & Build Safety
+All code changes must compile with zero syntax or type errors on the frontend and the local Python/Node modules. Run the compilation tests locally before submitting a PR:
+```bash
+# Verify React/Vite/TypeScript compilation
+npm run build
+
+# Verify the Node MCP server build compiles
+npm --prefix mcp-server run build
+```
+
+### 2. Static Analysis & Linting
+We enforce formatting and ESLint rules. Ensure your files are free of formatting and syntax violations:
+```bash
+# Run the linter
+npm run lint
+```
+*   Ensure all React hooks, dependencies, and state bindings comply with eslint specifications.
+*   Remove any unused variables or dead imports from your modifications.
+
+### 3. Backend & DB Migration Safety
+If modifying the local FastAPI server (`backend/main.py`):
+*   Ensure that all endpoint logic handles cross-origin policies (CORS) safely.
+*   Avoid adding any schema changes that break backward compatibility with users' existing SQLite databases.
+*   All API responses should be structured correctly, handling network failures gracefully on the client side.
+
+---
+
 ## 🚀 How to Submit Your Contribution
 
 1. **Fork** the repository on GitHub.
