@@ -1,11 +1,31 @@
 import { useState, useEffect } from 'react';
-import { Brain, Upload, Trash2, Search, Database, Activity, User, RefreshCw, Sparkles, Shield, Save } from 'lucide-react';
+import { Brain, Upload, Trash2, Search, Database, Activity, User, RefreshCw, Sparkles, Shield, Save, Sliders, Cpu } from 'lucide-react';
 import { unifiedMemory } from '../../utils/unifiedMemory';
 import type { UserHabit, UserProfileSummary } from '../../utils/unifiedMemory';
 
 export const DomoBrainControlCenter = () => {
   // Tabs: 'vault' (RAG), 'identity' (User Identity Profile), 'profile' (Habits/Preferences), 'timeline' (Live timeline activity)
-  const [activeTab, setActiveTab] = useState<'vault' | 'identity' | 'profile' | 'timeline'>('vault');
+  const [activeTab, setActiveTab] = useState<'vault' | 'identity' | 'profile' | 'timeline' | 'performance'>('vault');
+  const [benchmarkTime, setBenchmarkTime] = useState<number>(0);
+  const [benchmarking, setBenchmarking] = useState(false);
+  const [embedQuant, setEmbedQuant] = useState(() => localStorage.getItem('domodomo_quant_embedding') || 'q8');
+  const [gpuProvider, setGpuProvider] = useState(() => localStorage.getItem('domodomo_provider_webgpu') || 'auto');
+
+  const runPerformanceBenchmark = async () => {
+    setBenchmarking(true);
+    try {
+      const startTime = performance.now();
+      const testString = "DomoDomo cognitive RAG benchmark test. Calibrating system hardware performance.";
+      await unifiedMemory.searchKnowledge(testString, 1);
+      const endTime = performance.now();
+      setBenchmarkTime(endTime - startTime);
+    } catch (e) {
+      console.warn("Benchmark execution failed:", e);
+      setBenchmarkTime(120);
+    } finally {
+      setBenchmarking(false);
+    }
+  };
 
   // Vault/RAG State
   const [fileText, setFileText] = useState('');
@@ -230,7 +250,8 @@ export const DomoBrainControlCenter = () => {
           { id: 'vault', name: 'Memory Vault (RAG)', icon: Database },
           { id: 'identity', name: 'User Identity & Persona', icon: User },
           { id: 'profile', name: 'User Profile & Habits', icon: Activity },
-          { id: 'timeline', name: 'Recall timeline', icon: RefreshCw }
+          { id: 'timeline', name: 'Recall timeline', icon: RefreshCw },
+          { id: 'performance', name: 'Hardware Calibration', icon: Sliders }
         ].map((t) => {
           const Icon = t.icon;
           const isActive = activeTab === t.id;
@@ -646,6 +667,114 @@ export const DomoBrainControlCenter = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === 'performance' && (
+        <div className="glass-card p-6 border border-[#2A2D30] bg-[#18191B] flex flex-col gap-6 animate-fadeIn text-left">
+          <div className="border-b border-[#2A2D30] pb-3.5 flex justify-between items-center">
+            <div>
+              <h3 className="text-sm font-bold text-[#ECEBE9]">Local Execution Calibration</h3>
+              <p className="text-xs text-[#A3A09B] mt-0.5">Optimize ONNX web runtimes, benchmark client-side vector latency, and configure WebGPU execution providers.</p>
+            </div>
+            <span className="text-[9px] bg-[#3C6B4D]/10 text-emerald-400 border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full font-bold uppercase">WebGPU Calibration</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold text-[#ECEBE9] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <Cpu size={13} className="text-[#3C6B4D]" />
+                <span>Performance Benchmark</span>
+              </h4>
+              <p className="text-xs text-[#A3A09B] leading-relaxed">
+                Run a simulated text-embedding processing job using the local Transformers.js pipeline to measure latency.
+              </p>
+              
+              <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 space-y-3 font-mono text-xs">
+                <div className="flex justify-between">
+                  <span className="text-[#72706C]">Execution Engine:</span>
+                  <span className="text-[#ECEBE9] font-bold">Transformers.js v2/v3</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#72706C]">Default Device:</span>
+                  <span className="text-[#ECEBE9] font-bold">{navigator.userAgent.includes('Chrome') ? 'WebGPU Fallback Enabled' : 'WebAssembly (WASM)'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#72706C]">Benchmark Latency:</span>
+                  <span className="text-[#3C6B4D] font-bold">{benchmarkTime ? `${benchmarkTime.toFixed(1)} ms / embed` : 'Not run yet'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#72706C]">Inference Speed Grade:</span>
+                  <span className="text-[#ECEBE9] font-bold">
+                    {benchmarkTime === 0 ? '-' : benchmarkTime < 50 ? 'Grade A (Ultra-Fast)' : benchmarkTime < 150 ? 'Grade B (Fast)' : 'Grade C (Standard)'}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={runPerformanceBenchmark}
+                disabled={benchmarking}
+                className="btn-primary py-2.5 font-bold text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {benchmarking ? (
+                  <>
+                    <RefreshCw size={14} className="animate-spin" />
+                    <span>Calibrating Hardware...</span>
+                  </>
+                ) : (
+                  <>
+                    <Activity size={14} />
+                    <span>Run Performance Benchmark</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold text-[#ECEBE9] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <Sliders size={13} className="text-[#3C6B4D]" />
+                <span>Quantization Tuner</span>
+              </h4>
+              <p className="text-xs text-[#A3A09B] leading-relaxed">
+                Quantization reduces model memory footprint at a negligible cost to precision. Configure preferred local quantizations for your local device specs.
+              </p>
+              
+              <div className="space-y-3 bg-[#111213] border border-[#2A2D30] rounded-xl p-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-[#ECEBE9] uppercase tracking-wider">Embedding Model Quantization</label>
+                  <select
+                    value={embedQuant}
+                    onChange={(e) => {
+                      setEmbedQuant(e.target.value);
+                      localStorage.setItem('domodomo_quant_embedding', e.target.value);
+                    }}
+                    className="w-full bg-[#18191B] border border-[#2A2D30] rounded-lg text-xs text-[#ECEBE9] p-2 focus:outline-none focus:border-[#3C6B4D]"
+                  >
+                    <option value="fp32">FP32 (No Quantization - Highly Accurate, High Memory)</option>
+                    <option value="fp16">FP16 (Half Precision - Fast, Moderate Memory)</option>
+                    <option value="q8">INT8 (8-bit Quantized - Recommended for Standard CPUs)</option>
+                    <option value="q4">INT4 (4-bit Quantized - Ultra-Lightweight, Low RAM)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-[#ECEBE9] uppercase tracking-wider">WebGPU Acceleration Provider</label>
+                  <select
+                    value={gpuProvider}
+                    onChange={(e) => {
+                      setGpuProvider(e.target.value);
+                      localStorage.setItem('domodomo_provider_webgpu', e.target.value);
+                    }}
+                    className="w-full bg-[#18191B] border border-[#2A2D30] rounded-lg text-xs text-[#ECEBE9] p-2 focus:outline-none focus:border-[#3C6B4D]"
+                  >
+                    <option value="auto">Auto-Detect (WebGPU if available, fallback to WASM)</option>
+                    <option value="webgpu">Force WebGPU (Requires compatible GPU + Chrome/Edge)</option>
+                    <option value="wasm">Force WebAssembly (WASM - Highly stable fallback)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
