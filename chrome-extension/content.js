@@ -339,6 +339,7 @@
 
     // Helper to align panel dynamically
     const alignPanel = (currentX) => {
+      if (!panel) return;
       if (currentX < 380) {
         panel.style.right = 'auto';
         panel.style.left = '0px';
@@ -385,7 +386,9 @@
 
     const onTouchDrag = (e) => {
       if (!isDragging) return;
-      const touch = e.touches[0];
+      const touch = e.touches && (e.touches[0] || e.changedTouches[0]);
+      if (!touch) return;
+      
       const dx = touch.clientX - startX;
       const dy = touch.clientY - startY;
 
@@ -417,26 +420,41 @@
       document.removeEventListener('touchend', stopDrag);
     };
 
-    // Attach listeners to trigger button and panel header
-    trigger.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      startDrag(e.clientX, e.clientY);
-    });
+    // Attach listeners with null safety checks
+    if (trigger) {
+      trigger.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startDrag(e.clientX, e.clientY);
+      });
 
-    trigger.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      startDrag(touch.clientX, touch.clientY);
-    });
+      trigger.addEventListener('touchstart', (e) => {
+        const touch = e.touches && (e.touches[0] || e.changedTouches[0]);
+        if (touch) {
+          startDrag(touch.clientX, touch.clientY);
+        }
+      });
 
-    header.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      startDrag(e.clientX, e.clientY);
-    });
+      trigger.addEventListener('click', (e) => {
+        if (!hasMoved && panel) {
+          panel.classList.add('open');
+          trigger.style.display = 'none';
+        }
+      });
+    }
 
-    header.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      startDrag(touch.clientX, touch.clientY);
-    });
+    if (header) {
+      header.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startDrag(e.clientX, e.clientY);
+      });
+
+      header.addEventListener('touchstart', (e) => {
+        const touch = e.touches && (e.touches[0] || e.changedTouches[0]);
+        if (touch) {
+          startDrag(touch.clientX, touch.clientY);
+        }
+      });
+    }
 
     // Disable dragging bubbling on chat elements
     const elementsToBlock = [chatLog, textInput, sendBtn, summaryBtn, keypointsBtn, explainBtn];
@@ -448,21 +466,17 @@
     });
 
     // Close button click propagation block
-    closeBtn.addEventListener('mousedown', (e) => e.stopPropagation());
-    closeBtn.addEventListener('touchstart', (e) => e.stopPropagation());
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      panel.classList.remove('open');
-      trigger.style.display = 'flex';
-    });
-
-    // Toggle panel click handler
-    trigger.addEventListener('click', (e) => {
-      if (!hasMoved) {
-        panel.classList.add('open');
-        trigger.style.display = 'none';
-      }
-    });
+    if (closeBtn) {
+      closeBtn.addEventListener('mousedown', (e) => e.stopPropagation());
+      closeBtn.addEventListener('touchstart', (e) => e.stopPropagation());
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (panel && trigger) {
+          panel.classList.remove('open');
+          trigger.style.display = 'flex';
+        }
+      });
+    }
 
     // Extract page context parameters
     const getScrapedContext = () => {
@@ -477,6 +491,7 @@
     };
 
     const appendMessage = (sender, text) => {
+      if (!chatLog) return;
       const bubble = document.createElement('div');
       bubble.className = `msg-bubble msg-${sender}`;
       bubble.innerText = text;
@@ -485,6 +500,7 @@
     };
 
     const appendLoading = () => {
+      if (!chatLog) return;
       const loading = document.createElement('div');
       loading.id = 'domo-loading';
       loading.className = 'loading-indicator';
@@ -522,30 +538,41 @@
     };
 
     // Event Handlers
-    sendBtn.addEventListener('click', () => {
-      const val = textInput.value.trim();
-      if (!val) return;
-      textInput.value = '';
-      submitQuery(val);
-    });
+    if (sendBtn) {
+      sendBtn.addEventListener('click', () => {
+        if (!textInput) return;
+        const val = textInput.value.trim();
+        if (!val) return;
+        textInput.value = '';
+        submitQuery(val);
+      });
+    }
 
-    textInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        sendBtn.click();
-      }
-    });
+    if (textInput) {
+      textInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && sendBtn) {
+          sendBtn.click();
+        }
+      });
+    }
 
-    summaryBtn.addEventListener('click', () => {
-      submitQuery('Provide a 2-sentence summary of this page.');
-    });
+    if (summaryBtn) {
+      summaryBtn.addEventListener('click', () => {
+        submitQuery('Provide a 2-sentence summary of this page.');
+      });
+    }
 
-    keypointsBtn.addEventListener('click', () => {
-      submitQuery('List 3 key takeaways or facts from this page.');
-    });
+    if (keypointsBtn) {
+      keypointsBtn.addEventListener('click', () => {
+        submitQuery('List 3 key takeaways or facts from this page.');
+      });
+    }
 
-    explainBtn.addEventListener('click', () => {
-      submitQuery('Explain the core concept in this page in simple terms.');
-    });
+    if (explainBtn) {
+      explainBtn.addEventListener('click', () => {
+        submitQuery('Explain the core concept in this page in simple terms.');
+      });
+    }
   }
 
   // Run initialization
