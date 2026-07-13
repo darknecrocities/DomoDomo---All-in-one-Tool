@@ -100,6 +100,40 @@ export const FloatingDomo: React.FC = () => {
 
   // Drag handlers
   const handleMouseDown = (e: React.MouseEvent<any>) => {
+    const target = e.target as HTMLElement;
+    
+    // Ignore interactive elements if the dialog is open
+    if (isOpen) {
+      if (
+        target.closest('button') ||
+        target.closest('input') ||
+        target.closest('textarea') ||
+        target.closest('a')
+      ) {
+        return;
+      }
+    }
+
+    // Ignore scrollbar clicks on scrollable containers
+    const scrollContainer = target.closest('.overflow-y-auto, .overflow-x-auto') as HTMLElement;
+    if (scrollContainer) {
+      const rect = scrollContainer.getBoundingClientRect();
+      // Check vertical scrollbar
+      if (scrollContainer.scrollHeight > scrollContainer.clientHeight) {
+        const scrollbarWidth = scrollContainer.offsetWidth - scrollContainer.clientWidth;
+        if (scrollbarWidth > 0 && e.clientX >= rect.right - scrollbarWidth) {
+          return;
+        }
+      }
+      // Check horizontal scrollbar
+      if (scrollContainer.scrollWidth > scrollContainer.clientWidth) {
+        const scrollbarHeight = scrollContainer.offsetHeight - scrollContainer.clientHeight;
+        if (scrollbarHeight > 0 && e.clientY >= rect.bottom - scrollbarHeight) {
+          return;
+        }
+      }
+    }
+
     e.preventDefault();
     dragRef.current = {
       isDragging: true,
@@ -140,6 +174,25 @@ export const FloatingDomo: React.FC = () => {
 
   // Touch support for mobile dragging
   const handleTouchStart = (e: React.TouchEvent<any>) => {
+    const target = e.target as HTMLElement;
+
+    // Ignore interactive elements and scrollable zones if the dialog is open
+    if (isOpen) {
+      if (
+        target.closest('button') ||
+        target.closest('input') ||
+        target.closest('textarea') ||
+        target.closest('a')
+      ) {
+        return;
+      }
+
+      // Ignore touches starting on scrollable areas on mobile (to allow normal scrolling)
+      if (target.closest('.overflow-y-auto, .overflow-x-auto')) {
+        return;
+      }
+    }
+
     const touch = e.touches[0];
     dragRef.current = {
       isDragging: true,
@@ -244,15 +297,14 @@ export const FloatingDomo: React.FC = () => {
       {/* Expanded Chat Dialog (Anchored directly next to the button) */}
       {isOpen && (
         <div 
-          className="absolute bottom-16 w-80 sm:w-96 h-[460px] bg-[#18191B] border border-[#2A2D30] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200"
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          className="absolute bottom-16 w-80 sm:w-96 h-[460px] bg-[#18191B] border border-[#2A2D30] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200 cursor-grab active:cursor-grabbing"
           style={position.x < 380 ? { left: 0 } : { right: 0 }}
-          onMouseDown={(e) => e.stopPropagation()} // Prevent dragging from within inputs
         >
-          {/* Header (Draggable) */}
+          {/* Header */}
           <div 
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            className="bg-[#111213] border-b border-[#2A2D30] px-4 py-3.5 flex justify-between items-center cursor-grab active:cursor-grabbing select-none"
+            className="bg-[#111213] border-b border-[#2A2D30] px-4 py-3.5 flex justify-between items-center select-none"
           >
             <div className="flex items-center gap-2 pointer-events-none">
               <img src={domodomoLogo} alt="Domo Logo" className="w-5 h-5 rounded-md" />
@@ -271,7 +323,7 @@ export const FloatingDomo: React.FC = () => {
           </div>
 
           {/* Messages Log */}
-          <div className="flex-grow p-4 overflow-y-auto space-y-3 bg-[#111213]/40">
+          <div className="flex-grow p-4 overflow-y-auto space-y-3 bg-[#111213]/40 cursor-default">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] text-xs px-3.5 py-2.5 rounded-2xl leading-relaxed ${
@@ -296,7 +348,7 @@ export const FloatingDomo: React.FC = () => {
           </div>
 
           {/* Quick Context Prompts */}
-          <div className="bg-[#111213]/60 px-4 py-2 border-t border-[#2A2D30]/60 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none">
+          <div className="bg-[#111213]/60 px-4 py-2 border-t border-[#2A2D30]/60 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none cursor-default">
             <button
               onClick={() => setInputVal(`Summarize what the ${activeTabName} screen is designed for.`)}
               className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-[#3C6B4D]/25 border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
@@ -321,7 +373,7 @@ export const FloatingDomo: React.FC = () => {
           </div>
 
           {/* Message Input Box */}
-          <div className="p-3 bg-[#18191B] border-t border-[#2A2D30] flex gap-2 items-center">
+          <div className="p-3 bg-[#18191B] border-t border-[#2A2D30] flex gap-2 items-center cursor-default">
             <input
               type="text"
               placeholder="Ask Domo..."
