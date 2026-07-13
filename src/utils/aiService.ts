@@ -11,6 +11,70 @@ interface CacheEntry {
 const generateTextCache: Record<string, CacheEntry> = {};
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes TTL
 
+// Web Worker instance and active tasks tracker for off-thread execution
+let transformersWorker: Worker | null = null;
+const activeWorkerTasks: Record<string, {
+  resolve: (value: any) => void;
+  reject: (err: any) => void;
+  onProgress?: LoadingProgressCallback;
+}> = {};
+let workerTaskIdCounter = 0;
+
+function getTransformersWorker(): Worker {
+  if (typeof window === 'undefined') {
+    throw new Error('Worker cannot be initialized on server side');
+  }
+  if (!transformersWorker) {
+    transformersWorker = new Worker(
+      new URL('./transformers.worker.ts', import.meta.url),
+      { type: 'module' }
+    );
+    
+    transformersWorker.onmessage = (e: MessageEvent) => {
+      const { type, taskId, data, error } = e.data;
+      const task = activeWorkerTasks[taskId];
+      if (!task) return;
+
+      if (type === 'progress') {
+        if (task.onProgress) {
+          const status = data.status;
+          const progress = data.progress ? Math.round(data.progress) : 0;
+          if (status === 'downloading') {
+            task.onProgress(`Downloading model file: ${data.file || ''}`, progress);
+          } else if (status === 'done') {
+            task.onProgress(`Finished loading model file`, 100);
+          } else if (status === 'init') {
+            task.onProgress(`Initializing model...`, 0);
+          } else if (status === 'ready') {
+            task.onProgress(`Ready`, 100);
+          } else {
+            task.onProgress(status || 'Processing...', progress || 50);
+          }
+        }
+      } else if (type === 'success') {
+        task.resolve(data);
+        delete activeWorkerTasks[taskId];
+      } else if (type === 'error') {
+        task.reject(new Error(error || 'Worker execution failed'));
+        delete activeWorkerTasks[taskId];
+      }
+    };
+  }
+  return transformersWorker;
+}
+
+function runInWorker<T>(type: string, payload: any, onProgress?: LoadingProgressCallback): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const taskId = `task_${Date.now()}_${workerTaskIdCounter++}`;
+    activeWorkerTasks[taskId] = { resolve, reject, onProgress };
+    try {
+      getTransformersWorker().postMessage({ type, taskId, payload });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
 // Progress callback interface
 export type LoadingProgressCallback = (status: string, progress: number) => void;
 
@@ -41,27 +105,7 @@ export async function getTransformers() {
   return module;
 }
 
-// Singletons for local embedding, sentiment analysis, and speech recognition
-let embeddingPipeline: any = null;
-let classifierPipeline: any = null;
-let whisperPipeline: any = null;
-let ttsPipeline: any = null;
 
-const makeProgressCallback = (callback?: LoadingProgressCallback) => {
-  return (data: any) => {
-    if (!callback) return;
-    if (data.status === 'downloading') {
-      const progress = data.progress ? Math.round(data.progress) : 0;
-      callback(`Downloading model file: ${data.file || ''}`, progress);
-    } else if (data.status === 'done') {
-      callback(`Finished loading model file`, 100);
-    } else if (data.status === 'init') {
-      callback(`Initializing model...`, 0);
-    } else if (data.status === 'ready') {
-      callback(`Ready`, 100);
-    }
-  };
-};
 
 export interface ProviderConfig {
   id: string;
@@ -202,31 +246,16 @@ export const aiService = {
     progressCallback?: LoadingProgressCallback
   ): Promise<{ audio: Float32Array; sampling_rate: number }> {
     try {
-      const { pipeline } = await getTransformers();
+      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+      const device = hasWebGPU ? 'webgpu' : 'wasm';
+      const result = await runInWorker<{ audio: Float32Array; sampling_rate: number }>('tts', {
+        text,
+        voiceId,
+        model: 'Xenova/speecht5_tts',
+        device
+      }, progressCallback);
       
-      if (!ttsPipeline) {
-        const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
-        const device = hasWebGPU ? 'webgpu' : 'wasm';
-        try {
-          ttsPipeline = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
-            device,
-            progress_callback: makeProgressCallback(progressCallback)
-          });
-        } catch (e) {
-          console.warn(`WebGPU TTS pipeline failed, trying fallback to wasm/cpu`, e);
-          ttsPipeline = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {
-            device: 'wasm',
-            progress_callback: makeProgressCallback(progressCallback)
-          });
-        }
-      }
-
-      // Default speaker embeddings mapped to standard cmu_arctic speakers
-      const speakerUrl = `https://huggingface.co/datasets/Xenova/cmu-arctic-xvectors-extracted/resolve/main/${voiceId}.bin`;
-
-      // The pipeline returns { audio: Float32Array, sampling_rate: number }
-      const output = await ttsPipeline(text, { speaker_embeddings: speakerUrl });
-      return output;
+      return result;
     } catch (err) {
       console.error('TTS synthesis error:', err);
       throw err;
@@ -710,136 +739,109 @@ export const aiService = {
 
   // 2. Feature Extraction (Embedding) Pipeline - MiniLM
   async initEmbedder(onProgress?: LoadingProgressCallback) {
-    if (embeddingPipeline) {
-      if (onProgress) onProgress('Ready', 100);
-      return embeddingPipeline;
-    }
-
-    const { pipeline } = await getTransformers();
-    onProgress?.('Loading embedding pipeline...', 10);
-
     const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
     const device = hasWebGPU ? 'webgpu' : 'wasm';
-
-    try {
-      embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-        device,
-        progress_callback: makeProgressCallback(onProgress)
-      });
-    } catch (e) {
-      console.warn(`WebGPU embedding pipeline failed, trying fallback to wasm/cpu`, e);
-      embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-        device: 'wasm',
-        progress_callback: makeProgressCallback(onProgress)
-      });
-    }
-
-    return embeddingPipeline;
+    await runInWorker('init-pipeline', {
+      task: 'feature-extraction',
+      model: 'Xenova/all-MiniLM-L6-v2',
+      device
+    }, onProgress);
   },
 
   async getEmbedding(text: string): Promise<number[]> {
-    // 3-second timeout prevents slow CDN loading from hanging the UI
     const timeoutPromise = new Promise<number[]>((_, reject) => 
-      setTimeout(() => reject(new Error('Local embedding generation timed out')), 3000)
+      setTimeout(() => reject(new Error('Local embedding generation timed out')), 8000)
     );
     
     const embeddingPromise: Promise<number[]> = (async () => {
-      const pipe = await this.initEmbedder();
-      const result = await pipe(text, { pooling: 'mean', normalize: true });
-      return Array.from(result.data) as number[];
+      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+      const device = hasWebGPU ? 'webgpu' : 'wasm';
+      const result = await runInWorker<{ embedding: number[] }>('embedding', {
+        text,
+        model: 'Xenova/all-MiniLM-L6-v2',
+        device
+      });
+      return result.embedding;
     })();
     
     return Promise.race<number[]>([embeddingPromise, timeoutPromise]);
   },
 
+  async getEmbeddings(texts: string[]): Promise<number[][]> {
+    const timeoutPromise = new Promise<number[][]>((_, reject) => 
+      setTimeout(() => reject(new Error('Local embedding batch generation timed out')), 15000)
+    );
+    
+    const embeddingsPromise: Promise<number[][]> = (async () => {
+      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+      const device = hasWebGPU ? 'webgpu' : 'wasm';
+      const result = await runInWorker<{ embeddings: number[][] }>('embedding-batch', {
+        texts,
+        model: 'Xenova/all-MiniLM-L6-v2',
+        device
+      });
+      return result.embeddings;
+    })();
+    
+    return Promise.race<number[][]>([embeddingsPromise, timeoutPromise]);
+  },
+
   // 3. Classification Pipeline - DistilBERT Sentiment
   async initClassifier(onProgress?: LoadingProgressCallback) {
-    if (classifierPipeline) {
-      if (onProgress) onProgress('Ready', 100);
-      return classifierPipeline;
-    }
-
-    const { pipeline } = await getTransformers();
-    onProgress?.('Loading classifier pipeline...', 10);
-
     const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
     const device = hasWebGPU ? 'webgpu' : 'wasm';
-
-    try {
-      classifierPipeline = await pipeline('text-classification', 'Xenova/distilbert-base-uncased-finetuned-sst-2-english', {
-        device,
-        progress_callback: makeProgressCallback(onProgress)
-      });
-    } catch (e) {
-      console.warn(`WebGPU classification pipeline failed, trying fallback to wasm/cpu`, e);
-      classifierPipeline = await pipeline('text-classification', 'Xenova/distilbert-base-uncased-finetuned-sst-2-english', {
-        device: 'wasm',
-        progress_callback: makeProgressCallback(onProgress)
-      });
-    }
-
-    return classifierPipeline;
+    await runInWorker('init-pipeline', {
+      task: 'text-classification',
+      model: 'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
+      device
+    }, onProgress);
   },
 
   async classify(text: string): Promise<{ label: string; score: number }[]> {
-    const pipe = await this.initClassifier();
-    const result = await pipe(text);
-    return result;
+    const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+    const device = hasWebGPU ? 'webgpu' : 'wasm';
+    const result = await runInWorker<{ result: { label: string; score: number }[] }>('classification', {
+      text,
+      model: 'Xenova/distilbert-base-uncased-finetuned-sst-2-english',
+      device
+    });
+    return result.result;
   },
 
   // 4. Speech Recognition Pipeline - Whisper
   async initWhisper(onProgress?: LoadingProgressCallback) {
-    if (whisperPipeline) {
-      if (onProgress) onProgress('Ready', 100);
-      return whisperPipeline;
-    }
-
-    const { pipeline } = await getTransformers();
-    onProgress?.('Loading local Whisper AI model (~40MB)...', 10);
-
     const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
     const device = hasWebGPU ? 'webgpu' : 'wasm';
-
-    try {
-      whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
-        device,
-        progress_callback: makeProgressCallback(onProgress)
-      });
-    } catch (e) {
-      console.warn(`WebGPU whisper pipeline failed, trying fallback to wasm/cpu`, e);
-      whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
-        device: 'wasm',
-        progress_callback: makeProgressCallback(onProgress)
-      });
-    }
-
-    return whisperPipeline;
+    await runInWorker('init-pipeline', {
+      task: 'automatic-speech-recognition',
+      model: 'Xenova/whisper-tiny',
+      device
+    }, onProgress);
   },
 
   async transcribeAudio(audioData: Float32Array | Blob, isTranslation = false, onProgress?: LoadingProgressCallback): Promise<string> {
-    const pipe = await this.initWhisper(onProgress);
-    
     let audioBuffer: Float32Array;
     if (audioData instanceof Blob) {
-      // Decode audio Blob to raw float32 audio
       const arrayBuffer = await audioData.arrayBuffer();
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       const audioCtx = new AudioContextClass();
       const decodedBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-      audioBuffer = decodedBuffer.getChannelData(0); // get mono channel
+      audioBuffer = decodedBuffer.getChannelData(0);
       await audioCtx.close();
     } else {
       audioBuffer = audioData;
     }
 
     onProgress?.('Transcribing audio locally...', 90);
-    const result = await pipe(audioBuffer, {
-      chunk_length_s: 30,
-      stride_length_s: 5,
-      task: isTranslation ? 'translate' : 'transcribe',
-    });
+    const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
+    const device = hasWebGPU ? 'webgpu' : 'wasm';
+    const result = await runInWorker<{ text: string }>('transcribe', {
+      audioData: audioBuffer,
+      isTranslation,
+      model: 'Xenova/whisper-tiny',
+      device
+    }, onProgress);
     
-    onProgress?.('Ready', 100);
-    return result.text || '';
+    return result.text;
   }
 };

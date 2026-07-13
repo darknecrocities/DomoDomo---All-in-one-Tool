@@ -345,18 +345,17 @@ export const unifiedMemory = {
       // Clear existing chunks from this source to avoid duplicates
       await this.deleteKnowledge(source);
 
-      let completed = 0;
-      for (const textChunk of chunks) {
-        onProgress?.(`Encoding chunk ${completed + 1}/${chunks.length}...`, Math.round(20 + (completed / chunks.length) * 80));
-        
-        const embedding = await aiService.getEmbedding(textChunk);
-        
-        const tx = db.transaction('knowledge_chunks', 'readwrite');
-        const store = tx.objectStore('knowledge_chunks');
-        
+      onProgress?.('Generating embeddings in batch...', 30);
+      const embeddings = await aiService.getEmbeddings(chunks);
+
+      onProgress?.('Saving chunks to local database...', 80);
+      const tx = db.transaction('knowledge_chunks', 'readwrite');
+      const store = tx.objectStore('knowledge_chunks');
+
+      for (let i = 0; i < chunks.length; i++) {
         const chunk: KnowledgeChunk = {
-          text: textChunk,
-          embedding,
+          text: chunks[i],
+          embedding: embeddings[i],
           metadata: {
             source,
             timestamp: new Date().toISOString(),
@@ -369,8 +368,6 @@ export const unifiedMemory = {
           req.onsuccess = () => resolve();
           req.onerror = () => reject(req.error);
         });
-
-        completed++;
       }
 
       invalidateChunksCache();

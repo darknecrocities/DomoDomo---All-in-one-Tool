@@ -176,6 +176,11 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', categories: ['ai'], description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', status: 'functional' },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', categories: ['ai'], description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', status: 'functional', requiresOllama: true },
   { id: 'model-migrator', name: 'Ollama Model Migrator', categories: ['ai'], description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', status: 'functional', requiresOllama: true },
+  { id: 'domo-neural-atlas', name: 'Domo Neural Atlas', categories: ['ai'], description: 'Interactive 2D visual layout map of local AI context memories, RAG chunks, and user habit nodes.', icon: 'Brain', status: 'functional' },
+  { id: 'domo-flow-editor', name: 'Domo Flow Editor', categories: ['ai'], description: 'Construct and wire automated multi-stage local LLM processing pipelines visually.', icon: 'Cpu', status: 'functional' },
+  { id: 'ai-sandbox-arena', name: 'AI Sandbox Arena', categories: ['ai'], description: 'Compare Time-To-First-Token, speed (t/s), and generation output of local models side-by-side.', icon: 'Layers', status: 'functional' },
+  { id: 'ai-voice-companion', name: 'Domo Voice Companion', categories: ['ai'], description: 'Offline vocal conversation simulator with speech recognition and voice synthesis.', icon: 'Volume2', status: 'functional' },
+  { id: 'ai-pdf-investigator', name: 'AIPDF Investigator', categories: ['ai'], description: 'Semantic multi-document question answering tool with page level context citations.', icon: 'BookOpen', status: 'functional' },
 
   // Data & Visualizer (10)
   { id: 'json-chart-builder', name: 'JSON Chart Builder', categories: ['data'], description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', status: 'functional', popular: true },

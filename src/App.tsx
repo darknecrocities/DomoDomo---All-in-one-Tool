@@ -13,6 +13,8 @@ import { DownloadPage } from './pages/Download';
 import { AutoPilotProvider } from './tools/autopilot/AutoPilotProvider';
 import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilot';
 import { ScrollToTop } from './components/ScrollToTop';
+import { DomoSettings } from './pages/DomoSettings';
+import { FloatingDomo } from './components/FloatingDomo';
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -35,6 +37,7 @@ function App() {
       {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
       <BrowserRouter>
         <ScrollToTop />
+        <FloatingDomo />
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />
@@ -46,6 +49,7 @@ function App() {
             <Route path="library-api" element={<LibraryApi />} />
             <Route path="blog" element={<BlogContainer />} />
             <Route path="blog/:slug" element={<BlogPost />} />
+            <Route path="settings" element={<DomoSettings />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

@@ -1,0 +1,41 @@
+{
+  "identity": {
+    "name": "Arron",
+    "role": "Developer",
+    "experience": "Intermediate Practitioner",
+    "techStack": "Python",
+    "hardwareTier": "Standard Specs (Models 3B - 8B)",
+    "goals": [
+      "Code auditing & explaining",
+      "Image description & OCR",
+      "PDF file manipulation",
+      "Interactive chatbot Q&A",
+      "Text summarization & translating"
+    ],
+    "tone": "Analytical & Structured",
+    "completedOnboarding": true,
+    "key": "user_identity",
+    "lastUpdated": "2026-07-06T11:37:50.951Z"
+  },
+  "habitsSummary": {
+    "key": "habits_summary",
+    "preferredTools": [
+      "AI Debate Assistant",
+      "You are a helper that extracts arguments. Your task is to ou...",
+      "Auto-Pilot Workspace",
+      "Domo Brain Mind Mapper",
+      "AI Chat"
+    ],
+    "commonWorkflows": [
+      "ai",
+      "Local AI"
+    ],
+    "activeHours": [
+      "19:00 - 20:00",
+      "14:00 - 15:00"
+    ],
+    "profileSummary": "The user frequently works on projects involving ai, Local AI categories. Their favorite tool utilities include: AI Debate Assistant, You are a helper that extracts arguments. Your task is to ou..., Auto-Pilot Workspace, Domo Brain Mind Mapper, AI Chat. They are typically active around 19:00 - 20:00, 14:00 - 15:00.",
+    "lastUpdated": "2026-07-13T06:46:47.264Z"
+  },
+  "lastUpdated": "2026-07-13T06:50:24.745Z"
+}

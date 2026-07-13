@@ -178,6 +178,12 @@ import { ModelMigrator } from '../tools/ai/ModelMigrator';
 import { DomoBrainControlCenter } from '../tools/ai/DomoBrainControlCenter';
 import { DomoMindMapperTool } from '../tools/ai/DomoMindMapper';
 
+import { DomoNeuralAtlas } from '../tools/ai/DomoNeuralAtlas';
+import { DomoFlowEditor } from '../tools/ai/DomoFlowEditor';
+import { AISandboxArena } from '../tools/ai/AISandboxArena';
+import { AIVoiceCompanion } from '../tools/ai/AIVoiceCompanion';
+import { AIPDFInvestigator } from '../tools/ai/AIPDFInvestigator';
+
 // Data & Visualizer Tools Imports
 import { JSONChartBuilderTool } from '../tools/data/JSONChartBuilder';
 import { CSVPivotAnalyzerTool } from '../tools/data/CSVPivotAnalyzer';
@@ -357,6 +363,11 @@ export const TOOLS: Tool[] = [
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', categories: ['ai'], description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', categories: ['ai'], description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', run: async (i) => i, component: AutoPilotWorkspace },
   { id: 'model-migrator', name: 'Ollama Model Migrator', categories: ['ai'], description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', run: async (i) => i, component: ModelMigrator },
+  { id: 'domo-neural-atlas', name: 'Domo Neural Atlas', categories: ['ai'], description: 'Interactive 2D visual layout map of local AI context memories, RAG chunks, and user habit nodes.', icon: 'Brain', run: async (i) => i, component: DomoNeuralAtlas },
+  { id: 'domo-flow-editor', name: 'Domo Flow Editor', categories: ['ai'], description: 'Construct and wire automated multi-stage local LLM processing pipelines visually.', icon: 'Cpu', run: async (i) => i, component: DomoFlowEditor },
+  { id: 'ai-sandbox-arena', name: 'AI Sandbox Arena', categories: ['ai'], description: 'Compare Time-To-First-Token, speed (t/s), and generation output of local models side-by-side.', icon: 'Layers', run: async (i) => i, component: AISandboxArena },
+  { id: 'ai-voice-companion', name: 'Domo Voice Companion', categories: ['ai'], description: 'Offline vocal conversation simulator with speech recognition and voice synthesis.', icon: 'Volume2', run: async (i) => i, component: AIVoiceCompanion },
+  { id: 'ai-pdf-investigator', name: 'AIPDF Investigator', categories: ['ai'], description: 'Semantic multi-document question answering tool with page level context citations.', icon: 'BookOpen', run: async (i) => i, component: AIPDFInvestigator },
 
   // Data & Visualizer Suite Tools (10)
   { id: 'json-chart-builder', name: 'JSON Chart Builder', categories: ['data'], description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', run: async (i) => i, component: JSONChartBuilderTool },

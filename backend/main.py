@@ -113,6 +113,21 @@ async def get_ollama_embedding(text: str, model: str = "llama3.2") -> List[float
     
     return get_deterministic_mock_vector(text)
 
+# In-memory cache for parsed thought embeddings to avoid json.loads and norm recalculations on every search
+# Maps thought_id -> (vector: List[float], norm: float)
+embedding_cache = {}
+
+def get_cached_thought_vector(thought_id: int, embedding_json: str) -> tuple:
+    if thought_id in embedding_cache:
+        return embedding_cache[thought_id]
+    try:
+        vec = json.loads(embedding_json)
+        norm = math.sqrt(sum(x * x for x in vec))
+        embedding_cache[thought_id] = (vec, norm)
+        return vec, norm
+    except Exception:
+        return [], 0.0
+
 def cosine_similarity(vecA: List[float], vecB: List[float]) -> float:
     """Calculates the cosine similarity metric between two float vectors."""
     if not vecA or not vecB or len(vecA) != len(vecB):
@@ -243,6 +258,10 @@ async def create_thought(req: ThoughtCreate, background_tasks: BackgroundTasks, 
     session.commit()
     session.refresh(db_thought)
 
+    # Invalidate embedding cache entry if needed
+    if db_thought.id:
+        embedding_cache[db_thought.id] = (vector, math.sqrt(sum(x*x for x in vector)))
+
     background_tasks.add_task(append_to_cognitive_journal, req.content, db_thought.ai_insight, "Thought journaling", req.model)
 
     return db_thought
@@ -252,6 +271,7 @@ async def search_thoughts(req: SearchRequest, session: Session = Depends(get_ses
     """Calculates cosine similarity to perform semantic RAG search across stored thoughts."""
     # 1. Fetch query vector embedding
     query_vector = await get_ollama_embedding(req.query, req.model)
+    query_norm = math.sqrt(sum(x * x for x in query_vector))
 
     # 2. Retrieve all thoughts and calculate similarity scores in Python
     statement = select(Thought)
@@ -259,9 +279,16 @@ async def search_thoughts(req: SearchRequest, session: Session = Depends(get_ses
 
     results = []
     for thought in all_thoughts:
+        if not thought.id:
+            continue
         try:
-            thought_vector = json.loads(thought.embedding_json)
-            score = cosine_similarity(query_vector, thought_vector)
+            thought_vector, thought_norm = get_cached_thought_vector(thought.id, thought.embedding_json)
+            if not thought_vector or thought_norm == 0.0 or query_norm == 0.0:
+                continue
+            
+            dot_product = sum(a * b for a, b in zip(query_vector, thought_vector))
+            score = dot_product / (query_norm * thought_norm)
+            
             if score >= req.threshold:
                 results.append({
                     "id": thought.id,
@@ -283,6 +310,7 @@ async def generate_rag_story(req: GenerateRequest, background_tasks: BackgroundT
     """Retrieves relevant thoughts as semantic context and generates a unified RAG story/insight."""
     # 1. Query vector embedding for the request prompt
     query_vector = await get_ollama_embedding(req.prompt, req.model)
+    query_norm = math.sqrt(sum(x * x for x in query_vector))
 
     # 2. Vector search matching database thoughts
     statement = select(Thought)
@@ -292,9 +320,16 @@ async def generate_rag_story(req: GenerateRequest, background_tasks: BackgroundT
 
     scored_thoughts = []
     for t in all_thoughts:
+        if not t.id:
+            continue
         try:
-            t_vector = json.loads(t.embedding_json)
-            score = cosine_similarity(query_vector, t_vector)
+            t_vector, t_norm = get_cached_thought_vector(t.id, t.embedding_json)
+            if not t_vector or t_norm == 0.0 or query_norm == 0.0:
+                continue
+            
+            dot_product = sum(a * b for a, b in zip(query_vector, t_vector))
+            score = dot_product / (query_norm * t_norm)
+            
             if score >= 0.35: # RAG threshold matching frontend
                 scored_thoughts.append((score, t))
         except Exception:
