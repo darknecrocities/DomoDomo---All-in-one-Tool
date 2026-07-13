@@ -523,6 +523,20 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   </ul>
                 </div>
 
+                {/* 4. Domo Companion (Floating AI Assistant) */}
+                <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
+                  <span className="text-xs uppercase tracking-wider text-[#3C6B4D] font-bold">4. Domo Companion (Floating AI Assistant)</span>
+                  <p className="text-[#A3A09B] leading-relaxed">
+                    DomoDomo incorporates a persistent, overlay companion assistant designed for interactive queries and workspace navigation. It runs completely offline and bridges active screen state with local LLM prompts:
+                  </p>
+                  <ul className="list-disc list-inside text-[#A3A09B] flex flex-col gap-1.5 pl-2 mt-1 leading-relaxed">
+                    <li><strong className="text-[#ECEBE9]">Entire Chat Screen Draggability</strong>: Features high-fidelity layout dragging. Users can click and drag the companion anywhere on their desktop viewport from any non-interactive part of the chat interface. Dragging is automatically bypassed on inputs, buttons, and scrollbar zones to maintain standard widget interactivity.</li>
+                    <li><strong className="text-[#ECEBE9]">Mobile Scroll-Drag Preservation</strong>: Employs intelligent gesture division on mobile/touch viewports. Dragging is allowed via the header/borders, while swipe gestures inside scrollable zones (like the messages log or prompts menu) execute local content scrolling.</li>
+                    <li><strong className="text-[#ECEBE9]">Active Tab Context Sensing</strong>: The assistant tracks user routing in real time, automatically harvesting context data (e.g., specific active tool page metadata, system configuration states) to automatically feed into system instructions without cloud logs.</li>
+                    <li><strong className="text-[#ECEBE9]">Custom Settings & Glowing Styles</strong>: Provides options in system configurations to override active model preferences (such as Ollama's <code className="text-[#ECEBE9] font-mono text-[10px]">llama3.2:1b</code>), assistant prompt personas, and floating glows (ranging from subtle pulse glows to high shadow alerts).</li>
+                  </ul>
+                </div>
+
                 {/* Advantages section */}
                 <h3 className="font-bold text-[#ECEBE9] text-sm mt-3">Comparison & Architecture Advantages</h3>
                 <p className="text-[#A3A09B] leading-relaxed">

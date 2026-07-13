@@ -1274,6 +1274,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Save visual creations to localStorage, edit tools and rules, download skillsets, and import MD configs.',
         howItWorks: '1. Configures attributes visually. 2. Stores settings locally in localStorage. 3. Exports markdown files.',
         technicalSpecs: 'Outputs YAML frontmatter-delimited Markdown skillsets.'
+      },
+      {
+        id: 'domo-companion',
+        name: 'Domo Companion (Floating AI Assistant)',
+        engine: 'Ollama Client Context Pipeline',
+        details: 'A persistent, draggable widget overlay executing offline model prompts with real-time viewport context sensing and high-fidelity boundary dragging.',
+        functionality: 'Companion chat window, custom mascot personas, overlay styling, viewport boundary detection, and scroll-drag coordinate filters.',
+        howItWorks: '1. Detects current active routing path. 2. Collects settings preferences. 3. Filters drag coordinates. 4. Pipes chat stream.',
+        technicalSpecs: 'Drags natively on desktop via coordinate delta computations. Implements touch scroll-lock bypass on mobile/touch screens.'
       }
     ]
   },
