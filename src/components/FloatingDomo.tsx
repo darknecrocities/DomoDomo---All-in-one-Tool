@@ -159,7 +159,8 @@ export const FloatingDomo: React.FC = () => {
     }
 
     const newX = Math.min(Math.max(dragRef.current.initialX + dx, 10), window.innerWidth - 70);
-    const newY = Math.min(Math.max(dragRef.current.initialY + dy, 10), window.innerHeight - 70);
+    const maxY = isOpen ? window.innerHeight + 64 : window.innerHeight - 70;
+    const newY = Math.min(Math.max(dragRef.current.initialY + dy, 10), maxY);
     setPosition({ x: newX, y: newY });
   };
 
@@ -218,7 +219,8 @@ export const FloatingDomo: React.FC = () => {
     }
 
     const newX = Math.min(Math.max(dragRef.current.initialX + dx, 10), window.innerWidth - 70);
-    const newY = Math.min(Math.max(dragRef.current.initialY + dy, 10), window.innerHeight - 70);
+    const maxY = isOpen ? window.innerHeight + 64 : window.innerHeight - 70;
+    const newY = Math.min(Math.max(dragRef.current.initialY + dy, 10), maxY);
     setPosition({ x: newX, y: newY });
   };
 
@@ -234,7 +236,17 @@ export const FloatingDomo: React.FC = () => {
   const handleTriggerClick = () => {
     // Only toggle panel open/close if the button wasn't dragged!
     if (!dragRef.current.hasMoved) {
-      setIsOpen(prev => !prev);
+      setIsOpen(prev => {
+        const next = !prev;
+        if (!next) {
+          // Closing: ensure position.y is within closed bounds so the button doesn't go offscreen!
+          setPosition(curr => ({
+            ...curr,
+            y: Math.min(curr.y, window.innerHeight - 70)
+          }));
+        }
+        return next;
+      });
     }
   };
 
@@ -274,7 +286,7 @@ export const FloatingDomo: React.FC = () => {
         // Check if bullet point
         if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
           return (
-            <li key={`${idx}-${lIdx}`} className="ml-4 list-disc text-xs text-[#ECEBE9]/90 leading-relaxed mb-1">
+            <li key={`${idx}-${lIdx}`} className="ml-4 list-disc text-xs leading-relaxed mb-1">
               {parseInlineMarkup(trimmed.slice(2))}
             </li>
           );
@@ -284,7 +296,7 @@ export const FloatingDomo: React.FC = () => {
         if (/^\d+\.\s/.test(trimmed)) {
           const content = trimmed.replace(/^\d+\.\s/, '');
           return (
-            <li key={`${idx}-${lIdx}`} className="ml-4 list-decimal text-xs text-[#ECEBE9]/90 leading-relaxed mb-1">
+            <li key={`${idx}-${lIdx}`} className="ml-4 list-decimal text-xs leading-relaxed mb-1">
               {parseInlineMarkup(content)}
             </li>
           );
@@ -294,9 +306,9 @@ export const FloatingDomo: React.FC = () => {
         if (trimmed.startsWith('#')) {
           const depth = (trimmed.match(/^#+/) || [''])[0].length;
           const content = trimmed.replace(/^#+\s*/, '');
-          const headerClass = depth === 1 ? 'text-sm font-bold text-[#ECEBE9] mt-2 mb-1 block' :
-                              depth === 2 ? 'text-xs font-bold text-[#ECEBE9] mt-2 mb-1 block' :
-                              'text-xs font-semibold text-[#ECEBE9] mt-1 mb-0.5 block';
+          const headerClass = depth === 1 ? 'text-sm font-bold mt-2 mb-1 block' :
+                              depth === 2 ? 'text-xs font-bold mt-2 mb-1 block' :
+                              'text-xs font-semibold mt-1 mb-0.5 block';
           return (
             <span key={`${idx}-${lIdx}`} className={headerClass}>
               {parseInlineMarkup(content)}
@@ -307,7 +319,7 @@ export const FloatingDomo: React.FC = () => {
         // Check if blockquote
         if (trimmed.startsWith('> ')) {
           return (
-            <blockquote key={`${idx}-${lIdx}`} className="border-l-2 border-[#3C6B4D] bg-[#111213]/50 pl-2.5 py-1 text-xs italic text-[#A3A09B] my-2 rounded-r">
+            <blockquote key={`${idx}-${lIdx}`} className="border-l-2 border-[#3C6B4D] bg-[#111213]/50 pl-2.5 py-1 text-xs italic my-2 rounded-r opacity-80">
               {parseInlineMarkup(trimmed.slice(2))}
             </blockquote>
           );
@@ -315,7 +327,7 @@ export const FloatingDomo: React.FC = () => {
 
         // Normal paragraph
         return (
-          <p key={`${idx}-${lIdx}`} className="text-xs text-[#ECEBE9]/90 leading-relaxed mb-2.5">
+          <p key={`${idx}-${lIdx}`} className="text-xs leading-relaxed mb-2.5">
             {parseInlineMarkup(trimmed)}
           </p>
         );
@@ -352,7 +364,7 @@ export const FloatingDomo: React.FC = () => {
       }
 
       if (first.type === 'bold') {
-        tokens.push(<strong key={key++} className="font-bold text-[#ECEBE9]">{first.content}</strong>);
+        tokens.push(<strong key={key++} className="font-bold">{first.content}</strong>);
       } else if (first.type === 'code') {
         tokens.push(<code key={key++} className="bg-[#111213] border border-[#2A2D30] px-1 py-0.2 rounded text-[10px] font-mono text-[#7cdba3]">{first.content}</code>);
       } else if (first.type === 'link') {
@@ -445,7 +457,15 @@ export const FloatingDomo: React.FC = () => {
               </div>
             </div>
             <button
-              onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                setIsOpen(false); 
+                // Closing: ensure position.y is within closed bounds so the button doesn't go offscreen!
+                setPosition(curr => ({
+                  ...curr,
+                  y: Math.min(curr.y, window.innerHeight - 70)
+                }));
+              }}
               onMouseDown={(e) => e.stopPropagation()}
               className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors p-1"
             >
@@ -457,12 +477,12 @@ export const FloatingDomo: React.FC = () => {
           <div className="flex-grow p-4 overflow-y-auto space-y-3 bg-[#111213]/40 cursor-default">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] text-xs px-3.5 py-2.5 rounded-2xl leading-relaxed ${
+                <div className={`max-w-[85%] text-xs px-3.5 py-2.5 rounded-2xl leading-relaxed whitespace-pre-wrap ${
                   msg.sender === 'user'
-                    ? 'bg-[#3C6B4D] text-[#ECEBE9] rounded-tr-none'
+                    ? 'bg-[#3C6B4D] rounded-tr-none'
                     : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9]/95 rounded-tl-none'
                 }`}>
-                  {renderMessageContent(msg.text)}
+                  {msg.sender === 'user' ? msg.text : renderMessageContent(msg.text)}
                 </div>
               </div>
             ))}

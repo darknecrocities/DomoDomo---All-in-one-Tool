@@ -3,6 +3,11 @@ import { aiService } from '../utils/aiService';
 import { Settings, Cpu, Brain, Monitor, Download, ShieldAlert, CheckCircle, RefreshCw } from 'lucide-react';
 
 export const DomoSettings: React.FC = () => {
+  const isOnlineProd = 
+    window.location.hostname.endsWith('.vercel.app') || 
+    window.location.hostname === 'domodomo.site' ||
+    (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.hostname.startsWith('192.168.'));
+
   const [ollamaEndpoint, setOllamaEndpoint] = useState('http://localhost:11434');
   const [ollamaStatus, setOllamaStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
@@ -110,6 +115,18 @@ export const DomoSettings: React.FC = () => {
         </div>
       </div>
 
+      {isOnlineProd && (
+        <div className="mb-6 bg-red-500/10 border border-red-500/25 p-4 rounded-2xl flex items-center gap-3 text-red-400 text-xs font-semibold leading-relaxed animate-in fade-in slide-in-from-top-4 duration-200">
+          <ShieldAlert size={18} className="flex-shrink-0" />
+          <div>
+            <h4 className="font-bold text-red-300">Settings Disabled (Running Online)</h4>
+            <p className="text-[10px] text-[#A3A09B] mt-0.5">
+              DomoDomo settings, local LLMs configurations, and cognitive RAG database logs are disabled in the hosted public web version. Clone the repository and run locally to configure and use offline models.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* Domo Assistant Offline Model settings */}
         <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-xl flex flex-col justify-between">
@@ -130,11 +147,13 @@ export const DomoSettings: React.FC = () => {
                     type="text"
                     value={ollamaEndpoint}
                     onChange={(e) => setOllamaEndpoint(e.target.value)}
-                    className="flex-grow bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                    disabled={isOnlineProd}
+                    className="flex-grow bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <button
                     onClick={checkOllamaConnection}
-                    className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl hover:text-[#3C6B4D] transition-colors"
+                    disabled={isOnlineProd}
+                    className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl hover:text-[#3C6B4D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <RefreshCw size={14} />
                   </button>
@@ -147,7 +166,8 @@ export const DomoSettings: React.FC = () => {
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                    disabled={isOnlineProd}
+                    className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {ollamaModels.map(m => (
                       <option key={m} value={m}>{m}</option>
@@ -201,7 +221,8 @@ export const DomoSettings: React.FC = () => {
                   step="0.05"
                   value={similarityThreshold}
                   onChange={(e) => setSimilarityThreshold(parseFloat(e.target.value))}
-                  className="w-full h-1 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D]"
+                  disabled={isOnlineProd}
+                  className="w-full h-1 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -210,7 +231,8 @@ export const DomoSettings: React.FC = () => {
                 <select
                   value={maxChunks}
                   onChange={(e) => setMaxChunks(parseInt(e.target.value))}
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                  disabled={isOnlineProd}
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value={2}>2 Chunks</option>
                   <option value={4}>4 Chunks (Recommended)</option>
@@ -225,7 +247,8 @@ export const DomoSettings: React.FC = () => {
                   type="checkbox"
                   checked={enableHabitsLog}
                   onChange={(e) => setEnableHabitsLog(e.target.checked)}
-                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                  disabled={isOnlineProd}
+                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -250,7 +273,8 @@ export const DomoSettings: React.FC = () => {
                   type="checkbox"
                   checked={showFloatingDomo}
                   onChange={(e) => setShowFloatingDomo(e.target.checked)}
-                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                  disabled={isOnlineProd}
+                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -260,7 +284,8 @@ export const DomoSettings: React.FC = () => {
                   type="checkbox"
                   checked={ambientVoiceChat}
                   onChange={(e) => setAmbientVoiceChat(e.target.checked)}
-                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                  disabled={isOnlineProd}
+                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -269,7 +294,8 @@ export const DomoSettings: React.FC = () => {
                 <select
                   value={glowEffect}
                   onChange={(e) => setGlowEffect(e.target.value)}
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                  disabled={isOnlineProd}
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="none">No Glow (Static)</option>
                   <option value="mini">Subtle Glow</option>
@@ -283,9 +309,10 @@ export const DomoSettings: React.FC = () => {
                 <textarea
                   value={assistantPersona}
                   onChange={(e) => setAssistantPersona(e.target.value)}
+                  disabled={isOnlineProd}
                   rows={3}
                   placeholder="e.g. You are Domo, a helpful offline AI assistant. Respond briefly with a friendly, coding-buddy tone."
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-3 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] resize-none"
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-3 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -326,14 +353,16 @@ export const DomoSettings: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-[#2A2D30]">
         <button
           onClick={purgeAllData}
-          className="w-full sm:w-auto py-3 px-6 bg-[#f87171]/10 text-[#f87171] border border-[#f87171]/20 hover:bg-[#f87171]/20 rounded-2xl text-xs font-bold transition-all text-center"
+          disabled={isOnlineProd}
+          className="w-full sm:w-auto py-3 px-6 bg-[#f87171]/10 text-[#f87171] border border-[#f87171]/20 hover:bg-[#f87171]/20 rounded-2xl text-xs font-bold transition-all text-center disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Purge Local Device Data
         </button>
 
         <button
           onClick={saveSettings}
-          className="w-full sm:w-auto py-3 px-8 bg-[#3C6B4D] hover:bg-[#467c59] text-[#ECEBE9] text-xs font-bold rounded-2xl transition-all shadow-md shadow-[#3C6B4D]/10 text-center"
+          disabled={isOnlineProd}
+          className="w-full sm:w-auto py-3 px-8 bg-[#3C6B4D] hover:bg-[#467c59] text-[#ECEBE9] text-xs font-bold rounded-2xl transition-all shadow-md shadow-[#3C6B4D]/10 text-center disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Save Configurations
         </button>
