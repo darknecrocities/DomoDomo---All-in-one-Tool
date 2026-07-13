@@ -15,6 +15,8 @@ export const FloatingDomo: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState('llama3.2:1b');
   const [activeTabName, setActiveTabName] = useState('Dashboard');
+  const [assistantPersona, setAssistantPersona] = useState('You are Domo, a helpful offline AI assistant inside the DomoDomo application. Respond briefly and friendly.');
+  const [glowEffect, setGlowEffect] = useState('regular');
 
   // Draggable position coordinates
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -29,6 +31,16 @@ export const FloatingDomo: React.FC = () => {
     const savedModel = aiService.getSelectedOllamaModel();
     if (savedModel) {
       setSelectedModel(savedModel);
+    }
+
+    const savedPersona = localStorage.getItem('domodomo_assistant_persona');
+    if (savedPersona) {
+      setAssistantPersona(savedPersona);
+    }
+
+    const savedGlow = localStorage.getItem('domodomo_assistant_glow');
+    if (savedGlow) {
+      setGlowEffect(savedGlow);
     }
 
     // Load saved position or set default position
@@ -181,9 +193,7 @@ export const FloatingDomo: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const systemPrompt = `You are Domo, a helpful offline AI assistant inside the DomoDomo application. 
-Current active page context: "${activeTabName}". 
-Help the user answer questions locally, guide them through tool parameters, and support general coding queries. Keep responses relatively concise.`;
+      const systemPrompt = `${assistantPersona}\n\nCurrent active page context: "${activeTabName}".`;
 
       const response = await aiService.generateText(
         userPrompt,
@@ -214,7 +224,12 @@ Help the user answer questions locally, guide them through tool parameters, and 
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={handleTriggerClick}
-          className="flex items-center justify-center w-14 h-14 rounded-full bg-[#3C6B4D] hover:bg-[#467c59] text-[#ECEBE9] shadow-2xl hover:scale-105 transition-transform duration-300 relative group border border-[#4d8661] cursor-grab active:cursor-grabbing overflow-hidden"
+          className={`flex items-center justify-center w-14 h-14 rounded-full bg-[#3C6B4D] hover:bg-[#467c59] text-[#ECEBE9] hover:scale-105 transition-transform duration-300 relative group border cursor-grab active:cursor-grabbing overflow-hidden ${
+            glowEffect === 'none' ? 'shadow-xl border-[#4d8661]' :
+            glowEffect === 'mini' ? 'shadow-[0_0_12px_rgba(60,107,77,0.3)] animate-pulse border-[#4d8661]' :
+            glowEffect === 'high' ? 'shadow-[0_0_30px_rgba(60,107,77,0.85)] animate-pulse border-[#7cdba3]' :
+            'shadow-[0_0_20px_rgba(60,107,77,0.55)] animate-pulse border-[#4d8661]'
+          }`}
           title="Drag me / Click to chat with Domo"
         >
           <img

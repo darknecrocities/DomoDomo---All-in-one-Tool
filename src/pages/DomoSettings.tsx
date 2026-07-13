@@ -16,6 +16,8 @@ export const DomoSettings: React.FC = () => {
   // Floating assistant states
   const [showFloatingDomo, setShowFloatingDomo] = useState(true);
   const [ambientVoiceChat, setAmbientVoiceChat] = useState(false);
+  const [assistantPersona, setAssistantPersona] = useState('You are Domo, a helpful offline AI assistant inside the DomoDomo application. Respond briefly and friendly.');
+  const [glowEffect, setGlowEffect] = useState('regular');
 
   const checkOllamaConnection = async () => {
     setOllamaStatus('checking');
@@ -61,6 +63,12 @@ export const DomoSettings: React.FC = () => {
     const savedAmbient = localStorage.getItem('domodomo_ambient_voice');
     if (savedAmbient !== null) setAmbientVoiceChat(savedAmbient === 'true');
 
+    const savedPersona = localStorage.getItem('domodomo_assistant_persona');
+    if (savedPersona) setAssistantPersona(savedPersona);
+
+    const savedGlow = localStorage.getItem('domodomo_assistant_glow');
+    if (savedGlow) setGlowEffect(savedGlow);
+
     checkOllamaConnection();
   }, []);
 
@@ -72,6 +80,8 @@ export const DomoSettings: React.FC = () => {
     localStorage.setItem('domodomo_enable_habits', enableHabitsLog.toString());
     localStorage.setItem('domodomo_show_floating_assistant', showFloatingDomo.toString());
     localStorage.setItem('domodomo_ambient_voice', ambientVoiceChat.toString());
+    localStorage.setItem('domodomo_assistant_persona', assistantPersona);
+    localStorage.setItem('domodomo_assistant_glow', glowEffect);
 
     // Dispatch global event for Floating assistant updates
     window.dispatchEvent(new Event('domodomo_settings_updated'));
@@ -101,13 +111,13 @@ export const DomoSettings: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        {/* Core Model & Ollama Card */}
+        {/* Domo Assistant Offline Model settings */}
         <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-4 justify-between w-full">
               <div className="flex items-center gap-2">
                 <Cpu size={18} className="text-[#3C6B4D]" />
-                <h2 className="text-sm font-bold tracking-wide">Ollama LLM Orchestration</h2>
+                <h2 className="text-sm font-bold tracking-wide">Domo Assistant Offline Model Settings</h2>
               </div>
               <span className="text-[8px] font-black tracking-widest text-[#E29E2D] bg-[#E29E2D]/10 px-2 py-0.5 rounded border border-[#E29E2D]/25 uppercase">Offline Exclusive</span>
             </div>
@@ -132,7 +142,7 @@ export const DomoSettings: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Primary Active Model</label>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Select Downloaded Assistant Local LLM Model</label>
                 {ollamaStatus === 'online' ? (
                   <select
                     value={selectedModel}
@@ -146,9 +156,12 @@ export const DomoSettings: React.FC = () => {
                 ) : (
                   <div className="bg-[#111213] border border-red-500/20 text-red-400 p-3.5 rounded-2xl flex items-center gap-2 text-xs font-semibold">
                     <ShieldAlert size={14} />
-                    Ollama is offline. Start the Ollama app on port 11434.
+                    Ollama is offline. Start the Ollama app on port 11434 to retrieve models.
                   </div>
                 )}
+                <span className="text-[9px] text-[#A3A09B] mt-1.5 block leading-relaxed">
+                  Select any downloaded model on your computer (e.g. Llama 3.2, Qwen 2.5, Gemma 2) to power the floating assistant widget.
+                </span>
               </div>
             </div>
           </div>
@@ -248,6 +261,31 @@ export const DomoSettings: React.FC = () => {
                   checked={ambientVoiceChat}
                   onChange={(e) => setAmbientVoiceChat(e.target.checked)}
                   className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Glow Animation Intensity</label>
+                <select
+                  value={glowEffect}
+                  onChange={(e) => setGlowEffect(e.target.value)}
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  <option value="none">No Glow (Static)</option>
+                  <option value="mini">Subtle Glow</option>
+                  <option value="regular">Regular Glow (Standard)</option>
+                  <option value="high">High Pulse Glow</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Custom Assistant Persona / System Instructions</label>
+                <textarea
+                  value={assistantPersona}
+                  onChange={(e) => setAssistantPersona(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. You are Domo, a helpful offline AI assistant. Respond briefly with a friendly, coding-buddy tone."
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-3 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] resize-none"
                 />
               </div>
             </div>
