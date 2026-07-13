@@ -238,6 +238,137 @@ export const FloatingDomo: React.FC = () => {
     }
   };
 
+  // Basic markdown parser for chat bubble content
+  const renderMessageContent = (text: string) => {
+    // Handle code blocks first by splitting on ```
+    const parts = text.split(/(```[\s\S]*?```)/g);
+    
+    return parts.map((part, idx) => {
+      if (part.startsWith('```') && part.endsWith('```')) {
+        const lines = part.slice(3, -3).trim().split('\n');
+        let lang = '';
+        let codeLines = lines;
+        if (lines.length > 0 && /^[a-zA-Z0-9_-]+$/.test(lines[0].trim())) {
+          lang = lines[0].trim();
+          codeLines = lines.slice(1);
+        }
+        const codeContent = codeLines.join('\n');
+        
+        return (
+          <div key={idx} className="my-2 bg-[#111213] border border-[#2A2D30] rounded-xl overflow-hidden font-mono text-[10px] select-text">
+            {lang && (
+              <div className="bg-[#18191B] border-b border-[#2A2D30] px-3 py-1 text-[9px] text-[#A3A09B] uppercase font-bold flex justify-between items-center select-none">
+                <span>{lang}</span>
+              </div>
+            )}
+            <pre className="p-3 overflow-x-auto whitespace-pre text-[#7cdba3] leading-normal">{codeContent}</pre>
+          </div>
+        );
+      }
+
+      const lines = part.split('\n');
+      return lines.map((line, lIdx) => {
+        const trimmed = line.trim();
+        if (!trimmed) return <div key={`${idx}-${lIdx}`} className="h-2" />;
+
+        // Check if bullet point
+        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          return (
+            <li key={`${idx}-${lIdx}`} className="ml-4 list-disc text-xs text-[#ECEBE9]/90 leading-relaxed mb-1">
+              {parseInlineMarkup(trimmed.slice(2))}
+            </li>
+          );
+        }
+
+        // Check if numbered list
+        if (/^\d+\.\s/.test(trimmed)) {
+          const content = trimmed.replace(/^\d+\.\s/, '');
+          return (
+            <li key={`${idx}-${lIdx}`} className="ml-4 list-decimal text-xs text-[#ECEBE9]/90 leading-relaxed mb-1">
+              {parseInlineMarkup(content)}
+            </li>
+          );
+        }
+
+        // Check if header
+        if (trimmed.startsWith('#')) {
+          const depth = (trimmed.match(/^#+/) || [''])[0].length;
+          const content = trimmed.replace(/^#+\s*/, '');
+          const headerClass = depth === 1 ? 'text-sm font-bold text-[#ECEBE9] mt-2 mb-1 block' :
+                              depth === 2 ? 'text-xs font-bold text-[#ECEBE9] mt-2 mb-1 block' :
+                              'text-xs font-semibold text-[#ECEBE9] mt-1 mb-0.5 block';
+          return (
+            <span key={`${idx}-${lIdx}`} className={headerClass}>
+              {parseInlineMarkup(content)}
+            </span>
+          );
+        }
+
+        // Check if blockquote
+        if (trimmed.startsWith('> ')) {
+          return (
+            <blockquote key={`${idx}-${lIdx}`} className="border-l-2 border-[#3C6B4D] bg-[#111213]/50 pl-2.5 py-1 text-xs italic text-[#A3A09B] my-2 rounded-r">
+              {parseInlineMarkup(trimmed.slice(2))}
+            </blockquote>
+          );
+        }
+
+        // Normal paragraph
+        return (
+          <p key={`${idx}-${lIdx}`} className="text-xs text-[#ECEBE9]/90 leading-relaxed mb-2.5">
+            {parseInlineMarkup(trimmed)}
+          </p>
+        );
+      });
+    });
+  };
+
+  const parseInlineMarkup = (text: string) => {
+    const tokens: React.ReactNode[] = [];
+    let current = text;
+    let key = 0;
+
+    while (current) {
+      const boldMatch = current.match(/\*\*(.*?)\*\*/);
+      const codeMatch = current.match(/`(.*?)`/);
+      const linkMatch = current.match(/\[(.*?)\]\((.*?)\)/);
+
+      const matches = [
+        { type: 'bold', index: boldMatch ? boldMatch.index : -1, length: boldMatch ? boldMatch[0].length : 0, content: boldMatch ? boldMatch[1] : '' },
+        { type: 'code', index: codeMatch ? codeMatch.index : -1, length: codeMatch ? codeMatch[0].length : 0, content: codeMatch ? codeMatch[1] : '' },
+        { type: 'link', index: linkMatch ? linkMatch.index : -1, length: linkMatch ? linkMatch[0].length : 0, content: linkMatch ? linkMatch[1] : '', url: linkMatch ? linkMatch[2] : '' }
+      ].filter(m => m.index !== undefined && m.index >= 0);
+
+      if (matches.length === 0) {
+        tokens.push(<span key={key++}>{current}</span>);
+        break;
+      }
+
+      matches.sort((a, b) => a.index! - b.index!);
+      const first = matches[0];
+
+      if (first.index! > 0) {
+        tokens.push(<span key={key++}>{current.slice(0, first.index)}</span>);
+      }
+
+      if (first.type === 'bold') {
+        tokens.push(<strong key={key++} className="font-bold text-[#ECEBE9]">{first.content}</strong>);
+      } else if (first.type === 'code') {
+        tokens.push(<code key={key++} className="bg-[#111213] border border-[#2A2D30] px-1 py-0.2 rounded text-[10px] font-mono text-[#7cdba3]">{first.content}</code>);
+      } else if (first.type === 'link') {
+        tokens.push(
+          <a key={key++} href={first.url} target="_blank" rel="noopener noreferrer" className="text-[#7cdba3] hover:underline font-bold">
+            {first.content}
+          </a>
+        );
+      }
+
+      current = current.slice(first.index! + first.length!);
+    }
+
+    return tokens;
+  };
+
   const handleSend = async () => {
     if (!inputVal.trim()) return;
     const userPrompt = inputVal.trim();
@@ -331,7 +462,7 @@ export const FloatingDomo: React.FC = () => {
                     ? 'bg-[#3C6B4D] text-[#ECEBE9] rounded-tr-none'
                     : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9]/95 rounded-tl-none'
                 }`}>
-                  {msg.text}
+                  {renderMessageContent(msg.text)}
                 </div>
               </div>
             ))}
