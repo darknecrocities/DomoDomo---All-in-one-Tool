@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Documentation } from './Documentation';
 
 const stats = [
-  { label: 'Web Utilities', value: '100+', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
+  { label: 'Web Utilities', value: '170', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
   { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
   { label: 'Categories', value: '12', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, and API suites.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
@@ -400,7 +400,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v1.2.0 (Latest)",
+                    version: "v1.3.0 (Latest)",
+                    date: "July 13, 2026",
+                    title: "Companion Chat Screen & Settings Enhancements",
+                    changes: [
+                      "Domo Companion Draggability: Make the entire floating chat dialog draggable on desktop from any non-interactive part of the viewport, with mobile gesture separation to preserve touch scroll behavior.",
+                      "Rich Markdown & Code Rendering: Integrated a lightweight markdown parser inside chat bubbles to support bold text, inline code snippets, formatted bullet lists, and scrollable/copyable code blocks with language indicators.",
+                      "Contrast & Visibility Fixes: Resolved user response contrast colors to dynamically adapt to light/dark themes, yielding clear readable text on all message bubbles.",
+                      "Vercel Deployment Compatibility: Detects hosted production environments to automatically display a settings warning banner and disable local configuration adjustments."
+                    ]
+                  },
+                  {
+                    version: "v1.2.0",
                     date: "July 2, 2026",
                     title: "Security Suite & Onboarding Enhancements",
                     changes: [
