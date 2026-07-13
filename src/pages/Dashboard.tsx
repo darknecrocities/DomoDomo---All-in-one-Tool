@@ -554,7 +554,7 @@ export const Dashboard = () => {
       </div>
 
       {/* Unified Command Bar Panel */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl">
+      <div className="sticky top-[80px] z-30 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl shadow-2xl shadow-black/50">
         {/* Categories Tabs */}
         <div className="flex items-center gap-1.5 min-w-0 flex-1 relative overflow-hidden">
           <button
