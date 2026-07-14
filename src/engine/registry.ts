@@ -183,6 +183,7 @@ import { DomoFlowEditor } from '../tools/ai/DomoFlowEditor';
 import { AISandboxArena } from '../tools/ai/AISandboxArena';
 import { AIVoiceCompanion } from '../tools/ai/AIVoiceCompanion';
 import { AIPDFInvestigator } from '../tools/ai/AIPDFInvestigator';
+import { AIResearchOrchestrationHub } from '../tools/ai/AIResearchOrchestrationHub';
 
 // Data & Visualizer Tools Imports
 import { JSONChartBuilderTool } from '../tools/data/JSONChartBuilder';
@@ -368,6 +369,7 @@ export const TOOLS: Tool[] = [
   { id: 'ai-sandbox-arena', name: 'AI Sandbox Arena', categories: ['ai'], description: 'Compare Time-To-First-Token, speed (t/s), and generation output of local models side-by-side.', icon: 'Layers', run: async (i) => i, component: AISandboxArena },
   { id: 'ai-voice-companion', name: 'Domo Voice Companion', categories: ['ai'], description: 'Offline vocal conversation simulator with speech recognition and voice synthesis.', icon: 'Volume2', run: async (i) => i, component: AIVoiceCompanion },
   { id: 'ai-pdf-investigator', name: 'AIPDF Investigator', categories: ['ai'], description: 'Semantic multi-document question answering tool with page level context citations.', icon: 'BookOpen', run: async (i) => i, component: AIPDFInvestigator },
+  { id: 'ai-research-orchestration-hub', name: 'AI Research Orchestration Hub', categories: ['ai'], description: 'Orchestrate structured, loop-based research campaigns with specialized local AI agents, model selectors, and conflict checks.', icon: 'Brain', run: async (i) => i, component: AIResearchOrchestrationHub },
 
   // Data & Visualizer Suite Tools (10)
   { id: 'json-chart-builder', name: 'JSON Chart Builder', categories: ['data'], description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', run: async (i) => i, component: JSONChartBuilderTool },
