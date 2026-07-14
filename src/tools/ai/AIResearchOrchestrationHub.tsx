@@ -15,7 +15,8 @@ import {
   Trash2,
   Database,
   ArrowRight,
-  HelpCircle
+  HelpCircle,
+  Link2
 } from 'lucide-react';
 import { aiService } from '../../utils/aiService';
 import { PREMADE_SKILLS } from './data/premadeSkills';
@@ -47,6 +48,15 @@ interface DecisionLog {
   userInput?: string;
 }
 
+interface APAReference {
+  id: string;
+  author: string;
+  year: string;
+  title: string;
+  publisherOrJournal: string;
+  url?: string;
+}
+
 export const AIResearchOrchestrationHub: React.FC = () => {
   // Config States
   const [researchTopic, setResearchTopic] = useState('Deep Analysis on Client-Side Local-First Databases & RAG Architectures');
@@ -65,6 +75,30 @@ export const AIResearchOrchestrationHub: React.FC = () => {
     'Local inference models run strictly client-side on local machine hardware.'
   ]);
   const [newMemoryInput, setNewMemoryInput] = useState('');
+
+  // Source & APA Reference Lists
+  const [references, setReferences] = useState<APAReference[]>([
+    {
+      id: 'ref-1',
+      author: 'Parejas, A.',
+      year: '2026',
+      title: 'Cognitive local-first browser architectures and memory layers',
+      publisherOrJournal: 'Journal of Local Intelligence',
+      url: 'https://github.com/darknecrocities/DomoDomo'
+    },
+    {
+      id: 'ref-2',
+      author: 'Ollama Team',
+      year: '2025',
+      title: 'Local LLM inference optimization on consumer hardware models',
+      publisherOrJournal: 'Ollama Research Pubs'
+    }
+  ]);
+  const [newRefAuthor, setNewRefAuthor] = useState('');
+  const [newRefYear, setNewRefYear] = useState('');
+  const [newRefTitle, setNewRefTitle] = useState('');
+  const [newRefPublisher, setNewRefPublisher] = useState('');
+  const [newRefUrl, setNewRefUrl] = useState('');
 
   // Interactive Decisions & Logs
   const [decisionLogs, setDecisionLogs] = useState<DecisionLog[]>([]);
@@ -178,7 +212,6 @@ export const AIResearchOrchestrationHub: React.FC = () => {
     // Dynamically append QA check phase if it is a QA agent
     if (newAgentRole.toLowerCase().includes('qa') || newAgentName.toLowerCase().includes('qa') || newAgentName.toLowerCase().includes('quality')) {
       setPhases(prev => {
-        // Insert QA verification before the final draft phase
         const updated = [...prev];
         updated.splice(3, 0, { name: `${newAgentName} Verification Check`, status: 'idle', output: '' });
         return updated;
@@ -217,6 +250,44 @@ export const AIResearchOrchestrationHub: React.FC = () => {
     setAgents(prev => prev.map(a => a.id === agentId ? { ...a, memory: a.memory.filter((_, idx) => idx !== index) } : a));
   };
 
+  // APA reference actions
+  const handleAddReference = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newRefAuthor.trim() || !newRefTitle.trim()) return;
+
+    const newRef: APAReference = {
+      id: `ref-${Date.now()}`,
+      author: newRefAuthor.trim(),
+      year: newRefYear.trim() || 'n.d.',
+      title: newRefTitle.trim(),
+      publisherOrJournal: newRefPublisher.trim() || 'Self-published',
+      url: newRefUrl.trim() || undefined
+    };
+
+    setReferences(prev => [...prev, newRef]);
+    setNewRefAuthor('');
+    setNewRefYear('');
+    setNewRefTitle('');
+    setNewRefPublisher('');
+    setNewRefUrl('');
+  };
+
+  const handleRemoveReference = (id: string) => {
+    setReferences(prev => prev.filter(r => r.id !== id));
+  };
+
+  // Format references list in APA citation format text block
+  const getAPAReferencesString = () => {
+    if (references.length === 0) return 'No reference sources registered.';
+    return references
+      .map(r => {
+        let citation = `${r.author}. (${r.year}). *${r.title}*. ${r.publisherOrJournal}.`;
+        if (r.url) citation += ` Retrieved from ${r.url}`;
+        return citation;
+      })
+      .join('\n\n');
+  };
+
   // Interactive decision checkpoint helper
   const requestApprovalCheckpoint = (agentName: string, decisionText: string): Promise<{ status: 'approved' | 'rejected' | 'custom_typed'; input?: string }> => {
     return new Promise((resolve) => {
@@ -232,7 +303,6 @@ export const AIResearchOrchestrationHub: React.FC = () => {
       setDecisionLogs(prev => [...prev, newLog]);
       setActiveDecisionId(logId);
 
-      // We will poll until the status is no longer pending
       const interval = setInterval(() => {
         setDecisionLogs(currentLogs => {
           const log = currentLogs.find(l => l.id === logId);
@@ -252,7 +322,7 @@ export const AIResearchOrchestrationHub: React.FC = () => {
     setDecisionLogs(prev => prev.map(l => l.id === activeDecisionId ? { ...l, status, userInput: text } : l));
   };
 
-  // Run structured loop pipeline with approval checks and individual memories
+  // Run structured loop pipeline with approval checks, individual memories and APA citations
   const startResearchOrchestration = async () => {
     if (!researchTopic.trim()) return;
     setIsOrchestrating(true);
@@ -279,20 +349,20 @@ export const AIResearchOrchestrationHub: React.FC = () => {
       const synthesizer = agents[1];
       const critic = agents[2];
 
-      // Build context strings from Individual Memories and Unified Memory
       const unifiedMemString = unifiedMemory.map(m => `- ${m}`).join('\n');
+      const apaReferencesString = getAPAReferencesString();
       
       if (i === 0) {
         // Phase 1: Research Extraction
         const indMemString = researcher.memory.map(m => `- ${m}`).join('\n');
-        systemPrompt = `Role: ${researcher.name} (${researcher.role}). Instructions: ${researcher.instructions}. ${researcher.skill?.systemInstructions || ''}\n\nIndividual Memory:\n${indMemString}\n\nUnified Shared Memory:\n${unifiedMemString}`;
-        prompt = `Perform research planning and source extraction on: "${researchTopic}". Detail 4 primary research vectors, keywords, key questions, and preliminary structures.`;
+        systemPrompt = `Role: ${researcher.name} (${researcher.role}). Instructions: ${researcher.instructions}. ${researcher.skill?.systemInstructions || ''}\n\nIndividual Memory:\n${indMemString}\n\nUnified Shared Memory:\n${unifiedMemString}\n\nAPA References Database:\n${apaReferencesString}`;
+        prompt = `Perform research planning and source extraction on: "${researchTopic}". Detail 4 primary research vectors, keywords, key questions, and preliminary structures. Ground extraction targets in the references database.`;
       } else if (i === 1) {
         // Phase 2: Synthesis
         const sourceData = resetPhases[0].output || 'No background logs found.';
         const indMemString = synthesizer.memory.map(m => `- ${m}`).join('\n');
-        systemPrompt = `Role: ${synthesizer.name} (${synthesizer.role}). Instructions: ${synthesizer.instructions}. ${synthesizer.skill?.systemInstructions || ''}\n\nIndividual Memory:\n${indMemString}\n\nUnified Shared Memory:\n${unifiedMemString}`;
-        prompt = `Based on the extraction data:\n${sourceData}\n\nSynthesize a structured report for "${researchTopic}". Include detailed sections, comparisons, and recommendations.`;
+        systemPrompt = `Role: ${synthesizer.name} (${synthesizer.role}). Instructions: ${synthesizer.instructions}. ${synthesizer.skill?.systemInstructions || ''}\n\nIndividual Memory:\n${indMemString}\n\nUnified Shared Memory:\n${unifiedMemString}\n\nAPA References Database:\n${apaReferencesString}`;
+        prompt = `Based on the extraction data:\n${sourceData}\n\nSynthesize a structured report for "${researchTopic}". Cite relevant authors from the references list.`;
       } else if (i === 2) {
         // Phase 3: Conflict Analysis
         const draftData = resetPhases[1].output || 'No draft found.';
@@ -313,7 +383,7 @@ export const AIResearchOrchestrationHub: React.FC = () => {
         const draftData = resetPhases[draftIdx !== -1 ? draftIdx : 1].output || '';
         const critiqueData = resetPhases[criticIdx !== -1 ? criticIdx : 2].output || '';
         systemPrompt = `Role: ${synthesizer.name} (${synthesizer.role}). Final Polish.`;
-        prompt = `Produce the final, polished comprehensive research paper on "${researchTopic}". Incorporate the critique feedback:\nCritique:\n${critiqueData}\n\nDraft:\n${draftData}`;
+        prompt = `Produce the final, polished comprehensive research paper on "${researchTopic}". Incorporate the critique feedback:\nCritique:\n${critiqueData}\n\nDraft:\n${draftData}\n\nAppend a dedicated "References" section at the end using the following APA bibliography items exactly:\n\n${apaReferencesString}`;
       }
 
       // Checkpoint before executing this phase: Request user decision approval!
@@ -727,6 +797,91 @@ export const AIResearchOrchestrationHub: React.FC = () => {
         {/* Right Column: Execution loop status & outputs */}
         <div className="lg:col-span-8 flex flex-col gap-6">
           
+          {/* Section: Sources & APA References panel */}
+          <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="flex justify-between items-center border-b border-[#2A2D30]/60 pb-3">
+              <h2 className="text-xs font-bold tracking-widest text-[#A3A09B] uppercase flex items-center gap-2">
+                <Link2 size={14} className="text-[#3C6B4D]" />
+                Sources Artifacts & APA References List
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Reference list display */}
+              <div className="space-y-3">
+                <span className="text-[10px] font-black text-[#A3A09B] uppercase block">Active Sources Citations</span>
+                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                  {references.map(ref => (
+                    <div key={ref.id} className="bg-[#111213] border border-[#2A2D30] p-3 rounded-2xl flex justify-between items-start text-[10px] gap-2">
+                      <div className="space-y-1">
+                        <span className="font-bold text-[#ECEBE9]">{ref.author} ({ref.year})</span>
+                        <p className="italic text-[#A3A09B]">{ref.title}</p>
+                        <span className="text-[9px] text-[#72706C] block">{ref.publisherOrJournal}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveReference(ref.id)}
+                        className="p-1 hover:text-red-400 text-[#72706C] transition-colors flex-shrink-0"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Add Reference Form */}
+              <form onSubmit={handleAddReference} className="bg-[#111213]/40 border border-[#2A2D30]/40 p-4 rounded-2xl space-y-2">
+                <span className="text-[10px] font-black text-[#A3A09B] uppercase block">Register APA Reference Item</span>
+                <div className="grid grid-cols-3 gap-2">
+                  <input
+                    type="text"
+                    placeholder="Author (e.g. Parejas, A.)"
+                    value={newRefAuthor}
+                    onChange={(e) => setNewRefAuthor(e.target.value)}
+                    required
+                    className="col-span-2 bg-[#111213] text-[10px] px-3 py-1.5 border border-[#2A2D30] rounded-xl focus:outline-none"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Year (e.g. 2026)"
+                    value={newRefYear}
+                    onChange={(e) => setNewRefYear(e.target.value)}
+                    className="bg-[#111213] text-[10px] px-3 py-1.5 border border-[#2A2D30] rounded-xl focus:outline-none"
+                  />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Title (e.g. Local-first NLP structures)"
+                  value={newRefTitle}
+                  onChange={(e) => setNewRefTitle(e.target.value)}
+                  required
+                  className="w-full bg-[#111213] text-[10px] px-3 py-1.5 border border-[#2A2D30] rounded-xl focus:outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder="Publisher or Journal name"
+                  value={newRefPublisher}
+                  onChange={(e) => setNewRefPublisher(e.target.value)}
+                  className="w-full bg-[#111213] text-[10px] px-3 py-1.5 border border-[#2A2D30] rounded-xl focus:outline-none"
+                />
+                <input
+                  type="url"
+                  placeholder="URL (optional)"
+                  value={newRefUrl}
+                  onChange={(e) => setNewRefUrl(e.target.value)}
+                  className="w-full bg-[#111213] text-[10px] px-3 py-1.5 border border-[#2A2D30] rounded-xl focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="w-full py-1.5 bg-[#3C6B4D] hover:bg-[#467c59] text-white text-[10px] font-bold rounded-xl transition-all"
+                >
+                  Append Reference Source
+                </button>
+              </form>
+            </div>
+          </div>
+
           {/* Interactive Checkpoint Approvals Panel */}
           {activeDecisionId && (
             <div className="bg-[#18191B] border border-[#E29E2D]/50 rounded-3xl p-6 shadow-xl space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -740,7 +895,7 @@ export const AIResearchOrchestrationHub: React.FC = () => {
               
               <div className="space-y-3">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[9px] font-black uppercase text-[#A3A09B]">Provide Custom Response Guidance (Optional)</label>
+                  <label className="text-[9px] font-black uppercase text-[#A3A09B]">Provide Custom Guidance Response (Optional)</label>
                   <input
                     type="text"
                     value={customResponseInput}
