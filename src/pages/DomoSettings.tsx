@@ -19,7 +19,13 @@ export const DomoSettings: React.FC = () => {
   const [enableHabitsLog, setEnableHabitsLog] = useState(true);
 
   // Floating assistant states
-  const [showFloatingDomo, setShowFloatingDomo] = useState(true);
+  const [showFloatingDomo, setShowFloatingDomo] = useState(() => {
+    const isOnline = 
+      window.location.hostname.endsWith('.vercel.app') || 
+      window.location.hostname === 'domodomo.site' ||
+      (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.hostname.startsWith('192.168.'));
+    return !isOnline;
+  });
   const [ambientVoiceChat, setAmbientVoiceChat] = useState(false);
   const [assistantPersona, setAssistantPersona] = useState('You are Domo, a helpful offline AI assistant inside the DomoDomo application. Respond briefly and friendly.');
   const [glowEffect, setGlowEffect] = useState('regular');

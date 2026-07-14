@@ -25,8 +25,13 @@ export const FloatingDomo: React.FC = () => {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
   const loadPreferences = () => {
+    const isOnlineProd = 
+      window.location.hostname.endsWith('.vercel.app') || 
+      window.location.hostname === 'domodomo.site' ||
+      (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.hostname.startsWith('192.168.'));
+
     const showSetting = localStorage.getItem('domodomo_show_floating_assistant');
-    setIsVisible(showSetting === null ? true : showSetting === 'true');
+    setIsVisible(showSetting === null ? !isOnlineProd : showSetting === 'true');
 
     const savedModel = aiService.getSelectedOllamaModel();
     if (savedModel) {
