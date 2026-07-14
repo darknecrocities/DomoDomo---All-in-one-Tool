@@ -36,7 +36,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '1.2B',
     size: '1.3 GB',
     description: 'Meta\'s ultra-lightweight text model designed for local, resource-constrained execution. Ideal for fast task processing and mobile environments.',
-    tags: ['Meta', 'Ultra-Lightweight', 'General Chat'],
+    tags: ['Meta', 'Ultra-Lightweight', 'General Chat', 'Fast Tokenizer'],
     purpose: 'Personal assistants, text summarizing, rewriting, and quick question answering on low-resource machines.',
     features: {
       contextWindow: '128k',
@@ -45,7 +45,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Very Fast',
       coding: 'Basic'
     },
-    recommendation: 'Highly recommended for budget laptops, old computers, or running entirely on low-end CPUs.',
+    recommendation: 'Best Suited Tools: AI Research Orchestration Hub (Extraction), Summarizer, Text Rewriter, Translator, local RAG tasks.',
     ramRequired: '4GB - 8GB RAM',
     categories: ['low-spec', 'general']
   },
@@ -55,7 +55,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '3.2B',
     size: '2.0 GB',
     description: 'Meta\'s state-of-the-art compact text model offering an exceptional balance of reasoning accuracy, bilingual support, and speed.',
-    tags: ['Meta', 'Balanced', 'Multilingual'],
+    tags: ['Meta', 'Balanced', 'Multilingual', 'Reasoning'],
     purpose: 'General chat, structured data output, smart agent reasoning, and interactive dialogue.',
     features: {
       contextWindow: '128k',
@@ -64,7 +64,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Fast',
       coding: 'Good'
     },
-    recommendation: 'The gold standard for standard laptops and average consumer machines seeking smart offline chat.',
+    recommendation: 'Best Suited Tools: AI Research Orchestration Hub (Synthesizer/Critic), Domo Agent Hub, AI Code Explainer, AI Sentiment Journal.',
     ramRequired: '8GB - 16GB RAM',
     categories: ['balanced', 'general']
   },
@@ -74,7 +74,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '490M',
     size: '350 MB',
     description: 'Alibaba\'s ultra-compact LLM with a minuscule RAM footprint. Performs surprisingly well for basic text parsing and structured outputs.',
-    tags: ['Alibaba', 'Micro-Model', 'Multilingual'],
+    tags: ['Alibaba', 'Micro-Model', 'Multilingual', 'Fast Extraction'],
     purpose: 'Embedded systems, micro-agents, schema parsing, JSON extraction, and extremely low-spec configurations.',
     features: {
       contextWindow: '32k',
@@ -83,7 +83,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Very Fast',
       coding: 'Basic'
     },
-    recommendation: 'Use when RAM is severely limited or when speed is the only metric that matters.',
+    recommendation: 'Best Suited Tools: Text-to-Speech (TTS), local RAG chunking, OCR Assistant, JSON Formatter parsing, metadata cleaner.',
     ramRequired: '2GB - 4GB RAM',
     categories: ['low-spec']
   },
@@ -93,7 +93,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '1.5B',
     size: '900 MB',
     description: 'Alibaba\'s lightweight powerhouse. Offers impressive multilingual support and handles basic programming syntax beautifully.',
-    tags: ['Alibaba', 'Lightweight', 'Coding-Capable'],
+    tags: ['Alibaba', 'Lightweight', 'Coding-Capable', 'Tagalog-Bilingual'],
     purpose: 'Bilingual chat, quick code generation, email drafting, and formatting pipelines.',
     features: {
       contextWindow: '32k',
@@ -102,7 +102,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Very Fast',
       coding: 'Good'
     },
-    recommendation: 'Excellent for users who want multi-language conversations and basic coding aid on dual-core laptops.',
+    recommendation: 'Best Suited Tools: AI Email Composer, Tagalog Tokenizer (NLP), Translator (Tagalog/English), local Code Notes Editor.',
     ramRequired: '4GB - 8GB RAM',
     categories: ['low-spec', 'coding']
   },
@@ -112,7 +112,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '7.3B',
     size: '4.7 GB',
     description: 'A heavyweight champion in the 7B class, boasting advanced coding and mathematical logic alongside top-tier multilingual performance.',
-    tags: ['Alibaba', 'Reasoning', 'Advanced Coding'],
+    tags: ['Alibaba', 'Reasoning', 'Advanced Coding', 'Math Solver'],
     purpose: 'Complex software development assistance, mathematical problems, logical reasoning, and agent tool execution.',
     features: {
       contextWindow: '128k',
@@ -121,7 +121,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Moderate',
       coding: 'Excellent'
     },
-    recommendation: 'Highly recommended for developers and power users with workstations or gaming rigs.',
+    recommendation: 'Best Suited Tools: AI Math Solver, AI Code Reviewer, DomoGuard Code Auditor, ER Schema Designer, SQL Formatter.',
     ramRequired: '16GB+ RAM',
     categories: ['high-perf', 'coding']
   },
@@ -131,7 +131,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '3.8B',
     size: '2.2 GB',
     description: 'Microsoft\'s highly efficient Small Language Model (SLM) trained on heavy synthetic logic datasets. Outstanding performance for its compact size.',
-    tags: ['Microsoft', 'SLM', 'High Logic'],
+    tags: ['Microsoft', 'SLM', 'High Logic', 'Academic Reasoning'],
     purpose: 'Step-by-step reasoning, logical riddles, reading comprehension, and structured command generation.',
     features: {
       contextWindow: '128k',
@@ -140,7 +140,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Fast',
       coding: 'Good'
     },
-    recommendation: 'Great for academic reasoning, text classification, and structured logical workflows on standard PCs.',
+    recommendation: 'Best Suited Tools: Academic Thesis Advisor, Theoretical Framework Builder, AI Debate Assistant, Hypothesis Verification.',
     ramRequired: '8GB - 16GB RAM',
     categories: ['balanced', 'general']
   },
@@ -150,7 +150,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '2.6B',
     size: '1.6 GB',
     description: 'Google\'s highly efficient open model featuring advanced architecture optimizations. Highly responsive with outstanding text formatting logic.',
-    tags: ['Google', 'Tactical Text', 'Highly Accurate'],
+    tags: ['Google', 'Tactical Text', 'Highly Accurate', 'Creative'],
     purpose: 'Creative writing assistance, summarization, prompt enhancement, and structured extraction.',
     features: {
       contextWindow: '8k',
@@ -159,7 +159,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Fast',
       coding: 'Basic'
     },
-    recommendation: 'Perfect for content writers, bloggers, and prompt engineers seeking high-quality textual outputs.',
+    recommendation: 'Best Suited Tools: AIPrompt Enhancer, AI Story Generator, Abstract Writing Architect, Academic Tone Auditor.',
     ramRequired: '8GB RAM',
     categories: ['low-spec', 'general']
   },
@@ -169,7 +169,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '9.2B',
     size: '5.5 GB',
     description: 'A powerful Google LLM that frequently matches or beats larger models in benchmarks. Offers incredibly robust natural language understanding.',
-    tags: ['Google', 'High Accuracy', 'Deep Analysis'],
+    tags: ['Google', 'High Accuracy', 'Deep Analysis', 'Academic writing'],
     purpose: 'In-depth research assistance, complex text transformations, logic puzzles, and high-accuracy reviews.',
     features: {
       contextWindow: '8k',
@@ -178,7 +178,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Moderate',
       coding: 'Good'
     },
-    recommendation: 'Excellent if you prioritize factual accuracy and depth of response, and have a GPU to accelerate it.',
+    recommendation: 'Best Suited Tools: Literature Review Synthesizer, AI Research Orchestration Hub (Deep Researcher), Thesis Defense Prep.',
     ramRequired: '16GB+ RAM',
     categories: ['high-perf', 'general']
   },
@@ -188,7 +188,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '7.2B',
     size: '4.1 GB',
     description: 'The legendary open model that set the standard for 7B parameters. Highly versatile, creative, and widely compatible.',
-    tags: ['Mistral', 'Versatile', 'Creative Writing'],
+    tags: ['Mistral', 'Versatile', 'Creative Writing', 'Conversational'],
     purpose: 'Creative writing, storytelling, open-ended dialogues, and custom corporate instruction-following.',
     features: {
       contextWindow: '32k',
@@ -197,7 +197,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Moderate',
       coding: 'Good'
     },
-    recommendation: 'A classic, highly adaptive choice for general tasks and creative prompt templates.',
+    recommendation: 'Best Suited Tools: Domo Voice Companion, Rich Text Editor, AI Story Generator, AI Chat.',
     ramRequired: '16GB RAM',
     categories: ['high-perf', 'general']
   },
@@ -207,7 +207,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '7.2B',
     size: '4.7 GB',
     description: 'A multimodal model that bridges the gap between text and sight. Capable of analyzing image uploads and answering visual queries.',
-    tags: ['Vision-Capable', 'Multimodal', 'Image OCR'],
+    tags: ['Vision-Capable', 'Multimodal', 'Image OCR', 'Visual Chat'],
     purpose: 'Image captioning, object identification, optical character recognition (OCR) of diagrams, and visual chat.',
     features: {
       contextWindow: '4k',
@@ -216,7 +216,7 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Moderate',
       coding: 'Basic'
     },
-    recommendation: 'Must-have model if you want to test visual workflows or OCR formatting in local environments.',
+    recommendation: 'Best Suited Tools: OCR Scanner, Image Classifier, EXIF Viewer, QR Security Scanner, Capstone Hardware Prototyper (Diagrams).',
     ramRequired: '16GB+ RAM (GPU strongly recommended)',
     categories: ['high-perf', 'vision']
   },
@@ -226,7 +226,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '7B',
     size: '4.8 GB',
     description: 'Google\'s specialized variant of Gemma optimized for software development. Built to assist in code completion and language-agnostic engineering tasks.',
-    tags: ['Google', 'Coding Specialized', 'Code Autocomplete'],
+    tags: ['Google', 'Coding Specialized', 'Code Autocomplete', 'Syntax Analyzer'],
     purpose: 'Autocompleting programming files, bug diagnostics, unit test writing, and repository navigation.',
     features: {
       contextWindow: '8k',
@@ -235,9 +235,28 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Moderate',
       coding: 'Excellent'
     },
-    recommendation: 'Dedicated model for developers looking to integrate local IDE completions and review workflows.',
+    recommendation: 'Best Suited Tools: Software Capstone Architect, Domo Agent Hub, AI Code Reviewer, Diff Checker.',
     ramRequired: '16GB RAM',
     categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'deepseek-coder:1.3b',
+    name: 'DeepSeek Coder 1.3B',
+    parameters: '1.3B',
+    size: '776 MB',
+    description: 'Ultra-fast lightweight coding model from DeepSeek. Excels at single-file script writing and basic regex building.',
+    tags: ['DeepSeek', 'Lightweight Coding', 'Regex builder'],
+    purpose: 'Fast regular expressions parsing, SQL formatter helper, auto-pilot script validation.',
+    features: {
+      contextWindow: '16k',
+      multilingual: true,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: Regex Data Extractor, Cron Expression Parser, Base Converter, HTML Minifier.',
+    ramRequired: '4GB - 8GB RAM',
+    categories: ['low-spec', 'coding']
   },
   {
     id: 'deepseek-coder:6.7b',
@@ -245,7 +264,7 @@ const MODELS_CATALOG: ModelInfo[] = [
     parameters: '6.7B',
     size: '3.8 GB',
     description: 'One of the best open-source coding assistants in the industry. Trained on massive codebase datasets to handle multi-file operations and refactoring.',
-    tags: ['DeepSeek', 'Coding Specialized', 'Refactoring Master'],
+    tags: ['DeepSeek', 'Coding Specialized', 'Refactoring Master', 'Agent execution'],
     purpose: 'Advanced software design, algorithm generation, security patch reviews, and system scripting.',
     features: {
       contextWindow: '16k',
@@ -254,9 +273,142 @@ const MODELS_CATALOG: ModelInfo[] = [
       speed: 'Moderate',
       coding: 'Excellent'
     },
-    recommendation: 'Perfect local helper for programmers who write software offline and want premium code suggestions.',
+    recommendation: 'Best Suited Tools: Auto-Pilot Workspace, Domo Skill Creator, DomoGuard Code Auditor, API Tester routing.',
     ramRequired: '12GB - 16GB RAM',
     categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'codellama:7b',
+    name: 'Meta Code Llama 7B',
+    parameters: '7B',
+    size: '3.8 GB',
+    description: 'Meta\'s specialized coding model built on top of Llama 2. Optimized for python, javascript, and C++ workflows.',
+    tags: ['Meta', 'Code Generation', 'Dev-Tools'],
+    purpose: 'General developer assistance, multi-language scripting, and code annotation writing.',
+    features: {
+      contextWindow: '16k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AI Code Explainer, Code Notes Editor, keycode-finder, box-shadow-gen scripts.',
+    ramRequired: '12GB - 16GB RAM',
+    categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'qwen2.5-coder:1.5b',
+    name: 'Alibaba Qwen 2.5 Coder 1.5B',
+    parameters: '1.5B',
+    size: '986 MB',
+    description: 'Lightweight coder variant from Alibaba. Unlocks incredibly accurate code output inside low-spec browser environments.',
+    tags: ['Alibaba', 'Lightweight Coder', 'JSON validator'],
+    purpose: 'Offline format helpers, local script compilation checks, and fast code translation templates.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: JSON Tree Visualizer, YAML ↔ JSON Converter, CSS Grid Template Builder, Markdown Table Generator.',
+    ramRequired: '4GB - 8GB RAM',
+    categories: ['low-spec', 'coding']
+  },
+  {
+    id: 'qwen2.5-coder:7b',
+    name: 'Alibaba Qwen 2.5 Coder 7B',
+    parameters: '7.6B',
+    size: '4.7 GB',
+    description: 'Top-tier code model in the 7B class. Exceptionally smart at structural refactoring, software architecture patterns, and algorithm designs.',
+    tags: ['Alibaba', 'Advanced Coding', 'Architectures', 'Debugging'],
+    purpose: 'Refactoring large source files, database entity models generation, and code review checks.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: ER Schema Designer, SQL Formatter, AI Code Reviewer, Software Capstone Architect.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'smollm2:1.7b',
+    name: 'Hugging Face SmolLM2 1.7B',
+    parameters: '1.7B',
+    size: '1.0 GB',
+    description: 'A tiny, extremely optimized language model designed to run inside browser web environments smoothly with minimal footprint.',
+    tags: ['HuggingFace', 'SmolLM', 'Mobile Friendly'],
+    purpose: 'Quick device info analysis, local chat simulation, and simple keyword category classification.',
+    features: {
+      contextWindow: '8k',
+      multilingual: false,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: Screen & Device Info logs, AI Classifier, local Translator fallbacks.',
+    ramRequired: '4GB RAM',
+    categories: ['low-spec', 'general']
+  },
+  {
+    id: 'mistral-nemo:12b',
+    name: 'Mistral Nemo 12B',
+    parameters: '12B',
+    size: '7.1 GB',
+    description: 'Mistral AI\'s high-end 12B model featuring advanced reasoning, large context token lists, and deep analytical reasoning.',
+    tags: ['Mistral', 'High Capacity', 'Long Context', 'Workstation'],
+    purpose: 'Complex cognitive mapping, semantic document audits, and deep adversarial capstone review loops.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: Domo Brain Mind Mapper, AIPDF Investigator (Semantic RAG), AI Research Orchestration Hub (Adversarial Critic).',
+    ramRequired: '16GB - 24GB RAM (GPU required)',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'minicpm-v:8b',
+    name: 'MiniCPM-V 8B (Vision)',
+    parameters: '8B',
+    size: '5.5 GB',
+    description: 'Highly advanced multimodal open-source vision assistant. Excels at image description, structural OCR, and diagram mapping.',
+    tags: ['Vision-Capable', 'Multimodal', 'Structured OCR'],
+    purpose: 'Extracting data tables from photos, flowchart image node parsing, and captioning.',
+    features: {
+      contextWindow: '8k',
+      multilingual: true,
+      vision: true,
+      speed: 'Moderate',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: OCR Scanner, Capstone Hardware Prototyper (Visual diagrams auditing), Image Classifier, EXIF Viewer.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'vision']
+  },
+  {
+    id: 'command-r:35b',
+    name: 'Cohere Command R 35B',
+    parameters: '35B',
+    size: '20 GB',
+    description: 'Cohere\'s enterprise-tier RAG-optimized model. Outstanding at managing web searches, document datasets audits, and citation grounding.',
+    tags: ['Cohere', 'Enterprise RAG', 'Citation Grounding', 'Large RAM'],
+    purpose: 'High-performance corpus analysis, multi-document research pipelines, and structured APA referencing reports.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AIPDF Investigator, APA 7th Referencing Assistant, Literature Review Synthesizer, AI Research Hub.',
+    ramRequired: '32GB - 64GB RAM (High-end GPU Workstations)',
+    categories: ['high-perf', 'general']
   }
 ];
 
