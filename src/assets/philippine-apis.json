@@ -4723,5 +4723,887 @@
     "https": true,
     "cors": "yes",
     "link": "https://github.com/jakejas/ph-banks/search?q=Asia%20United%20Bank"
+  },
+  {
+    "name": "Tagalog Dictionary Dataset",
+    "description": "Comprehensive structured dictionary database of Filipino and Tagalog words, definitions, synonyms, and translations.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/itsricardoparentela/tagalog-dictionary"
+  },
+  {
+    "name": "Filipino WordNet",
+    "description": "A semantic network and lexical database for the Tagalog/Filipino language, mapping word relationships and word senses.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/allan-samuel/filipino-wordnet"
+  },
+  {
+    "name": "Tagalog-English Corpus (Tala)",
+    "description": "Parallel translation corpus of Tagalog and English sentences optimized for training machine translation models and LLMs.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/tala-nlp/tagalog-english-parallel-corpus"
+  },
+  {
+    "name": "Hugging Face Filipino Text Dataset",
+    "description": "Aggregated open text datasets containing news, literature, and forum posts in Filipino, ideal for pretraining Tagalog language models.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://huggingface.co/datasets/wikipedia"
+  },
+  {
+    "name": "Tagalog Sentiment Analysis Dataset",
+    "description": "Labeled corpus of Filipino tweets and product reviews categorized into positive, negative, and neutral sentiments.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jcblais/tagalog-sentiment-corpus"
+  },
+  {
+    "name": "Filipino Language Stopwords",
+    "description": "Cleaned list of common Tagalog and regional dialect stopwords used in preprocessing text for search indexes and NLP tasks.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/copypaster/filipino-stopwords"
+  },
+  {
+    "name": "Tagalog POS Tagger Dataset",
+    "description": "Gold standard corpus of Tagalog sentences annotated with Part-of-Speech tags for grammatical analysis models.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/tagalog-nlp/pos-tagger-gold-standard"
+  },
+  {
+    "name": "Filipino News Dataset (PH-News)",
+    "description": "A collection of online news articles published by local media networks in pure Tagalog and Taglish from 2018 to 2025.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/philippine-news-corpus"
+  },
+  {
+    "name": "Tagalog Word2Vec Embeddings",
+    "description": "Pre-trained static word embeddings trained on Tagalog Wikipedia articles and local literature corpus.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/jason-nlp/tagalog-word2vec"
+  },
+  {
+    "name": "Filipino Dialect Glossary (Bicol, Cebuano, Ilocano)",
+    "description": "Comparative vocabulary dictionary dataset mapping words from regional languages in the Philippines to Tagalog and English.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-languages/regional-dialects-glossary"
+  },
+  {
+    "name": "Wikisource Tagalog Corpus",
+    "description": "Extracted public domain Tagalog literature, historic speeches, and constitutional documents in raw text format.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/wikisource/tagalog-texts-corpus"
+  },
+  {
+    "name": "Filipino Commonsense Reasoning Dataset",
+    "description": "A benchmark dataset consisting of multiple-choice questions in Tagalog to test the commonsense reasoning of LLMs.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-reasoning/tagalog-commonsense-qa"
+  },
+  {
+    "name": "Tagalog Question Answering Dataset (Tariki)",
+    "description": "Contextual QA pairs in Tagalog based on Philippine history and geography for fine-tuning reader-retriever models.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-qa/tagalog-history-qa"
+  },
+  {
+    "name": "Filipino Hate Speech Dataset",
+    "description": "Anonymized and annotated dataset of social media comments in Tagalog targeting hate speech and harassment classification.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/tagalog-toxic-comment-dataset"
+  },
+  {
+    "name": "Tagalog Coreference Resolution Corpus",
+    "description": "Annotated Tagalog text corpus for coreference resolution models resolving pronouns to their correct antecedent nouns.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/tagalog-coref-corpus"
+  },
+  {
+    "name": "Filipino Speech-to-Text Audio Dataset (PH-Speech)",
+    "description": "Open transcript voice database of Tagalog speakers reading phonetically balanced sentences, ideal for ASR systems.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-speech/tagalog-asr-corpus"
+  },
+  {
+    "name": "Tagalog Named Entity Recognition (NER) Dataset",
+    "description": "Dataset of Tagalog sentences labeled with entities (Person, Organization, Location) for NER model training.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/tagalog-ner-dataset"
+  },
+  {
+    "name": "Filipino SMS Spam Dataset",
+    "description": "A dataset of local SMS messages written in Tagalog and English labeled as spam/scam or ham.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-spam/tagalog-sms-spam-dataset"
+  },
+  {
+    "name": "Tagalog Syllabification Dataset",
+    "description": "A lexicon of Tagalog words broken down into their hyphenated syllables, useful for TTS and text processing engines.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-linguistics/tagalog-syllables"
+  },
+  {
+    "name": "DTI Registered Business Names Dataset",
+    "description": "Public domain dataset index containing registered business names in the Philippines compiled by DTI.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dti-opendata/registered-businesses-ph"
+  },
+  {
+    "name": "SEC Registered Corporations Dataset",
+    "description": "Public directory of incorporated companies and associations in the Philippines including registration numbers.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/sec-opendata/registered-corporations-ph"
+  },
+  {
+    "name": "DOST Project NOAH Flood Maps API",
+    "description": "Geographical hazard and historical flood map database across Philippine regions, maintained by UP/DOST.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/project-noah/flood-hazard-maps"
+  },
+  {
+    "name": "Philippine Earthquake Catalog (PHIVOLCS)",
+    "description": "Retrieval endpoint database of historical seismic activities and fault lines in the Philippines.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/phivolcs/earthquake-catalog-ph"
+  },
+  {
+    "name": "DOH COVID-19 Public Tracker Dataset",
+    "description": "Official Department of Health anonymized patient cases, testing laboratory capacity, and hospital beds availability data.",
+    "category": "Health & Demographics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/doh-ph/covid19-data-tracker"
+  },
+  {
+    "name": "Philippine Blood Services Directory",
+    "description": "Directory of active blood bank locations, reservation catalogs, and contact details of Philippine Red Cross centers.",
+    "category": "Health & Demographics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-blood-donors/blood-banks-directory"
+  },
+  {
+    "name": "Philippine PSA Birth & Death Statistics",
+    "description": "Public census data archives tracking annual birth rate, mortality indicators, and population shifts in the Philippines.",
+    "category": "Health & Demographics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/psa-opendata/birth-death-statistics-ph"
+  },
+  {
+    "name": "DepEd Public Schools Directory",
+    "description": "Full school profile catalog containing elementary and secondary public school codes, addresses, and principal names.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/deped-opendata/public-schools-ph"
+  },
+  {
+    "name": "CHED Recognized Higher Education Institutions",
+    "description": "Complete list of state colleges, universities, and recognized private universities in the Philippines.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ched-opendata/higher-education-institutions-ph"
+  },
+  {
+    "name": "DOST Scholarship Graduates Directory",
+    "description": "An open listing database of Science and Technology graduates under government scholarship programs.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dost-sei/scholarship-graduates-ph"
+  },
+  {
+    "name": "Philippine Law Corpus (ChanRobles Archive)",
+    "description": "Consolidated dataset containing text of Republic Acts, Supreme Court decisions, and Executive Orders in the Philippines.",
+    "category": "Government & Law",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-laws/republic-acts-corpus"
+  },
+  {
+    "name": "Philippine Constitution Dataset (1987)",
+    "description": "Structured JSON representation of the 1987 Constitution of the Republic of the Philippines by articles and sections.",
+    "category": "Government & Law",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-laws/1987-constitution-json"
+  },
+  {
+    "name": "Comelec Voters Statistics Dataset",
+    "description": "Registered voter demographics, precinct counts, and regional distribution for Philippine national elections.",
+    "category": "Government & Law",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/comelec/voter-turnout-data"
+  },
+  {
+    "name": "Philippine Tollway Rates API",
+    "description": "Toll tariff matrices for SLEX, NLEX, SCTEX, CAVITEX, Skyway, and MCX tolls mapped by entry and exit points.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-transit/toll-rates-api"
+  },
+  {
+    "name": "LTO License Plate Verification API",
+    "description": "Mock API service matching valid license plate patterns to registration records and validation protocols.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-transit/plate-validator"
+  },
+  {
+    "name": "Philippine Railway Transit Schedule API",
+    "description": "Live timetable, fare matrix, and operating hours for MRT-3, LRT-1, LRT-2, and PNR commuter rail lines.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-transit/train-schedules"
+  },
+  {
+    "name": "National Museum of the Philippines Exhibits API",
+    "description": "Metadata catalog of registered national cultural treasures, art collections, and historical artifacts.",
+    "category": "Culture & Holidays",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-heritage/national-museum-artifacts"
+  },
+  {
+    "name": "Intramuros Historical Landmarks Directory",
+    "description": "Geographic coordinates, historical context, and visitor guidelines of historical sites inside Intramuros, Manila.",
+    "category": "Culture & Holidays",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-heritage/intramuros-landmarks"
+  },
+  {
+    "name": "Philippine Folktales & Mythology Dataset",
+    "description": "A collection of traditional myths, epics, and stories across various Philippine indigenous tribes.",
+    "category": "Culture & Holidays",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-heritage/ph-folklore-corpus"
+  },
+  {
+    "name": "Bicolano Dictionary Dataset",
+    "description": "A translation mapping and lexical dataset of the Bicolano language with grammatical tags.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/bicolano-dictionary"
+  },
+  {
+    "name": "Cebuano-English Dictionary Database",
+    "description": "Structured dataset of Bisaya/Cebuano words, translations, and example usages for machine learning applications.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/cebuano-dictionary"
+  },
+  {
+    "name": "Ilocano Vocabulary Corpus",
+    "description": "A lexical database of the Ilocano dialect containing root words, affixes, and English counterpart mappings.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/ilocano-vocabulary"
+  },
+  {
+    "name": "Hiligaynon Language Wordlist",
+    "description": "Structured glossary file mapping Hiligaynon words to Tagalog and English translations.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/hiligaynon-dictionary"
+  },
+  {
+    "name": "Waray-Waray Lexicon Dataset",
+    "description": "Linguistic dataset of Waray words compiled for NLP translation research and dialect pretraining.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/waray-dictionary"
+  },
+  {
+    "name": "Chavacano Dialect Phrases Corpus",
+    "description": "A corpus of sentence structures and translations in Zamboanga Chavacano dialect for NLP research.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/chavacano-phrases-dataset"
+  },
+  {
+    "name": "Pangasinan Lexical Database",
+    "description": "Vocabulary dictionary of Pangasinan words with definitions and sample contexts.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/pangasinan-lexicon"
+  },
+  {
+    "name": "Kapampangan Dictionary Dataset",
+    "description": "Comprehensive structured vocabulary database mapping Kapampangan terms to English and Tagalog.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/kapampangan-dictionary"
+  },
+  {
+    "name": "Tausug Vocabulary Guide",
+    "description": "An open dataset of Tausug phrases, words, and semantic structures with translation anchors.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/tausug-vocabulary"
+  },
+  {
+    "name": "Maranao Wordlist & Dialogues",
+    "description": "A dialect dataset comprising common Maranao expressions, vocabulary lists, and English translations.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-nlp/maranao-wordlist"
+  },
+  {
+    "name": "Philippine Public Debt Statistics API",
+    "description": "Annual tracking data of external and domestic debts of the Philippine national government.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/gov-debt/philippines-national-debt-dataset"
+  },
+  {
+    "name": "BIR RDO Codes Directory",
+    "description": "A reference lookup mapping Bureau of Internal Revenue Revenue District Offices (RDO) to cities and provinces.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/bir-codes/revenue-district-offices-ph"
+  },
+  {
+    "name": "SSS Contributions Table Database",
+    "description": "Structured matrix mapping salary brackets to employer/employee Social Security System contributions.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-contributions/sss-contribution-matrix"
+  },
+  {
+    "name": "PhilHealth Premium Rates Database",
+    "description": "Reference catalog mapping salary indexes to PhilHealth insurance premium brackets.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-contributions/philhealth-premium-matrix"
+  },
+  {
+    "name": "Pag-IBIG Fund Bracket Table",
+    "description": "Salary ranges and monthly savings contribution requirements for Pag-IBIG HDMF membership.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-contributions/pag-ibig-contribution-matrix"
+  },
+  {
+    "name": "Philippine Tax Calculator API",
+    "description": "Mock calculator service calculating TRAIN Law withholding taxes for self-employed and corporate employees.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-taxes/train-law-calculator"
+  },
+  {
+    "name": "Philsys Registry Validation Service",
+    "description": "Metadata structures and validation patterns for verifying Philippine National ID Card formats locally.",
+    "category": "Government & Law",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philsys-opendata/national-id-validator"
+  },
+  {
+    "name": "PhilGEPS Procurement Portal Archives",
+    "description": "Archived dataset indexing public bid notices, government procurement awards, and contractor records.",
+    "category": "Government & Law",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/philgeps-opendata/procurement-notices-archive"
+  },
+  {
+    "name": "Philippine Government Directory",
+    "description": "Official contact details, directory listings, and physical addresses of national departments, bureaus, and agencies.",
+    "category": "Government & Law",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/gov-directory/philippines-government-directory"
+  },
+  {
+    "name": "Philippine Crop Production Database",
+    "description": "Official PSA stats detailing annual harvesting yield of coconut, rice, sugarcane, and main agricultural crops.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/da-opendata/crop-production-ph"
+  },
+  {
+    "name": "Philippine Marine Protected Areas Catalog",
+    "description": "Geospatial database of local marine sanctuaries, protected reefs, and conservation zones under DENR.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/denr-opendata/marine-protected-areas"
+  },
+  {
+    "name": "Philippine Air Quality Index (AQI) Log",
+    "description": "Air quality monitoring dataset covering particulate matter density in Metro Manila urban zones.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/denr-emb/air-quality-dataset"
+  },
+  {
+    "name": "Philippine Flora & Fauna Endangered List",
+    "description": "Official taxonomy catalog listing endangered native plants and animal species under national protection.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/denr-bmb/endangered-species-ph"
+  },
+  {
+    "name": "DTI Price Monitoring Dataset",
+    "description": "Weekly monitoring dataset of SRP (Suggested Retail Price) for basic commodities and canned goods in major wet markets.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dti-opendata/srp-price-monitoring"
+  },
+  {
+    "name": "Philippine Retail Malls Directory",
+    "description": "Directory of major shopping malls, operating hours, coordinates, and commercial developers in the Philippines.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/malls-ph/malls-directory-dataset"
+  },
+  {
+    "name": "Philippine Export & Import Statistics",
+    "description": "Trade statistics logging major export commodities, trading partner countries, and monthly shipment value registers.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/psa-opendata/export-import-trade-data"
+  },
+  {
+    "name": "Philippine Startup Ecosystem Registry",
+    "description": "An open listing of tech startup enterprises, founding years, business categories, and funding rounds in the Philippines.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-startups/ecosystem-directory"
+  },
+  {
+    "name": "National Library of the Philippines Book Catalog",
+    "description": "Metadata indexing registry of copyright registrations, ISBN registrations, and books published in the Philippines.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/nlp-books/philippine-books-catalog"
+  },
+  {
+    "name": "UP Diliman Liblas Thesis Archives",
+    "description": "Open indexing database listing undergraduate and graduate research thesis topics from UP Diliman SLIS.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/up-diliman/thesis-metadata-archives"
+  },
+  {
+    "name": "DOST Project ASTI Satellite Data Portal",
+    "description": "Reference documentation of weather-monitoring satellite signals and remote sensing images captured over the Philippine territory.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dost-asti/satellite-imagery-metadata"
+  },
+  {
+    "name": "Philippine Scientific Journals Index",
+    "description": "A collection of research papers, abstracts, and authors published in accredited scientific journals in the Philippines.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dost-stii/scientific-journals-index"
+  },
+  {
+    "name": "DOT Accredited Hotels & Resorts List",
+    "description": "Official Department of Tourism list of accredited accommodation establishments, classifications, and star levels.",
+    "category": "Tourism & Travel",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dot-travel/accredited-hotels-directory"
+  },
+  {
+    "name": "Philippine Tourist Destinations Geocoding Dataset",
+    "description": "Coordinates, elevation, description, and tourist categories of popular tourist spots, beaches, and hiking peaks.",
+    "category": "Tourism & Travel",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dot-travel/philippines-destinations-geocoding"
+  },
+  {
+    "name": "Manila Heritage Sites Walking Tour Catalog",
+    "description": "Coordinates and historically verified details of historic heritage sites and ancestral homes in Binondo, Quiapo, and Ermita.",
+    "category": "Tourism & Travel",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/manila-heritage/walking-tours-dataset"
+  },
+  {
+    "name": "Philippine Dive Sites Directory",
+    "description": "Geographical coordinates, depth indicators, and marine life characteristics of registered dive spots in Tubbataha, Anilao, and Apo Reef.",
+    "category": "Tourism & Travel",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dot-travel/philippines-dive-spots"
+  },
+  {
+    "name": "PNP Station Locations & Hotlines",
+    "description": "Geographic location pins, office contact hotlines, and regional command categories of Philippine National Police stations.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/pnp-opendata/police-stations-hotlines"
+  },
+  {
+    "name": "BFP Fire Station Directories",
+    "description": "Emergency hotline directory and station location list of the Bureau of Fire Protection across municipalities.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/bfp-opendata/fire-stations-directory"
+  },
+  {
+    "name": "NDRRMC Evacuation Centers Directory",
+    "description": "Registered disaster shelter centers, coordinates, and local government units management records.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ndrrmc-opendata/evacuation-centers-ph"
+  },
+  {
+    "name": "Philippine Postal Code Boundaries (GIS)",
+    "description": "GeoJSON boundaries of ZIP Code areas in the Philippines for geographical analytics and mapping applications.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/postal-ph/zip-code-geojson-boundaries"
+  },
+  {
+    "name": "Philippine Administrative Region Boundaries (GIS)",
+    "description": "High-resolution administrative shapefiles of Philippine regions and provinces in GeoJSON format.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/geodata-ph/administrative-boundaries-geojson"
+  },
+  {
+    "name": "Philippine Topographic Elevation Model",
+    "description": "Geographical terrain dataset representing elevation grids and mountainous contours across the Philippine islands.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/geodata-ph/philippines-dem-elevation-model"
+  },
+  {
+    "name": "Philippine Barangay Level Grid Mappings",
+    "description": "GIS coordinates mapping centroid points and boundaries of all registered barangays in the Philippines.",
+    "category": "Geocoding & Addresses",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/geodata-ph/barangay-centroid-coordinates"
+  },
+  {
+    "name": "Filipino Recipe & Culinary Dataset",
+    "description": "A database of authentic Filipino food recipes, ingredients, instructions, cooking categories, and cultural origins.",
+    "category": "Culture & Holidays",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/culinary-ph/filipino-recipes-dataset"
+  },
+  {
+    "name": "Philippine Flora Vernacular Names",
+    "description": "Tagalog, regional, scientific, and English names of local trees, flowers, and agricultural plants.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-botany/flora-vernacular-names"
+  },
+  {
+    "name": "Philippine Bird Species Index",
+    "description": "Taxonomy database of native and migratory birds observed in natural parks and sanctuaries across the Philippines.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ph-ornithology/bird-species-catalog"
+  },
+  {
+    "name": "Philippine Sea Level Rise Logs",
+    "description": "Annual sea surface height monitoring statistics compiled by NAMRIA tidal stations.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/namria-tidal/sea-level-rise-dataset"
+  },
+  {
+    "name": "Philippine Mineral Resources Map",
+    "description": "Geographical mapping logs indicating registered mining reserves, nickel deposits, and mining companies.",
+    "category": "Weather & Environment",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mgb-opendata/mineral-resources-ph"
+  },
+  {
+    "name": "Philippine Renewable Energy Plants Directory",
+    "description": "Coordinates, power generation capacity, and operational types of geothermal, solar, wind, and hydro power stations.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/doe-opendata/renewable-power-plants"
+  },
+  {
+    "name": "Meralco Substation Grid Locations",
+    "description": "A GIS registry index detailing distribution substations and coverage zones of Manila Electric Company.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/meralco-grid/substations-locations-dataset"
+  },
+  {
+    "name": "MWSS Water Reservoirs Level Log",
+    "description": "Water elevation statistics of Angat Dam, Ipo Dam, and La Mesa Dam reservoirs compiled over the dry and rainy seasons.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/mwss-opendata/dams-water-levels"
+  },
+  {
+    "name": "PLDT Fiber Nodes Network Map",
+    "description": "Aggregated locations of PLDT switching centers and optical distribution points across major cities.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/telecom-ph/pldt-network-infrastructure"
+  },
+  {
+    "name": "Globe Telecom Cell Tower Locations Map",
+    "description": "A public cell site coordinates dataset mapping carrier tower spots to aid connectivity optimization tools.",
+    "category": "Transport & Utilities",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/telecom-ph/globe-cell-towers"
+  },
+  {
+    "name": "DTI Consumer Protection Complaints Logs",
+    "description": "Anonymized logs tracking retail product complaints, warranty issues, and fair-trade law investigations.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/dti-cpg/consumer-complaints-dataset"
+  },
+  {
+    "name": "Philippine Cooperative Development Index",
+    "description": "A directory of active agricultural, credit, and housing cooperatives registered under the CDA.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/cda-opendata/registered-cooperatives"
+  },
+  {
+    "name": "Philippine Patents & Trademarks Log",
+    "description": "Registry of patents, utilities designs, and registered trade marks filed at the Intellectual Property Office.",
+    "category": "Business & Commerce",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/ipophl/patents-trademarks-registry"
+  },
+  {
+    "name": "PSA Philippine Consumer Price Index",
+    "description": "Inflation rate trackers, CPI metrics, and purchasing power coefficients compiled monthly by PSA.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/psa-opendata/cpi-inflation-tracker"
+  },
+  {
+    "name": "BSP Registered Remittance Agents List",
+    "description": "Accredited money transfer agencies, pawnshops, and remittance centers licensed by Bangko Sentral ng Pilipinas.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/bsp-remittance/registered-transfer-agents"
+  },
+  {
+    "name": "IC Accredited Insurance Companies Directory",
+    "description": "A directory lookup list of life, non-life, and pre-need insurance firms licensed by the Insurance Commission.",
+    "category": "Finance & Banking",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/insurance-commission/accredited-firms"
+  },
+  {
+    "name": "Filipino Slang & Neologisms Dictionary",
+    "description": "A database tracking modern colloquial words, internet terms, and colloquial Tagalog expressions with semantic definitions.",
+    "category": "Filipino Language & LLM Datasets",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/colloquial-ph/tagalog-slang-lexicon"
+  },
+  {
+    "name": "Philippine National Bibliography Index",
+    "description": "A master database logging published monographs, government publications, and books printed in the Philippines.",
+    "category": "Education & Academics",
+    "auth": "No",
+    "https": true,
+    "cors": "yes",
+    "link": "https://github.com/nlp-opendata/national-bibliography"
   }
 ]
