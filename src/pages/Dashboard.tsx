@@ -181,6 +181,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
   { id: 'ai-sandbox-arena', name: 'AI Sandbox Arena', categories: ['ai'], description: 'Compare Time-To-First-Token, speed (t/s), and generation output of local models side-by-side.', icon: 'Layers', status: 'functional' },
   { id: 'ai-voice-companion', name: 'Domo Voice Companion', categories: ['ai'], description: 'Offline vocal conversation simulator with speech recognition and voice synthesis.', icon: 'Volume2', status: 'functional' },
   { id: 'ai-pdf-investigator', name: 'AIPDF Investigator', categories: ['ai'], description: 'Semantic multi-document question answering tool with page level context citations.', icon: 'BookOpen', status: 'functional' },
+  { id: 'ai-research-orchestration-hub', name: 'AI Research Orchestration Hub', categories: ['ai'], description: 'Orchestrate structured, loop-based research campaigns with specialized local AI agents, model selectors, and conflict checks.', icon: 'Brain', status: 'functional' },
 
   // Data & Visualizer (10)
   { id: 'json-chart-builder', name: 'JSON Chart Builder', categories: ['data'], description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', status: 'functional', popular: true },

@@ -21,22 +21,22 @@
     "key": "habits_summary",
     "preferredTools": [
       "AI Debate Assistant",
-      "You are a helper that extracts arguments. Your task is to ou...",
-      "Auto-Pilot Workspace",
-      "Domo Brain Mind Mapper",
-      "AI Chat"
+      "AI Research Orchestration Hub",
+      "AI Recipe Generator",
+      "AI Sandbox Arena",
+      "You are a helper that extracts arguments. Your task is to ou..."
     ],
     "commonWorkflows": [
-      "Local AI",
-      "ai"
+      "ai",
+      "Local AI"
     ],
     "activeHours": [
-      "19:00 - 20:00",
       "16:00 - 17:00",
+      "19:00 - 20:00",
       "14:00 - 15:00"
     ],
-    "profileSummary": "The user frequently works on projects involving Local AI, ai categories. Their favorite tool utilities include: AI Debate Assistant, You are a helper that extracts arguments. Your task is to ou..., Auto-Pilot Workspace, Domo Brain Mind Mapper, AI Chat. They are typically active around 19:00 - 20:00, 16:00 - 17:00, 14:00 - 15:00.",
-    "lastUpdated": "2026-07-13T08:37:23.651Z"
+    "profileSummary": "The user frequently works on projects involving ai, Local AI categories. Their favorite tool utilities include: AI Debate Assistant, AI Research Orchestration Hub, AI Recipe Generator, AI Sandbox Arena, You are a helper that extracts arguments. Your task is to ou.... They are typically active around 16:00 - 17:00, 19:00 - 20:00, 14:00 - 15:00.",
+    "lastUpdated": "2026-07-14T08:25:02.611Z"
   },
-  "lastUpdated": "2026-07-14T08:07:30.780Z"
+  "lastUpdated": "2026-07-14T08:25:02.612Z"
 }
