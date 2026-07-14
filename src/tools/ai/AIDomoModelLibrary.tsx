@@ -409,6 +409,386 @@ const MODELS_CATALOG: ModelInfo[] = [
     recommendation: 'Best Suited Tools: AIPDF Investigator, APA 7th Referencing Assistant, Literature Review Synthesizer, AI Research Hub.',
     ramRequired: '32GB - 64GB RAM (High-end GPU Workstations)',
     categories: ['high-perf', 'general']
+  },
+  {
+    id: 'deepseek-r1:1.5b',
+    name: 'DeepSeek R1 Distill Qwen 1.5B',
+    parameters: '1.5B',
+    size: '986 MB',
+    description: 'DeepSeek\'s reasoning model distilled from Qwen. Outstanding chain-of-thought analysis for compact environments.',
+    tags: ['DeepSeek', 'Reasoning', 'Chain-Of-Thought', 'Lightweight'],
+    purpose: 'Step-by-step logic, code verification, math solutions, and deep deduction tasks on older machines.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: AI Math Solver, Hypothesis Verification, Theoretical Framework Builder, debug compiler logs.',
+    ramRequired: '4GB - 8GB RAM',
+    categories: ['low-spec', 'coding']
+  },
+  {
+    id: 'deepseek-r1:7b',
+    name: 'DeepSeek R1 Distill Qwen 7B',
+    parameters: '7B',
+    size: '4.7 GB',
+    description: 'DeepSeek\'s reasoning model distilled into Qwen 7B. Matches larger models in math, coding, and logical troubleshooting.',
+    tags: ['DeepSeek', 'Reasoning', 'High Logic', 'Distilled'],
+    purpose: 'Advanced math reasoning, complex debugging, code auditing, and logical gap identification.',
+    features: {
+      contextWindow: '64k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AI Code Reviewer, DomoGuard Code Auditor, AI Research Hub (Critic), ER Schema Designer.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'deepseek-r1:8b',
+    name: 'DeepSeek R1 Distill Llama 8B',
+    parameters: '8B',
+    size: '4.9 GB',
+    description: 'DeepSeek\'s reasoning model distilled from Meta Llama 3. Highly versatile reasoning balanced with natural dialog.',
+    tags: ['DeepSeek', 'Meta-Llama', 'Balanced Reasoning'],
+    purpose: 'Conversational reasoning, capstone methodologies, complex document translation, and multi-agent synthesis.',
+    features: {
+      contextWindow: '64k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: Academic Thesis Advisor, Literature Review Synthesizer, AI Research Hub (Synthesizer), AI Chat.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'deepseek-r1:14b',
+    name: 'DeepSeek R1 Distill Qwen 14B',
+    parameters: '14B',
+    size: '9.0 GB',
+    description: 'Heavyweight reasoning model designed for high-performance workstations. Outperforms in logic benchmarks.',
+    tags: ['DeepSeek', 'Workstation', 'Extreme Logic'],
+    purpose: 'Academic defense prep, enterprise system design, log anomaly correlation, and math models.',
+    features: {
+      contextWindow: '64k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: Thesis Defense Prep Advisor, ER Schema Designer, DomoGuard Log Analyzer, RAG search.',
+    ramRequired: '24GB - 32GB RAM (GPU required)',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'llama3:8b',
+    name: 'Meta Llama 3 8B',
+    parameters: '8B',
+    size: '4.7 GB',
+    description: 'Meta\'s highly robust foundation model. Possesses outstanding instruction-following capabilities and conversational depth.',
+    tags: ['Meta', 'Foundation', 'General Purpose'],
+    purpose: 'High-quality copywriting, general purpose assistant, conversational companion, and structural extraction.',
+    features: {
+      contextWindow: '8k',
+      multilingual: true,
+      vision: false,
+      speed: 'Fast',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: AI Story Generator, Text Rewriter, AI Email Composer, local RAG tasks.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'llama3:70b',
+    name: 'Meta Llama 3 70B',
+    parameters: '70B',
+    size: '40 GB',
+    description: 'Meta\'s enterprise flagship model. Exceptionally smart reasoning, coding capabilities, and linguistic depth.',
+    tags: ['Meta', 'Enterprise Flagship', 'High End Workstation'],
+    purpose: 'Multi-document synthesis, complex coding suites, systems architectures, and legal or academic review loops.',
+    features: {
+      contextWindow: '8k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AI Research Hub, Software Capstone Architect, AIPDF Investigator, Academic Thesis Advisor.',
+    ramRequired: '64GB+ RAM (Multi-GPU setup)',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'mistral:7b-instruct',
+    name: 'Mistral 7B Instruct',
+    parameters: '7B',
+    size: '4.1 GB',
+    description: 'Mistral\'s instruction-tuned model. Highly accurate at executing direct tasks, parsing JSON schemas, and command structures.',
+    tags: ['Mistral', 'Instruction Tuned', 'JSON Expert'],
+    purpose: 'JSON formatting, configuration generation, structured parser, and custom tool orchestration.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Fast',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: JSON Formatter, YAML ↔ JSON Converter, CSV ↔ JSON, API Tester.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'gemma:2b',
+    name: 'Google Gemma 2B',
+    parameters: '2B',
+    size: '1.4 GB',
+    description: 'Google\'s first-generation compact open model. Highly lightweight and responsive on standard CPU architectures.',
+    tags: ['Google', 'First-Gen', 'Very Compact'],
+    purpose: 'Quick summarizations, text formatting, basic definition lists, and dictionary token lookups.',
+    features: {
+      contextWindow: '8k',
+      multilingual: false,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: Tagalog Dictionary Tokenizer, Summarizer, Translator, keycode-finder.',
+    ramRequired: '4GB - 8GB RAM',
+    categories: ['low-spec', 'general']
+  },
+  {
+    id: 'gemma:7b',
+    name: 'Google Gemma 7B',
+    parameters: '7B',
+    size: '4.8 GB',
+    description: 'Google\'s first-generation 7B parameters model. Outstanding performance for general research, logic, and reasoning tasks.',
+    tags: ['Google', 'Balanced Logic', 'Research Base'],
+    purpose: 'Research outlines creation, citation matching, and content creation workflows.',
+    features: {
+      contextWindow: '8k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: Thesis Outline Organizer, Theoretical Framework Builder, Abstract Writing Architect.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'qwen:0.5b',
+    name: 'Alibaba Qwen 0.5B',
+    parameters: '500M',
+    size: '390 MB',
+    description: 'Alibaba\'s micro foundation model. Perfect for extremely low-resource hardware setups.',
+    tags: ['Alibaba', 'Micro', 'Ultra-Fast'],
+    purpose: 'Basic parsing, keyword extracts, address cleaning, and local system commands helper.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: Base Converter, Screen & Device Info, HTML Minifier, URL Encoder.',
+    ramRequired: '2GB RAM',
+    categories: ['low-spec']
+  },
+  {
+    id: 'qwen:1.8b',
+    name: 'Alibaba Qwen 1.8B',
+    parameters: '1.8B',
+    size: '1.1 GB',
+    description: 'Alibaba\'s compact conversational model. Excellent bilingual capacity with speed.',
+    tags: ['Alibaba', 'Bilingual', 'Low Footprint'],
+    purpose: 'Translation, local search indexing, text classification, and basic dialogues.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: Translator, Tagalog Tokenizer, AI Sentiment Journal, AI Classifier.',
+    ramRequired: '4GB - 8GB RAM',
+    categories: ['low-spec', 'general']
+  },
+  {
+    id: 'qwen:7b',
+    name: 'Alibaba Qwen 7B',
+    parameters: '7B',
+    size: '4.5 GB',
+    description: 'Alibaba\'s highly versatile 7B model. Robust reasoning and math capability alongside top-tier multilingual performance.',
+    tags: ['Alibaba', 'General reasoning', 'Multilingual'],
+    purpose: 'Bilingual research synthesis, logical analysis, math problem solver, and agent execution.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: AI Math Solver, Literature Review Synthesizer, AI Research Hub (Synthesizer).',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'qwen:14b',
+    name: 'Alibaba Qwen 14B',
+    parameters: '14B',
+    size: '8.5 GB',
+    description: 'High-accuracy model for professional research. Excellent coding logic, translation precision, and multi-file summaries.',
+    tags: ['Alibaba', 'Workstation', 'Reasoning Master'],
+    purpose: 'Complex document checks, multi-file code reviews, and deep analysis capstone loops.',
+    features: {
+      contextWindow: '32k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AI Code Reviewer, Software Capstone Architect, DomoGuard Code Auditor.',
+    ramRequired: '24GB - 32GB RAM (GPU recommended)',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'codellama:13b',
+    name: 'Meta Code Llama 13B',
+    parameters: '13B',
+    size: '7.3 GB',
+    description: 'Meta\'s mid-sized coding model. Highly skilled at algorithm generation, refactoring, and multi-file codebases navigation.',
+    tags: ['Meta', 'Coding Specialized', 'Refactoring'],
+    purpose: 'Refactoring long class components, writing unit test pipelines, and SQL database migrations.',
+    features: {
+      contextWindow: '16k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: Software Capstone Architect, ER Schema Designer, SQL Formatter, Domo Agent Hub.',
+    ramRequired: '16GB - 24GB RAM (GPU required)',
+    categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'codellama:34b',
+    name: 'Meta Code Llama 34B',
+    parameters: '34B',
+    size: '19 GB',
+    description: 'Flagship coding model from Meta. Outstanding coding capabilities and context logic for large programming files.',
+    tags: ['Meta', 'Flagship Coding', 'Large RAM'],
+    purpose: 'Advanced software systems design, full-stack capstone compilation, and database auditing.',
+    features: {
+      contextWindow: '16k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: Software Capstone Architect, DomoGuard Code Auditor, AI Code Reviewer.',
+    ramRequired: '32GB - 64GB RAM (Workstations)',
+    categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'deepseek-coder:33b',
+    name: 'DeepSeek Coder 33B',
+    parameters: '33B',
+    size: '18 GB',
+    description: 'Enterprise-grade coding model from DeepSeek. Highly accurate code execution and multi-language software design.',
+    tags: ['DeepSeek', 'Enterprise Coding', 'High End Workstation'],
+    purpose: 'Complex logic synthesis, API integrations design, backend refactoring, and security auditing.',
+    features: {
+      contextWindow: '16k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: Software Capstone Architect, DomoGuard Code Auditor, AI Code Reviewer, API Tester.',
+    ramRequired: '32GB - 64GB RAM',
+    categories: ['high-perf', 'coding']
+  },
+  {
+    id: 'smollm:135m',
+    name: 'Hugging Face SmolLM 135M',
+    parameters: '135M',
+    size: '100 MB',
+    description: 'Hugging Face\'s micro model designed to run in browser environments with minimal resource consumption.',
+    tags: ['HuggingFace', 'SmolLM', 'Extremely Compact'],
+    purpose: 'Device specs parsing, text cleaning, simple commands, and micro-agent workflows.',
+    features: {
+      contextWindow: '2k',
+      multilingual: false,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: Screen & Device Info, HTML Minifier, Base Converter, URL Encoder.',
+    ramRequired: '1GB - 2GB RAM',
+    categories: ['low-spec']
+  },
+  {
+    id: 'smollm:360m',
+    name: 'Hugging Face SmolLM 360M',
+    parameters: '360M',
+    size: '270 MB',
+    description: 'Hugging Face\'s mid-range Smol model. Performs basic NLP classification with speed.',
+    tags: ['HuggingFace', 'SmolLM', 'Ultra-Lightweight'],
+    purpose: 'Keyword extraction, text categorization, date formatting, and local system tasks.',
+    features: {
+      contextWindow: '2k',
+      multilingual: false,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: AI Classifier, Summarizer, Translator fallback, metadata cleaner.',
+    ramRequired: '2GB RAM',
+    categories: ['low-spec']
+  },
+  {
+    id: 'stable-beluga:7b',
+    name: 'Stable Beluga 7B',
+    parameters: '7B',
+    size: '3.8 GB',
+    description: 'Stability AI\'s instruction-tuned model. Creative writing specialist with fine-tuned conversational behavior.',
+    tags: ['StabilityAI', 'Beluga', 'Creative Specialist'],
+    purpose: 'Writing stories, journal entry analysis, creative dialog, and general writing.',
+    features: {
+      contextWindow: '4k',
+      multilingual: false,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: AI Story Generator, AI Sentiment Journal, Text Rewriter, Rich Text Editor.',
+    ramRequired: '16GB RAM',
+    categories: ['high-perf', 'general']
+  },
+  {
+    id: 'tinydolphin:2.8b',
+    name: 'TinyDolphin 2.8B',
+    parameters: '2.8B',
+    size: '1.6 GB',
+    description: 'Cognitive Computation\'s lightweight model. Highly conversational, creative, and fast on budget laptops.',
+    tags: ['TinyDolphin', 'Conversational', 'Lightweight'],
+    purpose: 'Fast chat, re-phrasing emails, summarization tasks, and quick definitions lookup.',
+    features: {
+      contextWindow: '2k',
+      multilingual: false,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: AI Email Composer, AI Sentiment Journal, Summarizer, Text Rewriter.',
+    ramRequired: '4GB - 8GB RAM',
+    categories: ['low-spec', 'general']
   }
 ];
 
