@@ -400,7 +400,15 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v1.3.0 (Latest)",
+                    version: "v1.4.0 (Latest)",
+                    date: "July 14, 2026",
+                    title: "AI Research Orchestration Hub Launch",
+                    changes: [
+                      "AI Research Orchestration Hub: An offline, multi-agent sandbox workspace designed to orchestrate structured, loop-based research campaigns. It enables users to deploy custom-defined research agents (such as Deep Researchers, Synthesizers, and QA Auditors) powered by local Ollama models. Supports individual/shared memory banks and APA 7th bibliography citations."
+                    ]
+                  },
+                  {
+                    version: "v1.3.0",
                     date: "July 13, 2026",
                     title: "Companion Chat Screen & Settings Enhancements",
                     changes: [
