@@ -67,6 +67,24 @@ class DomoMCPClient {
     return this.isConnected;
   }
 
+  // Optional shared secret matching the MCP server's MCP_AUTH_TOKEN.
+  // EventSource cannot send headers, so the token travels as a ?token= query param.
+  private getToken(): string {
+    try {
+      return (localStorage.getItem('domodomo_mcp_token') || '').trim();
+    } catch {
+      return '';
+    }
+  }
+
+  private withToken(url: string): string {
+    const token = this.getToken();
+    if (!token) return url;
+    const u = new URL(url, this.baseUri);
+    u.searchParams.set('token', token);
+    return u.toString();
+  }
+
   public getTools(): MCPTool[] {
     return this.tools;
   }
@@ -78,7 +96,7 @@ class DomoMCPClient {
       this.disconnect();
       this.log(`🔌 Connecting to local MCP server at ${this.baseUri}/sse...`);
       
-      const sseUri = `${this.baseUri}/sse`;
+      const sseUri = this.withToken(`${this.baseUri}/sse`);
       this.eventSource = new EventSource(sseUri);
 
       return new Promise<boolean>((resolve) => {
@@ -243,7 +261,7 @@ class DomoMCPClient {
     return new Promise((resolve, reject) => {
       this.pendingRequests.set(id, { resolve, reject });
 
-      fetch(this.postUrl!, {
+      fetch(this.withToken(this.postUrl!), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -266,7 +284,7 @@ class DomoMCPClient {
 
     this.log(`📤 Sending RPC notification: ${method}`);
 
-    await fetch(this.postUrl!, {
+    await fetch(this.withToken(this.postUrl!), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

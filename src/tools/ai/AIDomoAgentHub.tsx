@@ -106,6 +106,20 @@ export const AIDomoAgentHub = () => {
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
   const [customEndpoints, setCustomEndpoints] = useState<Record<string, string>>({});
 
+  // Append the optional MCP shared secret (localStorage: domodomo_mcp_token) as a
+  // ?token= query param. EventSource cannot send headers, so query param is required.
+  const withMcpToken = (url: string): string => {
+    try {
+      const token = (localStorage.getItem('domodomo_mcp_token') || '').trim();
+      if (!token) return url;
+      const u = new URL(url, 'http://localhost:3001');
+      u.searchParams.set('token', token);
+      return u.toString();
+    } catch {
+      return url;
+    }
+  };
+
   // MCP Client State
   const [mcpServerUrl, setMcpServerUrl] = useState<string>('http://localhost:3001/sse');
   const [mcpConnected, setMcpConnected] = useState<boolean>(false);
@@ -299,7 +313,7 @@ export const AIDomoAgentHub = () => {
 
   // Dispatch calls directly to host-level MCP server if connected
   const callMcpTool = async (toolName: string, toolArgs: Record<string, any>): Promise<any> => {
-    const msgUrl = mcpServerUrl.replace('/sse', '/message');
+    const msgUrl = withMcpToken(mcpServerUrl.replace('/sse', '/message'));
     const res = await fetch(msgUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1063,11 +1077,11 @@ When you are fully finished with your task (or if no tool calls are needed), out
     let eventSource: EventSource | null = null;
     const connectMcp = () => {
       try {
-        eventSource = new EventSource(mcpServerUrl);
+        eventSource = new EventSource(withMcpToken(mcpServerUrl));
         eventSource.onopen = async () => {
           setMcpConnected(true);
           try {
-            const msgUrl = mcpServerUrl.replace('/sse', '/message');
+            const msgUrl = withMcpToken(mcpServerUrl.replace('/sse', '/message'));
             const res = await fetch(msgUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
