@@ -11,7 +11,7 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
         <sub><b>darknecrocities</b></sub>
       </a>
       <br />
-      <sub>376 commits</sub>
+      <sub>381 commits</sub>
     </td>
     <td align="center" valign="top" width="20%">
       <a href="https://github.com/Ram-Gold" target="_blank">
@@ -40,7 +40,15 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
       <br />
       <sub>1 commit</sub>
     </td>
-    <td align="center" valign="top" width="20%"></td>
+    <td align="center" valign="top" width="20%">
+      <a href="https://github.com/whyyoublamingmebro" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/306612716?v=4" width="80px;" style="border-radius: 50%; border: 2px solid #5c6bc0;" alt="whyyoublamingmebro"/>
+        <br />
+        <sub><b>whyyoublamingmebro</b></sub>
+      </a>
+      <br />
+      <sub>1 commit</sub>
+    </td>
   </tr>
 </table>
 
