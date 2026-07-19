@@ -13,6 +13,46 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'introducing-computer-vision-tools-suite-domodomo',
+    title: 'Introducing Computer Vision Tools: 10 Offline Image Annotation, Segmentation & Matting Utilities',
+    excerpt: 'DomoDomo releases 10 new local-first Computer Vision tools for bounding box annotation, auto-segmentation magic wand, pose keypoint estimation, alpha matting, optical flow tracking, and dataset format conversion.',
+    date: 'July 19, 2026',
+    readTime: '5 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'computer vision, yolo, coco dataset, image annotation, auto segmentation, pose estimation, optical flow, alpha matting, local-first, domodomo',
+    content: `
+# Introducing Computer Vision Tools: 10 Offline Image Annotation, Segmentation & Matting Utilities
+
+We are thrilled to unveil a massive milestone in DomoDomo's mission to bring privacy-first, serverless developer tools to everyone: the **Computer Vision Tools Suite**!
+
+Data annotators, ML engineers, and computer vision practitioners often rely on web services like CVAT or Roboflow that require uploading sensitive dataset images to third-party cloud servers. DomoDomo changes that completely by executing **10 advanced Computer Vision tools 100% locally in your browser sandbox**.
+
+---
+
+## 🛠️ The 10 New Computer Vision Utilities
+
+1. **Bounding Box & Polygon Image Annotator**: Interactive multi-class drawing canvas for object bounding boxes, polygons, keypoint dots, and crosshair guides. Supports exports to **YOLO (v5/v8/v11 txt)**, **COCO (JSON)**, **Pascal VOC (XML)**, and **CSV**.
+2. **Auto-Magic Wand & Smart Contour Segmentation**: Click any region in an image to flood-fill and extract smooth boundary polygon masks and binary segmentation PNGs.
+3. **Batch Image Annotator & Dataset Packer**: Multi-file batch queue to tag train/val splits, propagate bounding box positions across sequential frames, and export a ready-to-train dataset zip package with \`data.yaml\` configuration.
+4. **Semantic Mask & Pixel Brush Studio**: Pixel-accurate semantic segmentation brush, eraser, and layer opacity editor. Download RGB colored masks or 8-bit indexed grayscale class ID map PNGs.
+5. **Pose Estimation & Keypoint Skeleton Annotator**: Position COCO 17-keypoint human pose skeleton nodes (nose, eyes, ears, shoulders, elbows, wrists, hips, knees, ankles) and export official MS COCO Keypoint JSON files.
+6. **Interactive Image Matting & Alpha Mask Extractor**: Trimap scribble editor (Foreground, Background, Unknown) to isolate fine details like hair or glass transparent objects. Download transparent cutout PNGs.
+7. **Multi-Frame Motion & Optical Flow Tracker**: Lucas-Kanade optical flow motion vector calculator and directional heatmap visualizer across sequential frame pairs.
+8. **Computer Vision Dataset Synthetic Augmentor**: Apply geometric (rotation, flip, scale) and color transformations while automatically recalculating label box coordinates.
+9. **Dataset Format Converter & Annotations Transformer**: Seamless label converter between YOLO, COCO JSON, Pascal VOC XML, and Labelme JSON.
+10. **Automated Region Proposal & Dataset Anomaly Inspector**: Auto-propose candidate object bounding boxes and audit datasets for overlapping or out-of-bounds label anomalies.
+
+---
+
+## 🔒 100% Offline & Private
+
+All image processing, canvas calculations, alpha matting algorithms, and dataset exports run entirely in client-side Web APIs with zero external server uploads.
+
+Check out the new **Computer Vision** tab on your DomoDomo dashboard today!
+`
+  },
+  {
     slug: 'run-domodomo-in-docker-containerization-guide-innoh-reloza',
     title: 'How to Run DomoDomo in Docker: A Step-by-Step Containerization Guide',
     excerpt: 'DomoDomo gets seamless Docker containerization support! Learn how to run the Vite frontend, Python FastAPI backend, and Domo MCP server inside a single container, contributed by Mr. Innoh Reloza.',

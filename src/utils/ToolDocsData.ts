@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv';
 
 export interface ToolDoc {
   id: string;
@@ -1379,6 +1379,102 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Sanitizes JSON/CSV database records. Masks emails/phones, hashes keys, or maps to fake names and locations.',
         howItWorks: '1. Paste records. 2. Assign rule per field key. 3. Process records. 4. Download clean JSON.',
         technicalSpecs: '100% offline, ensuring no sensitive data is leaked or sent online.'
+      }
+    ]
+  },
+  cv: {
+    title: 'Computer Vision Tools Suite',
+    desc: 'Local-first offline computer vision, image annotation, auto-segmentation, pose estimation, and dataset utilities.',
+    list: [
+      {
+        id: 'cv-bounding-box',
+        name: 'Bounding Box & Polygon Image Annotator',
+        engine: 'HTML5 Canvas 2D + React State Engine',
+        details: 'Interactive canvas annotation studio for single and multi-image batches. Supports rectangle bounding boxes, polygons, keypoint dots, and crosshair guides.',
+        functionality: 'Multi-class label management, zoom in/out/reset controls, crosshair guides, and multi-format exports (YOLO v5/v8/v11 txt, COCO JSON, Pascal VOC XML, CSV, Annotated PNG).',
+        howItWorks: '1. Upload images. 2. Select tool (Box, Polygon, Point) and active class. 3. Click and drag or place vertices on canvas. 4. Export normalized label files.',
+        technicalSpecs: '100% in-browser processing. Coordinates normalized to [0..1] float ranges.'
+      },
+      {
+        id: 'cv-auto-segmentation',
+        name: 'Auto-Magic Wand & Smart Contour Segmentation',
+        engine: 'Canvas Flood Fill + Color Tolerance Algorithm',
+        details: 'Automated region segmentation tool using color-distance flood filling and edge-aware contour tracing.',
+        functionality: 'Click any image region to extract smooth boundary polygon masks and binary segmentation masks.',
+        howItWorks: '1. Upload image. 2. Set color tolerance slider. 3. Click target object region. 4. Download Binary Mask PNG or COCO Segmentation JSON.',
+        technicalSpecs: 'Executes pixel color delta comparisons using Web API ImageData buffers.'
+      },
+      {
+        id: 'cv-batch-annotator',
+        name: 'Batch Image Annotator & Dataset Packer',
+        engine: 'Zip Archiver & Dataset Structurer',
+        details: 'Bulk image processing queue to tag, partition train/val splits, propagate bounding boxes, and bundle machine learning datasets.',
+        functionality: 'Manages batch tags, auto-sequences file names, and generates data.yaml configurations alongside CSV dataset manifests.',
+        howItWorks: '1. Select multi-file batch. 2. Assign split tags (train/val). 3. Propagate boxes across frames. 4. Export ready-to-train dataset package.',
+        technicalSpecs: 'Generates standard YOLO directory structures (images/train, labels/train, data.yaml).'
+      },
+      {
+        id: 'cv-semantic-mask',
+        name: 'Semantic Mask & Pixel Brush Studio',
+        engine: 'Dual Canvas Layer Composite Engine',
+        details: 'Pixel-level multi-class semantic segmentation brush, eraser, and layer opacity editor.',
+        functionality: 'Paint class-colored overlay masks directly over images with adjustable brush radius. Exports RGB color masks and indexed grayscale class ID map PNGs.',
+        howItWorks: '1. Select class label. 2. Adjust brush radius and opacity. 3. Paint object pixels. 4. Download indexed class ID map PNG.',
+        technicalSpecs: 'Outputs 8-bit PNG images where pixel intensities correspond strictly to integer Class IDs.'
+      },
+      {
+        id: 'cv-keypoint-skeleton',
+        name: 'Pose Estimation & Keypoint Skeleton Annotator',
+        engine: 'Graph Topology Render Engine',
+        details: 'COCO 17-Keypoint human pose skeleton node positioner with interactive bone link rendering.',
+        functionality: 'Drag keypoint nodes (nose, eyes, ears, shoulders, elbows, wrists, hips, knees, ankles) and set visibility states (labeled/visible, occluded, absent).',
+        howItWorks: '1. Upload human photo. 2. Drag nodes to match joints. 3. Set visibility flags. 4. Download COCO Keypoint format JSON.',
+        technicalSpecs: 'Export complies with official MS COCO Keypoints JSON specification.'
+      },
+      {
+        id: 'cv-image-matting',
+        name: 'Interactive Image Matting & Alpha Mask Extractor',
+        engine: 'Trimap Alpha Synthesis Engine',
+        details: 'Trimap scribble editor isolating foreground (green), background (red), and unknown edges.',
+        functionality: 'Extracts fine transparent edges (hair, glass, fur) to generate high-resolution transparent PNG cutouts and grayscale alpha mattes.',
+        howItWorks: '1. Scribble foreground and background regions. 2. Compute alpha matte. 3. Download transparent cutout PNG.',
+        technicalSpecs: 'Processes alpha channel transparency entirely client-side using RGBA Canvas ImageData.'
+      },
+      {
+        id: 'cv-optical-flow',
+        name: 'Multi-Frame Motion & Optical Flow Tracker',
+        engine: 'Lucas-Kanade Vector Displacement Engine',
+        details: 'Lucas-Kanade motion vector estimation across sequential frame pairs (Frame t and Frame t+1).',
+        functionality: 'Calculates directional displacement vectors and renders motion flow fields over frame pairs.',
+        howItWorks: '1. Upload Frame 1 and Frame 2. 2. Compute optical flow. 3. Inspect vector arrows and download motion field PNG.',
+        technicalSpecs: 'Estimates optical flow vectors on structured 2D grid samples.'
+      },
+      {
+        id: 'cv-data-augmenter',
+        name: 'Computer Vision Dataset Synthetic Augmentor',
+        engine: 'Geometric Coordinate Transformation Matrix',
+        details: 'Synthetic data augmentation studio for object detection datasets.',
+        functionality: 'Applies geometric (rotation, flip, scale) and photometric (brightness, contrast) augmentations while automatically recalculating bounding box coordinates.',
+        howItWorks: '1. Upload image. 2. Adjust rotation, flip, or brightness sliders. 3. Label coordinates automatically re-project. 4. Download augmented PNG.',
+        technicalSpecs: 'Applies 2D affine transformation matrices to bounding box vertex vectors.'
+      },
+      {
+        id: 'cv-dataset-converter',
+        name: 'Dataset Format Converter & Annotations Transformer',
+        engine: 'Multi-Format Annotation Parser',
+        details: 'Dataset label format converter between YOLO (txt), COCO (JSON), Pascal VOC (XML), and Labelme.',
+        functionality: 'Converts dataset labels seamlessly across machine learning framework formats.',
+        howItWorks: '1. Paste source annotations. 2. Select target format. 3. Convert. 4. Download converted file.',
+        technicalSpecs: 'Parses and normalizes coordinates across pixel and relative bounds.'
+      },
+      {
+        id: 'cv-zero-shot-inspector',
+        name: 'Automated Region Proposal & Dataset Anomaly Inspector',
+        engine: 'Contour Region Proposal & Audit Engine',
+        details: 'Auto-proposes object candidate bounding boxes and audits datasets for anomalies.',
+        functionality: 'Highlights candidate object regions and flags duplicate, overlapping, or out-of-bounds annotations.',
+        howItWorks: '1. Upload image. 2. Run auto region proposal. 3. Inspect candidate boxes. 4. Download auto-generated YOLO labels.',
+        technicalSpecs: 'Executes contour detection and candidate bounding box proposals client-side.'
       }
     ]
   }

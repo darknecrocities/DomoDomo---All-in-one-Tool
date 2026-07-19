@@ -20,23 +20,24 @@
   "habitsSummary": {
     "key": "habits_summary",
     "preferredTools": [
-      "Domo Model Library",
       "AI Research Orchestration Hub",
+      "Domo Model Library",
       "AI Debate Assistant",
-      "Domo Skill Creator",
-      "AI Recipe Generator"
+      "Image Resizer",
+      "Bounding Box & Polygon Image Annotator"
     ],
     "commonWorkflows": [
       "ai",
-      "Local AI"
+      "Local AI",
+      "photo"
     ],
     "activeHours": [
       "16:00 - 17:00",
       "19:00 - 20:00",
       "14:00 - 15:00"
     ],
-    "profileSummary": "The user frequently works on projects involving ai, Local AI categories. Their favorite tool utilities include: Domo Model Library, AI Research Orchestration Hub, AI Debate Assistant, Domo Skill Creator, AI Recipe Generator. They are typically active around 16:00 - 17:00, 19:00 - 20:00, 14:00 - 15:00.",
-    "lastUpdated": "2026-07-14T08:44:27.434Z"
+    "profileSummary": "The user frequently works on projects involving ai, Local AI, photo categories. Their favorite tool utilities include: AI Research Orchestration Hub, Domo Model Library, AI Debate Assistant, Image Resizer, Bounding Box & Polygon Image Annotator. They are typically active around 16:00 - 17:00, 19:00 - 20:00, 14:00 - 15:00.",
+    "lastUpdated": "2026-07-19T14:40:07.582Z"
   },
-  "lastUpdated": "2026-07-14T08:44:27.443Z"
+  "lastUpdated": "2026-07-19T14:40:07.582Z"
 }
