@@ -11,7 +11,7 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
         <sub><b>darknecrocities</b></sub>
       </a>
       <br />
-      <sub>381 commits</sub>
+      <sub>393 commits</sub>
     </td>
     <td align="center" valign="top" width="20%">
       <a href="https://github.com/Ram-Gold" target="_blank">
