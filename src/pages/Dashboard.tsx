@@ -30,7 +30,7 @@ interface PlannedTool {
 	popular?: boolean;
 }
 
-const CATEGORIES = [
+export const CATEGORIES = [
 	{ id: "all", name: "All Tools" },
 	{ id: "popular", name: "Popular" },
 	{ id: "photo", name: "Photo & Image" },
