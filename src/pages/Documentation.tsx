@@ -608,6 +608,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                     ai: 'Local AI',
                     data: 'Data',
                     cv: 'Computer Vision',
+                    ml: 'Machine Learning',
                   };
                   return (
                     <button

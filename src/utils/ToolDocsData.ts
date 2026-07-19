@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml';
 
 export interface ToolDoc {
   id: string;
@@ -1475,6 +1475,102 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Highlights candidate object regions and flags duplicate, overlapping, or out-of-bounds annotations.',
         howItWorks: '1. Upload image. 2. Run auto region proposal. 3. Inspect candidate boxes. 4. Download auto-generated YOLO labels.',
         technicalSpecs: 'Executes contour detection and candidate bounding box proposals client-side.'
+      }
+    ]
+  },
+  ml: {
+    title: 'Machine Learning Tools Suite',
+    desc: 'Local-first offline machine learning evaluation, confusion matrix auditing, model benchmarking, vector embedding visualization, and dataset drift detection tools.',
+    list: [
+      {
+        id: 'ml-classification-evaluator',
+        name: 'Model Classification Evaluator & Confusion Matrix Inspector',
+        engine: 'Confusion Matrix & Multi-Class Metric Engine',
+        details: 'Computes Accuracy, F1-score, Precision, Recall, and interactive Heatmap Confusion Matrix.',
+        functionality: 'Evaluates model classification predictions against ground truth labels.',
+        howItWorks: '1. Upload predictions CSV/JSON. 2. Adjust confidence threshold. 3. Inspect confusion matrix. 4. Export JSON report.',
+        technicalSpecs: 'Calculates macro/micro averages and normalized percentage matrices client-side.'
+      },
+      {
+        id: 'ml-roc-pr-analyzer',
+        name: 'ROC & Precision-Recall Curve Analyzer',
+        engine: 'Trapezoidal AUC Integrator & Threshold Scrubber',
+        details: 'Plots interactive ROC and Precision-Recall curves with threshold scrubber slider.',
+        functionality: 'Calculates ROC AUC and optimal decision threshold via Youden J statistic.',
+        howItWorks: '1. Upload prediction probabilities. 2. Drag threshold scrubber. 3. Inspect TPR/FPR tradeoffs. 4. Download SVG.',
+        technicalSpecs: 'Uses trapezoidal numerical integration to compute ROC AUC.'
+      },
+      {
+        id: 'ml-regression-evaluator',
+        name: 'Regression Metrics & Residual Diagnostics',
+        engine: 'Residual Error & R² Diagnostic Engine',
+        details: 'Computes MAE, MSE, RMSE, MAPE, R², and residual error scatter plots.',
+        functionality: 'Evaluates continuous numerical regression model predictions.',
+        howItWorks: '1. Upload actual vs predicted CSV. 2. Inspect R² and RMSE. 3. View residual scatter plot. 4. Download report.',
+        technicalSpecs: 'Computes variance and residual distributions client-side.'
+      },
+      {
+        id: 'ml-model-comparator',
+        name: 'Multi-Model Leaderboard & Comparator',
+        engine: 'Multi-Model Benchmark Matrix Engine',
+        details: 'Ranks and compares multiple ML models by F1, Accuracy, Precision, Recall, and Latency.',
+        functionality: 'Builds side-by-side model comparison leaderboard and radar charts.',
+        howItWorks: '1. Upload benchmark CSV. 2. Sort by metric. 3. Compare latency vs accuracy. 4. Export leaderboard CSV.',
+        technicalSpecs: 'Dynamic multi-criteria sorting matrix.'
+      },
+      {
+        id: 'ml-dataset-drift-detector',
+        name: 'Dataset Data Drift & Feature Shift Inspector',
+        engine: 'Kolmogorov-Smirnov & PSI Drift Engine',
+        details: 'Detects feature distribution shifts between training baseline and production inference sets.',
+        functionality: 'Computes Population Stability Index (PSI) and flags data drift anomalies.',
+        howItWorks: '1. Upload baseline CSV. 2. Upload current CSV. 3. Inspect drift alerts. 4. Export audit report.',
+        technicalSpecs: 'Calculates feature-level distribution distance metrics.'
+      },
+      {
+        id: 'ml-feature-importance-explainer',
+        name: 'Feature Importance & SHAP Attribution Explainer',
+        engine: 'Attribution & SHAP Waterfall Simulator',
+        details: 'Visualizes global feature importances and local prediction push contributions.',
+        functionality: 'Explains model predictions via feature importance bar charts and waterfall plots.',
+        howItWorks: '1. Upload feature weights CSV. 2. Inspect importance ranking. 3. Export SHAP CSV.',
+        technicalSpecs: 'Normalized feature contribution breakdown.'
+      },
+      {
+        id: 'ml-embedding-visualizer',
+        name: 'Embedding Space & Vector Projection Visualizer',
+        engine: 'Client-Side t-SNE & PCA Dimensionality Reduction',
+        details: 'Projects 768-dim vector embeddings down to 2D canvas scatter plot with zoom controls.',
+        functionality: 'Visualizes high-dimensional vector embeddings and semantic cluster maps.',
+        howItWorks: '1. Upload vector CSV. 2. Run 2D projection. 3. Zoom/pan canvas. 4. Export 2D coordinates CSV.',
+        technicalSpecs: 'HTML5 Canvas 2D projection with interactive zoom scaling.'
+      },
+      {
+        id: 'ml-loss-curve-inspector',
+        name: 'Hyperparameter Loss Curve & Training Inspector',
+        engine: 'Overfitting & Early Stopping Diagnostic Engine',
+        details: 'Analyzes training logs for loss convergence and overfitting gaps.',
+        functionality: 'Recommends optimal early stopping epoch and plots train vs validation curves.',
+        howItWorks: '1. Upload training log CSV. 2. Inspect early stopping recommendation. 3. Download report.',
+        technicalSpecs: 'Detects loss inflection points and validation divergence.'
+      },
+      {
+        id: 'ml-model-latency-benchmarker',
+        name: 'ONNX & TFLite Latency Benchmarker',
+        engine: 'WASM Runtime Inference Profiler',
+        details: 'Benchmarks client-side ONNX / TFLite inference latency and FPS throughput.',
+        functionality: 'Measures P50, P90, P99 latency percentiles and memory footprint.',
+        howItWorks: '1. Upload ONNX model. 2. Run 100 inference iterations. 3. View P99 latency histogram.',
+        technicalSpecs: 'High-resolution performance timer benchmarking.'
+      },
+      {
+        id: 'ml-llm-rag-evaluator',
+        name: 'LLM & RAG Model Evaluation Benchmark Studio',
+        engine: 'RAG Faithfulness & Citation Match Auditor',
+        details: 'Evaluates RAG pipeline outputs for faithfulness, answer relevance, and context recall.',
+        functionality: 'Audits LLM responses against retrieved context documents.',
+        howItWorks: '1. Upload RAG evaluation dataset. 2. Select query. 3. Inspect faithfulness score.',
+        technicalSpecs: 'Context token overlap and semantic citation auditing.'
       }
     ]
   }

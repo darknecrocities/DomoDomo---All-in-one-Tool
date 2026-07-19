@@ -13,6 +13,17 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'introducing-machine-learning-evaluation-tools-suite-domodomo',
+    title: 'Introducing Machine Learning Tools: 10 Offline Model Evaluation, Benchmark & Diagnostic Utilities',
+    excerpt: 'DomoDomo releases 10 new serverless Machine Learning tools for confusion matrix evaluation, ROC/PR curves, regression residual diagnostics, multi-model leaderboards, dataset drift detection, SHAP attribution, t-SNE embedding visualization, and LLM RAG auditing.',
+    date: 'July 19, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'machine learning, confusion matrix, roc auc, regression metrics, dataset drift, shap explainer, tsne embedding, onnx latency, rag evaluation, local-first, domodomo',
+    content: "# Introducing Machine Learning Tools\n\nWe are excited to launch the Machine Learning Tools Suite in DomoDomo! ML engineers and AI researchers can evaluate classification accuracy, plot ROC curves, analyze regression residuals, detect dataset drift, project t-SNE embeddings, and audit LLM RAG pipelines 100% locally in browser memory.\n\n### 10 Machine Learning Utilities Included:\n1. Model Classification Evaluator & Confusion Matrix Inspector\n2. ROC & Precision-Recall Curve Analyzer\n3. Regression Metrics & Residual Diagnostics\n4. Multi-Model Leaderboard & Comparator\n5. Dataset Data Drift & Feature Shift Inspector\n6. Feature Importance & SHAP Attribution Explainer\n7. Embedding Space & Vector Projection Visualizer\n8. Hyperparameter Loss Curve & Training Inspector\n9. ONNX & TFLite Latency Benchmarker\n10. LLM & RAG Model Evaluation Benchmark Studio"
+  },
+  {
     slug: 'introducing-computer-vision-tools-suite-domodomo',
     title: 'Introducing Computer Vision Tools: 10 Offline Image Annotation, Segmentation & Matting Utilities',
     excerpt: 'DomoDomo releases 10 new local-first Computer Vision tools for bounding box annotation, auto-segmentation magic wand, pose keypoint estimation, alpha matting, optical flow tracking, and dataset format conversion.',
