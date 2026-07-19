@@ -18,6 +18,8 @@ import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
 import { aiService } from "../utils/aiService";
 import betterGovLogo from "../assets/bettergovph.jpg";
+import upamateLogo from "../assets/upamate.png";
+import stageByAntLogo from "../assets/stagebyant.png";
 
 interface PlannedTool {
 	id: string;
@@ -1916,6 +1918,56 @@ export const Dashboard = () => {
 								</span>
 								<span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-[#4E8E5E] transition-colors">
 									BetterGov.ph
+								</span>
+							</div>
+						</a>
+
+						{/* Upamate Featured Badge */}
+						<a
+							href="https://www.facebook.com/share/p/1G5PGJFuYE/"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/upamate w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
+							title="As Featured on Upamate"
+						>
+							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
+								<img
+									src={upamateLogo}
+									alt="Upamate Logo"
+									className="w-8 h-8 object-contain rounded-md"
+								/>
+							</div>
+							<div className="flex flex-col text-left leading-tight">
+								<span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
+									As Featured on
+								</span>
+								<span className="text-xs font-extrabold text-[#ECEBE9] group-hover/upamate:text-[#4E8E5E] transition-colors">
+									Upamate
+								</span>
+							</div>
+						</a>
+
+						{/* Stage by Ant Featured Badge */}
+						<a
+							href="https://stage.byant.dev/p/domodomo"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/stagebyant w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
+							title="Featured Pick on Stage by Ant"
+						>
+							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
+								<img
+									src={stageByAntLogo}
+									alt="Stage by Ant Logo"
+									className="w-8 h-8 object-contain rounded-md"
+								/>
+							</div>
+							<div className="flex flex-col text-left leading-tight">
+								<span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
+									Featured Pick on
+								</span>
+								<span className="text-xs font-extrabold text-[#ECEBE9] group-hover/stagebyant:text-[#4E8E5E] transition-colors">
+									Stage by Ant
 								</span>
 							</div>
 						</a>
