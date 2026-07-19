@@ -22,22 +22,22 @@
     "preferredTools": [
       "AI Research Orchestration Hub",
       "Domo Model Library",
+      "Bounding Box & Polygon Image Annotator",
       "AI Debate Assistant",
-      "Image Resizer",
-      "Bounding Box & Polygon Image Annotator"
+      "Image Resizer"
     ],
     "commonWorkflows": [
       "ai",
       "Local AI",
-      "photo"
+      "cv"
     ],
     "activeHours": [
       "16:00 - 17:00",
       "19:00 - 20:00",
-      "14:00 - 15:00"
+      "22:00 - 23:00"
     ],
-    "profileSummary": "The user frequently works on projects involving ai, Local AI, photo categories. Their favorite tool utilities include: AI Research Orchestration Hub, Domo Model Library, AI Debate Assistant, Image Resizer, Bounding Box & Polygon Image Annotator. They are typically active around 16:00 - 17:00, 19:00 - 20:00, 14:00 - 15:00.",
-    "lastUpdated": "2026-07-19T14:40:07.582Z"
+    "profileSummary": "The user frequently works on projects involving ai, Local AI, cv categories. Their favorite tool utilities include: AI Research Orchestration Hub, Domo Model Library, Bounding Box & Polygon Image Annotator, AI Debate Assistant, Image Resizer. They are typically active around 16:00 - 17:00, 19:00 - 20:00, 22:00 - 23:00.",
+    "lastUpdated": "2026-07-19T14:46:58.704Z"
   },
-  "lastUpdated": "2026-07-19T14:40:07.582Z"
+  "lastUpdated": "2026-07-19T14:46:58.706Z"
 }
