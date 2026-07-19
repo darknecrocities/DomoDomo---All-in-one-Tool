@@ -42,8 +42,23 @@ export const ImageMattingStudioTool: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!image) {
+      imgRef.current = null;
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      imgRef.current = img;
+      drawMainCanvas();
+    };
+    img.src = image.url;
+  }, [image]);
+
   const drawMainCanvas = useCallback(() => {
-    if (!image || !canvasRef.current) return;
+    if (!image || !canvasRef.current || !imgRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -51,18 +66,14 @@ export const ImageMattingStudioTool: React.FC = () => {
     canvas.width = image.width * zoom;
     canvas.height = image.height * zoom;
 
-    const img = new Image();
-    img.src = image.url;
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
 
-      if (trimapCanvasRef.current && !hasMatte) {
-        ctx.globalAlpha = 0.5;
-        ctx.drawImage(trimapCanvasRef.current, 0, 0, canvas.width, canvas.height);
-        ctx.globalAlpha = 1.0;
-      }
-    };
+    if (trimapCanvasRef.current && !hasMatte) {
+      ctx.globalAlpha = 0.5;
+      ctx.drawImage(trimapCanvasRef.current, 0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1.0;
+    }
   }, [image, hasMatte, zoom]);
 
   useEffect(() => {

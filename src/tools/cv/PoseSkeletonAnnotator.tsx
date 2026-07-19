@@ -84,8 +84,23 @@ export const PoseSkeletonAnnotatorTool: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!image) {
+      imgRef.current = null;
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      imgRef.current = img;
+      drawCanvas();
+    };
+    img.src = image.url;
+  }, [image]);
+
   const drawCanvas = useCallback(() => {
-    if (!image || !canvasRef.current) return;
+    if (!image || !canvasRef.current || !imgRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -93,11 +108,8 @@ export const PoseSkeletonAnnotatorTool: React.FC = () => {
     canvas.width = image.width * zoom;
     canvas.height = image.height * zoom;
 
-    const img = new Image();
-    img.src = image.url;
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
 
       // Render Skeleton Bones
       COCO_LINKS.forEach((link) => {
@@ -132,7 +144,6 @@ export const PoseSkeletonAnnotatorTool: React.FC = () => {
         ctx.font = 'bold 10px sans-serif';
         ctx.fillText(kp.name, x + 10, y + 4);
       });
-    };
   }, [image, keypoints, activeKeypointId, zoom]);
 
   useEffect(() => {

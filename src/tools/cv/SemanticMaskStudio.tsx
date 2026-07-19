@@ -27,6 +27,8 @@ export const SemanticMaskStudioTool: React.FC = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
@@ -35,6 +37,7 @@ export const SemanticMaskStudioTool: React.FC = () => {
     reader.onload = (evt) => {
       const img = new Image();
       img.onload = () => {
+        imgRef.current = img;
         setImage({
           url: evt.target?.result as string,
           width: img.width,
@@ -49,7 +52,10 @@ export const SemanticMaskStudioTool: React.FC = () => {
 
   // Setup mask canvas buffer when image loads
   useEffect(() => {
-    if (!image) return;
+    if (!image) {
+      imgRef.current = null;
+      return;
+    }
     if (!maskCanvasRef.current) {
       maskCanvasRef.current = document.createElement('canvas');
     }
@@ -60,10 +66,11 @@ export const SemanticMaskStudioTool: React.FC = () => {
     if (mCtx) {
       mCtx.clearRect(0, 0, image.width, image.height);
     }
+    drawMainCanvas();
   }, [image]);
 
   const drawMainCanvas = useCallback(() => {
-    if (!image || !canvasRef.current || !maskCanvasRef.current) return;
+    if (!image || !canvasRef.current || !maskCanvasRef.current || !imgRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -71,24 +78,20 @@ export const SemanticMaskStudioTool: React.FC = () => {
     canvas.width = image.width * zoom;
     canvas.height = image.height * zoom;
 
-    const img = new Image();
-    img.src = image.url;
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
 
-      // Overlay mask canvas
-      ctx.globalAlpha = maskOpacity;
-      ctx.drawImage(maskCanvasRef.current!, 0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 1.0;
-    };
+    // Overlay mask canvas
+    ctx.globalAlpha = maskOpacity;
+    ctx.drawImage(maskCanvasRef.current, 0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1.0;
   }, [image, maskOpacity, zoom]);
 
   useEffect(() => {
     drawMainCanvas();
   }, [drawMainCanvas]);
 
-  const paintAtPoint = (x: number, y: number) => {
+  const paintStroke = (x: number, y: number, isMove: boolean) => {
     if (!maskCanvasRef.current || !image) return;
     const mCtx = maskCanvasRef.current.getContext('2d');
     if (!mCtx) return;
@@ -98,18 +101,29 @@ export const SemanticMaskStudioTool: React.FC = () => {
     mCtx.save();
     if (activeTool === 'eraser') {
       mCtx.globalCompositeOperation = 'destination-out';
-      mCtx.beginPath();
-      mCtx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
-      mCtx.fill();
-    } else if (activeTool === 'brush') {
+      mCtx.strokeStyle = 'rgba(0,0,0,1)';
+      mCtx.fillStyle = 'rgba(0,0,0,1)';
+    } else {
       mCtx.globalCompositeOperation = 'source-over';
+      mCtx.strokeStyle = cls.color;
       mCtx.fillStyle = cls.color;
-      mCtx.beginPath();
+    }
+    mCtx.lineWidth = brushSize;
+    mCtx.lineCap = 'round';
+    mCtx.lineJoin = 'round';
+
+    mCtx.beginPath();
+    if (isMove && lastPointRef.current) {
+      mCtx.moveTo(lastPointRef.current.x, lastPointRef.current.y);
+      mCtx.lineTo(x, y);
+      mCtx.stroke();
+    } else {
       mCtx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
       mCtx.fill();
     }
     mCtx.restore();
 
+    lastPointRef.current = { x, y };
     drawMainCanvas();
   };
 
@@ -119,7 +133,8 @@ export const SemanticMaskStudioTool: React.FC = () => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.floor(((e.clientX - rect.left) / rect.width) * image.width);
     const y = Math.floor(((e.clientY - rect.top) / rect.height) * image.height);
-    paintAtPoint(x, y);
+    lastPointRef.current = null;
+    paintStroke(x, y, false);
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -127,11 +142,12 @@ export const SemanticMaskStudioTool: React.FC = () => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.floor(((e.clientX - rect.left) / rect.width) * image.width);
     const y = Math.floor(((e.clientY - rect.top) / rect.height) * image.height);
-    paintAtPoint(x, y);
+    paintStroke(x, y, true);
   };
 
   const handleMouseUp = () => {
     setIsDrawing(false);
+    lastPointRef.current = null;
   };
 
   const downloadColoredMask = () => {

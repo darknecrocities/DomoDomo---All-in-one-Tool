@@ -97,20 +97,32 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
     setNewClassName('');
   };
 
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!currentImage) {
+      imgRef.current = null;
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      imgRef.current = img;
+      drawCanvas();
+    };
+    img.src = currentImage.url;
+  }, [currentImage?.url]);
+
   const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !currentImage) return;
+    if (!canvas || !currentImage || !imgRef.current) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const img = new Image();
-    img.src = currentImage.url;
-    img.onload = () => {
-      canvas.width = currentImage.width * zoom;
-      canvas.height = currentImage.height * zoom;
+    canvas.width = currentImage.width * zoom;
+    canvas.height = currentImage.height * zoom;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
 
       currentImage.annotations.forEach((anno) => {
         const cls = classes.find((c) => c.id === anno.classId) || { color: '#10B981', name: 'label' };
@@ -197,7 +209,6 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
         ctx.lineTo(canvas.width, mousePos.y * canvas.height);
         ctx.stroke();
       }
-    };
   }, [currentImage, zoom, classes, selectedAnnoId, isDrawing, startPoint, currentPoint, drawMode, polyPoints, mousePos, showCrosshair, activeClassId]);
 
   useEffect(() => {
