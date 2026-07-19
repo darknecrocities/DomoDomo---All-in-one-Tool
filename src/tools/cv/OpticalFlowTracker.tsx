@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { Download, Activity, Play } from 'lucide-react';
+import { Download, Activity, Play, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 export const OpticalFlowTrackerTool: React.FC = () => {
   const [frame1, setFrame1] = useState<{ url: string; width: number; height: number } | null>(null);
   const [frame2, setFrame2] = useState<{ url: string; width: number; height: number } | null>(null);
   const [isComputed, setIsComputed] = useState<boolean>(false);
+  const [zoom, setZoom] = useState<number>(1);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -33,15 +34,15 @@ export const OpticalFlowTrackerTool: React.FC = () => {
   const computeOpticalFlow = () => {
     if (!frame1 || !frame2 || !canvasRef.current) return;
     const canvas = canvasRef.current;
-    canvas.width = frame1.width;
-    canvas.height = frame1.height;
+    canvas.width = frame1.width * zoom;
+    canvas.height = frame1.height * zoom;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const img = new Image();
     img.src = frame2.url;
     img.onload = () => {
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       // Render vector flowfield grid arrows
       const step = 20;
@@ -129,8 +130,43 @@ export const OpticalFlowTrackerTool: React.FC = () => {
           )}
         </div>
 
-        <div className="flex-1 bg-[#0D0E0F] rounded-2xl border border-[#2A2D30] flex items-center justify-center p-4">
-          <canvas ref={canvasRef} className="max-w-full max-h-[70vh] object-contain rounded-xl block" />
+        <div className="flex-1 bg-[#0D0E0F] relative rounded-2xl border border-[#2A2D30] flex items-center justify-center p-4 overflow-auto">
+          {frame1 && frame2 ? (
+            <div className="relative border border-[#2A2D30] rounded-xl overflow-hidden shadow-2xl bg-[#141517]">
+              <canvas ref={canvasRef} className="max-w-full max-h-[70vh] object-contain rounded-xl block" />
+
+              {/* Viewport Zoom Controls floating toolbar */}
+              <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30] z-10">
+                <button
+                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut size={14} />
+                </button>
+                <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
+                <button
+                  onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn size={14} />
+                </button>
+                <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
+                <button
+                  onClick={() => setZoom(1)}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center p-8 text-[#72706C] text-xs font-semibold">
+              Upload Frame 1 and Frame 2 to preview optical flow motion vectors.
+            </div>
+          )}
         </div>
       </div>
     </div>

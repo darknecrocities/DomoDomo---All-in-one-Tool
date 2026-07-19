@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Upload, Download, Scissors, Sparkles } from 'lucide-react';
+import { Upload, Download, Scissors, Sparkles, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 export const ImageMattingStudioTool: React.FC = () => {
   const [image, setImage] = useState<{ url: string; width: number; height: number; name: string } | null>(null);
@@ -7,6 +7,7 @@ export const ImageMattingStudioTool: React.FC = () => {
   const [brushRadius] = useState<number>(20);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [hasMatte, setHasMatte] = useState<boolean>(false);
+  const [zoom, setZoom] = useState<number>(1);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const trimapCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -47,22 +48,22 @@ export const ImageMattingStudioTool: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = image.width;
-    canvas.height = image.height;
+    canvas.width = image.width * zoom;
+    canvas.height = image.height * zoom;
 
     const img = new Image();
     img.src = image.url;
     img.onload = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       if (trimapCanvasRef.current && !hasMatte) {
         ctx.globalAlpha = 0.5;
-        ctx.drawImage(trimapCanvasRef.current, 0, 0);
+        ctx.drawImage(trimapCanvasRef.current, 0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1.0;
       }
     };
-  }, [image, hasMatte]);
+  }, [image, hasMatte, zoom]);
 
   useEffect(() => {
     drawMainCanvas();
@@ -235,6 +236,33 @@ export const ImageMattingStudioTool: React.FC = () => {
                 }}
                 className="cursor-crosshair block max-w-full max-h-[75vh] object-contain"
               />
+
+              {/* Viewport Zoom Controls floating toolbar */}
+              <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30] z-10">
+                <button
+                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut size={14} />
+                </button>
+                <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
+                <button
+                  onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn size={14} />
+                </button>
+                <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
+                <button
+                  onClick={() => setZoom(1)}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              </div>
             </div>
           ) : (
             <div className="text-center p-12 max-w-md border-2 border-dashed border-[#2A2D30] rounded-3xl bg-[#141517]/50">

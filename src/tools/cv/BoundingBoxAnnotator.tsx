@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
-  Upload, Download, Plus, Trash2, ZoomIn, ZoomOut, 
+  Upload, Download, Plus, Trash2, ZoomIn, ZoomOut, RotateCcw,
   Square, Pentagon, Target, Check, Image as ImageIcon, FileCode
 } from 'lucide-react';
 
@@ -536,6 +536,13 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
                   title="Zoom In"
                 >
                   <ZoomIn size={14} />
+                </button>
+                <button
+                  onClick={() => setZoom(1)}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw size={14} />
                 </button>
                 <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
                 <button

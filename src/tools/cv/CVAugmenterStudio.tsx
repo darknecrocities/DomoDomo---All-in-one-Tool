@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Upload, Download, Sparkles } from 'lucide-react';
+import { Upload, Download, Sparkles, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 export const CVAugmenterStudioTool: React.FC = () => {
   const [image, setImage] = useState<{ url: string; width: number; height: number; name: string } | null>(null);
@@ -7,6 +7,7 @@ export const CVAugmenterStudioTool: React.FC = () => {
   const [flipH, setFlipH] = useState<boolean>(false);
   const [brightness, setBrightness] = useState<number>(100);
   const [contrast, setContrast] = useState<number>(100);
+  const [zoom, setZoom] = useState<number>(1);
 
   const [bbox] = useState<[number, number, number, number]>([0.2, 0.2, 0.4, 0.4]);
 
@@ -37,21 +38,22 @@ export const CVAugmenterStudioTool: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = image.width;
-    canvas.height = image.height;
+    canvas.width = image.width * zoom;
+    canvas.height = image.height * zoom;
 
     const img = new Image();
     img.src = image.url;
     img.onload = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      ctx.save();
       ctx.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 
       // Apply Transformations
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate((rotation * Math.PI) / 180);
       if (flipH) ctx.scale(-1, 1);
-      ctx.drawImage(img, -canvas.width / 2, -canvas.height / 2);
+      ctx.drawImage(img, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
       ctx.restore();
 
@@ -67,7 +69,7 @@ export const CVAugmenterStudioTool: React.FC = () => {
       ctx.fillStyle = '#10B981';
       ctx.fillText('Augmented Label', x * canvas.width + 6, y * canvas.height + 16);
     };
-  }, [image, rotation, flipH, brightness, contrast, blur, bbox]);
+  }, [image, rotation, flipH, brightness, contrast, bbox, zoom]);
 
   useEffect(() => {
     drawAugmentedCanvas();
@@ -175,7 +177,36 @@ export const CVAugmenterStudioTool: React.FC = () => {
 
         <div className="flex-1 bg-[#0D0E0F] relative flex items-center justify-center p-6 overflow-auto">
           {image ? (
-            <canvas ref={canvasRef} className="max-w-full max-h-[75vh] object-contain rounded-xl block border border-[#2A2D30]" />
+            <div className="relative border border-[#2A2D30] rounded-xl overflow-hidden shadow-2xl bg-[#141517]">
+              <canvas ref={canvasRef} className="max-w-full max-h-[75vh] object-contain rounded-xl block border border-[#2A2D30]" />
+
+              {/* Viewport Zoom Controls floating toolbar */}
+              <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30] z-10">
+                <button
+                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut size={14} />
+                </button>
+                <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
+                <button
+                  onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn size={14} />
+                </button>
+                <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
+                <button
+                  onClick={() => setZoom(1)}
+                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="text-center p-12 max-w-md border-2 border-dashed border-[#2A2D30] rounded-3xl bg-[#141517]/50">
               <div className="w-16 h-16 rounded-2xl bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center mx-auto mb-4 border border-[#F59E0B]/20">
