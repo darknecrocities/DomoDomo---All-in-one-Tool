@@ -1196,14 +1196,63 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// Security configuration (C1 hardening)
+//
+// This server exposes powerful host tools (shell exec, file R/W, desktop RPA).
+// It must NEVER be reachable from the LAN or from arbitrary websites. Three
+// layers guard it:
+//   1. Bind to loopback only (MCP_HOST, default 127.0.0.1).
+//   2. Strict CORS allow-list (MCP_ALLOWED_ORIGINS) — blocks cross-origin
+//      EventSource/fetch from drive-by websites.
+//   3. Optional shared-secret token (MCP_AUTH_TOKEN) enforced on /sse + /message.
+//      When set it is REQUIRED; when unset the server runs but warns loudly.
+// ---------------------------------------------------------------------------
+const MCP_HOST = process.env.MCP_HOST || '127.0.0.1';
+const ALLOWED_ORIGINS = (process.env.MCP_ALLOWED_ORIGINS ||
+  'http://localhost:5173,http://127.0.0.1:5173')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+const AUTH_TOKEN = (process.env.MCP_AUTH_TOKEN || '').trim();
+
+const corsOptions: cors.CorsOptions = {
+  origin(origin, callback) {
+    // Allow same-origin / non-browser callers (no Origin header) and the
+    // explicit allow-list only. Everything else is rejected.
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin not allowed: ${origin}`));
+    }
+  },
+  credentials: false,
+};
+
+// Extract a caller-supplied token from query (?token=, EventSource-friendly),
+// Authorization: Bearer, or x-mcp-token header.
+function extractToken(req: express.Request): string {
+  const q = (req.query.token as string) || '';
+  if (q) return q.trim();
+  const header = req.header('authorization') || '';
+  if (header.toLowerCase().startsWith('bearer ')) return header.slice(7).trim();
+  return (req.header('x-mcp-token') || '').trim();
+}
+
+function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (!AUTH_TOKEN) return next(); // No token configured — see startup warning.
+  if (extractToken(req) === AUTH_TOKEN) return next();
+  res.status(401).json({ error: 'Unauthorized: missing or invalid MCP token' });
+}
+
 // Setup Express app to listen on SSE
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 let sseTransport: SSEServerTransport | null = null;
 
-app.get('/sse', async (req, res) => {
+app.get('/sse', requireAuth, async (req, res) => {
   console.log('🔌 Client requested SSE transport connection...');
   try {
     if (sseTransport) {
@@ -1229,7 +1278,7 @@ app.get('/sse', async (req, res) => {
   });
 });
 
-app.post('/message', async (req, res) => {
+app.post('/message', requireAuth, async (req, res) => {
   if (sseTransport) {
     try {
       await sseTransport.handlePostMessage(req, res, req.body);
@@ -1245,9 +1294,20 @@ app.post('/message', async (req, res) => {
   }
 });
 
-const PORT = 3001;
-app.listen(PORT, () => {
-  console.log(`🚀 Domo MCP SSE Server is running at http://localhost:${PORT}`);
-  console.log(`- Connection Stream endpoint: http://localhost:${PORT}/sse`);
-  console.log(`- Connection Messages endpoint: http://localhost:${PORT}/message`);
+const PORT = Number(process.env.MCP_PORT) || 3001;
+app.listen(PORT, MCP_HOST, () => {
+  console.log(`🚀 Domo MCP SSE Server is running at http://${MCP_HOST}:${PORT}`);
+  console.log(`- Connection Stream endpoint: http://${MCP_HOST}:${PORT}/sse`);
+  console.log(`- Connection Messages endpoint: http://${MCP_HOST}:${PORT}/message`);
+  console.log(`- CORS allow-list: ${ALLOWED_ORIGINS.join(', ')}`);
+  if (AUTH_TOKEN) {
+    console.log('🔒 Token auth ENABLED — clients must supply MCP_AUTH_TOKEN.');
+  } else {
+    console.warn(
+      '⚠️  SECURITY: MCP_AUTH_TOKEN is not set. The server is bound to ' +
+      `${MCP_HOST} and CORS-locked, but any local process on this machine can ` +
+      'still reach it. Set MCP_AUTH_TOKEN (and domodomo_mcp_token in the app) ' +
+      'to require a shared secret. See mcp-server/.env.example.'
+    );
+  }
 });
