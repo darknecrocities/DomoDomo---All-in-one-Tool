@@ -11,7 +11,8 @@ export type ToolCategory =
   | 'dev'
   | 'data'
   | 'security'
-  | 'ai';
+  | 'ai'
+  | 'cv';
 
 export interface Tool {
   id: string;

@@ -197,6 +197,18 @@ import { FlowchartMindmapMakerTool } from '../tools/data/FlowchartMindmapMaker';
 import { CSSGridBuilderTool } from '../tools/data/CSSGridBuilder';
 import { DataPrivacyAnonymizerTool } from '../tools/data/DataPrivacyAnonymizer';
 
+// Computer Vision Suite Imports
+import { BoundingBoxAnnotatorTool } from '../tools/cv/BoundingBoxAnnotator';
+import { AutoSegmentationTool } from '../tools/cv/AutoSegmentationTool';
+import { BatchImageAnnotatorTool } from '../tools/cv/BatchImageAnnotator';
+import { SemanticMaskStudioTool } from '../tools/cv/SemanticMaskStudio';
+import { PoseSkeletonAnnotatorTool } from '../tools/cv/PoseSkeletonAnnotator';
+import { ImageMattingStudioTool } from '../tools/cv/ImageMattingStudio';
+import { OpticalFlowTrackerTool } from '../tools/cv/OpticalFlowTracker';
+import { CVAugmenterStudioTool } from '../tools/cv/CVAugmenterStudio';
+import { DatasetFormatConverterTool } from '../tools/cv/DatasetFormatConverter';
+import { ZeroShotAutoLabelerTool } from '../tools/cv/ZeroShotAutoLabeler';
+
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -393,7 +405,19 @@ export const TOOLS: Tool[] = [
   { id: 'ai-file-reputation', name: 'DomoGuard File Reputation', categories: ['security'], description: 'AI summarizes findings from extracted strings and metadata in executables.', icon: 'ShieldAlert', run: async (i) => i, component: AIFileReputationTool },
   { id: 'ai-reverse-engineering', name: 'DomoGuard Reverse Engineering', categories: ['security'], description: 'AI explains decompiled functions and assembly for cybersecurity students.', icon: 'Code', run: async (i) => i, component: AIReverseEngineeringTool },
   { id: 'ai-deepfake-detection', name: 'DomoGuard Deepfake Detection', categories: ['security'], description: 'Local image analysis to detect AI-generated artifacts and inconsistencies.', icon: 'Image', run: async (i) => i, component: AIDeepfakeDetectionTool },
-  { id: 'ai-incident-report', name: 'DomoGuard Incident Report', categories: ['security'], description: 'AI generates SOC executive summaries and IOCs from logs and findings.', icon: 'FileText', run: async (i) => i, component: AIIncidentReportTool }
+  { id: 'ai-incident-report', name: 'DomoGuard Incident Report', categories: ['security'], description: 'AI generates SOC executive summaries and IOCs from logs and findings.', icon: 'FileText', run: async (i) => i, component: AIIncidentReportTool },
+
+  // Computer Vision Tools (10)
+  { id: 'cv-bounding-box', name: 'Bounding Box & Polygon Image Annotator', categories: ['cv', 'photo'], description: 'Interactive canvas tool for single/batch object bounding boxes, polygons, keypoint labeling with YOLO and COCO JSON export.', icon: 'Square', run: async (i) => i, component: BoundingBoxAnnotatorTool },
+  { id: 'cv-auto-segmentation', name: 'Auto-Magic Wand & Smart Contour Segmentation', categories: ['cv', 'photo'], description: 'Click-to-select magic wand color tolerance flood fill and edge contour region auto-segmentation tool.', icon: 'Wand2', run: async (i) => i, component: AutoSegmentationTool },
+  { id: 'cv-batch-annotator', name: 'Batch Image Annotator & Dataset Packer', categories: ['cv'], description: 'Batch image tagger, frame box propagator, and dataset archive generator with data.yaml config.', icon: 'FolderArchive', run: async (i) => i, component: BatchImageAnnotatorTool },
+  { id: 'cv-semantic-mask', name: 'Semantic Mask & Pixel Brush Studio', categories: ['cv', 'photo'], description: 'Pixel-level multi-class semantic segmentation brush, eraser, and class index PNG map generator.', icon: 'Paintbrush', run: async (i) => i, component: SemanticMaskStudioTool },
+  { id: 'cv-keypoint-skeleton', name: 'Pose Estimation & Keypoint Skeleton Annotator', categories: ['cv'], description: 'Annotate COCO 17-keypoint human pose skeleton nodes and export keypoints JSON.', icon: 'Target', run: async (i) => i, component: PoseSkeletonAnnotatorTool },
+  { id: 'cv-image-matting', name: 'Interactive Image Matting & Alpha Mask Extractor', categories: ['cv', 'photo'], description: 'Trimap scribble matting for hair, glass, and fine transparent edge alpha mask extraction.', icon: 'Scissors', run: async (i) => i, component: ImageMattingStudioTool },
+  { id: 'cv-optical-flow', name: 'Multi-Frame Motion & Optical Flow Tracker', categories: ['cv', 'video'], description: 'Lucas-Kanade optical flow vector calculator and directional motion heatmap visualizer across frame sequences.', icon: 'Activity', run: async (i) => i, component: OpticalFlowTrackerTool },
+  { id: 'cv-data-augmenter', name: 'Computer Vision Dataset Synthetic Augmentor', categories: ['cv', 'photo'], description: 'Geometric and photometric dataset augmentations with auto-recalculated bounding box and polygon labels.', icon: 'Sparkles', run: async (i) => i, component: CVAugmenterStudioTool },
+  { id: 'cv-dataset-converter', name: 'Dataset Format Converter & Annotations Transformer', categories: ['cv'], description: 'Seamlessly convert dataset annotations between YOLO, COCO JSON, Pascal VOC XML, and Labelme JSON.', icon: 'RefreshCw', run: async (i) => i, component: DatasetFormatConverterTool },
+  { id: 'cv-zero-shot-inspector', name: 'Automated Region Proposal & Dataset Anomaly Inspector', categories: ['cv'], description: 'Auto-propose object bounding candidate regions and audit datasets for overlapping/out-of-bounds annotations.', icon: 'Bot', run: async (i) => i, component: ZeroShotAutoLabelerTool }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {
