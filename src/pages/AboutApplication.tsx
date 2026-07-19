@@ -402,7 +402,16 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v1.5.0 (Latest)",
+                    version: "v1.6.0 (Latest)",
+                    date: "July 19, 2026",
+                    title: "Machine Learning Evaluation & Model Benchmark Suite",
+                    changes: [
+                      "10 Machine Learning Utilities: Added Classification Evaluator & Confusion Matrix Inspector, ROC & PR Curve Analyzer, Regression Metrics & Residual Diagnostics, Multi-Model Leaderboard & Comparator, Dataset Data Drift & Feature Shift Inspector, Feature Importance & SHAP Explainer, Embedding Space & Vector Visualizer, Loss Curve Inspector, ONNX/TFLite Latency Benchmarker, and LLM & RAG Benchmark Studio.",
+                      "100% Serverless ML Auditing: All statistical evaluations, t-SNE embedding projections, confusion matrices, and latency profiles execute locally in client browser memory."
+                    ]
+                  },
+                  {
+                    version: "v1.5.0",
                     date: "July 19, 2026",
                     title: "Computer Vision Tools Suite & Dynamic Counter Automation",
                     changes: [

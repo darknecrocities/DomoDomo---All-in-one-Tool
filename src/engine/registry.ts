@@ -36,6 +36,18 @@ import { AIReverseEngineeringTool } from '../tools/security/ai/AIReverseEngineer
 import { AIDeepfakeDetectionTool } from '../tools/security/ai/AIDeepfakeDetection';
 import { AIIncidentReportTool } from '../tools/security/ai/AIIncidentReport';
 
+// Machine Learning Suite Imports
+import { ClassificationEvaluatorTool } from '../tools/ml/ClassificationEvaluator';
+import { ROCPRAnalyzerTool } from '../tools/ml/ROCPRAnalyzer';
+import { RegressionEvaluatorTool } from '../tools/ml/RegressionEvaluator';
+import { ModelComparatorTool } from '../tools/ml/ModelComparator';
+import { DatasetDriftDetectorTool } from '../tools/ml/DatasetDriftDetector';
+import { FeatureImportanceExplainerTool } from '../tools/ml/FeatureImportanceExplainer';
+import { EmbeddingVisualizerTool } from '../tools/ml/EmbeddingVisualizer';
+import { LossCurveInspectorTool } from '../tools/ml/LossCurveInspector';
+import { ModelLatencyBenchmarkerTool } from '../tools/ml/ModelLatencyBenchmarker';
+import { LLMRAGEvaluatorTool } from '../tools/ml/LLMRAGEvaluator';
+
 // PDF Suite Imports
 import { PDFMergeTool } from '../tools/pdf/PDFMerge';
 import { PDFSplitTool } from '../tools/pdf/PDFSplit';
@@ -417,7 +429,19 @@ export const TOOLS: Tool[] = [
   { id: 'cv-optical-flow', name: 'Multi-Frame Motion & Optical Flow Tracker', categories: ['cv', 'video'], description: 'Lucas-Kanade optical flow vector calculator and directional motion heatmap visualizer across frame sequences.', icon: 'Activity', run: async (i) => i, component: OpticalFlowTrackerTool },
   { id: 'cv-data-augmenter', name: 'Computer Vision Dataset Synthetic Augmentor', categories: ['cv', 'photo'], description: 'Geometric and photometric dataset augmentations with auto-recalculated bounding box and polygon labels.', icon: 'Sparkles', run: async (i) => i, component: CVAugmenterStudioTool },
   { id: 'cv-dataset-converter', name: 'Dataset Format Converter & Annotations Transformer', categories: ['cv'], description: 'Seamlessly convert dataset annotations between YOLO, COCO JSON, Pascal VOC XML, and Labelme JSON.', icon: 'RefreshCw', run: async (i) => i, component: DatasetFormatConverterTool },
-  { id: 'cv-zero-shot-inspector', name: 'Automated Region Proposal & Dataset Anomaly Inspector', categories: ['cv'], description: 'Auto-propose object bounding candidate regions and audit datasets for overlapping/out-of-bounds annotations.', icon: 'Bot', run: async (i) => i, component: ZeroShotAutoLabelerTool }
+  { id: 'cv-zero-shot-inspector', name: 'Automated Region Proposal & Dataset Anomaly Inspector', categories: ['cv'], description: 'Auto-propose object bounding candidate regions and audit datasets for overlapping/out-of-bounds annotations.', icon: 'Bot', run: async (i) => i, component: ZeroShotAutoLabelerTool },
+
+  // Machine Learning Suite Tools (10)
+  { id: 'ml-classification-evaluator', name: 'Model Classification Evaluator & Confusion Matrix Inspector', categories: ['ml'], description: 'Compute Accuracy, F1-Score, Precision, Recall, and interactive Confusion Matrix Heatmap.', icon: 'BarChart2', run: async (i) => i, component: ClassificationEvaluatorTool },
+  { id: 'ml-roc-pr-analyzer', name: 'ROC & Precision-Recall Curve Analyzer', categories: ['ml'], description: 'Compute ROC AUC, PR AUC, and threshold decision tradeoffs with scrubber slider.', icon: 'Activity', run: async (i) => i, component: ROCPRAnalyzerTool },
+  { id: 'ml-regression-evaluator', name: 'Regression Metrics & Residual Diagnostics', categories: ['ml'], description: 'Compute MAE, MSE, RMSE, R² and Residual Error Plots for regression models.', icon: 'TrendingUp', run: async (i) => i, component: RegressionEvaluatorTool },
+  { id: 'ml-model-comparator', name: 'Multi-Model Leaderboard & Comparator', categories: ['ml'], description: 'Compare Accuracy, F1, Precision, Recall, and Inference Latency across models.', icon: 'Trophy', run: async (i) => i, component: ModelComparatorTool },
+  { id: 'ml-dataset-drift-detector', name: 'Dataset Data Drift & Feature Shift Inspector', categories: ['ml'], description: 'Compute Population Stability Index (PSI) & Kolmogorov-Smirnov distribution shifts.', icon: 'ShieldAlert', run: async (i) => i, component: DatasetDriftDetectorTool },
+  { id: 'ml-feature-importance-explainer', name: 'Feature Importance & SHAP Attribution Explainer', categories: ['ml'], description: 'Visualize global feature importances and local prediction push contributions.', icon: 'Cpu', run: async (i) => i, component: FeatureImportanceExplainerTool },
+  { id: 'ml-embedding-visualizer', name: 'Embedding Space & Vector Projection Visualizer', categories: ['ml'], description: 'Project 768-dim embeddings into 2D space with t-SNE / PCA clustering canvas.', icon: 'Box', run: async (i) => i, component: EmbeddingVisualizerTool },
+  { id: 'ml-loss-curve-inspector', name: 'Hyperparameter Loss Curve & Training Inspector', categories: ['ml'], description: 'Detect overfitting gaps, early stopping epoch, and loss convergence curves.', icon: 'Activity', run: async (i) => i, component: LossCurveInspectorTool },
+  { id: 'ml-model-latency-benchmarker', name: 'ONNX & TFLite Latency Benchmarker', categories: ['ml'], description: 'Benchmark browser inference latency, P95/P99 percentiles, and FPS throughput.', icon: 'Zap', run: async (i) => i, component: ModelLatencyBenchmarkerTool },
+  { id: 'ml-llm-rag-evaluator', name: 'LLM & RAG Model Evaluation Benchmark Studio', categories: ['ml'], description: 'Evaluate Faithfulness, Answer Relevance, and Context Recall across RAG pipelines.', icon: 'Bot', run: async (i) => i, component: LLMRAGEvaluatorTool }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {
