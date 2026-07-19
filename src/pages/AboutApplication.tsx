@@ -8,9 +8,9 @@ import { useSearchParams } from 'react-router-dom';
 import { Documentation } from './Documentation';
 
 const stats = [
-  { label: 'Web Utilities', value: '171', detail: 'Local tools for files, media, code, AI, and documents.', icon: Layers },
+  { label: 'Web Utilities', value: '181', detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
   { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
-  { label: 'Categories', value: '12', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, and API suites.', icon: Globe },
+  { label: 'Categories', value: '13', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, and API suites.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
 
