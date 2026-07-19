@@ -99,11 +99,13 @@ export const LibraryApi = () => {
     return ['All', ...Array.from(uniqueAuths).sort()];
   }, [activeDataset]);
 
+  // Reset page whenever filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, selectedAuth, activeDataset]);
+
   // Filter APIs
   const filteredApis = useMemo(() => {
-    // Reset page whenever filter changes
-    setCurrentPage(1);
-    
     return (activeDataset as APIEntry[]).filter((api) => {
       const matchesSearch =
         api.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -324,9 +326,9 @@ curl -X GET "${endpoint}" \\
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {paginatedApis.map((api) => (
+                {paginatedApis.map((api, index) => (
                   <div
-                    key={`${api.name}-${api.category}`}
+                    key={`${api.name}-${api.category}-${api.link}-${index}`}
                     onClick={() => setSelectedApi(api)}
                     className="glass-card glass-card-hover p-5 flex flex-col justify-between gap-4 cursor-pointer relative overflow-hidden group"
                   >
