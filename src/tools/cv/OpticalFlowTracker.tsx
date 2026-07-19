@@ -130,37 +130,41 @@ export const OpticalFlowTrackerTool: React.FC = () => {
           )}
         </div>
 
-        <div className="flex-1 bg-[#0D0E0F] relative rounded-2xl border border-[#2A2D30] flex items-center justify-center p-4 overflow-auto">
-          {frame1 && frame2 ? (
-            <div className="relative border border-[#2A2D30] rounded-xl overflow-hidden shadow-2xl bg-[#141517]">
-              <canvas ref={canvasRef} className="max-w-full max-h-[70vh] object-contain rounded-xl block" />
+        <div className="flex-1 bg-[#0D0E0F] relative rounded-2xl border border-[#2A2D30] flex items-center justify-center p-4 overflow-auto min-h-[400px]">
+          {frame1 && frame2 && (
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30] z-20 shadow-xl">
+              <button
+                onClick={() => setZoom((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))}
+                className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                title="Zoom Out"
+              >
+                <ZoomOut size={14} />
+              </button>
+              <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
+              <button
+                onClick={() => setZoom((z) => Math.min(3, Number((z + 0.25).toFixed(2))))}
+                className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                title="Zoom In"
+              >
+                <ZoomIn size={14} />
+              </button>
+              <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
+              <button
+                onClick={() => setZoom(1)}
+                className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                title="Reset Zoom"
+              >
+                <RotateCcw size={14} />
+              </button>
+            </div>
+          )}
 
-              {/* Viewport Zoom Controls floating toolbar */}
-              <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30] z-10">
-                <button
-                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
-                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
-                  title="Zoom Out"
-                >
-                  <ZoomOut size={14} />
-                </button>
-                <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
-                <button
-                  onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
-                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
-                  title="Zoom In"
-                >
-                  <ZoomIn size={14} />
-                </button>
-                <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
-                <button
-                  onClick={() => setZoom(1)}
-                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
-                  title="Reset Zoom"
-                >
-                  <RotateCcw size={14} />
-                </button>
-              </div>
+          {frame1 && frame2 ? (
+            <div 
+              className="relative border border-[#2A2D30] rounded-xl overflow-hidden shadow-2xl bg-[#141517] transition-transform duration-150 ease-out origin-center"
+              style={{ transform: `scale(${zoom})` }}
+            >
+              <canvas ref={canvasRef} className="max-w-full max-h-[70vh] object-contain rounded-xl block" />
             </div>
           ) : (
             <div className="text-center p-8 text-[#72706C] text-xs font-semibold">

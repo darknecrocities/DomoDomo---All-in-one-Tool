@@ -6,11 +6,13 @@ import domodomoWinkLogo from '../assets/domodomo_wink.png';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Documentation } from './Documentation';
+import { TOOLS } from '../engine/registry';
+import { CATEGORIES } from './Dashboard';
 
 const stats = [
-  { label: 'Web Utilities', value: '181', detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
+  { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
   { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
-  { label: 'Categories', value: '13', detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, and API suites.', icon: Globe },
+  { label: 'Categories', value: `${CATEGORIES.length}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, and API suites.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
 
@@ -400,7 +402,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v1.4.0 (Latest)",
+                    version: "v1.5.0 (Latest)",
+                    date: "July 19, 2026",
+                    title: "Computer Vision Tools Suite & Dynamic Counter Automation",
+                    changes: [
+                      "10 Computer Vision Utilities: Added local-first Bounding Box & Polygon Annotator, Auto-Magic Wand Segmentation, Batch Image Tagger, Semantic Pixel Brush Studio, COCO Pose Skeleton Annotator, Image Matting Cutout, Optical Flow Tracker, Synthetic Augmentor, Annotation Format Converter, and Auto Region Proposal Inspector.",
+                      "Viewport Zoom & Canvas Scaling: Integrated Zoom In/Out/Reset controls and smooth CSS transform scaling across image annotation viewports.",
+                      "Automated Metric Tracking: Automated live web utilities and category counters on the About screen to dynamically compute tool metrics directly from the registry as contributors add tools.",
+                      "Synchronous Canvas Rendering: Preloaded HTMLImageElement rendering buffers to eliminate asynchronous image loading flicker and provide smooth 60fps brush painting."
+                    ]
+                  },
+                  {
+                    version: "v1.4.0",
                     date: "July 14, 2026",
                     title: "AI Research Orchestration Hub Launch",
                     changes: [

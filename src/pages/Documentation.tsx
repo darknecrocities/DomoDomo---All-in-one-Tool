@@ -594,19 +594,35 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
 
               {/* Tools Category Mini Tabs */}
               <div className="flex flex-wrap gap-2 border-b border-[#2A2D30]/65 pb-3">
-                {Object.entries(TOOLS_DOCS).map(([key, data]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleCategoryChange(key as ToolCategory)}
-                    className={`py-1.5 px-3 rounded-lg text-[11px] font-bold transition-all border ${
-                      activeToolCategory === key
-                        ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border-[#3C6B4D]/25'
-                        : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#A3A09B]'
-                    }`}
-                  >
-                    {data.title.split(' ')[0]}
-                  </button>
-                ))}
+                {Object.entries(TOOLS_DOCS).map(([key]) => {
+                  const labelMap: Record<string, string> = {
+                    pdf: 'PDF',
+                    photo: 'Photo',
+                    document: 'Document',
+                    converter: 'Converter',
+                    qr: 'QR Code',
+                    video: 'Video',
+                    audio: 'Audio',
+                    dev: 'Developer',
+                    security: 'Security',
+                    ai: 'Local AI',
+                    data: 'Data',
+                    cv: 'Computer Vision',
+                  };
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => handleCategoryChange(key as ToolCategory)}
+                      className={`py-1.5 px-3 rounded-lg text-[11px] font-bold transition-all border ${
+                        activeToolCategory === key
+                          ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border-[#3C6B4D]/25 shadow-sm'
+                          : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#A3A09B]'
+                      }`}
+                    >
+                      {labelMap[key] || key}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Active Category Header */}
@@ -626,14 +642,16 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                         isExpanded ? 'col-span-1 md:col-span-2 border-[#3C6B4D]/60 bg-[#141618]' : 'hover:border-[#2A2D30]/80'
                       }`}
                     >
-                      <div className="flex justify-between items-start gap-3">
-                        <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-[#ECEBE9] text-xs font-mono">{tool.name}</span>
-                          <span className="text-[10px] text-[#72706C] font-mono">ID: {tool.id}</span>
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                          <span className="font-bold text-[#ECEBE9] text-xs font-mono leading-snug flex-1 min-w-[140px]">
+                            {tool.name}
+                          </span>
+                          <span className="px-2 py-0.5 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded text-[9px] font-mono leading-tight whitespace-normal max-w-full">
+                            {tool.engine}
+                          </span>
                         </div>
-                        <span className="px-2 py-0.5 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded text-[8px] font-mono shrink-0">
-                          {tool.engine}
-                        </span>
+                        <span className="text-[10px] text-[#72706C] font-mono">ID: {tool.id}</span>
                       </div>
                       
                       <p className="text-[#A3A09B] text-[10px] leading-relaxed">

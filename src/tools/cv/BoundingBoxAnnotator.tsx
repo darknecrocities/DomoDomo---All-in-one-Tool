@@ -97,20 +97,32 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
     setNewClassName('');
   };
 
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!currentImage) {
+      imgRef.current = null;
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      imgRef.current = img;
+      drawCanvas();
+    };
+    img.src = currentImage.url;
+  }, [currentImage?.url]);
+
   const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !currentImage) return;
+    if (!canvas || !currentImage || !imgRef.current) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const img = new Image();
-    img.src = currentImage.url;
-    img.onload = () => {
-      canvas.width = currentImage.width * zoom;
-      canvas.height = currentImage.height * zoom;
+    canvas.width = currentImage.width * zoom;
+    canvas.height = currentImage.height * zoom;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
 
       currentImage.annotations.forEach((anno) => {
         const cls = classes.find((c) => c.id === anno.classId) || { color: '#10B981', name: 'label' };
@@ -197,7 +209,6 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
         ctx.lineTo(canvas.width, mousePos.y * canvas.height);
         ctx.stroke();
       }
-    };
   }, [currentImage, zoom, classes, selectedAnnoId, isDrawing, startPoint, currentPoint, drawMode, polyPoints, mousePos, showCrosshair, activeClassId]);
 
   useEffect(() => {
@@ -510,51 +521,56 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
           </div>
         </div>
 
-        <div ref={containerRef} className="flex-1 bg-[#0D0E0F] relative overflow-auto flex items-center justify-center p-6">
+        <div ref={containerRef} className="flex-1 bg-[#0D0E0F] relative overflow-auto flex items-center justify-center p-6 min-h-[400px]">
+          {currentImage && (
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30] z-20 shadow-xl">
+              <button
+                onClick={() => setZoom((z) => Math.max(0.5, Number((z - 0.25).toFixed(2))))}
+                className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                title="Zoom Out"
+              >
+                <ZoomOut size={14} />
+              </button>
+              <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
+              <button
+                onClick={() => setZoom((z) => Math.min(3, Number((z + 0.25).toFixed(2))))}
+                className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                title="Zoom In"
+              >
+                <ZoomIn size={14} />
+              </button>
+              <button
+                onClick={() => setZoom(1)}
+                className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
+                title="Reset Zoom"
+              >
+                <RotateCcw size={14} />
+              </button>
+              <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
+              <button
+                onClick={() => setShowCrosshair((prev) => !prev)}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  showCrosshair ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:bg-[#2A2D30]'
+                }`}
+                title="Toggle Crosshair Guide"
+              >
+                <Target size={14} />
+              </button>
+            </div>
+          )}
+
           {currentImage ? (
-            <div className="relative border border-[#2A2D30] rounded-xl overflow-hidden shadow-2xl bg-[#141517]">
+            <div 
+              className="relative border border-[#2A2D30] rounded-xl overflow-hidden shadow-2xl bg-[#141517] transition-transform duration-150 ease-out origin-center"
+              style={{ transform: `scale(${zoom})` }}
+            >
               <canvas
                 ref={canvasRef}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
-                className="cursor-crosshair block"
+                className="cursor-crosshair block max-w-full max-h-[75vh] object-contain"
               />
-
-              <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-[#18191B]/90 backdrop-blur-md p-1.5 rounded-xl border border-[#2A2D30]">
-                <button
-                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}
-                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
-                  title="Zoom Out"
-                >
-                  <ZoomOut size={14} />
-                </button>
-                <span className="text-xs font-mono text-[#A3A09B] px-1">{Math.round(zoom * 100)}%</span>
-                <button
-                  onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
-                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
-                  title="Zoom In"
-                >
-                  <ZoomIn size={14} />
-                </button>
-                <button
-                  onClick={() => setZoom(1)}
-                  className="p-1.5 hover:bg-[#2A2D30] rounded-lg text-[#72706C] hover:text-white transition-colors"
-                  title="Reset Zoom"
-                >
-                  <RotateCcw size={14} />
-                </button>
-                <div className="w-[1px] h-4 bg-[#2A2D30] mx-0.5" />
-                <button
-                  onClick={() => setShowCrosshair((prev) => !prev)}
-                  className={`p-1.5 rounded-lg transition-colors ${
-                    showCrosshair ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:bg-[#2A2D30]'
-                  }`}
-                  title="Toggle Crosshair Guide"
-                >
-                  <Target size={14} />
-                </button>
-              </div>
             </div>
           ) : (
             <div className="text-center p-12 max-w-md border-2 border-dashed border-[#2A2D30] rounded-3xl bg-[#141517]/50">
