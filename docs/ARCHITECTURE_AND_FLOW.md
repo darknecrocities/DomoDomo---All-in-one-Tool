@@ -56,12 +56,16 @@ graph TB
 ## 3. Core Pipelines & Data Flow
 
 ### A. Modular Tool Registration & Engine Loading
-DomoDomo acts as a registry for over 110 modular utility tools. 
+
+DomoDomo acts as a registry for over 120 modular utility tools.
+
 1. **Definition**: All tools are registered in [registry.ts](file:///Users/arronkianparejas/domodomo/src/engine/registry.ts) exposing metadata, SEO keywords, category, and target UI component.
 2. **Dynamic Mounting**: The router parses the registered schema, lazy-loading the respective tool component on demand to ensure minimized initial JS bundle weight.
 
 ### B. Cognitive Recall & RAG Memory Loop
+
 To personalize LLM interactions offline, DomoDomo maintains a local cognitive cycle:
+
 1. **Activity Recording**: Visits and events trigger `unifiedMemory.recordAction()`, saving actions and metadata inside the `user_habits` IndexedDB store.
 2. **RAG Knowledge Base**: Document uploads are chunked, embedded using an on-device model (`all-MiniLM-L6-v2`), and saved into `knowledge_chunks` IndexedDB store.
 3. **Retrieval & Augmentation**: When generating text:
@@ -95,7 +99,9 @@ sequenceDiagram
 ```
 
 ### C. Direct-to-HDD Model Migration Pipeline
+
 To prevent system disk exhaustion from large local models, DomoDomo enables running downloads directly to external USB/HDD locations:
+
 1. **Direct Pulls**: The user selects a target external path.
 2. **Environment Variable Injection**: The Express MCP server captures this target, clones the environment, overrides `OLLAMA_MODELS=targetPath`, and spawns the child process thread: `ollama pull <model>`.
 3. **Asynchronous Polling**: Progress events from the child thread are written to a localized hidden status file (`._domo_pull_status_<jobId>.json`). The React client polls `check_pull_status` tools to render down-to-the-second progress metrics.
@@ -118,7 +124,7 @@ domodomo/
 │   ├── data/               # Constants and design metadata templates
 │   ├── engine/             # Core tool loader and registries (registry.ts)
 │   ├── pages/              # Primary route views (AppHub, ToolsHub, Settings, About)
-│   ├── tools/              # 110+ specialized offline tools (ai, security, pdf, dev, etc.)
+│   ├── tools/              # 120+ specialized offline tools (ai, security, pdf, dev, etc.)
 │   └── utils/              # Memory Managers (unifiedMemory.ts) and AI Service (aiService.ts)
 ├── package.json            # Web app dependencies & launch commands
 ├── tailwind.config.js      # Styling design tokens & color values

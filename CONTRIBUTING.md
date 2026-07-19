@@ -47,29 +47,36 @@ DomoDomo---All-in-one-Tool/
 Follow these step-by-step instructions to create a new tool and add it to the DomoDomo toolbox:
 
 ### Step 1: Create the Component File
-Create your new React component under the appropriate category inside `src/tools/<category>/`. 
+
+Create your new React component under the appropriate category inside `src/tools/<category>/`.
 For example, if you are adding an image filter called `CoolFilter`, create:
 `src/tools/photo/CoolFilter.tsx`
 
 ```tsx
-import React, { useState } from 'react';
-import { Sparkles } from 'lucide-react'; // Import clean icons
+import React, { useState } from "react";
+import { Sparkles } from "lucide-react"; // Import clean icons
 
 export const CoolFilterTool = () => {
-  return (
-    <div className="glass-card p-6 flex flex-col gap-4 text-left">
-      <h3 className="text-teal-400 font-bold border-b border-slate-800 pb-2">Cool Filter</h3>
-      <p className="text-sm text-slate-355">Implement your client-side logic here!</p>
-    </div>
-  );
+	return (
+		<div className="glass-card p-6 flex flex-col gap-4 text-left">
+			<h3 className="text-teal-400 font-bold border-b border-slate-800 pb-2">
+				Cool Filter
+			</h3>
+			<p className="text-sm text-slate-355">
+				Implement your client-side logic here!
+			</p>
+		</div>
+	);
 };
 ```
 
 ### Step 2: Register the Tool in the Execution Engine
+
 Open `src/engine/registry.ts`:
+
 1. **Import** your new component at the top of the file:
    ```typescript
-   import { CoolFilterTool } from '../tools/photo/CoolFilter';
+   import { CoolFilterTool } from "../tools/photo/CoolFilter";
    ```
 2. **Add** the tool metadata object to the `tools` array. Ensure it satisfies the `Tool` interface:
    ```typescript
@@ -85,20 +92,24 @@ Open `src/engine/registry.ts`:
    ```
 
 ### Step 3: Add to Dashboard Cards
+
 Open `src/pages/Dashboard.tsx` and append your tool metadata to `ALL_PLANNED_TOOLS` so it displays on the homepage. Match the `id`, `name`, `category`, and `description` exactly:
+
 ```typescript
-{ 
-  id: 'cool-filter', 
-  name: 'Cool Filter', 
-  category: 'photo', 
-  description: 'Apply high-performance local filters to your graphics.', 
-  icon: 'Sparkles', 
-  status: 'functional' 
+{
+  id: 'cool-filter',
+  name: 'Cool Filter',
+  category: 'photo',
+  description: 'Apply high-performance local filters to your graphics.',
+  icon: 'Sparkles',
+  status: 'functional'
 }
 ```
 
 ### Step 4: Add Technical Documentation
+
 Open `src/utils/ToolDocsData.ts` and add detailed documentation for your tool under the appropriate suite mapping. This helps users understand how the client-side execution processes their data:
+
 ```typescript
 {
   id: 'cool-filter',
@@ -117,16 +128,19 @@ Open `src/utils/ToolDocsData.ts` and add detailed documentation for your tool un
 To maintain clean and high-quality code across our client-side tools, please adhere to the following rules:
 
 ### 1. Zero-Server Architecture
+
 - All features **must** run entirely client-side.
 - Do not add any backend dependencies, external APIs, cloud integrations, databases (use IndexedDB if required), or third-party authentication systems.
 
 ### 2. Styling & Branding
+
 - Keep components responsive. Ensure layouts fit nicely on mobile screens and large viewports.
 - Use our signature Domo Brandkit scheme. (Primary highlight color: `#4E8E5E` / Tailwind `emerald-500` shades).
 - Use smooth micro-animations for hover states and transitions.
 - Build interfaces using the styling structures defined in `src/App.css` (e.g. `.glass-card`).
 
 ### 3. TypeScript Rules
+
 - Code must compile with zero errors. Verify compilation locally:
   ```bash
   npm run build
@@ -138,10 +152,12 @@ To maintain clean and high-quality code across our client-side tools, please adh
 
 ## 🧪 CI/CD & Testing Requirements
 
-To ensure project stability and prevent regression across the toolbox's 110+ client-side utilities, all pull requests (PRs) must meet the following automated verification criteria before they can be merged:
+To ensure project stability and prevent regression across the toolbox's 120+ client-side utilities, all pull requests (PRs) must meet the following automated verification criteria before they can be merged:
 
 ### 1. Compilation & Build Safety
+
 All code changes must compile with zero syntax or type errors on the frontend and the local Python/Node modules. Run the compilation tests locally before submitting a PR:
+
 ```bash
 # Verify React/Vite/TypeScript compilation
 npm run build
@@ -151,19 +167,24 @@ npm --prefix mcp-server run build
 ```
 
 ### 2. Static Analysis & Linting
+
 We enforce formatting and ESLint rules. Ensure your files are free of formatting and syntax violations:
+
 ```bash
 # Run the linter
 npm run lint
 ```
-*   Ensure all React hooks, dependencies, and state bindings comply with eslint specifications.
-*   Remove any unused variables or dead imports from your modifications.
+
+- Ensure all React hooks, dependencies, and state bindings comply with eslint specifications.
+- Remove any unused variables or dead imports from your modifications.
 
 ### 3. Backend & DB Migration Safety
+
 If modifying the local FastAPI server (`backend/main.py`):
-*   Ensure that all endpoint logic handles cross-origin policies (CORS) safely.
-*   Avoid adding any schema changes that break backward compatibility with users' existing SQLite databases.
-*   All API responses should be structured correctly, handling network failures gracefully on the client side.
+
+- Ensure that all endpoint logic handles cross-origin policies (CORS) safely.
+- Avoid adding any schema changes that break backward compatibility with users' existing SQLite databases.
+- All API responses should be structured correctly, handling network failures gracefully on the client side.
 
 ---
 
