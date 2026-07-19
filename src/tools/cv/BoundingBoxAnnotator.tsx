@@ -86,10 +86,19 @@ export const BoundingBoxAnnotatorTool: React.FC = () => {
   };
 
   const addClass = () => {
-    if (!newClassName.trim()) return;
+    const trimmedName = newClassName.trim();
+    if (!trimmedName) return;
+
+    // Check if class name already exists (case-insensitive check)
+    const exists = classes.some((cls) => cls.name.toLowerCase() === trimmedName.toLowerCase());
+    if (exists) {
+      alert(`The class label "${trimmedName}" already exists. Please use a unique label name.`);
+      return;
+    }
+
     const newCls: LabelClass = {
       id: Date.now().toString(),
-      name: newClassName.trim(),
+      name: trimmedName,
       color: newClassColor,
     };
     setClasses((prev) => [...prev, newCls]);
