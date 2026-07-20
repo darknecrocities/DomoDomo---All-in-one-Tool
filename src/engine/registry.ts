@@ -196,6 +196,9 @@ import { AISandboxArena } from '../tools/ai/AISandboxArena';
 import { AIVoiceCompanion } from '../tools/ai/AIVoiceCompanion';
 import { AIPDFInvestigator } from '../tools/ai/AIPDFInvestigator';
 import { AIResearchOrchestrationHub } from '../tools/ai/AIResearchOrchestrationHub';
+import { AIPiiRedactorTool } from '../tools/ai/AIPiiRedactor';
+import { AIRegexArchitectTool } from '../tools/ai/AIRegexArchitect';
+import { AIDevOpsArchitectTool } from '../tools/ai/AIDevOpsArchitect';
 
 // Data & Visualizer Tools Imports
 import { JSONChartBuilderTool } from '../tools/data/JSONChartBuilder';
@@ -394,6 +397,9 @@ export const TOOLS: Tool[] = [
   { id: 'ai-voice-companion', name: 'Domo Voice Companion', categories: ['ai'], description: 'Offline vocal conversation simulator with speech recognition and voice synthesis.', icon: 'Volume2', run: async (i) => i, component: AIVoiceCompanion },
   { id: 'ai-pdf-investigator', name: 'AIPDF Investigator', categories: ['ai'], description: 'Semantic multi-document question answering tool with page level context citations.', icon: 'BookOpen', run: async (i) => i, component: AIPDFInvestigator },
   { id: 'ai-research-orchestration-hub', name: 'AI Research Orchestration Hub', categories: ['ai'], description: 'Orchestrate structured, loop-based research campaigns with specialized local AI agents, model selectors, and conflict checks.', icon: 'Brain', run: async (i) => i, component: AIResearchOrchestrationHub },
+  { id: 'ai-pii-redactor', name: 'AI PII Data Redactor', categories: ['ai'], description: 'Locally redact sensitive info (names, IPs, emails) from logs and text.', icon: 'Shield', run: async (i) => i, component: AIPiiRedactorTool },
+  { id: 'ai-regex-architect', name: 'AI Regex Explainer & Builder', categories: ['ai'], description: 'Explain complex regex patterns or build them from English descriptions.', icon: 'Code', run: async (i) => i, component: AIRegexArchitectTool },
+  { id: 'ai-devops-architect', name: 'AI DevOps Command Architect', categories: ['ai'], description: 'Generate complex bash, Docker, and cron commands from natural language.', icon: 'Terminal', run: async (i) => i, component: AIDevOpsArchitectTool },
 
   // Data & Visualizer Suite Tools (10)
   { id: 'json-chart-builder', name: 'JSON Chart Builder', categories: ['data'], description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', run: async (i) => i, component: JSONChartBuilderTool },

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Cpu, Loader2, Download, Trash2, Copy, Check, RefreshCw, XCircle, Type } from 'lucide-react';
 import { aiService } from '../../utils/aiService';
 import { handleTextCopy } from '../../utils/sharedHelpers';
+import { parseMarkdown } from '../../utils/markdownParser';
 import { LocalAIConfigPanel } from '../../components/LocalAIConfigPanel';
 
 interface Message {
@@ -207,38 +208,7 @@ export const LocalAIChatTool = () => {
     });
   };
 
-  // Basic markdown tags parser (bold, inline code, paragraphs, block code)
-  const renderFormattedText = (text: string) => {
-    if (!text) return '';
-    const parts = text.split(/(```[\s\S]*?```)/g);
-    return parts.map((part, idx) => {
-      if (part.startsWith('```') && part.endsWith('```')) {
-        const code = part.slice(3, -3).replace(/^[a-zA-Z]+\n/, '');
-        return (
-          <pre key={idx} className="bg-slate-950/90 border border-slate-800 rounded-lg p-3 my-2 overflow-x-auto font-mono text-[10px] text-teal-300 leading-normal">
-            <code>{code}</code>
-          </pre>
-        );
-      }
-      const inlineParts = part.split(/(\*\*.*?\*\*|`.*?`|\n)/g);
-      return (
-        <span key={idx} className="whitespace-pre-wrap">
-          {inlineParts.map((subPart, subIdx) => {
-            if (subPart.startsWith('**') && subPart.endsWith('**')) {
-              return <strong key={subIdx} className="font-bold text-slate-100">{subPart.slice(2, -2)}</strong>;
-            }
-            if (subPart.startsWith('`') && subPart.endsWith('`')) {
-              return <code key={subIdx} className="bg-slate-950 px-1.5 py-0.5 rounded text-[10px] font-mono text-teal-400 border border-slate-850">{subPart.slice(1, -1)}</code>;
-            }
-            if (subPart === '\n') {
-              return <br key={subIdx} />;
-            }
-            return subPart;
-          })}
-        </span>
-      );
-    });
-  };
+
 
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-4 text-left">
@@ -356,7 +326,10 @@ export const LocalAIChatTool = () => {
               style={{ fontSize: `${textSize}px`, fontFamily: fontFamily === 'mono' ? 'monospace' : 'sans-serif' }}
             >
               {/* Message Context */}
-              <div>{renderFormattedText(m.text)}</div>
+              <div 
+                dangerouslySetInnerHTML={{ __html: parseMarkdown(m.text) }} 
+                className="markdown-chat-content" 
+              />
 
               {/* Utility overlay (Copy/Timestamp) */}
               <div className="flex justify-between items-center mt-2 pt-1.5 border-t border-slate-900/40 text-[9px] text-slate-500 font-mono">
