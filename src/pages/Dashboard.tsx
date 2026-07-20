@@ -1147,6 +1147,33 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		icon: "Brain",
 		status: "functional",
 	},
+	{
+		id: "ai-pii-redactor",
+		name: "AI PII Data Redactor",
+		categories: ["ai"],
+		description: "Locally redact sensitive info (names, IPs, emails) from logs and text.",
+		icon: "Shield",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "ai-regex-architect",
+		name: "AI Regex Explainer & Builder",
+		categories: ["ai"],
+		description: "Explain complex regex patterns or build them from English descriptions.",
+		icon: "Code",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "ai-devops-architect",
+		name: "AI DevOps Command Architect",
+		categories: ["ai"],
+		description: "Generate complex bash, Docker, and cron commands from natural language.",
+		icon: "Terminal",
+		status: "functional",
+		requiresOllama: true,
+	},
 
 	// Data & Visualizer (10)
 	{
@@ -1744,7 +1771,7 @@ export const Dashboard = () => {
 
 	const getFilteredTools = () => {
 		const list = ALL_PLANNED_TOOLS.filter((tool) => {
-			if (activeCategory === "all" && tool.categories.includes("ai")) {
+			if (activeCategory === "all" && tool.categories.includes("ai") && !hasOllama) {
 				return false;
 			}
 			const matchesCategory =
@@ -1757,6 +1784,11 @@ export const Dashboard = () => {
 			const matchesSearch =
 				tool.name.toLowerCase().includes(search.toLowerCase()) ||
 				tool.description.toLowerCase().includes(search.toLowerCase());
+				
+			if (search && tool.status !== "functional") {
+				return false;
+			}
+			
 			return matchesSearch;
 		});
 
