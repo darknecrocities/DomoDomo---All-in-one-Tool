@@ -11,7 +11,16 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
         <sub><b>darknecrocities</b></sub>
       </a>
       <br />
-      <sub>395 commits</sub>
+      <sub>396 commits</sub>
+    </td>
+    <td align="center" valign="top" width="20%">
+      <a href="https://github.com/kuraigu" target="_blank">
+        <img src="https://avatars.githubusercontent.com/u/17216767?v=4" width="80px;" style="border-radius: 50%; border: 2px solid #5c6bc0;" alt="kuraigu"/>
+        <br />
+        <sub><b>kuraigu</b></sub>
+      </a>
+      <br />
+      <sub>17 commits</sub>
     </td>
     <td align="center" valign="top" width="20%">
       <a href="https://github.com/Ram-Gold" target="_blank">
@@ -21,15 +30,6 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
       </a>
       <br />
       <sub>14 commits</sub>
-    </td>
-    <td align="center" valign="top" width="20%">
-      <a href="https://github.com/kuraigu" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/17216767?v=4" width="80px;" style="border-radius: 50%; border: 2px solid #5c6bc0;" alt="kuraigu"/>
-        <br />
-        <sub><b>kuraigu</b></sub>
-      </a>
-      <br />
-      <sub>11 commits</sub>
     </td>
     <td align="center" valign="top" width="20%">
       <a href="https://github.com/itselinadev" target="_blank">
@@ -58,4 +58,4 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
 
 Want to see your name here? Check out our [CONTRIBUTING.md](CONTRIBUTING.md) to get started on your contribution journey!
 
-*Last updated on July 19, 2026 | Automated via GitHub Actions*
+*Last updated on July 20, 2026 | Automated via GitHub Actions*
