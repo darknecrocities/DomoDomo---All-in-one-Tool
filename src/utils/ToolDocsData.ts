@@ -1283,6 +1283,33 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Companion chat window, custom mascot personas, overlay styling, viewport boundary detection, and scroll-drag coordinate filters.',
         howItWorks: '1. Detects current active routing path. 2. Collects settings preferences. 3. Filters drag coordinates. 4. Pipes chat stream.',
         technicalSpecs: 'Drags natively on desktop via coordinate delta computations. Implements touch scroll-lock bypass on mobile/touch screens.'
+      },
+      {
+        id: 'ai-pii-redactor',
+        name: 'AI PII Data Redactor',
+        engine: 'Ollama Privacy Anonymization Pipeline',
+        details: 'Parses raw text data to intelligently identify and mask Personally Identifiable Information using local LLM understanding.',
+        functionality: 'Redacts sensitive info (names, IPs, emails) from logs and text.',
+        howItWorks: '1. Connects to local model. 2. Streams text blocks. 3. Replaces matches with placeholders.',
+        technicalSpecs: 'Ensures data privacy by never sending PII to a remote server.'
+      },
+      {
+        id: 'ai-regex-architect',
+        name: 'AI Regex Explainer & Builder',
+        engine: 'Ollama Parsing & Explanation Pipeline',
+        details: 'Breaks down complex regex patterns or constructs them from natural language descriptions.',
+        functionality: 'Explains or builds regex patterns locally.',
+        howItWorks: '1. Analyzes regex string or intent. 2. Queries model for step-by-step breakdown. 3. Outputs markdown explanation.',
+        technicalSpecs: 'Compatible with major regular expression flavors (PCRE, JS).'
+      },
+      {
+        id: 'ai-devops-architect',
+        name: 'AI DevOps Command Architect',
+        engine: 'Ollama SysAdmin Scripting Pipeline',
+        details: 'Generates complex bash scripts, Docker commands, and crontab schedules from simple plain English.',
+        functionality: 'Provides shell command solutions for devops operations.',
+        howItWorks: '1. Receives operation description. 2. Queries model for exact terminal commands. 3. Formats output.',
+        technicalSpecs: 'Warns about potentially destructive operations by relying on LLM logic.'
       }
     ]
   },
