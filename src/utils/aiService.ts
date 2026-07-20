@@ -551,7 +551,7 @@ export const aiService = {
           temperature: options?.temperature || 0.7,
           stream: isStreaming
         })
-      }, 15000);
+      }, 120000);
 
       if (proxyRes.ok) {
         if (isStreaming && proxyRes.body) {
@@ -606,7 +606,7 @@ export const aiService = {
           top_p: options?.topP
         }
       })
-    }, 15000);
+    }, 120000);
 
     if (!res.ok) throw new Error('Ollama failed to generate text');
 
@@ -658,7 +658,7 @@ export const aiService = {
         max_tokens: maxTokens,
         temperature: options?.temperature || 0.7
       })
-    }, 15000);
+    }, 120000);
     if (!res.ok) throw new Error(`OpenAI compatibility endpoint failed: ${res.statusText}`);
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '';
@@ -681,7 +681,7 @@ export const aiService = {
           temperature: 0.7
         }
       })
-    }, 15000);
+    }, 120000);
     if (!res.ok) throw new Error(`Gemini API failed: ${res.statusText}`);
     const data = await res.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -703,7 +703,7 @@ export const aiService = {
         system: systemPrompt,
         messages: [{ role: 'user', content: prompt }]
       })
-    }, 15000);
+    }, 120000);
     if (!res.ok) throw new Error(`Anthropic API failed: ${res.statusText}`);
     const data = await res.json();
     return data.content?.[0]?.text || '';
@@ -718,7 +718,7 @@ export const aiService = {
         prompt: fullPrompt,
         n_predict: maxTokens
       })
-    }, 15000);
+    }, 120000);
     if (!res.ok) throw new Error(`llama.cpp completion failed: ${res.statusText}`);
     const data = await res.json();
     return data.content || '';
