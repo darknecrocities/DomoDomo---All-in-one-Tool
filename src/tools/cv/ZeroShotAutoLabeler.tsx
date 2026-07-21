@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Upload, Download, Bot, RefreshCw, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 interface AutoProposal {
@@ -7,6 +7,20 @@ interface AutoProposal {
   confidence: number;
   label: string;
 }
+
+const loadScript = (src: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load script ${src}`));
+    document.body.appendChild(script);
+  });
+};
 
 export const ZeroShotAutoLabelerTool: React.FC = () => {
   const [image, setImage] = useState<{ url: string; width: number; height: number; name: string } | null>(null);
@@ -36,46 +50,85 @@ export const ZeroShotAutoLabelerTool: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  const runAutoProposalEngine = () => {
+  const drawMainCanvas = useCallback(() => {
     if (!image || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    const img = new Image();
+    img.src = image.url;
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Draw proposals
+      proposals.forEach((p) => {
+        const [x, y, w, h] = p.bbox;
+        ctx.strokeStyle = '#10B981';
+        ctx.lineWidth = Math.max(3, Math.floor(canvas.width / 250));
+        ctx.strokeRect(x * canvas.width, y * canvas.height, w * canvas.width, h * canvas.height);
+
+        ctx.fillStyle = '#10B981';
+        const fontSize = Math.max(12, Math.floor(canvas.width / 60));
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        const text = `${p.label} (${Math.round(p.confidence * 100)}%)`;
+        const textWidth = ctx.measureText(text).width;
+        
+        ctx.fillRect(x * canvas.width, y * canvas.height - fontSize - 6, textWidth + 12, fontSize + 6);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(text, x * canvas.width + 6, y * canvas.height - 6);
+      });
+    };
+  }, [image, proposals]);
+
+  useEffect(() => {
+    drawMainCanvas();
+  }, [drawMainCanvas]);
+
+  const runAutoProposalEngine = async () => {
+    if (!image) return;
     setIsScanning(true);
 
-    setTimeout(() => {
-      const canvas = canvasRef.current!;
-      canvas.width = image.width * zoom;
-      canvas.height = image.height * zoom;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+    try {
+      // 1. Load scripts dynamically
+      await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs');
+      await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd');
 
+      // 2. Load model and run prediction
       const img = new Image();
       img.src = image.url;
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      img.onload = async () => {
+        try {
+          // @ts-ignore
+          const model = await window.cocoSsd.load();
+          // @ts-ignore
+          const predictions = await model.detect(img);
 
-        // Generate synthetic auto region proposals
-        const generated: AutoProposal[] = [
-          { id: '1', bbox: [0.15, 0.2, 0.35, 0.45], confidence: 0.92, label: 'object_candidate_1' },
-          { id: '2', bbox: [0.55, 0.3, 0.3, 0.5], confidence: 0.86, label: 'object_candidate_2' },
-        ];
+          const generated: AutoProposal[] = predictions.map((p: any, index: number) => {
+            const [x, y, w, h] = p.bbox;
+            return {
+              id: String(index + 1),
+              bbox: [x / img.width, y / img.height, w / img.width, h / img.height],
+              confidence: p.score,
+              label: p.class,
+            };
+          });
 
-        // Draw proposals
-        generated.forEach((p) => {
-          const [x, y, w, h] = p.bbox;
-          ctx.strokeStyle = '#10B981';
-          ctx.lineWidth = 3;
-          ctx.strokeRect(x * canvas.width, y * canvas.height, w * canvas.width, h * canvas.height);
-
-          ctx.fillStyle = '#10B981';
-          ctx.fillRect(x * canvas.width, y * canvas.height - 20, 140, 20);
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = 'bold 11px sans-serif';
-          ctx.fillText(`${p.label} (${Math.round(p.confidence * 100)}%)`, x * canvas.width + 6, y * canvas.height - 6);
-        });
-
-        setProposals(generated);
-        setIsScanning(false);
+          setProposals(generated);
+          setIsScanning(false);
+        } catch (err) {
+          console.error(err);
+          setIsScanning(false);
+        }
       };
-    }, 400);
+    } catch (error) {
+      console.error('Failed to run object detection:', error);
+      setIsScanning(false);
+    }
   };
 
   const downloadAutoLabels = () => {
