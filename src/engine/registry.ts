@@ -48,6 +48,18 @@ import { LossCurveInspectorTool } from '../tools/ml/LossCurveInspector';
 import { ModelLatencyBenchmarkerTool } from '../tools/ml/ModelLatencyBenchmarker';
 import { LLMRAGEvaluatorTool } from '../tools/ml/LLMRAGEvaluator';
 
+// Spatial 3D Suite Imports
+import { ModelInspector3DTool } from '../tools/spatial/3DModelInspector';
+import { MeshDecimator3DTool } from '../tools/spatial/3DMeshDecimator';
+import { PBRTextureGeneratorTool } from '../tools/spatial/PBRTextureGenerator';
+import { Heightmap3DTerrainTool } from '../tools/spatial/Heightmap3DTerrain';
+import { PointCloudVisualizerTool } from '../tools/spatial/PointCloudVisualizer';
+import { VoxelStudioConverterTool } from '../tools/spatial/VoxelStudioConverter';
+import { SpatialAudioRendererTool } from '../tools/spatial/SpatialAudioRenderer';
+import { ParticleForceStudioTool } from '../tools/spatial/ParticleForceStudio';
+import { CameraAnimator3DTool } from '../tools/spatial/3DCameraAnimator';
+import { ARMarkerCardStudioTool } from '../tools/spatial/ARMarkerCardStudio';
+
 // PDF Suite Imports
 import { PDFMergeTool } from '../tools/pdf/PDFMerge';
 import { PDFSplitTool } from '../tools/pdf/PDFSplit';
@@ -441,7 +453,19 @@ export const TOOLS: Tool[] = [
   { id: 'ml-embedding-visualizer', name: 'Embedding Space & Vector Projection Visualizer', categories: ['ml'], description: 'Project 768-dim embeddings into 2D space with t-SNE / PCA clustering canvas.', icon: 'Box', run: async (i) => i, component: EmbeddingVisualizerTool },
   { id: 'ml-loss-curve-inspector', name: 'Hyperparameter Loss Curve & Training Inspector', categories: ['ml'], description: 'Detect overfitting gaps, early stopping epoch, and loss convergence curves.', icon: 'Activity', run: async (i) => i, component: LossCurveInspectorTool },
   { id: 'ml-model-latency-benchmarker', name: 'ONNX & TFLite Latency Benchmarker', categories: ['ml'], description: 'Benchmark browser inference latency, P95/P99 percentiles, and FPS throughput.', icon: 'Zap', run: async (i) => i, component: ModelLatencyBenchmarkerTool },
-  { id: 'ml-llm-rag-evaluator', name: 'LLM & RAG Model Evaluation Benchmark Studio', categories: ['ml'], description: 'Evaluate Faithfulness, Answer Relevance, and Context Recall across RAG pipelines.', icon: 'Bot', run: async (i) => i, component: LLMRAGEvaluatorTool }
+  { id: 'ml-llm-rag-evaluator', name: 'LLM & RAG Model Evaluation Benchmark Studio', categories: ['ml'], description: 'Evaluate Faithfulness, Answer Relevance, and Context Recall across RAG pipelines.', icon: 'Bot', run: async (i) => i, component: LLMRAGEvaluatorTool },
+
+  // Spatial 3D Suite Tools (10)
+  { id: '3d-model-inspector', name: '3D Model Studio & Mesh Inspector', categories: ['spatial'], description: 'Interactive 3D model viewer (OBJ/STL/PLY/OFF) with orbit controls, wireframe/normals rendering, and OBJ export.', icon: 'Box', run: async (i) => i, component: ModelInspector3DTool },
+  { id: '3d-mesh-decimator', name: '3D Polygon Decimator & Mesh Optimizer', categories: ['spatial'], description: 'Interactive polygon reduction tool with dynamic polycount slider, LOD preview, density heatmaps, and OBJ export.', icon: 'Scissors', run: async (i) => i, component: MeshDecimator3DTool },
+  { id: 'pbr-texture-generator', name: 'PBR Texture Map Synthesizer', categories: ['spatial'], description: 'Synthesizes 3D Normal maps, Roughness maps, Ambient Occlusion, and Height maps from 2D images with live 3D preview & ZIP export.', icon: 'Sparkles', run: async (i) => i, component: PBRTextureGeneratorTool },
+  { id: 'heightmap-3d-terrain', name: 'Heightmap 3D Terrain Studio', categories: ['spatial'], description: 'Converts 2D elevation heightmaps into 3D terrain meshes with biome gradients, water level plane, and OBJ export.', icon: 'Mountain', run: async (i) => i, component: Heightmap3DTerrainTool },
+  { id: 'point-cloud-visualizer', name: '3D Point Cloud & LiDAR Visualizer', categories: ['spatial'], description: 'Interactive LiDAR point cloud renderer with depth spectrums, point size attenuation, slicing planes, and PLY export.', icon: 'Cpu', run: async (i) => i, component: PointCloudVisualizerTool },
+  { id: 'voxel-studio-converter', name: 'Voxel Studio & 3D Pixel Converter', categories: ['spatial'], description: 'Converts 3D meshes or 2D pixel art into interactive 3D Voxel block grids with custom palette editor and OBJ export.', icon: 'Grid', run: async (i) => i, component: VoxelStudioConverterTool },
+  { id: 'spatial-audio-renderer', name: '3D Spatial Audio & Binaural Soundfield Renderer', categories: ['spatial'], description: 'Visual 3D soundfield editor using Web Audio API HRTF PannerNode, impulse response reverb acoustics, and soundwaves.', icon: 'Volume2', run: async (i) => i, component: SpatialAudioRendererTool },
+  { id: 'particle-force-studio', name: 'Particle System & Force Field Studio', categories: ['spatial'], description: 'Real-time 3D particle engine with gravity, vortex, wind force fields, particle trail physics, and animation exporter.', icon: 'Wind', run: async (i) => i, component: ParticleForceStudioTool },
+  { id: '3d-camera-animator', name: '3D Camera Flight Path & Keyframe Animator', categories: ['spatial'], description: 'Interactive 3D camera trajectory editor with keyframes, Bezier spline interpolation, timeline scrubber, and JSON export.', icon: 'Camera', run: async (i) => i, component: CameraAnimator3DTool },
+  { id: 'ar-marker-card-studio', name: 'AR Spatial Marker & 3D Card Studio', categories: ['spatial'], description: 'Generates AR target pattern markers paired with interactive 3D AR card overlays, printable patterns, and PNG markers.', icon: 'QrCode', run: async (i) => i, component: ARMarkerCardStudioTool }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {

@@ -13,6 +13,40 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'introducing-spatial-3d-and-web-graphics-suite-domodomo',
+    title: 'Introducing Spatial 3D & Web Engine: 10 Offline 3D Model, Mesh, PBR & Audio Utilities',
+    excerpt: 'DomoDomo releases 10 new local-first Spatial 3D tools for 3D model inspection, polygon decimation, PBR texture map synthesis, heightmap 3D terrain sculpting, LiDAR point cloud visualization, voxel studio, 3D spatial audio, particle force fields, camera flight path animation, and AR markers.',
+    date: 'July 21, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'spatial 3d, webgl, 3d model inspector, obj stl, polygon decimation, pbr textures, heightmap terrain, point cloud lidar, voxel studio, spatial audio, hrtf, particle physics, 3d camera animation, ar markers, local-first, domodomo',
+    content: `# Introducing Spatial 3D & Web Engine: 10 Offline 3D Model, Mesh, PBR & Audio Utilities
+
+We are thrilled to introduce the brand-new **Spatial 3D & Web Engine** category to DomoDomo! Game developers, 3D artists, spatial audio engineers, and WebGL creators can now inspect 3D models, decimate mesh polygons, generate PBR texture maps, sculpt 3D terrain heightmaps, render LiDAR point clouds, mix 3D binaural soundfields, and animate 3D camera paths 100% client-side inside their browser.
+
+---
+
+## 🛠️ The 10 New Spatial 3D Utilities
+
+1. **3D Model Studio & Mesh Inspector**: Real-time 3D model viewer (OBJ/STL/PLY/OFF) with orbit controls, wireframe/normals rendering modes, face/vertex metrics, and OBJ export.
+2. **3D Polygon Decimator & Mesh Optimizer**: Interactive polygon reduction tool with dynamic polycount slider, LOD preview, density heatmaps, and OBJ export.
+3. **PBR Texture Map Synthesizer**: Converts 2D diffuse images into Normal maps, Roughness maps, Ambient Occlusion, and Height maps with live rotating 3D preview sphere & export ZIP.
+4. **Heightmap 3D Terrain Studio**: Converts 2D elevation heightmaps into interactive 3D terrain meshes with biome color gradients, water level plane, and OBJ export.
+5. **3D Point Cloud & LiDAR Visualizer**: Interactive visualizer for PLY/PCD/XYZ datasets with elevation depth spectrums, point attenuation, slicing planes, and PLY export.
+6. **Voxel Studio & 3D Pixel Converter**: Converts 3D meshes or 2D pixel art into interactive 3D Voxel block grids with custom palette editor and MagicaVoxel / OBJ export.
+7. **3D Spatial Audio & Binaural Soundfield Renderer**: Visual 3D soundfield editor using Web Audio API HRTF PannerNode, impulse response reverb acoustics, and soundwave ripples.
+8. **Particle System & Force Field Studio**: Real-time dynamic 3D particle engine with gravity, vortex, wind force fields, particle trail physics, and animation exporter.
+9. **3D Camera Flight Path & Keyframe Animator**: Interactive 3D camera trajectory editor with keyframes, Bezier spline interpolation, timeline scrubber, and JSON export.
+10. **AR Spatial Marker & 3D Card Studio**: Generates AR target pattern markers paired with interactive 3D AR card overlays, printable patterns, and PNG markers.
+
+---
+
+## 🔒 100% Client-Side & Local-First
+
+As with all DomoDomo utilities, your 3D models, textures, audio files, and spatial datasets never leave your computer. Everything runs locally in browser memory using HTML5 Canvas, WebGL, and Web Audio APIs.`
+  },
+  {
     slug: 'introducing-machine-learning-evaluation-tools-suite-domodomo',
     title: 'Introducing Machine Learning Tools: 10 Offline Model Evaluation, Benchmark & Diagnostic Utilities',
     excerpt: 'DomoDomo releases 10 new serverless Machine Learning tools for confusion matrix evaluation, ROC/PR curves, regression residual diagnostics, multi-model leaderboards, dataset drift detection, SHAP attribution, t-SNE embedding visualization, and LLM RAG auditing.',

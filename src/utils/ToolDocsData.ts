@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml' | 'spatial';
 
 export interface ToolDoc {
   id: string;
@@ -1571,6 +1571,102 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Audits LLM responses against retrieved context documents.',
         howItWorks: '1. Upload RAG evaluation dataset. 2. Select query. 3. Inspect faithfulness score.',
         technicalSpecs: 'Context token overlap and semantic citation auditing.'
+      }
+    ]
+  },
+  spatial: {
+    title: 'Spatial 3D & Web Engine',
+    desc: 'Local-first offline 3D model inspection, polygon decimation, PBR texture generation, spatial audio, LiDAR point clouds, and WebGL graphics.',
+    list: [
+      {
+        id: '3d-model-inspector',
+        name: '3D Model Studio & Mesh Inspector',
+        engine: 'WebGL / HTML5 3D Matrix Renderer',
+        details: 'Parses OBJ, STL, PLY, and OFF 3D meshes locally and renders an interactive 3D orbit viewport.',
+        functionality: 'Provides orbit controls, wireframe/solid/normals rendering modes, face/vertex metrics, and OBJ export.',
+        howItWorks: '1. Load 3D model or select preset. 2. Orbit mouse around 3D canvas viewport. 3. Tweak shading & sun position. 4. Export OBJ file.',
+        technicalSpecs: 'Painter depth sorting, face normal vectors, and client-side Matrix transformations.'
+      },
+      {
+        id: '3d-mesh-decimator',
+        name: '3D Polygon Decimator & Mesh Optimizer',
+        engine: 'Client-Side Polygon Reduction & Edge Collapse Engine',
+        details: 'Simplifies complex 3D meshes locally with dynamic polygon reduction target sliders.',
+        functionality: 'Reduces 3D poly-count while preserving mesh shape, showing visual reduction heatmaps.',
+        howItWorks: '1. Load mesh. 2. Adjust poly reduction slider (10%-100%). 3. Inspect vertex metrics. 4. Export lightweight OBJ.',
+        technicalSpecs: 'Vertex clustering and edge collapse algorithm simulation.'
+      },
+      {
+        id: 'pbr-texture-generator',
+        name: 'PBR Texture Map Synthesizer',
+        engine: 'Sobel Filter & Grayscale Variance Shader Engine',
+        details: 'Converts 2D diffuse images into 3D Physically Based Rendering (PBR) texture maps.',
+        functionality: 'Generates Normal maps, Roughness maps, Ambient Occlusion, and Height maps with live 3D preview & ZIP export.',
+        howItWorks: '1. Upload 2D texture. 2. Tweak normal depth and roughness sliders. 3. Preview live on 3D sphere. 4. Download ZIP package.',
+        technicalSpecs: 'Sobel gradient matrix operator for normal calculation.'
+      },
+      {
+        id: 'heightmap-3d-terrain',
+        name: 'Heightmap 3D Terrain Studio',
+        engine: 'Procedural Elevation Grid & Biome Color Engine',
+        details: 'Converts 2D grayscale heightmaps into 3D terrain meshes with biome gradients and sea level water planes.',
+        functionality: 'Renders 3D mountains, lakes, and biomes with customizable elevation relief and OBJ export.',
+        howItWorks: '1. Select heightmap or preset. 2. Adjust water level and peak elevation sliders. 3. Choose biome gradient. 4. Download OBJ mesh.',
+        technicalSpecs: 'Interactive 3D elevation quad grid projection.'
+      },
+      {
+        id: 'point-cloud-visualizer',
+        name: '3D Point Cloud & LiDAR Visualizer',
+        engine: '3D Point Attenuation & Spectrum Mapper',
+        details: 'Parses and renders 3D LiDAR point cloud datasets (PLY, PCD, XYZ).',
+        functionality: 'Visualizes 3D spatial points with depth spectrum color ramps, slicing planes, and PLY export.',
+        howItWorks: '1. Upload PLY dataset. 2. Adjust point size and height clipping plane. 3. Choose thermal/rainbow ramp. 4. Download PLY.',
+        technicalSpecs: 'Point size attenuation and depth axis slicing.'
+      },
+      {
+        id: 'voxel-studio-converter',
+        name: 'Voxel Studio & 3D Pixel Converter',
+        engine: 'Interactive 3D Voxel Grid Engine',
+        details: 'Converts 3D meshes or 2D pixel art into interactive 3D Voxel block grids.',
+        functionality: 'Allows palette color editing and 3D Voxel block grid manipulation with OBJ export.',
+        howItWorks: '1. Select voxel preset or model. 2. Choose block color from palette. 3. Edit voxel grid in 3D. 4. Export OBJ.',
+        technicalSpecs: 'Depth-sorted 3D voxel block rendering.'
+      },
+      {
+        id: 'spatial-audio-renderer',
+        name: '3D Spatial Audio & Binaural Soundfield Renderer',
+        engine: 'Web Audio API HRTF PannerNode & Impulse Response Engine',
+        details: 'Visual 3D soundstage editor that positions audio nodes around a 3D listener head.',
+        functionality: 'Renders 3D binaural spatial audio, distance attenuation, and room acoustics impulse responses.',
+        howItWorks: '1. Drag sound nodes in 3D soundstage. 2. Adjust reverb amount. 3. Play 3D spatial binaural audio synth.',
+        technicalSpecs: 'Web Audio PannerNode with HRTF panning model.'
+      },
+      {
+        id: 'particle-force-studio',
+        name: 'Particle System & Force Field Studio',
+        engine: '3D Vector Force Field Physics Engine',
+        details: 'Simulates 3D particle systems under gravity, vortex, wind, and attractor forces.',
+        functionality: 'Renders real-time 3D particle motion, trails, and force vectors.',
+        howItWorks: '1. Choose force field (vortex, gravity, attractor). 2. Adjust particle count slider. 3. Run physics simulation.',
+        technicalSpecs: 'Real-time Euler integration 3D particle physics.'
+      },
+      {
+        id: '3d-camera-animator',
+        name: '3D Camera Flight Path & Keyframe Animator',
+        engine: '3D Bezier Spline Keyframe Interpolator',
+        details: 'Interactive timeline camera trajectory builder for 3D flight paths.',
+        functionality: 'Interpolates camera positions along Bezier splines and tracks target subjects.',
+        howItWorks: '1. Adjust timeline scrubber. 2. Inspect animated 3D camera trajectory. 3. Export keyframes JSON.',
+        technicalSpecs: 'Linear and cubic spline camera position interpolation.'
+      },
+      {
+        id: 'ar-marker-card-studio',
+        name: 'AR Spatial Marker & 3D Card Studio',
+        engine: 'AR Target Marker & 3D Spatial Overlay Engine',
+        details: 'Generates AR tracking target patterns paired with floating 3D spatial cards.',
+        functionality: 'Creates printable AR marker targets and customizable 3D floating card previews.',
+        howItWorks: '1. Customize card header and glow color. 2. Preview 3D AR marker split view. 3. Download PNG marker.',
+        technicalSpecs: 'High-contrast AR pattern generation and spatial shadow preview.'
       }
     ]
   }

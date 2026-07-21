@@ -609,6 +609,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                     data: 'Data',
                     cv: 'Computer Vision',
                     ml: 'Machine Learning',
+                    spatial: 'Spatial 3D',
                   };
                   return (
                     <button

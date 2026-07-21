@@ -13,7 +13,8 @@ export type ToolCategory =
   | 'security'
   | 'ai'
   | 'cv'
-  | 'ml';
+  | 'ml'
+  | 'spatial';
 
 export interface Tool {
   id: string;
