@@ -13,6 +13,42 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'introducing-offline-investigative-research-suite-domodomo',
+    title: 'Introducing Offline Investigative Research: 10 Local AI-Powered Academic & Data Synthesis Utilities',
+    excerpt: 'DomoDomo releases 10 new local-first tools for literature reviews, clinical trial audits, patent mapping, archive comparison, citation checks, and statistical methodology advisory running 100% locally with private LLMs.',
+    date: 'July 24, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'investigative research, academic literature, clinical trial evaluation, patent claim mapper, citation check, hypothesis generator, qualitative coder, method advisor, meta-analysis aggregator, proposal optimizer, local llm, ollama, privacy-first, domodomo',
+    content: `# Introducing Offline Investigative Research: 10 Local AI-Powered Academic & Data Synthesis Utilities
+
+We are excited to launch the **Investigative Research Suite** in DomoDomo! This suite introduces 10 advanced, local-first tools designed for researchers, academics, students, and legal analysts. Run literature synthesis, clinical trial evaluations, patent claim mapping, archive cross-examinations, citation audits, and meta-analysis calculations 100% locally and securely.
+
+---
+
+## 🛠️ The 10 New Investigative Research Utilities
+
+1. **Scientific Literature Synthesizer**: Paste raw academic text to extract hypotheses, methodology, and empirical findings. Runs client-side using local AI models with zero server overhead.
+2. **Clinical Trial Evaluator**: Extract clinical trial phase information, sample cohort statistics, control groups, and adverse endpoints.
+3. **Patent Claim Mapper**: Deconstruct claims from patent documentation to identify dependencies and generate ASCII visual tree diagrams.
+4. **Historical Archive Cross-Examiner**: Contrast timelines, ideological biases, and perspective variations between multiple primary witness accounts.
+5. **Academic Citation Cross-Referencer**: Audit and validate bibliography entries against APA 7th, MLA 9th, Chicago, and IEEE formatting standards.
+6. **Research Hypothesis Generator**: Input variables and research fields to brainstorm 5 novel scientific hypotheses complete with control recommendations.
+7. **Qualitative Text Coder & Labeler**: Tag interview transcripts, count qualitative code occurrences, and outline thematic codes.
+8. **Research Method Advisory**: Select optimal research designs, statistical tests, and sample sizes based on input variables.
+9. **Meta-Analysis Statistics Aggregator**: Aggregate study sizes and effect sizes (Cohen's d) to compute pooled effect metrics and render SVG Forest Plots.
+10. **Funding Proposal Optimizer**: Audit research proposal drafts against funding guidelines and evaluate structural alignment.
+
+---
+
+## 🔒 Private Local AI and Ollama Integration
+
+All tools in the Investigative Research Suite integrate with DomoDomo's local AI engine. By connecting to your local **Ollama** daemon (running models like Llama 3.2 or Qwen 2.5), all text analysis and literature synthesis remain completely on your machine. If Ollama is offline, the tools automatically transition to a local simulated execution mode to guarantee continuous functionality.
+
+Check out the new **Investigative Research** suite on your dashboard today!`
+  },
+  {
     slug: 'introducing-spatial-3d-and-web-graphics-suite-domodomo',
     title: 'Introducing Spatial 3D & Web Engine: 10 Offline 3D Model, Mesh, PBR & Audio Utilities',
     excerpt: 'DomoDomo releases 10 new local-first Spatial 3D tools for 3D model inspection, polygon decimation, PBR texture map synthesis, heightmap 3D terrain sculpting, LiDAR point cloud visualization, voxel studio, 3D spatial audio, particle force fields, camera flight path animation, and AR markers.',

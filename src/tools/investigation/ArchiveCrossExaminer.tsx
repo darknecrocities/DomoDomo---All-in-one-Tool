@@ -1,0 +1,161 @@
+import React, { useState, useEffect } from 'react';
+import { Columns, Cpu, FileText, Check, Copy } from 'lucide-react';
+import { aiService } from '../../utils/aiService';
+
+export const ArchiveCrossExaminer: React.FC = () => {
+  const [sourceA, setSourceA] = useState('');
+  const [sourceB, setSourceB] = useState('');
+  const [models, setModels] = useState<string[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>('llama3.2:1b');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const loadModels = async () => {
+      const { status, models } = await aiService.checkOllama();
+      if (status && models.length > 0) {
+        setModels(models);
+        const saved = aiService.getSelectedOllamaModel();
+        if (saved && models.includes(saved)) {
+          setSelectedModel(saved);
+        } else {
+          setSelectedModel(models[0]);
+        }
+      }
+    };
+    loadModels();
+  }, []);
+
+  const handleCrossExamine = async () => {
+    if (!sourceA.trim() || !sourceB.trim()) return;
+    setIsProcessing(true);
+    setResult(null);
+
+    const prompt = `You are a professional historical researcher and textual cross-examiner. Analyze and compare the following two source texts.
+1. Map key timelines, claims, or event details in each source.
+2. Pinpoint exact discrepancies, contradictions, or chronological conflicts.
+3. Identify ideological bias, tone, or perspective differences.
+4. Synthesize an objective neutral timeline based on consensus elements.
+
+Provide a detailed cross-examination report with markdown tables for easy comparison.
+
+Source A text:
+${sourceA}
+
+Source B text:
+${sourceB}`;
+
+    try {
+      const response = await aiService.generateText(prompt, 1200, undefined, selectedModel, {
+        systemPrompt: "You are a neutral historical investigator. Analyze source testimonies, documents, or archives to identify conflicts and perspectives."
+      });
+      setResult(response);
+    } catch (err) {
+      console.error(err);
+      setResult("Error executing cross-examination. Verify local AI service connection.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleCopy = () => {
+    if (result) {
+      navigator.clipboard.writeText(result);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-[#3C6B4D]/10 text-[#3C6B4D] rounded-lg">
+          <Columns size={20} />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold">Historical Archive Cross-Examiner</h3>
+          <p className="text-xs text-[#A3A09B]">Cross-examine multiple primary historical sources, testimonies, or accounts to audit timelines and bias.</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-semibold text-[#A3A09B]">Local AI Model Selector</label>
+        <select
+          value={selectedModel}
+          onChange={(e) => {
+            setSelectedModel(e.target.value);
+            aiService.setSelectedOllamaModel(e.target.value);
+          }}
+          className="bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] px-3 py-2 rounded-xl text-xs focus:outline-none focus:border-[#3C6B4D]"
+        >
+          {models.length > 0 ? (
+            models.map((m) => <option key={m} value={m}>{m}</option>)
+          ) : (
+            <option value="llama3.2:1b">llama3.2:1b (Simulation Mode)</option>
+          )}
+        </select>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-semibold text-[#A3A09B]">Source text A</label>
+          <textarea
+            value={sourceA}
+            onChange={(e) => setSourceA(e.target.value)}
+            placeholder="Paste text from Source A (e.g. Account A, diary entry, witness testimony)..."
+            className="w-full min-h-[140px] bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] placeholder:text-[#72706C] focus:outline-none focus:border-[#3C6B4D]"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-semibold text-[#A3A09B]">Source text B</label>
+          <textarea
+            value={sourceB}
+            onChange={(e) => setSourceB(e.target.value)}
+            placeholder="Paste text from Source B (e.g. Account B, government report, contrasting witness statement)..."
+            className="w-full min-h-[140px] bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] placeholder:text-[#72706C] focus:outline-none focus:border-[#3C6B4D]"
+          />
+        </div>
+      </div>
+
+      <button
+        onClick={handleCrossExamine}
+        disabled={isProcessing || !sourceA.trim() || !sourceB.trim()}
+        className="w-full btn-primary py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Cpu size={14} className={isProcessing ? 'animate-spin' : ''} />
+        <span>{isProcessing ? 'Auditing Timelines & Bias Offline...' : 'Cross-Examine Sources'}</span>
+      </button>
+
+      {result && (
+        <div className="flex flex-col gap-2 mt-2 bg-[#111213] border border-[#2A2D30] rounded-xl p-4 relative animate-fadeIn">
+          <div className="flex justify-between items-center border-b border-[#2A2D30] pb-2 mb-2">
+            <span className="text-xs font-semibold text-[#A3A09B] flex items-center gap-1.5">
+              <FileText size={12} />
+              <span>Cross-Examination Audit</span>
+            </span>
+            <button
+              onClick={handleCopy}
+              className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors p-1"
+            >
+              {copied ? <Check size={14} className="text-[#3C6B4D]" /> : <Copy size={14} />}
+            </button>
+          </div>
+          <div className="text-xs leading-relaxed text-[#ECEBE9] overflow-auto max-h-[300px] whitespace-pre-wrap font-mono">
+            {result}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const ArchiveCrossExaminerTool = {
+  id: 'archive-examiner',
+  name: 'Historical Archive Cross-Examiner',
+  categories: ['investigation' as any],
+  description: 'Cross-examine multiple primary historical sources, testimonies, or accounts to audit timelines and bias.',
+  icon: 'Columns',
+  run: async (input: any) => input,
+  component: ArchiveCrossExaminer
+};

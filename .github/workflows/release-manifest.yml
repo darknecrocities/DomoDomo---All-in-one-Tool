@@ -1,0 +1,68 @@
+name: Generate Release Manifest & Announcements
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate updates.json
+        run: node scripts/generate-updates.js
+
+      - name: Commit & Push updates.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/updates.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: auto-generate public/updates.json [skip ci]"
+            git push
+          else
+            echo "No changes in updates.json to commit."
+          fi
+
+      - name: Discord Notification
+        if: env.DISCORD_WEBHOOK_URL != ''
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
+          COMMIT_HASH=$(git log -1 --pretty=format:"%h")
+          
+          PAYLOAD=$(cat <<EOF
+          {
+            "embeds": [{
+              "title": "🚀 New Update Deployed to Main Branch",
+              "description": "**Commit [${COMMIT_HASH}](https://github.com/${{ github.repository }}/commit/${COMMIT_HASH}):** ${COMMIT_MSG}\n**Author:** ${COMMIT_AUTHOR}",
+              "color": 3959629,
+              "footer": {
+                "text": "DomoDomo Auto-Release pipeline"
+              },
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }]
+          }
+          EOF
+          )
+          
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"

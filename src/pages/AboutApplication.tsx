@@ -12,7 +12,7 @@ import { CATEGORIES } from './Dashboard';
 const stats = [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
   { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
-  { label: 'Categories', value: `${CATEGORIES.length}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, and API suites.', icon: Globe },
+  { label: 'Categories', value: `${CATEGORIES.length}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and API suites.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
 

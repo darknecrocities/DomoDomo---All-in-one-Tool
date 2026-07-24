@@ -236,6 +236,17 @@ import { CVAugmenterStudioTool } from '../tools/cv/CVAugmenterStudio';
 import { DatasetFormatConverterTool } from '../tools/cv/DatasetFormatConverter';
 import { ZeroShotAutoLabelerTool } from '../tools/cv/ZeroShotAutoLabeler';
 
+// Investigative Research Suite Imports
+import { ScientificSynthesizerTool } from '../tools/investigation/ScientificSynthesizer';
+import { ClinicalTrialEvaluatorTool } from '../tools/investigation/ClinicalTrialEvaluator';
+import { PatentClaimMapperTool } from '../tools/investigation/PatentClaimMapper';
+import { ArchiveCrossExaminerTool } from '../tools/investigation/ArchiveCrossExaminer';
+import { CitationCrossReferencerTool } from '../tools/investigation/CitationCrossReferencer';
+import { HypothesisGeneratorTool } from '../tools/investigation/HypothesisGenerator';
+import { QualitativeTextCoderTool } from '../tools/investigation/QualitativeTextCoder';
+import { MethodAdvisoryTool } from '../tools/investigation/MethodAdvisory';
+import { MetaAnalysisAggregatorTool } from '../tools/investigation/MetaAnalysisAggregator';
+import { ProposalOptimizerTool } from '../tools/investigation/ProposalOptimizer';
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -471,7 +482,19 @@ export const TOOLS: Tool[] = [
   { id: 'spatial-audio-renderer', name: '3D Spatial Audio & Binaural Soundfield Renderer', categories: ['spatial'], description: 'Visual 3D soundfield editor using Web Audio API HRTF PannerNode, impulse response reverb acoustics, and soundwaves.', icon: 'Volume2', run: async (i) => i, component: SpatialAudioRendererTool },
   { id: 'particle-force-studio', name: 'Particle System & Force Field Studio', categories: ['spatial'], description: 'Real-time 3D particle engine with gravity, vortex, wind force fields, particle trail physics, and animation exporter.', icon: 'Wind', run: async (i) => i, component: ParticleForceStudioTool },
   { id: '3d-camera-animator', name: '3D Camera Flight Path & Keyframe Animator', categories: ['spatial'], description: 'Interactive 3D camera trajectory editor with keyframes, Bezier spline interpolation, timeline scrubber, and JSON export.', icon: 'Camera', run: async (i) => i, component: CameraAnimator3DTool },
-  { id: 'ar-marker-card-studio', name: 'AR Spatial Marker & 3D Card Studio', categories: ['spatial'], description: 'Generates AR target pattern markers paired with interactive 3D AR card overlays, printable patterns, and PNG markers.', icon: 'QrCode', run: async (i) => i, component: ARMarkerCardStudioTool }
+  { id: 'ar-marker-card-studio', name: 'AR Spatial Marker & 3D Card Studio', categories: ['spatial'], description: 'Generates AR target pattern markers paired with interactive 3D AR card overlays, printable patterns, and PNG markers.', icon: 'QrCode', run: async (i) => i, component: ARMarkerCardStudioTool },
+
+  // Investigative Research Suite Tools (10)
+  ScientificSynthesizerTool,
+  ClinicalTrialEvaluatorTool,
+  PatentClaimMapperTool,
+  ArchiveCrossExaminerTool,
+  CitationCrossReferencerTool,
+  HypothesisGeneratorTool,
+  QualitativeTextCoderTool,
+  MethodAdvisoryTool,
+  MetaAnalysisAggregatorTool,
+  ProposalOptimizerTool
 ];
 
 export const getToolById = (id: string): Tool | undefined => {

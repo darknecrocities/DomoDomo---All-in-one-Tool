@@ -1,0 +1,92 @@
+[
+  {
+    "hash": "ff6a342",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "feat: expand Template Studio with Browser Storage Design Library, Quick Alignments, and Shape Gradients"
+  },
+  {
+    "hash": "7cdec2b",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "feat: expand Template Studio with Canva-like canvas shapes, presets, duplicate layer tool, and disable magic AI OCR layer"
+  },
+  {
+    "hash": "8b31ce4",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "feat: improve back button in ToolContainer to return to previous page preserving states"
+  },
+  {
+    "hash": "cfd824b",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "feat: expand onboarding assistant questions and add offline-only navbar purge button"
+  },
+  {
+    "hash": "e7677c2",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "feat: add unified local RAG cognitive memory brain & local onboarding questionnaire"
+  },
+  {
+    "hash": "f410a5f",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "polish: refine blog directory header copy to highlight product updates and remove explicit SEO references"
+  },
+  {
+    "hash": "9141483",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "seo: add 5 new blog posts covering DomoMulti, Local AI servers, and AutoPilot preview"
+  },
+  {
+    "hash": "8760820",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "seo: expand blog directory to 8 articles covering security, developer suite, OCR, and custom branding"
+  },
+  {
+    "hash": "ff01f11",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "fix: resolve dynamic Google AdSense rendering on route changes by creating AdSenseUnit component and adding to blog pages"
+  },
+  {
+    "hash": "9a1e7b9",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "feat: add active user metrics and community testimonials to About page"
+  },
+  {
+    "hash": "f47aea5",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "seo: scale indexable pages to 535 URLs via programmatically pre-rendered tool variations and add release notes blog"
+  },
+  {
+    "hash": "cce2bc9",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "seo: implement Phase 3 Blog hub and guides framework with SEO content mapping"
+  },
+  {
+    "hash": "b302b04",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "seo: implement Phase 2 Static Snapshot Prerendering for non-JS search engines and upgrade sitemap generator"
+  },
+  {
+    "hash": "f568c40",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "seo: comprehensive SEO optimization - enhanced meta tags, OG/Twitter cards, JSON-LD schemas, keyword-rich descriptions, sitemap lastmod, BreadcrumbList"
+  },
+  {
+    "hash": "ad68523",
+    "date": "2026-06-28",
+    "author": "darknecrocities",
+    "message": "fix: improve Magic Layers OCR and fix Background Remover upload replacement"
+  }
+]

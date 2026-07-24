@@ -14,7 +14,8 @@ export type ToolCategory =
   | 'ai'
   | 'cv'
   | 'ml'
-  | 'spatial';
+  | 'spatial'
+  | 'investigation';
 
 export interface Tool {
   id: string;

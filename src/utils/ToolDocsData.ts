@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml' | 'spatial';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml' | 'spatial' | 'investigation';
 
 export interface ToolDoc {
   id: string;
@@ -1694,6 +1694,102 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Creates printable AR marker targets and customizable 3D floating card previews.',
         howItWorks: '1. Customize card header and glow color. 2. Preview 3D AR marker split view. 3. Download PNG marker.',
         technicalSpecs: 'High-contrast AR pattern generation and spatial shadow preview.'
+      }
+    ]
+  },
+  investigation: {
+    title: 'Offline Investigative Research Suite',
+    desc: 'Local-first offline tools for academic, literature, patent, and data synthesis using local AI.',
+    list: [
+      {
+        id: 'scientific-synthesizer',
+        name: 'Scientific Literature Synthesizer',
+        engine: 'Local AI Model / Fallback Simulator',
+        details: 'Extracts abstracts, key hypotheses, methodology, and results from scientific papers locally.',
+        functionality: 'Reads academic texts and summarizes them into structured research components.',
+        howItWorks: '1. Paste raw text of a scientific paper. 2. Select summarization depth. 3. Local model parses sections offline.',
+        technicalSpecs: 'Supports structured markdown output with zero external network request.'
+      },
+      {
+        id: 'clinical-evaluator',
+        name: 'Clinical Trial Evaluator',
+        engine: 'Local AI Model / Fallback Simulator',
+        details: 'Analyzes medical study text to extract trial parameters, sample sizes, and control types.',
+        functionality: 'Scans clinical reports for protocol details, statistical power, and outcomes.',
+        howItWorks: '1. Input clinical trial manuscript or summary. 2. Run analysis. 3. Extract patient cohorts, methods, and outcomes.',
+        technicalSpecs: 'Privacy-focused local medical data parsing.'
+      },
+      {
+        id: 'patent-mapper',
+        name: 'Patent Claim Mapper',
+        engine: 'Local AI Model / Fallback Simulator',
+        details: 'Parses patent descriptions to map independent/dependent claims and identify novel methods.',
+        functionality: 'Builds a visual layout mapping of claim dependency hierarchies and key innovations.',
+        howItWorks: '1. Paste patent claims section. 2. Generate tree representation. 3. Highlight core independent claims.',
+        technicalSpecs: 'Abstract syntax trees mapped via local NLP extraction.'
+      },
+      {
+        id: 'archive-examiner',
+        name: 'Historical Archive Cross-Examiner',
+        engine: 'Local AI Model / Fallback Simulator',
+        details: 'Compares multiple historical primary source texts to find timeline anomalies and bias.',
+        functionality: 'Aligns testimonies and historical files to pinpoint discrepancies and ideological tones.',
+        howItWorks: '1. Paste text from Source A and Source B. 2. Choose cross-examination mode. 3. Review contradictions side-by-side.',
+        technicalSpecs: 'Local semantic diff and vector comparison heuristics.'
+      },
+      {
+        id: 'citation-crossref',
+        name: 'Academic Citation Cross-Referencer',
+        engine: 'Regex Parsing & Citation Schema Validator',
+        details: 'Validates bibliography lists against standard schemas (APA, MLA, Chicago, Harvard).',
+        functionality: 'Detects missing DOI identifiers, formatting inconsistencies, and broken reference structures.',
+        howItWorks: '1. Paste bibliography reference list. 2. Run schema audit. 3. View issues and copy cleaned citations.',
+        technicalSpecs: 'Strict regex parser supporting APA 7th, MLA 9th, and Chicago style validation.'
+      },
+      {
+        id: 'hypothesis-generator',
+        name: 'Research Hypothesis Generator',
+        engine: 'Local AI Model / Fallback Simulator',
+        details: 'Brainstorms novel, testable research hypotheses based on input fields and variables.',
+        functionality: 'Generates hypotheses complete with independent/dependent variables, controls, and proposed methods.',
+        howItWorks: '1. Enter field of research and target variables. 2. Generate hypotheses. 3. Export structured research briefs.',
+        technicalSpecs: 'Synthesized via local prompt construction with customizable temperature.'
+      },
+      {
+        id: 'qualitative-coder',
+        name: 'Qualitative Text Coder & Labeler',
+        engine: 'Local AI Semantic Tagger',
+        details: 'Performs thematic analysis on research interviews to tag qualitative transcript codes.',
+        functionality: 'Applies color-coded category labels and extracts qualitative coding patterns.',
+        howItWorks: '1. Input interview transcript. 2. Auto-tag codes or label text manually. 3. View code frequencies and themes.',
+        technicalSpecs: 'Client-side labeling database saved directly to browser localStorage.'
+      },
+      {
+        id: 'method-adviser',
+        name: 'Research Method Advisory',
+        engine: 'Decisions-Tree Methodology Expert System',
+        details: 'Recommends statistical tests and experimental designs based on variables.',
+        functionality: 'Selects optimal research frameworks and sample size estimations.',
+        howItWorks: '1. Specify input variable types and distribution. 2. Select research goal. 3. Review suggested test (e.g. ANOVA, t-test).',
+        technicalSpecs: 'Determined using deterministic research logic matrices.'
+      },
+      {
+        id: 'meta-analysis-aggregator',
+        name: 'Meta-Analysis Statistics Aggregator',
+        engine: 'Local Meta-Analysis Statistics Library',
+        details: 'Aggregates effect sizes and confidence intervals across multiple clinical or social studies.',
+        functionality: 'Computes pooled effect sizes (Hedges\' g, Cohen\'s d) and renders SVG Forest Plots.',
+        howItWorks: '1. Input study names, sample sizes, and effect sizes. 2. Compute summary effect. 3. Inspect SVG Forest Plot.',
+        technicalSpecs: 'Client-side inverse-variance and random-effects statistical models.'
+      },
+      {
+        id: 'proposal-optimizer',
+        name: 'Funding Proposal Optimizer',
+        engine: 'Local AI Model / Fallback Simulator',
+        details: 'Reviews grant application drafts to identify structural flaws and align with guidelines.',
+        functionality: 'Highlights clarity issues, passive voice, and alignment gaps with funding calls.',
+        howItWorks: '1. Paste funding proposal draft. 2. Enter grant guidelines. 3. Review optimization recommendations.',
+        technicalSpecs: 'Grant writing guidelines system prompt analysis.'
       }
     ]
   }
