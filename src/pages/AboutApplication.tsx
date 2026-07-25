@@ -305,18 +305,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
             </div>
 
             <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3B82F6]/40 bg-[#3B82F6]/10 text-[#60A5FA] shadow-sm font-extrabold text-xs"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-sm font-extrabold text-xs"
               title="#1 Product in AI & Local LLM Category"
             >
-              <Cpu size={13} className="text-[#60A5FA]" />
+              <Cpu size={13} className="text-[#3C6B4D]" />
               <span>#1 in AI Category</span>
             </div>
 
             <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#E29E2D]/40 bg-[#E29E2D]/10 text-[#E29E2D] shadow-sm font-extrabold text-xs"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-sm font-extrabold text-xs"
               title="#1 Product in Productivity Category"
             >
-              <Trophy size={13} className="text-[#E29E2D]" />
+              <Trophy size={13} className="text-[#3C6B4D]" />
               <span>#1 in Productivity</span>
             </div>
 

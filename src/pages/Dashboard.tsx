@@ -2116,19 +2116,19 @@ export const Dashboard = () => {
 
 						{/* #1 in AI Category Badge */}
 						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3B82F6]/40 bg-[#3B82F6]/10 text-[#60A5FA] shadow-md font-extrabold text-xs transition-all hover:border-[#3B82F6]/70"
+							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in AI & Local LLM Category"
 						>
-							<Cpu size={15} className="text-[#60A5FA]" />
+							<Cpu size={15} className="text-[#3C6B4D]" />
 							<span>#1 in AI Category</span>
 						</div>
 
 						{/* #1 in Productivity Badge */}
 						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#E29E2D]/40 bg-[#E29E2D]/10 text-[#E29E2D] shadow-md font-extrabold text-xs transition-all hover:border-[#E29E2D]/70"
+							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in Productivity Category"
 						>
-							<Trophy size={15} className="text-[#E29E2D]" />
+							<Trophy size={15} className="text-[#3C6B4D]" />
 							<span>#1 in Productivity</span>
 						</div>
 

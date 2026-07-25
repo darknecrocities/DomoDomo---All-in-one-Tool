@@ -76,25 +76,25 @@ export const BlogContainer = () => {
 
           {/* #1 in AI Category Badge */}
           <div
-            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3B82F6]/10 border border-[#3B82F6]/40 text-[#60A5FA] shadow-md"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
             title="#1 Product in AI & Local LLM Category"
           >
-            <Cpu size={18} className="text-[#60A5FA] shrink-0" />
+            <Cpu size={18} className="text-[#3C6B4D] shrink-0" />
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-bold uppercase tracking-widest text-[#60A5FA]/80">Rank Badge</span>
-              <span className="text-xs font-extrabold text-[#60A5FA]">#1 in AI Category</span>
+              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
+              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in AI Category</span>
             </div>
           </div>
 
           {/* #1 in Productivity Badge */}
           <div
-            className="flex items-center gap-3 p-3 rounded-2xl bg-[#E29E2D]/10 border border-[#E29E2D]/40 text-[#E29E2D] shadow-md"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
             title="#1 Product in Productivity Category"
           >
-            <Trophy size={18} className="text-[#E29E2D] shrink-0" />
+            <Trophy size={18} className="text-[#3C6B4D] shrink-0" />
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-bold uppercase tracking-widest text-[#E29E2D]/80">Rank Badge</span>
-              <span className="text-xs font-extrabold text-[#E29E2D]">#1 in Productivity</span>
+              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
+              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in Productivity</span>
             </div>
           </div>
 
