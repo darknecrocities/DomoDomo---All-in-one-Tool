@@ -59,6 +59,8 @@
     "vite": "^8.0.12"
   },
   "overrides": {
-    "shell-quote": "^1.8.5"
+    "shell-quote": "^1.8.5",
+    "postcss": "^8.5.18",
+    "brace-expansion": "^2.0.2"
   }
 }
