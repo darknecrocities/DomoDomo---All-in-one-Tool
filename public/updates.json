@@ -1,92 +1,92 @@
 [
   {
-    "hash": "ff6a342",
-    "date": "2026-06-28",
+    "hash": "39e2052",
+    "date": "2026-07-25",
     "author": "darknecrocities",
-    "message": "feat: expand Template Studio with Browser Storage Design Library, Quick Alignments, and Shape Gradients"
+    "message": "style: unify AI and Productivity badge styling with Developer Tools theme"
   },
   {
-    "hash": "7cdec2b",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "feat: expand Template Studio with Canva-like canvas shapes, presets, duplicate layer tool, and disable magic AI OCR layer"
+    "hash": "bb1c1c6",
+    "date": "2026-07-25",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "8b31ce4",
-    "date": "2026-06-28",
+    "hash": "f3956e9",
+    "date": "2026-07-25",
     "author": "darknecrocities",
-    "message": "feat: improve back button in ToolContainer to return to previous page preserving states"
+    "message": "feat: expand Investigative Research Suite, Local AI setup lock, tool category cards & rank badges"
   },
   {
-    "hash": "cfd824b",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "feat: expand onboarding assistant questions and add offline-only navbar purge button"
+    "hash": "e8085db",
+    "date": "2026-07-24",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "e7677c2",
-    "date": "2026-06-28",
+    "hash": "d91f8c9",
+    "date": "2026-07-24",
     "author": "darknecrocities",
-    "message": "feat: add unified local RAG cognitive memory brain & local onboarding questionnaire"
+    "message": "feat: add Offline Investigative Research Suite with 10 local AI tools, docs, and blog post"
   },
   {
-    "hash": "f410a5f",
-    "date": "2026-06-28",
+    "hash": "fce5f98",
+    "date": "2026-07-21",
     "author": "darknecrocities",
-    "message": "polish: refine blog directory header copy to highlight product updates and remove explicit SEO references"
+    "message": "merge: add Spatial 3D tools and SECURITY.md policy"
   },
   {
-    "hash": "9141483",
-    "date": "2026-06-28",
+    "hash": "8b3f465",
+    "date": "2026-07-21",
     "author": "darknecrocities",
-    "message": "seo: add 5 new blog posts covering DomoMulti, Local AI servers, and AutoPilot preview"
+    "message": "docs: add comprehensive SECURITY.md policy and zero-knowledge architecture guide"
   },
   {
-    "hash": "8760820",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "seo: expand blog directory to 8 articles covering security, developer suite, OCR, and custom branding"
+    "hash": "292fc94",
+    "date": "2026-07-21",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "ff01f11",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "fix: resolve dynamic Google AdSense rendering on route changes by creating AdSenseUnit component and adding to blog pages"
+    "hash": "ea1b124",
+    "date": "2026-07-21",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #49 from darknecrocities/feature/spatial-3d-tools"
   },
   {
-    "hash": "9a1e7b9",
-    "date": "2026-06-28",
+    "hash": "083ae3e",
+    "date": "2026-07-21",
     "author": "darknecrocities",
-    "message": "feat: add active user metrics and community testimonials to About page"
+    "message": "fix(security): resolve shell-quote high vulnerability via npm overrides"
   },
   {
-    "hash": "f47aea5",
-    "date": "2026-06-28",
+    "hash": "919d3f6",
+    "date": "2026-07-21",
     "author": "darknecrocities",
-    "message": "seo: scale indexable pages to 535 URLs via programmatically pre-rendered tool variations and add release notes blog"
+    "message": "feat(spatial): add Spatial 3D & Web category and 10 dynamic tools"
   },
   {
-    "hash": "cce2bc9",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "seo: implement Phase 3 Blog hub and guides framework with SEO content mapping"
+    "hash": "71f1f78",
+    "date": "2026-07-20",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "b302b04",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "seo: implement Phase 2 Static Snapshot Prerendering for non-JS search engines and upgrade sitemap generator"
+    "hash": "5ea4a8e",
+    "date": "2026-07-20",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #48 from kuraigu/feature/ai-tools-final-integration"
   },
   {
-    "hash": "f568c40",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "seo: comprehensive SEO optimization - enhanced meta tags, OG/Twitter cards, JSON-LD schemas, keyword-rich descriptions, sitemap lastmod, BreadcrumbList"
+    "hash": "b3afbae",
+    "date": "2026-07-20",
+    "author": "kuraigu",
+    "message": "trigger ci rerun"
   },
   {
-    "hash": "ad68523",
-    "date": "2026-06-28",
-    "author": "darknecrocities",
-    "message": "fix: improve Magic Layers OCR and fix Background Remover upload replacement"
+    "hash": "4aa729e",
+    "date": "2026-07-20",
+    "author": "kuraigu",
+    "message": "fix(dashboard): resolve AI tool search visibility"
   }
 ]
