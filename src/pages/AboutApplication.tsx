@@ -1,10 +1,15 @@
-import { Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap, Users, Copy, ChevronDown, Check } from 'lucide-react';
+import { 
+  Cpu, Globe, Layers, Shield, ShieldAlert, Sparkles, Terminal, Zap, Users, Copy, 
+  ChevronDown, Check, LayoutGrid, Image, FileText, AlignLeft, RefreshCw, QrCode, 
+  Video, Music, Code, Database, Eye, Activity, Box, Search, ArrowRight, Lightbulb,
+  Trophy, Award, Crown
+} from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { BRAND_KIT } from '../utils/BrandKit';
 import domodomoLogo from '../assets/domodomo.png';
 import domodomoWinkLogo from '../assets/domodomo_wink.png';
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Documentation } from './Documentation';
 import { TOOLS } from '../engine/registry';
 import { CATEGORIES } from './Dashboard';
@@ -12,7 +17,7 @@ import { CATEGORIES } from './Dashboard';
 const stats = [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
   { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
-  { label: 'Categories', value: `${CATEGORIES.length}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and API suites.', icon: Globe },
+  { label: 'Categories', value: `${CATEGORIES.length - 2}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and security.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
 
@@ -64,13 +69,153 @@ const testimonials = [
   }
 ];
 
-export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about' | 'updates' | 'docs' }) => {
+export const CATEGORY_DETAILS = [
+  {
+    id: 'photo',
+    name: 'Photo & Image',
+    icon: Image,
+    badge: 'Canvas & WASM Accelerated',
+    tagline: 'Client-side photo editing, format converting, and background removal.',
+    useCase: 'Essential for content creators, web developers, and UI designers needing instant background keying, WebP/AVIF conversion, image resizing, and EXIF metadata stripping without uploading assets to third-party servers.',
+    highlights: ['Background Remover', 'Image Resizer', 'Format Converter', 'Color Extractor']
+  },
+  {
+    id: 'pdf',
+    name: 'PDF Document',
+    icon: FileText,
+    badge: '100% Private Sandbox',
+    tagline: 'Merge, split, compress, encrypt, and manage PDF documents locally.',
+    useCase: 'Designed for legal teams, administrative personnel, and students handling sensitive contracts, financial statements, medical records, or confidential papers that must strictly avoid cloud server uploads.',
+    highlights: ['PDF Merger', 'PDF Splitter', 'PDF Encrypt & Decrypt', 'PDF Compressor']
+  },
+  {
+    id: 'document',
+    name: 'Text & Doc',
+    icon: AlignLeft,
+    badge: 'Markdown & Regex Engine',
+    tagline: 'Rich text formatting, difference auditing, and word metrics.',
+    useCase: 'Ideal for technical writers, copywriters, and bloggers who need clean Markdown editing, character frequency counting, text diff comparison, case transformation, and lorem ipsum generation.',
+    highlights: ['Markdown Editor', 'Text Diff Comparison', 'Word Counter', 'Case Converter']
+  },
+  {
+    id: 'converter',
+    name: 'File Converter',
+    icon: RefreshCw,
+    badge: 'Multi-Format Transformer',
+    tagline: 'Seamlessly convert between JSON, CSV, YAML, Base64, and media formats.',
+    useCase: 'Empowers software engineers, DevOps specialists, and data managers to instantly reshape data formats, encode/decode Base64 strings, convert CSV files to JSON schemas, and extract archives client-side.',
+    highlights: ['JSON-to-YAML', 'CSV-to-JSON', 'Base64 Encoder', 'Media Converter']
+  },
+  {
+    id: 'qr',
+    name: 'QR & Barcode',
+    icon: QrCode,
+    badge: 'Vector & Raster Generator',
+    tagline: 'Generate high-density QR codes and scan product barcodes instantly.',
+    useCase: 'Perfect for marketers, event coordinators, and inventory managers generating custom Wi-Fi/VCard QR codes or scanning product barcodes directly via web camera video feeds.',
+    highlights: ['QR Code Generator', 'Barcode Scanner', 'WiFi QR Builder', 'VCard Generator']
+  },
+  {
+    id: 'video',
+    name: 'Video WASM',
+    icon: Video,
+    badge: 'FFmpeg WebAssembly',
+    tagline: 'Browser-based video trimming, MP4-to-GIF conversion, and scaling.',
+    useCase: 'Useful for video editors and social media managers who want fast video clip trimming, resolution downsizing, frame extraction, and GIF conversion without installing heavy desktop software.',
+    highlights: ['Video Trimmer', 'MP4 to GIF Converter', 'Resolution Downscaler', 'Audio Stripper']
+  },
+  {
+    id: 'audio',
+    name: 'Audio Web',
+    icon: Music,
+    badge: 'WebAudio API Engine',
+    tagline: 'Trim audio tracks, visualize waveforms, boost gain, and convert formats.',
+    useCase: 'Built for podcasters, sound engineers, and musicians needing quick audio slicing, format conversion, volume normalization, tone generation, and visual spectrum analysis.',
+    highlights: ['Audio Cutter', 'Waveform Visualizer', 'Audio Converter', 'Gain Booster']
+  },
+  {
+    id: 'dev',
+    name: 'Developer Tools',
+    icon: Code,
+    badge: 'Frontend & Backend Utilities',
+    tagline: 'Code formatters, Cron parsers, Regex testers, and CSS builders.',
+    useCase: 'Crucial for fullstack engineers needing instant JSON prettifying, SQL formatting, Glassmorphism CSS generation, Cron syntax inspection, and Base number conversion.',
+    highlights: ['JSON Prettifier', 'SQL Formatter', 'Glassmorphism Designer', 'Cron Parser']
+  },
+  {
+    id: 'data',
+    name: 'Data & Visualizer',
+    icon: Database,
+    badge: 'In-Memory SQL & Charting',
+    tagline: 'Analyze CSV/JSON datasets, execute SQL queries, and build charts.',
+    useCase: 'Tailored for data analysts and business intelligence teams running client-side SQL queries over raw CSV files and generating instant Bar, Line, or Pie chart visualizations.',
+    highlights: ['SQL Data Workbench', 'Chart Generator', 'CSV Data Cleaner', 'JSON Inspector']
+  },
+  {
+    id: 'ai',
+    name: 'Local AI',
+    icon: Cpu,
+    badge: 'Ollama LLM Integration',
+    tagline: 'Private AI chat, document summarization, and local multi-agent loops.',
+    useCase: 'Essential for privacy-minded users running local LLMs (Ollama) for code explaining, text summarization, multi-agent research campaigns, and confidential drafting with zero data leaks.',
+    highlights: ['Local AI Chat', 'Research Orchestrator', 'Code Explainer', 'Document Summarizer']
+  },
+  {
+    id: 'security',
+    name: 'Developer Security',
+    icon: ShieldAlert,
+    badge: 'Cryptographic Suite',
+    tagline: 'JWT debugging, cryptographic hashing, vulnerability auditing, and passwords.',
+    useCase: 'Targeted at DevOps engineers, cybersecurity specialists, and web developers auditing JWT tokens, calculating SHA-256/bcrypt hashes, generating secrets, and reviewing code vulnerabilities.',
+    highlights: ['JWT Debugger', 'Crypto Hash Generator', 'Code Security Auditor', 'Password Builder']
+  },
+  {
+    id: 'cv',
+    name: 'Computer Vision',
+    icon: Eye,
+    badge: 'Dataset Annotation Engine',
+    tagline: 'Bounding box annotation, magic wand segmenting, and optical flow tracking.',
+    useCase: 'Designed for ML engineers and computer vision researchers annotating bounding boxes, drawing semantic masks, tagging COCO pose skeletons, and building training datasets.',
+    highlights: ['Polygon Annotator', 'Magic Wand Segmenter', 'COCO Pose Skeleton', 'Optical Flow Tracker']
+  },
+  {
+    id: 'ml',
+    name: 'Machine Learning',
+    icon: Activity,
+    badge: 'Statistical Model Auditor',
+    tagline: 'Evaluate confusion matrices, ROC curves, SHAP explainability, and t-SNE.',
+    useCase: 'Empowers data scientists to evaluate ML classification metrics, analyze ROC/PR curves, project 3D embedding vectors, measure ONNX latency, and audit model feature drift.',
+    highlights: ['Confusion Matrix Evaluator', 'ROC/PR Curve Analyzer', 'SHAP Explainer', 't-SNE Visualizer']
+  },
+  {
+    id: 'spatial',
+    name: 'Spatial 3D & Web',
+    icon: Box,
+    badge: 'WebGL & Three.js Canvas',
+    tagline: 'Inspect 3D GLTF/OBJ models, analyze poly-counts, and view textures.',
+    useCase: 'Built for 3D artists, WebGL developers, and game creators previewing 3D assets, measuring mesh polygon counts, evaluating textures, and testing camera lighting.',
+    highlights: ['GLTF 3D Viewer', 'Mesh Poly Analyzer', 'Texture Inspector', 'Bounding Box Calc']
+  },
+  {
+    id: 'investigation',
+    name: 'Investigative Research',
+    icon: Search,
+    badge: 'Local AI & Expert System',
+    tagline: 'Multi-paper synthesis, PICO trial evaluation, patent trees, and meta-analysis.',
+    useCase: 'Crafted for academics, clinicians, patent attorneys, and grant writers conducting literature synthesis, Cochrane trial bias audits, patent claim trees, and SVG forest plot meta-analysis.',
+    highlights: ['Literature Synthesizer', 'PICO Trial Evaluator', 'Patent Claim Tree', 'SVG Forest Plot Meta-Analysis']
+  }
+];
+
+export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about' | 'categories' | 'updates' | 'docs' }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const queryTab = searchParams.get('tab') as 'about' | 'updates' | 'docs';
-  const [activeTab, setActiveTab] = useState<'about' | 'updates' | 'docs'>(queryTab || defaultTab);
+  const navigate = useNavigate();
+  const queryTab = searchParams.get('tab') as 'about' | 'categories' | 'updates' | 'docs';
+  const [activeTab, setActiveTab] = useState<'about' | 'categories' | 'updates' | 'docs'>(queryTab || defaultTab);
 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [categoryFilter, setCategoryFilter] = useState('');
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -99,7 +244,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
     }
   }, [queryTab]);
 
-  const handleTabChange = (tab: 'about' | 'updates' | 'docs') => {
+  const handleTabChange = (tab: 'about' | 'categories' | 'updates' | 'docs') => {
     setActiveTab(tab);
     setSearchParams({ tab });
   };
@@ -118,6 +263,21 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
     setTimeout(() => setCopiedIndex(null), 1500);
   }, []);
 
+  const handleNavigateToCategory = (catId: string) => {
+    navigate(`/?category=${catId}`);
+  };
+
+  const filteredCategoryDetails = CATEGORY_DETAILS.filter((cat) => {
+    if (!categoryFilter.trim()) return true;
+    const query = categoryFilter.toLowerCase();
+    return (
+      cat.name.toLowerCase().includes(query) ||
+      cat.tagline.toLowerCase().includes(query) ||
+      cat.useCase.toLowerCase().includes(query) ||
+      cat.highlights.some((h) => h.toLowerCase().includes(query))
+    );
+  });
+
   return (
     <div className="flex flex-col gap-8 text-left w-full animate-fadeIn">
       <Helmet>
@@ -134,6 +294,38 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
               <Shield size={12} />
               <span>About DomoDomo</span>
+            </div>
+
+            <div
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/10 text-[#d4af37] shadow-sm font-extrabold text-xs"
+              title="#1 All Time Overall Platform"
+            >
+              <Crown size={13} className="text-[#d4af37]" />
+              <span>#1 All Time Overall</span>
+            </div>
+
+            <div
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3B82F6]/40 bg-[#3B82F6]/10 text-[#60A5FA] shadow-sm font-extrabold text-xs"
+              title="#1 Product in AI & Local LLM Category"
+            >
+              <Cpu size={13} className="text-[#60A5FA]" />
+              <span>#1 in AI Category</span>
+            </div>
+
+            <div
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#E29E2D]/40 bg-[#E29E2D]/10 text-[#E29E2D] shadow-sm font-extrabold text-xs"
+              title="#1 Product in Productivity Category"
+            >
+              <Trophy size={13} className="text-[#E29E2D]" />
+              <span>#1 in Productivity</span>
+            </div>
+
+            <div
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-sm font-extrabold text-xs"
+              title="#1 Product in Developer Tools Category"
+            >
+              <Award size={13} className="text-[#3C6B4D]" />
+              <span>#1 in Developer Tools</span>
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight font-heading">
@@ -174,6 +366,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
           >
             <Shield size={14} className={activeTab === 'about' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
             <span>About Page</span>
+          </button>
+
+          {/* NEW Category Navigation Card Button */}
+          <button
+            onClick={() => handleTabChange('categories')}
+            className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'categories'
+              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
+              }`}
+          >
+            <LayoutGrid size={14} className={activeTab === 'categories' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+            <span>Tool Categories</span>
           </button>
 
           <button
@@ -217,6 +421,29 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                     </div>
                   </div>
                 ))}
+              </section>
+
+              {/* Categories Teaser Banner on About tab */}
+              <section className="glass-card p-6 border-[#2A2D30] bg-[#18191B] flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+                <div className="flex flex-col gap-2 max-w-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+                    <LayoutGrid size={12} />
+                    <span>Comprehensive Toolbox Directory</span>
+                  </div>
+                  <h2 className="text-xl md:text-2xl font-extrabold text-[#ECEBE9] tracking-tight">
+                    Explore All 15 Tool Categories & Use Cases
+                  </h2>
+                  <p className="text-xs text-[#A3A09B] leading-relaxed">
+                    From Photo processing and WASM video trimming to Machine Learning model evaluation and Local AI research campaigns—discover every category built into DomoDomo.
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleTabChange('categories')}
+                  className="btn-primary py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shrink-0 shadow-md"
+                >
+                  <span>View All Categories & Use Cases</span>
+                  <ArrowRight size={14} />
+                </button>
               </section>
 
               {/* Real Testimonials Block */}
@@ -382,6 +609,122 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                 </div>
               </section>
             </>
+          )}
+
+          {/* DEDICATED TOOL CATEGORIES TAB PANE */}
+          {activeTab === 'categories' && (
+            <section className="flex flex-col gap-6 animate-fadeIn w-full">
+              {/* Header Banner */}
+              <div className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex flex-col gap-2 max-w-2xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+                    <LayoutGrid size={12} />
+                    <span>Tool Categories Directory</span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] tracking-tight">
+                    All Tool Categories & Practical Use Cases
+                  </h2>
+                  <p className="text-xs md:text-sm text-[#A3A09B] leading-relaxed">
+                    Explore DomoDomo's 15 distinct categories powering {TOOLS.length} client-side web utilities. Filter categories below or jump straight to any workspace suite.
+                  </p>
+                </div>
+
+                {/* Filter Input */}
+                <div className="w-full md:w-72 shrink-0">
+                  <div className="relative">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C]" />
+                    <input
+                      type="text"
+                      value={categoryFilter}
+                      onChange={(e) => setCategoryFilter(e.target.value)}
+                      placeholder="Filter categories or use cases..."
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-3 py-2 text-xs text-[#ECEBE9] placeholder:text-[#72706C] focus:outline-none focus:border-[#3C6B4D] transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Grid of Category Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                {filteredCategoryDetails.map((cat) => {
+                  const Icon = cat.icon;
+                  // Dynamic tool count for this category
+                  const toolCount = TOOLS.filter((t) => t.categories?.includes(cat.id as any)).length;
+
+                  return (
+                    <div
+                      key={cat.id}
+                      className="glass-card p-6 border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50 transition-all duration-300 flex flex-col justify-between gap-6 group/card"
+                    >
+                      <div className="flex flex-col gap-4">
+                        {/* Header: Icon, Title, Badges */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] group-hover/card:scale-105 transition-transform">
+                              <Icon size={22} />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-bold text-[#ECEBE9] group-hover/card:text-[#4E8E5E] transition-colors">
+                                {cat.name}
+                              </h3>
+                              <span className="text-[10px] text-[#3C6B4D] font-mono font-bold">
+                                {toolCount > 0 ? `${toolCount} Functional Tools` : 'Suite Active'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <span className="px-2.5 py-1 rounded-lg bg-[#111213] border border-[#2A2D30] text-[10px] font-semibold text-[#A3A09B] shrink-0">
+                            {cat.badge}
+                          </span>
+                        </div>
+
+                        {/* Tagline */}
+                        <p className="text-xs font-semibold text-[#ECEBE9]/90 border-b border-[#2A2D30] pb-3">
+                          {cat.tagline}
+                        </p>
+
+                        {/* Practical Use Case */}
+                        <div className="bg-[#111213] p-3.5 rounded-xl border border-[#2A2D30] flex flex-col gap-1.5">
+                          <div className="flex items-center gap-1.5 text-[#3C6B4D] text-[11px] font-bold">
+                            <Lightbulb size={13} />
+                            <span>Primary Use Case & Target Audience</span>
+                          </div>
+                          <p className="text-[11px] text-[#A3A09B] leading-relaxed">
+                            {cat.useCase}
+                          </p>
+                        </div>
+
+                        {/* Feature Highlights Pills */}
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">
+                            Key Tools & Features Included:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {cat.highlights.map((item, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 rounded-md bg-[#18191B] border border-[#2A2D30] text-[10px] text-[#ECEBE9] font-mono"
+                              >
+                                • {item}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Button */}
+                      <button
+                        onClick={() => handleNavigateToCategory(cat.id)}
+                        className="w-full btn-secondary py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 group-hover/card:bg-[#3C6B4D]/15 group-hover/card:border-[#3C6B4D]/40 group-hover/card:text-[#ECEBE9] transition-all mt-2"
+                      >
+                        <span>Explore {cat.name} Suite</span>
+                        <ArrowRight size={13} className="text-[#3C6B4D] group-hover/card:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           )}
 
           {activeTab === 'updates' && (

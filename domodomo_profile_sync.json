@@ -16,6 +16,8 @@
   "habitsSummary": {
     "key": "habits_summary",
     "preferredTools": [
+      "Scientific Literature Synthesizer",
+      "Funding Proposal Optimizer",
       "Meta-Analysis Statistics Aggregator",
       "Clinical Trial Evaluator"
     ],
@@ -23,10 +25,11 @@
       "investigation"
     ],
     "activeHours": [
-      "20:00 - 21:00"
+      "20:00 - 21:00",
+      "22:00 - 23:00"
     ],
-    "profileSummary": "The user frequently works on projects involving investigation categories. Their favorite tool utilities include: Meta-Analysis Statistics Aggregator, Clinical Trial Evaluator. They are typically active around 20:00 - 21:00.",
-    "lastUpdated": "2026-07-24T12:15:35.084Z"
+    "profileSummary": "The user frequently works on projects involving investigation categories. Their favorite tool utilities include: Scientific Literature Synthesizer, Funding Proposal Optimizer, Meta-Analysis Statistics Aggregator, Clinical Trial Evaluator. They are typically active around 20:00 - 21:00, 22:00 - 23:00.",
+    "lastUpdated": "2026-07-25T14:42:15.953Z"
   },
-  "lastUpdated": "2026-07-24T12:15:35.086Z"
+  "lastUpdated": "2026-07-25T14:59:01.610Z"
 }

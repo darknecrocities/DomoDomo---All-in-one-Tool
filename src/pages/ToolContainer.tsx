@@ -1,18 +1,44 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Home } from 'lucide-react';
+import { ArrowLeft, Home, ShieldAlert, RefreshCw } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { getToolById } from '../engine/registry';
 import { DynamicIcon } from '../components/DynamicIcon';
 import { localMemory } from '../utils/localMemory';
 import { unifiedMemory } from '../utils/unifiedMemory';
 import { TOOL_VARIATIONS } from '../data/seoVariations';
+import { aiService } from '../utils/aiService';
 
 export const ToolContainer = () => {
   const { id, variation } = useParams<{ id: string; variation?: string }>();
   const navigate = useNavigate();
   const tool = id ? getToolById(id) : undefined;
   const primaryCategory = tool?.categories[0] || 'general';
+
+  const [hasOllama, setHasOllama] = useState<boolean | null>(null);
+  const [isCheckingOllama, setIsCheckingOllama] = useState(false);
+
+  const requiresLocalAI = tool
+    ? tool.categories.includes('investigation') || tool.categories.includes('ai')
+    : false;
+
+  const checkOllamaConnection = async () => {
+    setIsCheckingOllama(true);
+    try {
+      const res = await aiService.checkOllama();
+      setHasOllama(res.status);
+    } catch {
+      setHasOllama(false);
+    } finally {
+      setIsCheckingOllama(false);
+    }
+  };
+
+  useEffect(() => {
+    if (requiresLocalAI) {
+      checkOllamaConnection();
+    }
+  }, [tool]);
 
   useEffect(() => {
     if (tool) {
@@ -166,10 +192,70 @@ export const ToolContainer = () => {
         </button>
       </div>
 
-      {/* Tool Dynamic Component Frame */}
-      <div className="w-full">
-        <ToolComponent />
-      </div>
+      {/* Tool Dynamic Component Frame or Local AI Offline Setup */}
+      {requiresLocalAI && hasOllama === false ? (
+        <div className="glass-card p-8 flex flex-col gap-6 text-left max-w-3xl mx-auto border-[#2A2D30] bg-[#18191B] my-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] rounded-xl">
+                <ShieldAlert size={24} />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">
+                  Local LLM Required for "{toolName}"
+                </h2>
+                <p className="text-[#A3A09B] text-xs mt-1">
+                  This tool runs 100% locally on your machine via Ollama to guarantee absolute data privacy.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={checkOllamaConnection}
+              disabled={isCheckingOllama}
+              className="btn-primary text-xs py-2 px-4 shrink-0 flex items-center gap-2 font-bold"
+            >
+              <RefreshCw size={14} className={isCheckingOllama ? 'animate-spin' : ''} />
+              <span>Retry Connection</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
+              <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-[#3C6B4D]/20 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">1</span>
+                Host DomoDomo
+              </span>
+              <p className="text-[11px] text-[#A3A09B] leading-relaxed">
+                Run locally via <code className="text-[#3C6B4D]">npm run dev</code> on localhost so your browser can access local ports.
+              </p>
+            </div>
+
+            <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
+              <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-[#3C6B4D]/20 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">2</span>
+                Start Ollama
+              </span>
+              <p className="text-[11px] text-[#A3A09B] leading-relaxed">
+                Run <code className="text-[#3C6B4D] font-mono">ollama run llama3.2</code> or qwen2.5 from terminal.
+              </p>
+            </div>
+
+            <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
+              <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-[#3C6B4D]/20 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">3</span>
+                Enable CORS
+              </span>
+              <p className="text-[11px] text-[#A3A09B] leading-relaxed">
+                Set environment variable <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> before starting Ollama.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full">
+          <ToolComponent />
+        </div>
+      )}
     </div>
   );
 };
