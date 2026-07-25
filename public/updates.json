@@ -1,5 +1,23 @@
 [
   {
+    "hash": "741f69a",
+    "date": "2026-07-25",
+    "author": "darknecrocities",
+    "message": "fix(ci): track package-lock.json and resolve node 20 deprecation & eslint dependencies"
+  },
+  {
+    "hash": "0864ab1",
+    "date": "2026-07-25",
+    "author": "darknecrocities",
+    "message": "fix(ci): update security audit step in workflow and package overrides"
+  },
+  {
+    "hash": "312827d",
+    "date": "2026-07-25",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "39e2052",
     "date": "2026-07-25",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-20",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "5ea4a8e",
-    "date": "2026-07-20",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #48 from kuraigu/feature/ai-tools-final-integration"
-  },
-  {
-    "hash": "b3afbae",
-    "date": "2026-07-20",
-    "author": "kuraigu",
-    "message": "trigger ci rerun"
-  },
-  {
-    "hash": "4aa729e",
-    "date": "2026-07-20",
-    "author": "kuraigu",
-    "message": "fix(dashboard): resolve AI tool search visibility"
   }
 ]
