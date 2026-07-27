@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink, Trophy, Award, Crown, Cpu } from 'lucide-react';
+import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink, Trophy, Award, Crown, Cpu, Sparkles, User, Tag } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogData';
 import { useState } from 'react';
 import { AdSenseUnit } from '../components/AdSenseUnit';
+import { CommunityTestimonials } from '../components/CommunityTestimonials';
 import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
@@ -22,6 +23,8 @@ export const BlogContainer = () => {
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const featuredPost = BLOG_POSTS[0];
 
   const seoTitle = 'DomoDomo Product Updates, Release Changelogs & Guides';
   const seoDesc = 'Discover the latest releases, offline developer tutorials, and utility guides to optimize your sandboxed offline workflows inside DomoDomo.';
@@ -43,116 +46,181 @@ export const BlogContainer = () => {
       </Helmet>
 
       {/* Hero Welcome banner */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-10 relative overflow-hidden shadow-xl">
+        {/* Decorative Grid Overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
 
-        <div className="lg:col-span-7 flex flex-col gap-4 z-10">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#3C6B4D]">
-              Knowledge Hub
+        {/* Hero Left Column: Intro Text */}
+        <div className="lg:col-span-6 flex flex-col gap-4 z-10">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#4E8E5E] flex items-center gap-1.5">
+              <Sparkles size={12} className="text-[#3C6B4D]" />
+              Official Knowledge Hub
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-black text-[#ECEBE9] font-heading leading-tight tracking-tight">
-            Latest Updates &amp; Guides
+            Updates, News &amp; Guides
           </h1>
-          <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-2xl">
-            Explore the latest feature releases, offline tutorials, and technical guides to get the most out of your private, local-first DomoDomo workspace.
+          <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-xl">
+            Explore feature releases, offline workflow tutorials, and developer changelogs to get the absolute most out of your sandboxed DomoDomo workspace.
           </p>
         </div>
 
-        {/* Featured Media Highlights */}
-        <div className="lg:col-span-5 w-full z-10 flex flex-col gap-2.5">
-          {/* #1 All Time Overall Badge */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-2xl bg-[#d4af37]/10 border border-[#d4af37]/40 text-[#d4af37] shadow-md"
-            title="#1 All Time Overall Platform"
-          >
-            <Crown size={18} className="text-[#d4af37] shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-bold uppercase tracking-widest text-[#d4af37]/80">Rank Badge</span>
-              <span className="text-xs font-extrabold text-[#d4af37]">#1 All Time Overall</span>
+        {/* Hero Right Column: Compact Badge Grid (UNSTACKED) */}
+        <div className="lg:col-span-6 w-full z-10 flex flex-col gap-3">
+          {/* Section Subheading */}
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#72706C]">
+              Platform Rankings &amp; Press Features
+            </span>
+          </div>
+
+          {/* 2x2 Grid for Product Rank Badges */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {/* #1 All Time Overall Badge */}
+            <div
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#d4af37]/10 border border-[#d4af37]/40 text-[#d4af37] shadow-sm hover:border-[#d4af37]/70 transition-colors"
+              title="#1 All Time Overall Platform"
+            >
+              <Crown size={18} className="text-[#d4af37] shrink-0" />
+              <div className="flex flex-col text-left leading-tight min-w-0">
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#d4af37]/80 truncate">Rank Badge</span>
+                <span className="text-xs font-extrabold text-[#d4af37] truncate">#1 All Time</span>
+              </div>
+            </div>
+
+            {/* #1 in AI Category Badge */}
+            <div
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-sm hover:border-[#3C6B4D]/70 transition-colors"
+              title="#1 Product in AI & Local LLM Category"
+            >
+              <Cpu size={18} className="text-[#3C6B4D] shrink-0" />
+              <div className="flex flex-col text-left leading-tight min-w-0">
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80 truncate">Rank Badge</span>
+                <span className="text-xs font-extrabold text-[#ECEBE9] truncate">#1 in AI</span>
+              </div>
+            </div>
+
+            {/* #1 in Productivity Badge */}
+            <div
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-sm hover:border-[#3C6B4D]/70 transition-colors"
+              title="#1 Product in Productivity Category"
+            >
+              <Trophy size={18} className="text-[#3C6B4D] shrink-0" />
+              <div className="flex flex-col text-left leading-tight min-w-0">
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80 truncate">Rank Badge</span>
+                <span className="text-xs font-extrabold text-[#ECEBE9] truncate">#1 Productivity</span>
+              </div>
+            </div>
+
+            {/* #1 in Developer Tools Badge */}
+            <div
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-sm hover:border-[#3C6B4D]/70 transition-colors"
+              title="#1 Product in Developer Tools Category"
+            >
+              <Award size={18} className="text-[#3C6B4D] shrink-0" />
+              <div className="flex flex-col text-left leading-tight min-w-0">
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80 truncate">Rank Badge</span>
+                <span className="text-xs font-extrabold text-[#ECEBE9] truncate">#1 Dev Tools</span>
+              </div>
             </div>
           </div>
 
-          {/* #1 in AI Category Badge */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
-            title="#1 Product in AI & Local LLM Category"
-          >
-            <Cpu size={18} className="text-[#3C6B4D] shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in AI Category</span>
-            </div>
+          {/* 3-Column Horizontal Row for As Featured On Badges */}
+          <div className="grid grid-cols-3 gap-2 mt-0.5">
+            <a
+              href="https://web.facebook.com/share/p/17HgfjZoPk/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/bgov flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 transition-all duration-300 shadow-sm"
+              title="Featured on BetterGov.ph"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <img src={betterGovLogo} alt="BetterGov.ph" className="w-6 h-6 object-contain rounded shrink-0" />
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/bgov:text-[#4E8E5E] transition-colors truncate">BetterGov</span>
+              </div>
+              <ExternalLink size={12} className="text-[#72706C] group-hover/bgov:text-[#4E8E5E] shrink-0 ml-1" />
+            </a>
+
+            <a
+              href="https://www.facebook.com/share/p/1G5PGJFuYE/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/upamate flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 transition-all duration-300 shadow-sm"
+              title="Featured on Upamate"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <img src={upamateLogo} alt="Upamate" className="w-6 h-6 object-contain rounded shrink-0" />
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/upamate:text-[#4E8E5E] transition-colors truncate">Upamate</span>
+              </div>
+              <ExternalLink size={12} className="text-[#72706C] group-hover/upamate:text-[#4E8E5E] shrink-0 ml-1" />
+            </a>
+
+            <a
+              href="https://stage.byant.dev/p/domodomo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/stagebyant flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 transition-all duration-300 shadow-sm"
+              title="Featured Pick on Stage by Ant"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <img src={stageByAntLogo} alt="Stage by Ant" className="w-6 h-6 object-contain rounded shrink-0" />
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/stagebyant:text-[#4E8E5E] transition-colors truncate">Stage by Ant</span>
+              </div>
+              <ExternalLink size={12} className="text-[#72706C] group-hover/stagebyant:text-[#4E8E5E] shrink-0 ml-1" />
+            </a>
           </div>
-
-          {/* #1 in Productivity Badge */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
-            title="#1 Product in Productivity Category"
-          >
-            <Trophy size={18} className="text-[#3C6B4D] shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in Productivity</span>
-            </div>
-          </div>
-
-          {/* #1 in Developer Tools Badge */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
-            title="#1 Product in Developer Tools Category"
-          >
-            <Award size={18} className="text-[#3C6B4D] shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in Dev Tools</span>
-            </div>
-          </div>
-
-          <a
-            href="https://web.facebook.com/share/p/17HgfjZoPk/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group/bgov flex items-center gap-3 p-3.5 rounded-2xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-md"
-          >
-            <img src={betterGovLogo} alt="BetterGov.ph" className="w-8 h-8 object-contain rounded-lg shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[9px] font-bold uppercase tracking-widest text-[#A3A09B]">As Featured On</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bgov:text-[#4E8E5E] transition-colors">BetterGov.ph</span>
-            </div>
-            <ExternalLink size={13} className="ml-auto text-[#72706C] group-hover/bgov:text-[#4E8E5E] transition-colors" />
-          </a>
-
-          <a
-            href="https://www.facebook.com/share/p/1G5PGJFuYE/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group/upamate flex items-center gap-3 p-3.5 rounded-2xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-md"
-          >
-            <img src={upamateLogo} alt="Upamate" className="w-8 h-8 object-contain rounded-lg shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[9px] font-bold uppercase tracking-widest text-[#A3A09B]">As Featured On</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/upamate:text-[#4E8E5E] transition-colors">Upamate</span>
-            </div>
-            <ExternalLink size={13} className="ml-auto text-[#72706C] group-hover/upamate:text-[#4E8E5E] transition-colors" />
-          </a>
-
-          <a
-            href="https://stage.byant.dev/p/domodomo"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group/stagebyant flex items-center gap-3 p-3.5 rounded-2xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-md"
-          >
-            <img src={stageByAntLogo} alt="Stage by Ant" className="w-8 h-8 object-contain rounded-lg shrink-0" />
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[9px] font-bold uppercase tracking-widest text-[#A3A09B]">Featured Pick On</span>
-              <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/stagebyant:text-[#4E8E5E] transition-colors">Stage by Ant</span>
-            </div>
-            <ExternalLink size={13} className="ml-auto text-[#72706C] group-hover/stagebyant:text-[#4E8E5E] transition-colors" />
-          </a>
         </div>
       </div>
+
+      {/* Spotlight Featured Article Banner */}
+      {featuredPost && selectedCategory === 'All' && !search && (
+        <div className="relative overflow-hidden rounded-3xl bg-[#18191B] border border-[#3C6B4D]/40 p-6 md:p-8 shadow-xl group/spotlight">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 z-10 relative">
+            <div className="flex flex-col gap-3 max-w-3xl">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-md bg-[#3C6B4D] text-white text-[10px] font-black uppercase tracking-wider">
+                  Featured Announcement
+                </span>
+                <span className="text-[11px] font-bold text-[#4E8E5E]">
+                  {featuredPost.category}
+                </span>
+              </div>
+              <Link to={`/blog/${featuredPost.slug}`}>
+                <h2 className="text-xl md:text-3xl font-black text-[#ECEBE9] group-hover/spotlight:text-[#4E8E5E] transition-colors leading-tight">
+                  {featuredPost.title}
+                </h2>
+              </Link>
+              <p className="text-xs md:text-sm text-[#A3A09B] leading-relaxed line-clamp-2">
+                {featuredPost.excerpt}
+              </p>
+              <div className="flex items-center gap-4 text-[11px] font-bold text-[#72706C] pt-1">
+                <span className="flex items-center gap-1">
+                  <User size={12} className="text-[#3C6B4D]" />
+                  {featuredPost.author || "Arron Parejas"}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Calendar size={12} />
+                  {featuredPost.date}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock size={12} />
+                  {featuredPost.readTime}
+                </span>
+              </div>
+            </div>
+
+            <Link
+              to={`/blog/${featuredPost.slug}`}
+              className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#3C6B4D] hover:bg-[#4E8E5E] text-white text-xs font-black transition-all shadow-md group-hover/spotlight:scale-105"
+            >
+              <span>Read Spotlight Article</span>
+              <ChevronRight size={16} />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Filter and Search controls */}
       <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
@@ -161,28 +229,34 @@ export const BlogContainer = () => {
           <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#72706C]" />
           <input
             type="text"
-            placeholder="Search guides or keywords..."
+            placeholder="Search guides, keywords, or features..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#18191B] border border-[#2A2D30] focus:border-[#3C6B4D]/50 text-xs text-[#ECEBE9] focus:outline-none focus:ring-1 focus:ring-[#3C6B4D]/30 transition-all font-semibold"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#18191B] border border-[#2A2D30] focus:border-[#3C6B4D]/60 text-xs text-[#ECEBE9] focus:outline-none focus:ring-1 focus:ring-[#3C6B4D]/40 transition-all font-semibold"
           />
         </div>
 
         {/* Categories */}
         <div className="flex flex-wrap gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-thin">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                selectedCategory === cat
-                  ? 'bg-[#3C6B4D]/15 border-[#3C6B4D]/40 text-[#4E8E5E]'
-                  : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/30'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const count = cat === 'All' ? BLOG_POSTS.length : BLOG_POSTS.filter(p => p.category === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
+                  selectedCategory === cat
+                    ? 'bg-[#3C6B4D]/20 border-[#3C6B4D]/50 text-[#4E8E5E]'
+                    : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/30'
+                }`}
+              >
+                <span>{cat}</span>
+                <span className="text-[10px] font-mono opacity-70 px-1 py-0.2 rounded bg-black/20">
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -192,14 +266,15 @@ export const BlogContainer = () => {
           {filteredPosts.map((post) => (
             <article
               key={post.slug}
-              className="group flex flex-col justify-between rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/30 p-6 transition-all duration-300 shadow-sm relative overflow-hidden"
+              className="group flex flex-col justify-between rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 p-6 transition-all duration-300 shadow-md relative overflow-hidden"
             >
               <div className="flex flex-col gap-3 text-left">
                 <div className="flex justify-between items-center w-full">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#4E8E5E]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#4E8E5E] flex items-center gap-1">
+                    <Tag size={10} />
                     {post.category}
                   </span>
-                  <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#4E8E5E] uppercase tracking-wide">
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E] uppercase tracking-wide">
                     By {post.author || "Arron Parejas"}
                   </span>
                 </div>
@@ -229,7 +304,7 @@ export const BlogContainer = () => {
                   className="flex items-center justify-between text-xs font-bold text-[#4E8E5E] group-hover:text-[#3C6B4D] transition-colors"
                 >
                   <span className="flex items-center gap-1">
-                    <BookOpen size={13} /> Read Full Guide
+                    <BookOpen size={13} /> Read Guide
                   </span>
                   <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -251,7 +326,10 @@ export const BlogContainer = () => {
           </button>
         </div>
       )}
-      
+
+      {/* Community Testimonials & User Reviews Section */}
+      <CommunityTestimonials />
+
       {/* Blog Directory Footer Ad */}
       <AdSenseUnit />
     </div>

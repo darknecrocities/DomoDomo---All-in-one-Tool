@@ -1,12 +1,14 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, Calendar, Clock, BookOpen, Share2, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, BookOpen, Share2, Tag, ChevronRight, UserCheck, Sparkles, Check } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogData';
 import { AdSenseUnit } from '../components/AdSenseUnit';
+import { useState } from 'react';
 
 export const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
   const post = BLOG_POSTS.find((p) => p.slug === slug);
 
   if (!post) {
@@ -28,6 +30,9 @@ export const BlogPost = () => {
   const seoTitle = `${post.title} | DomoDomo Technical Guides`;
   const seoDesc = post.excerpt;
 
+  // Other related posts
+  const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+
   // Simple renderer to convert markdown content to basic HTML nodes safely
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
@@ -38,21 +43,21 @@ export const BlogPost = () => {
       // Headers
       if (trimmed.startsWith('# ')) {
         return (
-          <h1 key={idx} className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] mt-6 mb-3 border-b border-[#2A2D30] pb-2">
+          <h1 key={idx} className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] mt-8 mb-4 border-b border-[#2A2D30] pb-3 leading-snug">
             {trimmed.slice(2)}
           </h1>
         );
       }
       if (trimmed.startsWith('## ')) {
         return (
-          <h2 key={idx} className="text-xl md:text-2xl font-bold text-[#ECEBE9] mt-6 mb-3">
+          <h2 key={idx} className="text-xl md:text-2xl font-bold text-[#ECEBE9] mt-7 mb-3 leading-snug">
             {trimmed.slice(3)}
           </h2>
         );
       }
       if (trimmed.startsWith('### ')) {
         return (
-          <h3 key={idx} className="text-lg md:text-xl font-bold text-[#ECEBE9] mt-4 mb-2">
+          <h3 key={idx} className="text-lg md:text-xl font-bold text-[#ECEBE9] mt-5 mb-2 leading-snug">
             {trimmed.slice(4)}
           </h3>
         );
@@ -61,7 +66,7 @@ export const BlogPost = () => {
       // Lists
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
         return (
-          <li key={idx} className="ml-5 list-disc text-sm text-[#A3A09B] leading-relaxed mb-1">
+          <li key={idx} className="ml-6 list-disc text-sm md:text-base text-[#C5C3C0] leading-relaxed mb-2">
             {parseInlineMarkup(trimmed.slice(2))}
           </li>
         );
@@ -69,7 +74,7 @@ export const BlogPost = () => {
       if (/^\d+\.\s/.test(trimmed)) {
         const content = trimmed.replace(/^\d+\.\s/, '');
         return (
-          <li key={idx} className="ml-5 list-decimal text-sm text-[#A3A09B] leading-relaxed mb-1">
+          <li key={idx} className="ml-6 list-decimal text-sm md:text-base text-[#C5C3C0] leading-relaxed mb-2">
             {parseInlineMarkup(content)}
           </li>
         );
@@ -78,7 +83,7 @@ export const BlogPost = () => {
       // Blockquote / Tip / Warning
       if (trimmed.startsWith('> ')) {
         return (
-          <blockquote key={idx} className="border-l-4 border-[#3C6B4D] bg-[#18191B] p-4 rounded-r-xl italic text-sm text-[#A3A09B] my-4">
+          <blockquote key={idx} className="border-l-4 border-[#3C6B4D] bg-[#111213] p-4 rounded-r-2xl italic text-sm text-[#A3A09B] my-5 shadow-inner">
             {parseInlineMarkup(trimmed.slice(2))}
           </blockquote>
         );
@@ -86,12 +91,12 @@ export const BlogPost = () => {
 
       // Horizontal Rule
       if (trimmed === '---' || trimmed === '***') {
-        return <hr key={idx} className="border-[#2A2D30] my-6" />;
+        return <hr key={idx} className="border-[#2A2D30] my-8" />;
       }
 
       // Paragraph
       return (
-        <p key={idx} className="text-sm md:text-base text-[#A3A09B] leading-relaxed mb-4">
+        <p key={idx} className="text-sm md:text-base text-[#C5C3C0] leading-relaxed mb-5">
           {parseInlineMarkup(trimmed)}
         </p>
       );
@@ -100,9 +105,6 @@ export const BlogPost = () => {
 
   // Basic parser to render inline bold, links, and code blocks
   const parseInlineMarkup = (text: string) => {
-    // Match bold: **text**
-    // Match inline code: `code`
-    // Match link: [text](url)
     const tokens: React.ReactNode[] = [];
     let current = text;
     let key = 0;
@@ -112,7 +114,6 @@ export const BlogPost = () => {
       const codeMatch = current.match(/`(.*?)`/);
       const linkMatch = current.match(/\[(.*?)\]\((.*?)\)/);
 
-      // Find the first occurring match
       const matches = [
         { type: 'bold', index: boldMatch ? boldMatch.index : -1, length: boldMatch ? boldMatch[0].length : 0, content: boldMatch ? boldMatch[1] : '' },
         { type: 'code', index: codeMatch ? codeMatch.index : -1, length: codeMatch ? codeMatch[0].length : 0, content: codeMatch ? codeMatch[1] : '' },
@@ -124,20 +125,17 @@ export const BlogPost = () => {
         break;
       }
 
-      // Sort by earliest match index
       matches.sort((a, b) => a.index! - b.index!);
       const first = matches[0];
 
-      // Add prefix text
       if (first.index! > 0) {
         tokens.push(<span key={key++}>{current.slice(0, first.index)}</span>);
       }
 
-      // Add matched element
       if (first.type === 'bold') {
         tokens.push(<strong key={key++} className="font-extrabold text-[#ECEBE9]">{first.content}</strong>);
       } else if (first.type === 'code') {
-        tokens.push(<code key={key++} className="bg-[#1D2022] border border-[#2A2D30] px-1 py-0.5 rounded text-xs font-mono text-emerald-400">{first.content}</code>);
+        tokens.push(<code key={key++} className="bg-[#1D2022] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-emerald-400">{first.content}</code>);
       } else if (first.type === 'link') {
         const isExternal = first.url!.startsWith('http');
         if (isExternal) {
@@ -170,7 +168,8 @@ export const BlogPost = () => {
       }).catch(console.error);
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('📋 Link copied to clipboard!');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
     }
   };
 
@@ -197,55 +196,82 @@ export const BlogPost = () => {
       <div className="flex items-center justify-between border-b border-[#2A2D30] pb-4">
         <button
           onClick={() => navigate('/blog')}
-          className="flex items-center gap-1.5 text-xs font-bold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
+          className="flex items-center gap-2 text-xs font-bold text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
         >
-          <ArrowLeft size={14} /> Back to Guides
+          <ArrowLeft size={15} /> Back to Guides &amp; Blog
         </button>
 
         <button
           onClick={handleShare}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/35 hover:bg-[#3C6B4D]/10 text-xs font-bold text-[#ECEBE9] transition-all"
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 hover:bg-[#3C6B4D]/10 text-xs font-bold text-[#ECEBE9] transition-all shadow-sm"
         >
-          <Share2 size={13} /> Share Guide
+          {copied ? (
+            <>
+              <Check size={14} className="text-[#4E8E5E]" />
+              <span className="text-[#4E8E5E]">Link Copied!</span>
+            </>
+          ) : (
+            <>
+              <Share2 size={14} />
+              <span>Share Guide</span>
+            </>
+          )}
         </button>
       </div>
 
       {/* Main post layout */}
-      <article className="glass-card p-6 md:p-10 flex flex-col gap-6 bg-[#18191B] border-[#2A2D30]">
+      <article className="rounded-3xl p-6 md:p-10 flex flex-col gap-6 bg-[#18191B] border border-[#2A2D30] shadow-xl relative overflow-hidden">
         {/* Info header */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#4E8E5E]">
+            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#4E8E5E]">
               {post.category}
             </span>
-            <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#4E8E5E] uppercase tracking-wide">
+            <span className="text-[9px] font-bold px-2.5 py-0.5 rounded-md bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E] uppercase tracking-wide flex items-center gap-1">
+              <UserCheck size={12} />
               By {post.author || "Arron Parejas"}
             </span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1">
+          <h1 className="text-2xl md:text-4xl font-black text-[#ECEBE9] tracking-tight leading-snug mt-1">
             {post.title}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-[#72706C] mt-2 border-b border-[#2A2D30] pb-4">
-            <span className="flex items-center gap-1">
-              <Calendar size={13} /> {post.date}
+            <span className="flex items-center gap-1.5">
+              <Calendar size={14} /> {post.date}
             </span>
             <span>•</span>
-            <span className="flex items-center gap-1">
-              <Clock size={13} /> {post.readTime}
+            <span className="flex items-center gap-1.5">
+              <Clock size={14} /> {post.readTime}
             </span>
           </div>
         </div>
 
         {/* Content body */}
-        <div className="markdown-content">
+        <div className="markdown-content pt-2">
           {renderMarkdown(post.content)}
+        </div>
+
+        {/* Author Bio Box */}
+        <div className="mt-6 p-5 rounded-2xl bg-[#111213] border border-[#2A2D30] flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#3C6B4D] to-emerald-700 flex items-center justify-center text-white font-black text-xs shadow-inner">
+              AP
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-xs font-bold text-[#ECEBE9]">{post.author || "Arron Parejas"}</span>
+              <span className="text-[10px] text-[#72706C]">Maker &amp; Lead Engineer @ DomoDomo</span>
+            </div>
+          </div>
+          <span className="text-[10px] text-[#3C6B4D] bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 px-2.5 py-1 rounded-full font-bold">
+            Verified Author
+          </span>
         </div>
 
         {/* Bottom tags */}
         <div className="border-t border-[#2A2D30] pt-6 flex flex-wrap gap-2 items-center">
           <Tag size={13} className="text-[#72706C]" />
           {post.keywords.split(',').map((kw, i) => (
-            <span key={i} className="text-[10px] font-bold text-[#A3A09B] bg-[#1C2022] border border-[#2A2D30] px-2 py-0.5 rounded-md">
+            <span key={i} className="text-[10px] font-bold text-[#A3A09B] bg-[#111213] border border-[#2A2D30] px-2.5 py-1 rounded-lg">
               {kw.trim()}
             </span>
           ))}
@@ -255,19 +281,57 @@ export const BlogPost = () => {
       {/* BlogPost Mid-Page Ad */}
       <AdSenseUnit />
 
+      {/* Related Guides Section */}
+      {relatedPosts.length > 0 && (
+        <div className="flex flex-col gap-4 mt-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-extrabold text-[#ECEBE9] flex items-center gap-2">
+              <Sparkles size={16} className="text-[#3C6B4D]" />
+              <span>More Technical Guides &amp; Updates</span>
+            </h3>
+            <Link to="/blog" className="text-xs font-bold text-[#4E8E5E] hover:underline">
+              View All Guides →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {relatedPosts.map((rPost) => (
+              <Link
+                key={rPost.slug}
+                to={`/blog/${rPost.slug}`}
+                className="group flex flex-col justify-between p-5 rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/40 transition-all duration-300 shadow-md"
+              >
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#4E8E5E]">
+                    {rPost.category}
+                  </span>
+                  <h4 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#4E8E5E] transition-colors leading-snug line-clamp-2">
+                    {rPost.title}
+                  </h4>
+                </div>
+                <div className="flex items-center justify-between text-[10px] text-[#72706C] mt-4 pt-3 border-t border-[#2A2D30]">
+                  <span>{rPost.readTime}</span>
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-[#4E8E5E]" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Internal link CTA Banner */}
-      <div className="rounded-2xl border border-[#3C6B4D]/35 bg-[#3C6B4D]/5 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="rounded-3xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-lg">
         <div className="text-left space-y-1">
-          <h4 className="text-sm font-bold text-[#ECEBE9]">Run Utility Tools Directly Offline</h4>
-          <p className="text-xs text-[#A3A09B]">
-            All DomoDomo files and operations execute 100% in your browser sandbox under zero-server encryption.
+          <h4 className="text-base font-bold text-[#ECEBE9]">Run Utility Tools Directly Offline</h4>
+          <p className="text-xs text-[#A3A09B] max-w-xl">
+            All DomoDomo files and operations execute 100% in your browser sandbox under local WebAssembly &amp; zero server tracking.
           </p>
         </div>
         <Link
           to="/"
-          className="btn-primary py-2 px-4 text-xs font-black shrink-0 flex items-center gap-1.5"
+          className="btn-primary py-2.5 px-5 text-xs font-black shrink-0 flex items-center gap-2 shadow-md"
         >
-          <BookOpen size={13} /> Explore 110+ Tools
+          <BookOpen size={14} /> Explore 110+ Tools
         </Link>
       </div>
     </div>
