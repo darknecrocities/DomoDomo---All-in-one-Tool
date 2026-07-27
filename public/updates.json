@@ -1,5 +1,47 @@
 [
   {
+    "hash": "57d3f93",
+    "date": "2026-07-27",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #51 from darknecrocities/feat/expanded-design-network-suites"
+  },
+  {
+    "hash": "37dadb1",
+    "date": "2026-07-27",
+    "author": "darknecrocities",
+    "message": "feat: track .agents directory and all project skills in git repository"
+  },
+  {
+    "hash": "772196a",
+    "date": "2026-07-27",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "236ae53",
+    "date": "2026-07-27",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #50 from darknecrocities/feat/expanded-design-network-suites"
+  },
+  {
+    "hash": "9e63763",
+    "date": "2026-07-27",
+    "author": "darknecrocities",
+    "message": "merge: resolve merge conflicts with origin/main incorporating both Design & Network expansion and Investigative Research Suite"
+  },
+  {
+    "hash": "6bdbac2",
+    "date": "2026-07-27",
+    "author": "darknecrocities",
+    "message": "feat: expand Design Studio and Network Suite to 10 tools each with Local AI integration"
+  },
+  {
+    "hash": "b67d9bf",
+    "date": "2026-07-25",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "741f69a",
     "date": "2026-07-25",
     "author": "darknecrocities",
@@ -46,47 +88,5 @@
     "date": "2026-07-24",
     "author": "darknecrocities",
     "message": "feat: add Offline Investigative Research Suite with 10 local AI tools, docs, and blog post"
-  },
-  {
-    "hash": "fce5f98",
-    "date": "2026-07-21",
-    "author": "darknecrocities",
-    "message": "merge: add Spatial 3D tools and SECURITY.md policy"
-  },
-  {
-    "hash": "8b3f465",
-    "date": "2026-07-21",
-    "author": "darknecrocities",
-    "message": "docs: add comprehensive SECURITY.md policy and zero-knowledge architecture guide"
-  },
-  {
-    "hash": "292fc94",
-    "date": "2026-07-21",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "ea1b124",
-    "date": "2026-07-21",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #49 from darknecrocities/feature/spatial-3d-tools"
-  },
-  {
-    "hash": "083ae3e",
-    "date": "2026-07-21",
-    "author": "darknecrocities",
-    "message": "fix(security): resolve shell-quote high vulnerability via npm overrides"
-  },
-  {
-    "hash": "919d3f6",
-    "date": "2026-07-21",
-    "author": "darknecrocities",
-    "message": "feat(spatial): add Spatial 3D & Web category and 10 dynamic tools"
-  },
-  {
-    "hash": "71f1f78",
-    "date": "2026-07-20",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
