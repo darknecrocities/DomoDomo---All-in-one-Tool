@@ -4,7 +4,6 @@ import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink, Trophy, 
 import { BLOG_POSTS } from '../data/blogData';
 import { useState } from 'react';
 import { AdSenseUnit } from '../components/AdSenseUnit';
-import { CommunityTestimonials } from '../components/CommunityTestimonials';
 import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
@@ -326,9 +325,6 @@ export const BlogContainer = () => {
           </button>
         </div>
       )}
-
-      {/* Community Testimonials & User Reviews Section */}
-      <CommunityTestimonials />
 
       {/* Blog Directory Footer Ad */}
       <AdSenseUnit />
