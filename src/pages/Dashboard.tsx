@@ -23,6 +23,7 @@ import { LocalAISetupModal } from "../components/LocalAISetupModal";
 import betterGovLogo from "../assets/bettergovph.jpg";
 import upamateLogo from "../assets/upamate.png";
 import stageByAntLogo from "../assets/stagebyant.png";
+import { TransparentVideoMascot } from "../components/TransparentVideoMascot";
 
 interface PlannedTool {
 	id: string;
@@ -593,6 +594,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 			"Locally detect and blur human face coordinates in video frames.",
 		icon: "Shield",
 		status: "functional",
+	},
+	{
+		id: "video-bg-remover",
+		name: "Video Background Remover",
+		categories: ["video"],
+		description:
+			"Remove green screen or custom background color from videos and replace with transparent alpha, solid colors, or custom background images.",
+		icon: "Video",
+		status: "functional",
+		popular: true,
 	},
 
 	// Audio (10)
@@ -2455,8 +2466,8 @@ export const Dashboard = () => {
 				</div>
 
 				{/* Right side mock status console */}
-				<div className="lg:col-span-5 w-full z-10 flex flex-col">
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col">
+				<div className="lg:col-span-5 w-full z-10 flex flex-col relative group/terminal">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative">
 						{/* Header console bar */}
 						<div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
 							<div className="flex items-center gap-1.5">
@@ -2578,6 +2589,18 @@ export const Dashboard = () => {
 								</span>
 							</div>
 						</div>
+					</div>
+
+					{/* Animated Mascot Video Overlay — upper body overlaps bottom-right corner, clickable for cute popup */}
+					<div
+						className="absolute right-0 z-30"
+						style={{ bottom: '-60px' }}
+					>
+						<TransparentVideoMascot
+							src="/domotap2.mp4"
+							className="w-44 h-44 md:w-56 md:h-56 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+							clickable={true}
+						/>
 					</div>
 				</div>
 			</div>

@@ -13,6 +13,41 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'video-background-remover-chroma-keying-tool',
+    title: 'Introducing Video Background Remover: Client-Side Chroma Keying & Background Replacement',
+    excerpt: 'DomoDomo releases the Video Background Remover tool, empowering creators and developers to strip green screen backgrounds, replace colors, or composite custom images behind video subjects 100% inside the browser sandbox.',
+    date: 'July 27, 2026',
+    readTime: '4 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'video background remover, chroma keying, green screen remover, browser video editing, transparent video export, webm recorder, domodomo',
+    content: `# Introducing Video Background Remover: Client-Side Chroma Keying & Background Replacement
+
+We are excited to launch **Video Background Remover**, a powerful browser-first utility added to DomoDomo's **Video WASM & Media Suite** (\`video\`)!
+
+---
+
+## 📽️ What Is Video Background Remover?
+
+**Video Background Remover** enables video editors, content creators, and developers to key out green screen or custom background colors directly inside the browser sandbox—without uploading video files to remote cloud servers.
+
+### 🌟 Key Capabilities:
+- **Interactive Eyedropper & Color Keying**: Pick any target background color (Green screen, Blue screen, light grey, or custom hex) via canvas eyedropper.
+- **Tolerance & Edge Feathering Controls**: Fine-tune color distance thresholds (1–100%) and edge smoothness for crisp subject isolation.
+- **Flexible Background Replacement**:
+  - **Alpha Transparent**: Export frames or WebM videos with 100% transparent backgrounds.
+  - **Solid Color**: Composite custom background colors behind the video subject.
+  - **Custom Image Background**: Upload custom photos to place behind your video subject in real-time.
+- **Viewport Zoom & Controls**: Full Zoom In/Out/Reset controls, loop toggle, frame counter, and single-frame PNG screenshot exports.
+- **High Quality WebM Export**: Render processed video streams locally via client-side \`MediaRecorder\` capture streams.
+
+---
+
+## 🔒 100% Sandbox Privacy
+
+Like every DomoDomo tool, video processing and background keying execute entirely client-side on your device. Your video files never touch external servers or cloud APIs.`
+  },
+  {
     slug: 'expanded-design-and-network-suites-20-local-ai-tools',
     title: 'Design Studio & Network Suite Extended: 10 Tools Each for 20 Total AI Utilities',
     excerpt: 'DomoDomo expands both the Design Studio and Network Suite to 10 full-featured offline tools each, introducing Neumorphism, Box Shadow, Color Harmonies, CSS Blobs, Grid/Flex Architects, Design Tokens, JWT Debugging, WebSockets, DoH DNS, HTTP Status/CORS, GraphQL Optimizer, IP Subnetting, and OpenAPI 3.0 Studio.',

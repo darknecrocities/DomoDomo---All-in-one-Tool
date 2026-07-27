@@ -653,6 +653,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Allows users to hide faces in video files locally. Features automatic skin-tone face detection, multiple manual customizable blur zones with draggable coordinates, shape controls (Circle/Rectangle), blur types (Blur/Pixelate/Solid), and WebM rendering exports.',
         howItWorks: '1. Reads uploaded video. 2. Plays it through a hidden HTML5 video element mapped to a rendering canvas. 3. Identifies skin-color coordinate areas using HSV/YCbCr color boundary filters and overlays manual user-defined target zones. 4. Uses MediaRecorder on canvas captures to compile the processed streams into WebM downloads.',
         technicalSpecs: 'Fully local processing. Bitrates up to 8 Mbps. Does not upload files to remote servers.'
+      },
+      {
+        id: 'video-bg-remover',
+        name: 'Video Background Remover',
+        engine: 'HTML5 Canvas 2D Chroma Keying & MediaRecorder Engine',
+        details: 'Processes video frames client-side by applying Euclidean color space distance algorithms to key out target green screen or background colors, replacing them with transparent alpha channels, solid background colors, or custom image composites in real-time.',
+        functionality: 'Allows users to key out green screen or custom background colors from videos in their browser. Includes eyedropper color picker, tolerance & edge smoothness sliders, alpha/color/image background replacement options, viewport zoom controls, single frame PNG export, and WebM video rendering downloads.',
+        howItWorks: '1. Loads MP4/WebM video into a hidden playback element. 2. Maps video frames to a Canvas 2D context. 3. Executes pixel-level chroma keying to strip target background color channels. 4. Composites subject over selected alpha, color, or image background. 5. Captures stream via MediaRecorder for client-side WebM download.',
+        technicalSpecs: '100% Client-side. Supports MP4, WebM, MOV inputs and WebM/PNG exports. Zero server uploads.'
       }
     ]
   },

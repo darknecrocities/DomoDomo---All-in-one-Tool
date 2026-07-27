@@ -13,60 +13,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Documentation } from './Documentation';
 import { TOOLS } from '../engine/registry';
 import { CATEGORIES } from './Dashboard';
+import { CommunityTestimonials } from '../components/CommunityTestimonials';
 
 const stats = [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
   { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
   { label: 'Categories', value: `${CATEGORIES.length - 2}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and security.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
-];
-
-const testimonials = [
-  {
-    name: 'Mary Anne',
-    role: 'Digital Content Manager',
-    quote: 'DomoDomo has completely replaced multiple online file converters for me. Knowing my sensitive PDFs and client photos are processed 100% locally in my browser gives me complete peace of mind.'
-  },
-  {
-    name: 'James Mendoza',
-    role: 'Software Engineer',
-    quote: 'A masterclass in local-first browser engineering. DomoDomo proves that you don\'t need heavy cloud infrastructures to build robust, secure, and incredibly fast tools.'
-  },
-  {
-    name: 'Emmanuel Millave',
-    role: 'Maker',
-    quote: 'solid neto'
-  },
-  {
-    name: 'Diana Vanessa',
-    role: 'Fullstack Engineer',
-    quote: 'Omg! this so useful! Thanks for this!'
-  },
-  {
-    name: 'Dale Ogbac',
-    role: 'proud vibe coder 🤪',
-    quote: 'support to this!!! very helpful and still keeps growing.🔥💪'
-  },
-  {
-    name: 'Ant Real',
-    role: 'Maker',
-    quote: 'Nice to see DomoDomo getting more visibility here too! 🙌 The strong community feedback and its privacy-first, local-first direction really stood out — that’s why it is currently listed as a Featured Pick on Stage by Ant.'
-  },
-  {
-    name: 'fox hub',
-    role: 'Maker',
-    quote: 'ang dami paid tools out there but this app has it alll, tysm'
-  },
-  {
-    name: 'gerald domingo',
-    role: 'Maker',
-    quote: 'usefull opensource project'
-  },
-  {
-    name: 'elmer gonzales',
-    role: 'Maker',
-    quote: 'this app helps me a lot and i like the jarvis features, kudos to the dev team🙏'
-  }
 ];
 
 export const CATEGORY_DETAILS = [
@@ -213,29 +166,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
   const queryTab = searchParams.get('tab') as 'about' | 'categories' | 'updates' | 'docs';
   const [activeTab, setActiveTab] = useState<'about' | 'categories' | 'updates' | 'docs'>(queryTab || defaultTab);
 
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const [categoryFilter, setCategoryFilter] = useState('');
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const itemsPerView = windowWidth >= 1024 ? 3 : windowWidth >= 768 ? 2 : 1;
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIdx((prev) => {
-        if (prev >= testimonials.length - itemsPerView) {
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 4500);
-    return () => clearInterval(timer);
-  }, [itemsPerView]);
 
   // Sync tab state with query parameters
   useEffect(() => {
@@ -446,58 +377,8 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                 </button>
               </section>
 
-              {/* Real Testimonials Block */}
-              <section className="glass-card p-6 border-[#2A2D30] bg-[#18191B] space-y-5">
-                <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-2">
-                    <Users size={12} />
-                    <span>Real Community Testimonials</span>
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-extrabold text-[#ECEBE9] tracking-tight">
-                    What Our Users Say About DomoDomo
-                  </h2>
-                </div>
-
-                <div className="relative overflow-hidden w-full pt-1">
-                  <div
-                    className="flex transition-transform duration-500 ease-in-out"
-                    style={{
-                      transform: `translateX(-${currentIdx * (100 / itemsPerView)}%)`
-                    }}
-                  >
-                    {testimonials.map((test, idx) => (
-                      <div
-                        key={idx}
-                        className="px-2.5 shrink-0"
-                        style={{ width: `${100 / itemsPerView}%` }}
-                      >
-                        <div className="bg-[#111213] p-5 rounded-2xl border border-[#2A2D30] hover:border-[#3C6B4D]/25 transition-colors flex flex-col justify-between gap-4 min-h-[175px] text-left">
-                          <p className="text-xs text-[#A3A09B] italic leading-relaxed line-clamp-5">
-                            "{test.quote}"
-                          </p>
-                          <div>
-                            <span className="block text-xs font-bold text-[#ECEBE9]">{test.name}</span>
-                            <span className="block text-[10px] text-[#72706C]">{test.role}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Indicators dots */}
-                  <div className="flex justify-center gap-1.5 mt-4">
-                    {Array.from({ length: testimonials.length - itemsPerView + 1 }).map((_, dIdx) => (
-                      <button
-                        key={dIdx}
-                        onClick={() => setCurrentIdx(dIdx)}
-                        className={`w-1.5 h-1.5 rounded-full transition-all ${currentIdx === dIdx ? 'bg-[#3C6B4D] w-3.5' : 'bg-[#2A2D30] hover:bg-[#72706C]'
-                          }`}
-                        title={`Go to slide ${dIdx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </section>
+              {/* Real Community Testimonials */}
+              <CommunityTestimonials compact={true} />
 
               {/* Mission Block */}
               <section className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-6">
