@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
-import { Upload, Video, Download, Play, Pause, RefreshCw, ZoomIn, ZoomOut, RotateCcw, Pipette, Sliders, Image as ImageIcon, Film } from 'lucide-react';
+import { Upload, Video, Download, Play, Pause, RefreshCw, ZoomIn, ZoomOut, RotateCcw, Pipette, Sliders, Image as ImageIcon, Film, Wand2, Sparkles } from 'lucide-react';
 
 export const VideoBgRemoverTool = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -11,10 +11,12 @@ export const VideoBgRemoverTool = () => {
   const [isLooping, setIsLooping] = useState(true);
 
   // Keying configuration
+  const [keyMode, setKeyMode] = useState<'color' | 'checkerboard'>('color');
   const [keyColor, setKeyColor] = useState('#00ff00'); // Default green screen (#00FF00)
   const [tolerance, setTolerance] = useState(40); // 1 to 100
   const [smoothness, setSmoothness] = useState(15); // 0 to 50
   const [isEyedropperActive, setIsEyedropperActive] = useState(false);
+  const [detectedBgLabel, setDetectedBgLabel] = useState<string>('');
 
   // Background replacement configuration
   const [bgType, setBgType] = useState<'transparent' | 'color' | 'image'>('transparent');
@@ -55,21 +57,6 @@ export const VideoBgRemoverTool = () => {
     }
   }, [bgImageFile]);
 
-  // Setup video metadata listeners
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const onMetadata = () => {
-      setDuration(v.duration);
-      if (canvasRef.current) {
-        canvasRef.current.width = v.videoWidth || 640;
-        canvasRef.current.height = v.videoHeight || 360;
-      }
-    };
-    v.addEventListener('loadedmetadata', onMetadata);
-    return () => v.removeEventListener('loadedmetadata', onMetadata);
-  }, [videoUrl]);
-
   // Convert Hex color to RGB
   const hexToRgb = (hex: string) => {
     let cleanHex = hex.replace('#', '');
@@ -83,6 +70,119 @@ export const VideoBgRemoverTool = () => {
       b: num & 255
     };
   };
+
+  // Convert RGB to Hex
+  const rgbToHex = (r: number, g: number, b: number) => {
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+  };
+
+  // Auto Detect Background from video border samples
+  const autoDetectBackground = useCallback(() => {
+    const v = videoRef.current;
+    if (!v || v.videoWidth === 0) return;
+
+    const tempCanvas = document.createElement('canvas');
+    const w = v.videoWidth || 640;
+    const h = v.videoHeight || 360;
+    tempCanvas.width = w;
+    tempCanvas.height = h;
+
+    const ctx = tempCanvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+
+    ctx.drawImage(v, 0, 0, w, h);
+
+    // Sample border pixels along top, bottom, left, right edges and 4 corners
+    const samples: { r: number; g: number; b: number }[] = [];
+    const samplePoints = [
+      { x: 5, y: 5 }, { x: Math.floor(w / 2), y: 5 }, { x: w - 5, y: 5 },
+      { x: 5, y: Math.floor(h / 2) }, { x: w - 5, y: Math.floor(h / 2) },
+      { x: 5, y: h - 5 }, { x: Math.floor(w / 2), y: h - 5 }, { x: w - 5, y: h - 5 }
+    ];
+
+    samplePoints.forEach(p => {
+      const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+      samples.push({ r: pixel[0], g: pixel[1], b: pixel[2] });
+    });
+
+    // Check for Green Screen
+    const greenMatches = samples.filter(s => s.g > s.r + 25 && s.g > s.b + 25);
+    if (greenMatches.length >= 3) {
+      setKeyMode('color');
+      setKeyColor('#00ff00');
+      setTolerance(40);
+      setDetectedBgLabel('Detected: Green Screen (#00FF00)');
+      return;
+    }
+
+    // Check for Blue Screen
+    const blueMatches = samples.filter(s => s.b > s.r + 25 && s.b > s.g + 25);
+    if (blueMatches.length >= 3) {
+      setKeyMode('color');
+      setKeyColor('#0000ff');
+      setTolerance(40);
+      setDetectedBgLabel('Detected: Blue Screen (#0000FF)');
+      return;
+    }
+
+    // Check for Checkerboard Grid / Greyscale Pattern
+    const greyscaleMatches = samples.filter(s => Math.abs(s.r - s.g) < 25 && Math.abs(s.g - s.b) < 25 && s.r > 100);
+    if (greyscaleMatches.length >= 4) {
+      setKeyMode('checkerboard');
+      setTolerance(35);
+      setDetectedBgLabel('Detected: Checkerboard / Light Grid Pattern');
+      return;
+    }
+
+    // Check for White / Light Background
+    const whiteMatches = samples.filter(s => s.r > 190 && s.g > 190 && s.b > 190);
+    if (whiteMatches.length >= 4) {
+      setKeyMode('color');
+      setKeyColor('#ffffff');
+      setTolerance(35);
+      setDetectedBgLabel('Detected: White / Light Background');
+      return;
+    }
+
+    // Check for Black / Dark Background
+    const blackMatches = samples.filter(s => s.r < 50 && s.g < 50 && s.b < 50);
+    if (blackMatches.length >= 4) {
+      setKeyMode('color');
+      setKeyColor('#000000');
+      setTolerance(35);
+      setDetectedBgLabel('Detected: Dark / Black Background');
+      return;
+    }
+
+    // Fallback: Compute average of corner samples
+    const avgR = Math.round(samples.reduce((acc, s) => acc + s.r, 0) / samples.length);
+    const avgG = Math.round(samples.reduce((acc, s) => acc + s.g, 0) / samples.length);
+    const avgB = Math.round(samples.reduce((acc, s) => acc + s.b, 0) / samples.length);
+    const detectedHex = rgbToHex(avgR, avgG, avgB);
+
+    setKeyMode('color');
+    setKeyColor(detectedHex);
+    setTolerance(38);
+    setDetectedBgLabel(`Auto Selected: ${detectedHex.toUpperCase()}`);
+  }, []);
+
+  // Setup video metadata listeners & trigger auto-detection
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const onMetadata = () => {
+      setDuration(v.duration);
+      if (canvasRef.current) {
+        canvasRef.current.width = v.videoWidth || 640;
+        canvasRef.current.height = v.videoHeight || 360;
+      }
+      setTimeout(() => {
+        autoDetectBackground();
+      }, 200);
+    };
+    v.addEventListener('loadedmetadata', onMetadata);
+    return () => v.removeEventListener('loadedmetadata', onMetadata);
+  }, [videoUrl, autoDetectBackground]);
 
   // Perform Chroma Keying and composite on canvas
   const renderFrame = useCallback(() => {
@@ -119,24 +219,37 @@ export const VideoBgRemoverTool = () => {
     const data = frame.data;
     const len = data.length;
 
-    const keyRgb = hexToRgb(keyColor);
-    const tolSq = Math.pow(tolerance * 2.2, 2);
-    const smoothSq = Math.pow((tolerance + smoothness) * 2.2, 2);
+    if (keyMode === 'checkerboard') {
+      // KEY MODE: Checkerboard / Light Grid Removal
+      for (let i = 0; i < len; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
 
-    for (let i = 0; i < len; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
+        // Light grey & white grid tiles (r, g, b > 110 and near greyscale)
+        if (r > 110 && g > 110 && b > 110 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) {
+          data[i + 3] = 0; // Transparent
+        }
+      }
+    } else {
+      // KEY MODE: Color Distance Chroma Key
+      const keyRgb = hexToRgb(keyColor);
+      const tolSq = Math.pow(tolerance * 2.2, 2);
+      const smoothSq = Math.pow((tolerance + smoothness) * 2.2, 2);
 
-      // Calculate Euclidean color distance to target key color
-      const distSq = Math.pow(r - keyRgb.r, 2) + Math.pow(g - keyRgb.g, 2) + Math.pow(b - keyRgb.b, 2);
+      for (let i = 0; i < len; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
 
-      if (distSq < tolSq) {
-        data[i + 3] = 0; // Completely transparent
-      } else if (distSq < smoothSq && smoothness > 0) {
-        // Smooth transition edge
-        const alphaFraction = (distSq - tolSq) / (smoothSq - tolSq);
-        data[i + 3] = Math.round(data[i + 3] * alphaFraction);
+        const distSq = Math.pow(r - keyRgb.r, 2) + Math.pow(g - keyRgb.g, 2) + Math.pow(b - keyRgb.b, 2);
+
+        if (distSq < tolSq) {
+          data[i + 3] = 0; // Completely transparent
+        } else if (distSq < smoothSq && smoothness > 0) {
+          const alphaFraction = (distSq - tolSq) / (smoothSq - tolSq);
+          data[i + 3] = Math.round(data[i + 3] * alphaFraction);
+        }
       }
     }
 
@@ -144,7 +257,7 @@ export const VideoBgRemoverTool = () => {
 
     // 3. Composite processed frame on main canvas
     ctx.drawImage(offCanvas, 0, 0, w, h);
-  }, [keyColor, tolerance, smoothness, bgType, bgColor]);
+  }, [keyMode, keyColor, tolerance, smoothness, bgType, bgColor]);
 
   // Main animation loop
   useEffect(() => {
@@ -179,9 +292,11 @@ export const VideoBgRemoverTool = () => {
 
     ctx.drawImage(v, 0, 0, tempCanvas.width, tempCanvas.height);
     const pixel = ctx.getImageData(x, y, 1, 1).data;
-    const hex = `#${((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1)}`;
+    const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+    setKeyMode('color');
     setKeyColor(hex);
     setIsEyedropperActive(false);
+    setDetectedBgLabel(`Picked: ${hex.toUpperCase()}`);
   };
 
   // Play / Pause video
@@ -310,11 +425,31 @@ export const VideoBgRemoverTool = () => {
             </label>
           </div>
 
+          {/* Auto Detection Banner */}
+          {file && (
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-[#111213] border border-[#3C6B4D]/30 text-xs">
+              <div className="flex items-center gap-2">
+                <Sparkles size={14} className="text-[#3C6B4D]" />
+                <span className="font-bold text-[#ECEBE9] truncate max-w-[170px]">
+                  {detectedBgLabel || "Auto Keying Ready"}
+                </span>
+              </div>
+              <button
+                onClick={autoDetectBackground}
+                className="px-2.5 py-1 rounded-lg bg-[#3C6B4D] hover:bg-[#4E8E5E] text-white font-bold text-[10px] transition-all flex items-center gap-1 shrink-0"
+                title="Scan video border to auto-detect background"
+              >
+                <Wand2 size={11} />
+                <span>Auto</span>
+              </button>
+            </div>
+          )}
+
           {/* Keying Settings */}
           <div className="flex flex-col gap-4 border-t border-[#2A2D30] pt-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
-                <Sliders size={13} className="text-[#3C6B4D]" /> Keying Controls
+                <Sliders size={13} className="text-[#3C6B4D]" /> Keying Mode
               </span>
               <button
                 onClick={() => setIsEyedropperActive(!isEyedropperActive)}
@@ -330,39 +465,66 @@ export const VideoBgRemoverTool = () => {
               </button>
             </div>
 
-            {/* Key Color Picker */}
-            <div className="flex items-center justify-between bg-[#111213] p-2.5 rounded-xl border border-[#2A2D30]">
-              <span className="text-xs font-semibold text-[#A3A09B]">Target Key Color</span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={keyColor}
-                  onChange={(e) => setKeyColor(e.target.value)}
-                  className="w-7 h-7 rounded-lg bg-transparent cursor-pointer border-0"
-                />
-                <span className="text-xs font-mono font-bold text-[#ECEBE9] uppercase">{keyColor}</span>
-              </div>
+            {/* Mode Tabs: Color vs Checkerboard */}
+            <div className="grid grid-cols-2 gap-1.5 bg-[#111213] p-1 rounded-xl border border-[#2A2D30]">
+              <button
+                onClick={() => setKeyMode('color')}
+                className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  keyMode === 'color' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C] hover:text-[#ECEBE9]'
+                }`}
+              >
+                Color Key
+              </button>
+              <button
+                onClick={() => setKeyMode('checkerboard')}
+                className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  keyMode === 'checkerboard' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C] hover:text-[#ECEBE9]'
+                }`}
+              >
+                Checkerboard Grid
+              </button>
             </div>
 
-            {/* Color Presets */}
-            <div className="flex gap-1.5">
-              {[
-                { name: 'Green', hex: '#00ff00' },
-                { name: 'Blue', hex: '#0000ff' },
-                { name: 'White', hex: '#ffffff' },
-                { name: 'Grey', hex: '#808080' },
-                { name: 'Black', hex: '#000000' },
-              ].map((preset) => (
-                <button
-                  key={preset.hex}
-                  onClick={() => setKeyColor(preset.hex)}
-                  className="flex-1 py-1 rounded-lg border border-[#2A2D30] text-[10px] font-bold text-[#A3A09B] hover:text-[#ECEBE9] transition-all flex items-center justify-center gap-1"
-                >
-                  <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: preset.hex }} />
-                  {preset.name}
-                </button>
-              ))}
-            </div>
+            {/* Key Color Picker (Visible in Color Mode) */}
+            {keyMode === 'color' && (
+              <>
+                <div className="flex items-center justify-between bg-[#111213] p-2.5 rounded-xl border border-[#2A2D30]">
+                  <span className="text-xs font-semibold text-[#A3A09B]">Target Key Color</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={keyColor}
+                      onChange={(e) => setKeyColor(e.target.value)}
+                      className="w-7 h-7 rounded-lg bg-transparent cursor-pointer border-0"
+                    />
+                    <span className="text-xs font-mono font-bold text-[#ECEBE9] uppercase">{keyColor}</span>
+                  </div>
+                </div>
+
+                {/* Color Presets */}
+                <div className="flex gap-1.5">
+                  {[
+                    { name: 'Green', hex: '#00ff00' },
+                    { name: 'Blue', hex: '#0000ff' },
+                    { name: 'White', hex: '#ffffff' },
+                    { name: 'Grey', hex: '#808080' },
+                    { name: 'Black', hex: '#000000' },
+                  ].map((preset) => (
+                    <button
+                      key={preset.hex}
+                      onClick={() => {
+                        setKeyMode('color');
+                        setKeyColor(preset.hex);
+                      }}
+                      className="flex-1 py-1 rounded-lg border border-[#2A2D30] text-[10px] font-bold text-[#A3A09B] hover:text-[#ECEBE9] transition-all flex items-center justify-center gap-1"
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: preset.hex }} />
+                      {preset.name}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
             {/* Tolerance Slider */}
             <div className="flex flex-col gap-1.5">
@@ -526,7 +688,7 @@ export const VideoBgRemoverTool = () => {
                 <Video size={48} className="text-[#2A2D30] animate-pulse" />
                 <h3 className="text-base font-bold text-[#ECEBE9]">No Video Selected</h3>
                 <p className="text-xs text-[#A3A09B] max-w-sm">
-                  Upload an MP4 or WebM video on the left panel to remove green screen or custom background colors.
+                  Upload an MP4 or WebM video on the left panel. DomoDomo automatically detects checkerboard grid patterns, green screens, or typical backgrounds!
                 </p>
               </div>
             )}
