@@ -2592,10 +2592,10 @@ export const Dashboard = () => {
 
 						{/* Animated Mascot Video Overlay (Chroma Keyed 100% Transparent Background) */}
 						<TransparentVideoMascot
-							src="/domo_tap.mp4"
-							className="absolute -bottom-2 -right-2 md:-bottom-3 md:-right-3 w-36 h-36 md:w-48 md:h-48 z-20 pointer-events-none group-hover/terminal:scale-105 transition-transform duration-500"
-							width={280}
-							height={280}
+							src="/domotap2.mp4"
+							className="absolute bottom-1 right-1 md:bottom-2 md:right-2 w-28 h-28 md:w-36 md:h-36 z-20 pointer-events-none group-hover/terminal:scale-105 transition-transform duration-500"
+							width={240}
+							height={240}
 						/>
 					</div>
 				</div>
