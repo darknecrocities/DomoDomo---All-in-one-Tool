@@ -146,15 +146,15 @@ export const CommunityTestimonials = ({
         <div className="flex flex-col gap-6 z-10 my-2">
           {/* 3D Perspective Stage Container */}
           <div
-            className="w-full relative py-10 flex items-center justify-center min-h-[290px] md:min-h-[310px] overflow-hidden"
-            style={{ perspective: '1100px' }}
+            className="w-full relative py-12 px-4 md:px-8 flex items-center justify-center min-h-[340px] md:min-h-[370px]"
+            style={{ perspective: '1200px' }}
           >
             {/* The Physical 3D Rotating Cube Box Stage */}
             <div
-              className="relative w-full max-w-lg md:max-w-xl h-[230px] md:h-[250px] transition-transform duration-1000 ease-in-out"
+              className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[480px] h-[250px] md:h-[270px] transition-transform duration-1000 ease-in-out"
               style={{
                 transformStyle: 'preserve-3d',
-                transform: `rotateY(${-currentIndex * 90}deg) rotateX(-5deg)`,
+                transform: `rotateY(${-currentIndex * 90}deg) rotateX(-4deg)`,
               }}
             >
               {cubeFaces.map((face) => {
@@ -164,49 +164,49 @@ export const CommunityTestimonials = ({
                 return (
                   <div
                     key={`${face.offset}-${item.id}`}
-                    className="absolute inset-0 w-full h-full flex flex-col justify-between p-6 rounded-2xl bg-[#111213] border border-[#3A3D40] shadow-[0_15px_35px_rgba(0,0,0,0.8)] text-left select-none"
+                    className="absolute inset-0 w-full h-full flex flex-col justify-between p-5 md:p-6 rounded-2xl bg-[#111213] border border-[#3A3D40] shadow-[0_20px_45px_rgba(0,0,0,0.85)] text-left select-none"
                     style={{
                       transformStyle: 'preserve-3d',
                       backfaceVisibility: 'hidden',
-                      transform: `rotateY(${face.rotation}deg) translateZ(240px)`,
+                      transform: `rotateY(${face.rotation}deg) translateZ(195px)`,
                     }}
                   >
                     {/* Top Row: User Avatar & Info */}
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between gap-3 shrink-0">
+                      <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 rounded-xl bg-[#2A2D30] border border-[#4A4D52] flex items-center justify-center text-[#ECEBE9] font-black text-xs shadow-inner shrink-0">
                           {item.initials}
                         </div>
-                        <div className="flex flex-col leading-tight text-left">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-extrabold text-[#ECEBE9]">
+                        <div className="flex flex-col leading-tight text-left min-w-0">
+                          <div className="flex items-center gap-1.5 truncate">
+                            <span className="text-sm font-extrabold text-[#ECEBE9] truncate">
                               {item.name}
                             </span>
-                            <span title="Verified Member">
+                            <span title="Verified Member" className="shrink-0">
                               <UserCheck size={13} className="text-[#A3A09B]" />
                             </span>
                           </div>
-                          <span className="text-xs font-semibold text-[#72706C]">
+                          <span className="text-xs font-semibold text-[#72706C] truncate">
                             {item.role}
                           </span>
                         </div>
                       </div>
 
-                      <span className="text-[10px] font-mono text-[#A3A09B] bg-[#18191B] px-2.5 py-1 rounded-lg border border-[#2A2D30]">
+                      <span className="text-[10px] font-mono text-[#A3A09B] bg-[#18191B] px-2.5 py-1 rounded-lg border border-[#2A2D30] shrink-0">
                         {item.date}
                       </span>
                     </div>
 
                     {/* Quote Content */}
-                    <div className="relative pt-2">
-                      <Quote size={18} className="text-[#5A5D62]/40 absolute -top-1 -left-1" />
-                      <p className="text-xs md:text-sm text-[#C5C3C0] leading-relaxed relative z-10 italic pl-4 font-normal">
+                    <div className="relative my-auto py-1">
+                      <Quote size={16} className="text-[#5A5D62]/40 absolute -top-1 -left-1" />
+                      <p className="text-xs md:text-sm text-[#C5C3C0] leading-relaxed relative z-10 italic pl-4 font-normal line-clamp-4">
                         "{item.quote}"
                       </p>
                     </div>
 
-                    {/* Card Footer Accent (100% Dark Grey - NO GREEN) */}
-                    <div className="flex items-center justify-between pt-3 border-t border-[#2A2D30] text-[10px] text-[#72706C]">
+                    {/* Card Footer Accent */}
+                    <div className="flex items-center justify-between pt-3 border-t border-[#2A2D30] text-[10px] text-[#72706C] shrink-0">
                       <span className="flex items-center gap-1.5 text-[#A3A09B] font-bold">
                         <Heart size={12} className="fill-[#3A3D40] text-[#72706C]" />
                         <span>Verified Feedback</span>
