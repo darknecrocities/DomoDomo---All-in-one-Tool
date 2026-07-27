@@ -3,6 +3,8 @@ name: Generate Release Manifest & Announcements
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'public/updates.json'
 
 permissions:
   contents: write
@@ -36,19 +38,25 @@ jobs:
           git add public/updates.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-generate public/updates.json [skip ci]"
-            git push
+            git push origin main
           else
             echo "No changes in updates.json to commit."
           fi
 
       - name: Discord Notification
-        if: env.DISCORD_WEBHOOK_URL != ''
+        if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "DISCORD_WEBHOOK_URL is empty. Skipping Discord notification."
+            exit 0
+          fi
+          
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s" | sed 's/"/\\"/g')
           COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
           COMMIT_HASH=$(git log -1 --pretty=format:"%h")
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           
           PAYLOAD=$(cat <<EOF
           {
@@ -59,10 +67,10 @@ jobs:
               "footer": {
                 "text": "DomoDomo Auto-Release pipeline"
               },
-              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              "timestamp": "${TIMESTAMP}"
             }]
           }
           EOF
           )
           
-          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL"
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "$DISCORD_WEBHOOK_URL" || true
