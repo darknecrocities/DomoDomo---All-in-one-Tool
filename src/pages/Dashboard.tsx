@@ -2466,8 +2466,8 @@ export const Dashboard = () => {
 				</div>
 
 				{/* Right side mock status console */}
-				<div className="lg:col-span-5 w-full z-10 flex flex-col">
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative group/terminal">
+				<div className="lg:col-span-5 w-full z-10 flex flex-col relative group/terminal">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative">
 						{/* Header console bar */}
 						<div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
 							<div className="flex items-center gap-1.5">
@@ -2589,13 +2589,13 @@ export const Dashboard = () => {
 								</span>
 							</div>
 						</div>
-
-						{/* Animated Mascot Video Overlay (Chroma Keyed 100% Transparent Background) */}
-						<TransparentVideoMascot
-							src="/domotap2.mp4"
-							className="absolute bottom-2 right-2 md:bottom-3 md:right-3 w-28 h-28 md:w-36 md:h-36 z-20 pointer-events-none group-hover/terminal:scale-105 transition-transform duration-500"
-						/>
 					</div>
+
+					{/* Animated Mascot Video Overlay on Top Layer (Bottom-Right Corner) */}
+					<TransparentVideoMascot
+						src="/domotap2.mp4"
+						className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 w-44 h-44 md:w-56 md:h-56 z-30 pointer-events-none group-hover/terminal:scale-105 transition-transform duration-500"
+					/>
 				</div>
 			</div>
 
