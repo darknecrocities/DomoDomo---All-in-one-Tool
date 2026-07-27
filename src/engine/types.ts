@@ -15,6 +15,8 @@ export type ToolCategory =
   | 'cv'
   | 'ml'
   | 'spatial'
+  | 'design'
+  | 'network'
   | 'investigation';
 
 export interface Tool {

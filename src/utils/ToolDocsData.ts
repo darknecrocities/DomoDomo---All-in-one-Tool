@@ -1,4 +1,4 @@
-export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml' | 'spatial' | 'investigation';
+export type ToolCategory = 'pdf' | 'photo' | 'document' | 'converter' | 'qr' | 'video' | 'audio' | 'dev' | 'security' | 'ai' | 'data' | 'cv' | 'ml' | 'spatial' | 'design' | 'network' | 'investigation';
 
 export interface ToolDoc {
   id: string;
@@ -1694,6 +1694,198 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Creates printable AR marker targets and customizable 3D floating card previews.',
         howItWorks: '1. Customize card header and glow color. 2. Preview 3D AR marker split view. 3. Download PNG marker.',
         technicalSpecs: 'High-contrast AR pattern generation and spatial shadow preview.'
+      }
+    ]
+  },
+  design: {
+    title: 'Design & UI/UX Studio',
+    desc: 'Local-first web accessibility auditing, visual background synthesis, typography systems, and vector path tools powered by Local AI.',
+    list: [
+      {
+        id: 'wcag-contrast-checker',
+        name: 'AI WCAG Contrast & Accessibility Auditor',
+        engine: 'Web Canvas RGB Matrix & Local Ollama AI',
+        details: 'Calculates WCAG 2.1 contrast ratios and simulates colorvision deficiencies with Local AI accessibility remediation guidance.',
+        functionality: 'Tests text-to-background contrast and provides AI accessibility recommendations.',
+        howItWorks: '1. Select foreground/background colors. 2. Check contrast ratio and vision simulation filter. 3. Run Local AI audit.',
+        technicalSpecs: 'Client-side luminance math and SVG color matrices.'
+      },
+      {
+        id: 'mesh-gradient-generator',
+        name: 'AI CSS Glass & Mesh Gradient Architect',
+        engine: 'Canvas & Local Ollama AI',
+        details: 'Visual designer to create multi-point fluid mesh background gradients and glassmorphism cards.',
+        functionality: 'Generates radial gradient focal points and backdrop-filter CSS snippets.',
+        howItWorks: '1. Pick gradient focal swatches. 2. Adjust blur/opacity sliders. 3. Prompt Local AI for custom gradient code.',
+        technicalSpecs: 'Real-time CSS radial gradient synthesis.'
+      },
+      {
+        id: 'font-glyph-inspector',
+        name: 'AI Font Subsetter & Typography Advisor',
+        engine: 'Opentype & Local Ollama AI',
+        details: 'Inspects Unicode character glyph maps and generates AI font pairing recommendations.',
+        functionality: 'Parses character sets and advises on typography design scales.',
+        howItWorks: '1. Define character subset scope. 2. Preview glyph map viewport. 3. Run Local AI typography advisor.',
+        technicalSpecs: 'Client-side Unicode character rendering.'
+      },
+      {
+        id: 'svg-path-studio',
+        name: 'AI SVG Component & Vector Code Studio',
+        engine: 'SVG Path DOM & Local Ollama AI',
+        details: 'Visual vector path editor and React SVG component generator powered by Local AI.',
+        functionality: 'Manipulates path coordinates and generates stroke animation CSS keyframes.',
+        howItWorks: '1. Edit d path attribute. 2. Preview vector stroke. 3. Prompt AI to build React SVG component.',
+        technicalSpecs: 'SVG path string parsing and DOM rendering.'
+      },
+      {
+        id: 'neumorphism-glass-builder',
+        name: 'AI Neumorphism & Soft UI Generator',
+        engine: 'Soft UI Shadow Engine & Ollama AI',
+        details: 'Design soft extruded and inset neumorphic UI components, generate dual light/dark shadows, and synthesize soft UI systems with Local AI.',
+        functionality: 'Calculates dual highlight/shadow offsets and generates CSS box-shadow code.',
+        howItWorks: '1. Pick base background hex color. 2. Adjust radius and blur sliders. 3. Synthesize soft UI system with Local AI.',
+        technicalSpecs: 'Client-side RGB color shifting and shadow calculations.'
+      },
+      {
+        id: 'box-shadow-studio',
+        name: 'AI Multi-Layer CSS Shadow & Elevation Studio',
+        engine: 'Multi-Layer Lighting Matrix & Ollama AI',
+        details: 'Compose multi-layer ambient and key shadows, build realistic natural elevation steps, and synthesize lighting systems with Local AI.',
+        functionality: 'Composes layered ambient/key shadows into single CSS box-shadow property.',
+        howItWorks: '1. Add shadow layers. 2. Adjust offset X/Y, blur, spread, and opacity. 3. Run Local AI elevation advisor.',
+        technicalSpecs: 'Layered RGBA shadow string composition.'
+      },
+      {
+        id: 'color-palette-harmonies',
+        name: 'AI Color Palette & Harmony Studio',
+        engine: 'HSL Color Wheel Engine & Ollama AI',
+        details: 'Calculate color theory harmonies (Complementary, Triadic, Analogous), generate Tailwind theme configs, check contrast swatches, and prompt Local AI.',
+        functionality: 'Calculates HSL angular offsets on color wheel for 5-swatch palette generation.',
+        howItWorks: '1. Choose seed color. 2. Select harmony formula. 3. Copy Tailwind config JSON or run Local AI strategy.',
+        technicalSpecs: 'RGB to HSL color space conversion algorithms.'
+      },
+      {
+        id: 'border-radius-blob-maker',
+        name: 'AI Organic CSS Blob & Border Radius Generator',
+        engine: '8-Point Radius Engine & Ollama AI',
+        details: 'Manipulate 8-point organic CSS border-radius coordinates, synthesize fluid morphing keyframes, export CSS code, and prompt Local AI.',
+        functionality: 'Generates non-standard 8-point border-radius percentage strings for organic shapes.',
+        howItWorks: '1. Drag corner horizontal/vertical handles. 2. Preview blob viewport. 3. Generate keyframe morph animation with Local AI.',
+        technicalSpecs: '8-value CSS border-radius syntax generator.'
+      },
+      {
+        id: 'css-grid-flex-studio',
+        name: 'AI CSS Grid & Flexbox Layout Architect',
+        engine: 'CSS Box Model Engine & Ollama AI',
+        details: 'Visual CSS Grid and Flexbox container layout builder, customize gap, alignment, and template columns, export CSS code, and prompt Local AI.',
+        functionality: 'Visual layout builder for CSS Grid templates and Flexbox alignment properties.',
+        howItWorks: '1. Select Grid or Flex mode. 2. Customize columns, rows, and gap. 3. Synthesize responsive breakpoint rules with Local AI.',
+        technicalSpecs: 'CSS Grid template string generator.'
+      },
+      {
+        id: 'design-token-generator',
+        name: 'AI Design Token & CSS Variables System Studio',
+        engine: 'W3C Design Token Engine & Ollama AI',
+        details: 'Construct cross-platform design token suites (Colors, Typography scale, Spacing, Elevation), export W3C JSON / CSS custom variables, and prompt Local AI.',
+        functionality: 'Exports structured design tokens in W3C JSON and CSS custom property formats.',
+        howItWorks: '1. Set brand name, primary color, and type ratio. 2. Choose JSON or CSS format. 3. Run Local AI token spec builder.',
+        technicalSpecs: 'W3C Design Tokens JSON schema builder.'
+      }
+    ]
+  },
+  network: {
+    title: 'Network & Web Performance Lab',
+    desc: 'Offline HTTP Archive waterfall profiling, API client code generation, and security policy building powered by Local AI.',
+    list: [
+      {
+        id: 'har-waterfall-profiler',
+        name: 'AI HAR Performance Diagnostic Profiler',
+        engine: 'Local HAR JSON Parser & Ollama AI',
+        details: 'Visualizes HTTP Archive network traces offline with request waterfall charts.',
+        functionality: 'Isolates TTFB latencies, payload sizes, and failed HTTP status codes.',
+        howItWorks: '1. Upload .har file offline. 2. Inspect request waterfall timeline. 3. Run Local AI performance diagnostic.',
+        technicalSpecs: 'Client-side JSON HAR log parsing.'
+      },
+      {
+        id: 'curl-code-studio',
+        name: 'AI cURL to Multi-Language SDK Generator',
+        engine: 'AST Command Parser & Ollama AI',
+        details: 'Converts raw cURL commands into clean code snippets across JS, Python, Go, Rust, and PHP.',
+        functionality: 'Translates request parameters and headers into typed SDK clients.',
+        howItWorks: '1. Paste cURL command. 2. Select target language snippet. 3. Run Local AI to generate full SDK wrapper.',
+        technicalSpecs: 'Client-side cURL command parsing.'
+      },
+      {
+        id: 'csp-header-builder',
+        name: 'AI Security Header & CSP Policy Architect',
+        engine: 'CSP Directive Engine & Ollama AI',
+        details: 'Configures Content Security Policy directives visually and audits XSS injection risks.',
+        functionality: 'Generates hardened CSP headers and web server configurations.',
+        howItWorks: '1. Configure script-src, style-src directives. 2. Check XSS warnings. 3. Run Local AI security audit.',
+        technicalSpecs: 'Directive string serialization and audit heuristics.'
+      },
+      {
+        id: 'jwt-debugger-studio',
+        name: 'AI JWT Token Inspector & Claims Auditor',
+        engine: 'Base64Url Decoder & Ollama AI',
+        details: 'Decode JSON Web Tokens (Header, Payload, Signature) offline, inspect expiration claims, verify signing algorithms, and audit security with Local AI.',
+        functionality: 'Decodes JWT tokens offline into human-readable Header and Payload JSON structures.',
+        howItWorks: '1. Paste encoded JWT string. 2. Inspect payload claims and exp date. 3. Run Local AI security audit.',
+        technicalSpecs: 'Client-side Base64Url decoding and JSON parsing.'
+      },
+      {
+        id: 'websocket-tester-studio',
+        name: 'AI WebSockets & SSE Packet Diagnostic Studio',
+        engine: 'WebSocket Protocol & Ollama AI',
+        details: 'Inspect real-time WebSocket frames, stream Server-Sent Events (SSE), test reconnect backoff latency, and audit packet payloads with Local AI.',
+        functionality: 'Connects to WS/WSS endpoints and logs sent/received message frame history.',
+        howItWorks: '1. Input WSS server URL. 2. Compose JSON payload frame. 3. Run Local AI protocol analysis.',
+        technicalSpecs: 'Browser WebSocket API frame listener.'
+      },
+      {
+        id: 'dns-lookup-inspector',
+        name: 'AI DNS & DoH Security Diagnostic Inspector',
+        engine: 'DNS-over-HTTPS & Ollama AI',
+        details: 'Perform encrypted DNS-over-HTTPS (DoH) record queries (A, AAAA, MX, TXT, CAA, NS), audit SPF/DMARC spoofing risks, and run Local AI diagnostics.',
+        functionality: 'Queries Cloudflare/Google DoH JSON endpoints for A, MX, TXT, and CAA records.',
+        howItWorks: '1. Enter domain name. 2. Choose record type. 3. Resolve records and audit security with Local AI.',
+        technicalSpecs: 'Fetch client for RFC 8427 DNS-over-HTTPS JSON API.'
+      },
+      {
+        id: 'http-status-debugger',
+        name: 'AI HTTP Status & CORS Diagnostic Studio',
+        engine: 'HTTP Reference DB & Ollama AI',
+        details: 'Lookup HTTP 1xx-5xx status codes, debug CORS headers, generate Express/Nginx CORS middleware, and prompt Local AI.',
+        functionality: 'Interactive reference manual and middleware generator for HTTP status codes and CORS preflight headers.',
+        howItWorks: '1. Search status code. 2. Configure allowed origin domain. 3. Run Local AI CORS debugger.',
+        technicalSpecs: 'Local HTTP status database and Express code builder.'
+      },
+      {
+        id: 'graphql-query-studio',
+        name: 'AI GraphQL Schema & Query Optimizer',
+        engine: 'GQL AST Parser & Ollama AI',
+        details: 'Format GraphQL queries, evaluate nested field depth complexity, generate TypeScript response types, and prompt Local AI.',
+        functionality: 'Parses GraphQL documents to evaluate query depth and selection complexity.',
+        howItWorks: '1. Paste GraphQL query document. 2. View depth metrics. 3. Run Local AI query complexity optimizer.',
+        technicalSpecs: 'GraphQL document AST depth heuristics.'
+      },
+      {
+        id: 'ip-subnet-calculator',
+        name: 'AI IP CIDR & Subnet Calculator',
+        engine: 'Bitwise IP Engine & Ollama AI',
+        details: 'Calculate IPv4/IPv6 CIDR network address boundaries, wildcard netmasks, usable host counts, and synthesize VLAN subnet plans with Local AI.',
+        functionality: 'Bitwise math for CIDR mask calculation, netmask conversion, and host bounds.',
+        howItWorks: '1. Input IP address and CIDR prefix. 2. View netmask and usable host count. 3. Run Local AI subnet architect.',
+        technicalSpecs: 'Bitwise 32-bit integer IP arithmetic.'
+      },
+      {
+        id: 'open-api-schema-builder',
+        name: 'AI OpenAPI 3.0 & Swagger Schema Studio',
+        engine: 'OpenAPI 3.0 Builder & Ollama AI',
+        details: 'Construct OpenAPI 3.0 JSON/YAML specifications, generate TypeScript API response contracts, export Swagger schemas, and prompt Local AI.',
+        functionality: 'Visual builder for OpenAPI 3.0 JSON/YAML specifications and response schemas.',
+        howItWorks: '1. Define API title, version, and route path. 2. Select HTTP method. 3. Copy spec JSON or prompt Local AI.',
+        technicalSpecs: 'OpenAPI 3.0 spec JSON builder.'
       }
     ]
   },

@@ -236,6 +236,33 @@ import { CVAugmenterStudioTool } from '../tools/cv/CVAugmenterStudio';
 import { DatasetFormatConverterTool } from '../tools/cv/DatasetFormatConverter';
 import { ZeroShotAutoLabelerTool } from '../tools/cv/ZeroShotAutoLabeler';
 
+// New Design & Network Suite Imports
+import { WCAGContrastCheckerTool } from '../tools/design/WCAGContrastChecker';
+import { MeshGradientGeneratorTool } from '../tools/design/MeshGradientGenerator';
+import { FontGlyphInspectorTool } from '../tools/design/FontGlyphInspector';
+import { SVGPathStudioTool } from '../tools/design/SVGPathStudio';
+import { NeumorphismGlassBuilderTool } from '../tools/design/NeumorphismGlassBuilder';
+import { BoxShadowStudioTool } from '../tools/design/BoxShadowStudio';
+import { ColorPaletteHarmoniesTool } from '../tools/design/ColorPaletteHarmonies';
+import { BorderRadiusBlobMakerTool } from '../tools/design/BorderRadiusBlobMaker';
+import { CSSGridFlexStudioTool } from '../tools/design/CSSGridFlexStudio';
+import { DesignTokenGeneratorTool } from '../tools/design/DesignTokenGenerator';
+
+import { HARWaterfallProfilerTool } from '../tools/network/HARWaterfallProfiler';
+import { CurlCodeStudioTool } from '../tools/network/CurlCodeStudio';
+import { CSPHeaderBuilderTool } from '../tools/network/CSPHeaderBuilder';
+import { JWTDebuggerStudioTool } from '../tools/network/JWTDebuggerStudio';
+import { WebSocketTesterStudioTool } from '../tools/network/WebSocketTesterStudio';
+import { DNSLookupInspectorTool } from '../tools/network/DNSLookupInspector';
+import { HTTPStatusDebuggerTool } from '../tools/network/HTTPStatusDebugger';
+import { GraphQLQueryStudioTool } from '../tools/network/GraphQLQueryStudio';
+import { IPSubnetCalculatorTool } from '../tools/network/IPSubnetCalculator';
+import { OpenAPISchemaBuilderTool } from '../tools/network/OpenAPISchemaBuilder';
+
+import { BIP39WalletInspectorTool } from '../tools/security/BIP39WalletInspector';
+import { SRTSubtitleTool } from '../tools/converter/SRTSubtitleTool';
+import { CSVSchemaDiffTool } from '../tools/data/CSVSchemaDiff';
+
 // Investigative Research Suite Imports
 import { ScientificSynthesizerTool } from '../tools/investigation/ScientificSynthesizer';
 import { ClinicalTrialEvaluatorTool } from '../tools/investigation/ClinicalTrialEvaluator';
@@ -483,6 +510,35 @@ export const TOOLS: Tool[] = [
   { id: 'particle-force-studio', name: 'Particle System & Force Field Studio', categories: ['spatial'], description: 'Real-time 3D particle engine with gravity, vortex, wind force fields, particle trail physics, and animation exporter.', icon: 'Wind', run: async (i) => i, component: ParticleForceStudioTool },
   { id: '3d-camera-animator', name: '3D Camera Flight Path & Keyframe Animator', categories: ['spatial'], description: 'Interactive 3D camera trajectory editor with keyframes, Bezier spline interpolation, timeline scrubber, and JSON export.', icon: 'Camera', run: async (i) => i, component: CameraAnimator3DTool },
   { id: 'ar-marker-card-studio', name: 'AR Spatial Marker & 3D Card Studio', categories: ['spatial'], description: 'Generates AR target pattern markers paired with interactive 3D AR card overlays, printable patterns, and PNG markers.', icon: 'QrCode', run: async (i) => i, component: ARMarkerCardStudioTool },
+
+  // Design Suite Tools (10)
+  { id: 'wcag-contrast-checker', name: 'AI WCAG Contrast & Accessibility Auditor', categories: ['design', 'ai'], description: 'Evaluate text-to-background contrast ratios against WCAG 2.1 AA/AAA standards and run Local AI accessibility audits.', icon: 'Palette', run: async (i) => i, component: WCAGContrastCheckerTool },
+  { id: 'mesh-gradient-generator', name: 'AI CSS Glass & Mesh Gradient Architect', categories: ['design', 'ai'], description: 'Synthesize fluid mesh gradients, glassmorphism cards, and CSS backdrop filters visually or with Local AI prompts.', icon: 'Sparkles', run: async (i) => i, component: MeshGradientGeneratorTool },
+  { id: 'font-glyph-inspector', name: 'AI Font Subsetter & Typography Advisor', categories: ['design', 'ai'], description: 'Inspect Unicode character glyph maps, define lightweight font subset ranges, and generate AI font pairing systems.', icon: 'Type', run: async (i) => i, component: FontGlyphInspectorTool },
+  { id: 'svg-path-studio', name: 'AI SVG Component & Vector Code Studio', categories: ['design', 'ai'], description: 'Edit Bezier path coordinates interactively or convert natural language prompts into optimized, animated React SVG components.', icon: 'PenTool', run: async (i) => i, component: SVGPathStudioTool },
+  { id: 'neumorphism-glass-builder', name: 'AI Neumorphism & Soft UI Generator', categories: ['design', 'ai'], description: 'Design soft extruded and inset neumorphic UI components, generate dual light/dark shadows, and synthesize soft UI systems with Local AI.', icon: 'Layers', run: async (i) => i, component: NeumorphismGlassBuilderTool },
+  { id: 'box-shadow-studio', name: 'AI Multi-Layer CSS Shadow & Elevation Studio', categories: ['design', 'ai'], description: 'Compose multi-layer ambient and key shadows, build realistic natural elevation steps, and synthesize lighting systems with Local AI.', icon: 'Layers', run: async (i) => i, component: BoxShadowStudioTool },
+  { id: 'color-palette-harmonies', name: 'AI Color Palette & Harmony Studio', categories: ['design', 'ai'], description: 'Calculate color theory harmonies (Complementary, Triadic, Analogous), generate Tailwind theme configs, check contrast swatches, and prompt Local AI.', icon: 'Palette', run: async (i) => i, component: ColorPaletteHarmoniesTool },
+  { id: 'border-radius-blob-maker', name: 'AI Organic CSS Blob & Border Radius Generator', categories: ['design', 'ai'], description: 'Manipulate 8-point organic CSS border-radius coordinates, synthesize fluid morphing keyframes, export CSS code, and prompt Local AI.', icon: 'Wand2', run: async (i) => i, component: BorderRadiusBlobMakerTool },
+  { id: 'css-grid-flex-studio', name: 'AI CSS Grid & Flexbox Layout Architect', categories: ['design', 'ai'], description: 'Visual CSS Grid and Flexbox container layout builder, customize gap, alignment, and template columns, export CSS code, and prompt Local AI.', icon: 'LayoutGrid', run: async (i) => i, component: CSSGridFlexStudioTool },
+  { id: 'design-token-generator', name: 'AI Design Token & CSS Variables System Studio', categories: ['design', 'ai'], description: 'Construct cross-platform design token suites (Colors, Typography scale, Spacing, Elevation), export W3C JSON / CSS custom variables, and prompt Local AI.', icon: 'Sliders', run: async (i) => i, component: DesignTokenGeneratorTool },
+
+  // Network Suite Tools (10)
+  { id: 'har-waterfall-profiler', name: 'AI HAR Performance Diagnostic Profiler', categories: ['network', 'ai'], description: 'Upload .har browser network traces offline to inspect request latency waterfalls and identify performance bottlenecks with Local AI.', icon: 'BarChart3', run: async (i) => i, component: HARWaterfallProfilerTool },
+  { id: 'curl-code-studio', name: 'AI cURL to Multi-Language SDK Generator', categories: ['network', 'ai'], description: 'Translate raw cURL requests into production-ready JavaScript, Python, Go, Rust, and PHP code snippets or full SDK wrappers with Local AI.', icon: 'Terminal', run: async (i) => i, component: CurlCodeStudioTool },
+  { id: 'csp-header-builder', name: 'AI Security Header & CSP Policy Architect', categories: ['network', 'security', 'ai'], description: 'Configure Content Security Policy (CSP) directives visually, audit XSS risks, and generate server headers with Local AI.', icon: 'ShieldCheck', run: async (i) => i, component: CSPHeaderBuilderTool },
+  { id: 'jwt-debugger-studio', name: 'AI JWT Token Inspector & Claims Auditor', categories: ['network', 'security', 'ai'], description: 'Decode JSON Web Tokens (Header, Payload, Signature) offline, inspect expiration claims, verify signing algorithms, and audit security with Local AI.', icon: 'KeyRound', run: async (i) => i, component: JWTDebuggerStudioTool },
+  { id: 'websocket-tester-studio', name: 'AI WebSockets & SSE Packet Diagnostic Studio', categories: ['network', 'ai'], description: 'Inspect real-time WebSocket frames, stream Server-Sent Events (SSE), test reconnect backoff latency, and audit packet payloads with Local AI.', icon: 'Terminal', run: async (i) => i, component: WebSocketTesterStudioTool },
+  { id: 'dns-lookup-inspector', name: 'AI DNS & DoH Security Diagnostic Inspector', categories: ['network', 'security', 'ai'], description: 'Perform encrypted DNS-over-HTTPS (DoH) record queries (A, AAAA, MX, TXT, CAA, NS), audit SPF/DMARC spoofing risks, and run Local AI diagnostics.', icon: 'ShieldCheck', run: async (i) => i, component: DNSLookupInspectorTool },
+  { id: 'http-status-debugger', name: 'AI HTTP Status & CORS Diagnostic Studio', categories: ['network', 'ai'], description: 'Lookup HTTP 1xx-5xx status codes, debug CORS headers, generate Express/Nginx CORS middleware, and prompt Local AI.', icon: 'ShieldCheck', run: async (i) => i, component: HTTPStatusDebuggerTool },
+  { id: 'graphql-query-studio', name: 'AI GraphQL Schema & Query Optimizer', categories: ['network', 'ai'], description: 'Format GraphQL queries, evaluate nested field depth complexity, generate TypeScript response types, and prompt Local AI.', icon: 'Terminal', run: async (i) => i, component: GraphQLQueryStudioTool },
+  { id: 'ip-subnet-calculator', name: 'AI IP CIDR & Subnet Calculator', categories: ['network', 'ai'], description: 'Calculate IPv4/IPv6 CIDR network address boundaries, wildcard netmasks, usable host counts, and synthesize VLAN subnet plans with Local AI.', icon: 'Terminal', run: async (i) => i, component: IPSubnetCalculatorTool },
+  { id: 'open-api-schema-builder', name: 'AI OpenAPI 3.0 & Swagger Schema Studio', categories: ['network', 'ai'], description: 'Construct OpenAPI 3.0 JSON/YAML specifications, generate TypeScript API response contracts, export Swagger schemas, and prompt Local AI.', icon: 'Terminal', run: async (i) => i, component: OpenAPISchemaBuilderTool },
+
+  // Additional Local AI Tools (3)
+  { id: 'bip39-wallet-inspector', name: 'AI Cryptographic BIP-39 & Security Auditor', categories: ['security', 'ai'], description: 'Inspect BIP-39 seed mnemonics, verify HD wallet derivation paths, and audit cryptographic entropy offline with Local AI.', icon: 'KeyRound', run: async (i) => i, component: BIP39WalletInspectorTool },
+  { id: 'srt-subtitle-tool', name: 'AI Subtitle Translator & Smart Re-timer', categories: ['converter', 'video', 'ai'], description: 'Edit SRT/VTT subtitle timing offsets (+/- ms), re-sync subtitle drift, and translate subtitles line-by-line preserving timestamp markup with Local AI.', icon: 'Subtitles', run: async (i) => i, component: SRTSubtitleTool },
+  { id: 'csv-schema-diff', name: 'AI CSV Schema & Data Drift Diagnostic Tool', categories: ['data', 'ai'], description: 'Compare two CSV/TSV spreadsheets column-by-column, detect structural schema shifts, and generate database migration SQL scripts with Local AI.', icon: 'FileSpreadsheet', run: async (i) => i, component: CSVSchemaDiffTool },
 
   // Investigative Research Suite Tools (10)
   ScientificSynthesizerTool,
