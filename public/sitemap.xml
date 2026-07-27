@@ -33,6 +33,12 @@
   </url>
   
   <url>
+    <loc>https://domodomo.site/blog/video-background-remover-chroma-keying-tool</loc>
+    <lastmod>2026-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://domodomo.site/blog/expanded-design-and-network-suites-20-local-ai-tools</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -2886,6 +2892,12 @@
   </url>
   <url>
     <loc>https://domodomo.site/tool/face-blur</loc>
+    <lastmod>2026-07-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/tool/video-bg-remover</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

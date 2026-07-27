@@ -2591,11 +2591,17 @@ export const Dashboard = () => {
 						</div>
 					</div>
 
-					{/* Animated Mascot Video Overlay on Top Layer (Bottom-Right Corner) */}
-					<TransparentVideoMascot
-						src="/domotap2.mp4"
-						className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 w-44 h-44 md:w-56 md:h-56 z-30 pointer-events-none group-hover/terminal:scale-105 transition-transform duration-500"
-					/>
+					{/* Animated Mascot Video Overlay — upper body overlaps bottom-right corner, clickable for cute popup */}
+					<div
+						className="absolute right-0 z-30"
+						style={{ bottom: '-60px' }}
+					>
+						<TransparentVideoMascot
+							src="/domotap2.mp4"
+							className="w-44 h-44 md:w-56 md:h-56 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+							clickable={true}
+						/>
+					</div>
 				</div>
 			</div>
 
