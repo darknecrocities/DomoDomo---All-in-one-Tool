@@ -13,6 +13,94 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'expanded-design-and-network-suites-20-local-ai-tools',
+    title: 'Design Studio & Network Suite Extended: 10 Tools Each for 20 Total AI Utilities',
+    excerpt: 'DomoDomo expands both the Design Studio and Network Suite to 10 full-featured offline tools each, introducing Neumorphism, Box Shadow, Color Harmonies, CSS Blobs, Grid/Flex Architects, Design Tokens, JWT Debugging, WebSockets, DoH DNS, HTTP Status/CORS, GraphQL Optimizer, IP Subnetting, and OpenAPI 3.0 Studio.',
+    date: 'July 27, 2026',
+    readTime: '8 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'design suite, network suite, neumorphism generator, box shadow studio, color harmonies, css blob, css grid flex, design tokens, jwt debugger, websocket tester, doh dns lookup, http status cors, graphql query studio, ip subnet calculator, openapi schema studio, local ai, domodomo',
+    content: `# Design Studio & Network Suite Extended: 10 Tools Each for 20 Total AI Utilities
+
+We are thrilled to announce a major expansion: **Design Studio** and **Network Suite** have both been expanded to **10 dedicated tools each**!
+
+---
+
+## 🎨 10 Dedicated Design Studio Tools (\`design\`)
+1. **AI WCAG Contrast & Accessibility Auditor**: APCA scores, WCAG 2.1 AA/AAA matrix, auto-contrast fixer, and color vision deficiency simulation.
+2. **AI CSS Glass & Mesh Gradient Architect**: Multi-point fluid mesh background generator, animated keyframe gradients, noise overlay textures, and glassmorphism styling.
+3. **AI Font Subsetter & Typography Advisor**: Unicode glyph map inspector, WOFF2 byte reduction subset calculator, and Local AI font pairing strategies.
+4. **AI SVG Component & Vector Code Studio**: Visual Bezier path manipulator, path node minifier, animated stroke drawing CSS, and React TSX component exporter.
+5. **AI Neumorphism & Soft UI Generator**: Design soft extruded and inset neumorphic UI components, dual light/dark shadow calculation, and soft UI specs.
+6. **AI Multi-Layer CSS Shadow & Elevation Studio**: Compose multi-layer ambient and key shadows, build realistic natural elevation steps, and synthesize elevation tokens.
+7. **AI Color Palette & Harmony Studio**: Color wheel harmonies (Complementary, Triadic, Analogous, Split, Monochromatic), Tailwind theme config JSON generator, and contrast checks.
+8. **AI Organic CSS Blob & Border Radius Generator**: 8-point non-standard CSS border-radius handle editor, fluid keyframe morphing animation builder, and CSS code exporter.
+9. **AI CSS Grid & Flexbox Layout Architect**: Visual container layout builder for CSS Grid templates and Flexbox alignment properties with mobile/desktop breakpoint rules.
+10. **AI Design Token & CSS Variables System Studio**: Construct cross-platform design token suites (Colors, Typography scale, Spacing, Elevation), exporting W3C JSON and CSS custom variables.
+
+---
+
+## 🌐 10 Dedicated Network Suite Tools (\`network\`)
+1. **AI HAR Performance Diagnostic Profiler**: Interactive network waterfall chart, TTFB/DNS latency breakdown, content filtering, and Local AI performance diagnostic audit.
+2. **AI cURL to Multi-Language SDK Generator**: Translate raw cURL commands into 9 target languages (JS, Axios, Python, Go, Rust, PHP, C#, Java, Swift) or full SDK wrappers.
+3. **AI Security Header & CSP Policy Architect**: 0–100 Security risk score engine, XSS warning heuristics, and server headers export (Nginx, Apache, Caddy, Vercel/Netlify).
+4. **AI JWT Token Inspector & Claims Auditor**: Offline Base64Url JWT decoder (Header, Payload, Signature), expiration timer check, and claim security audit.
+5. **AI WebSockets & SSE Packet Diagnostic Studio**: Connect to local/ws/wss endpoints, log frame history, JSON payload formatter, ping/pong latency measurement, and protocol audit.
+6. **AI DNS & DoH Security Diagnostic Inspector**: Encrypted DNS-over-HTTPS (DoH) queries (A, AAAA, MX, TXT, CAA, NS), SPF/DMARC spoofing risk auditor, and DNSSEC evaluation.
+7. **AI HTTP Status & CORS Diagnostic Studio**: Complete HTTP 1xx-5xx reference database, CORS preflight header validator, Express/Nginx CORS middleware generator.
+8. **AI GraphQL Schema & Query Optimizer**: Format GraphQL query documents, evaluate nested field selection depth complexity, generate TypeScript response types.
+9. **AI IP CIDR & Subnet Calculator**: IPv4/IPv6 bitwise CIDR prefix calculator (network address, broadcast, netmask, wildcard mask, usable host counts), and VLAN planner.
+10. **AI OpenAPI 3.0 & Swagger Schema Studio**: Construct OpenAPI 3.0 JSON/YAML specifications, generate TypeScript API response DTO contracts, and Swagger schema exporter.
+
+---
+
+## 🔒 100% Client-Side & Local AI Security
+
+All processing runs entirely inside your browser sandbox and your local Ollama LLM daemon. No data is ever transmitted to cloud servers.`
+  },
+  {
+    slug: 'introducing-design-and-network-suites-10-local-ai-tools',
+    title: 'Introducing Design & Network Suites: 10 New Local LLM-Powered Utilities',
+    excerpt: 'DomoDomo expands with 2 new categories (Design & Network) and 10 brand-new Local LLM-powered tools for WCAG contrast, mesh gradients, font subsetting, SVG vector code, HAR waterfalls, cURL SDK generation, CSP security headers, BIP-39 seed auditing, SRT subtitles, and CSV data drift.',
+    date: 'July 27, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'design studio, wcag accessibility, mesh gradient, font subsetter, svg path studio, har waterfall, curl converter, csp security, bip39 crypto, srt subtitle, csv data drift, local ai, ollama, domodomo',
+    content: `# Introducing Design & Network Suites: 10 New Local LLM-Powered Utilities
+
+We are thrilled to announce the expansion of DomoDomo with **2 brand-new categories** (\`design\` and \`network\`) and **10 Local LLM-powered utilities**!
+
+Every tool in this release natively integrates DomoDomo's **Local AI Engine (\`aiService\` / Ollama)**, allowing developers, designers, and security engineers to leverage offline AI intelligence (model selection, custom prompts, automated audits, code generation) with 100% privacy guarantees.
+
+---
+
+## 🛠️ The 10 New Local LLM-Powered Tools
+
+### Design & UI/UX Studio (\`design\`)
+1. **AI WCAG Contrast & Accessibility Auditor**: Calculates WCAG 2.1 AA/AAA contrast ratios, simulates 4 color vision deficiencies, and runs Local AI accessibility remediation audits.
+2. **AI CSS Glass & Mesh Gradient Architect**: Synthesizes fluid mesh background gradients, glassmorphism cards, and backdrop-filter CSS with natural language Local AI prompts.
+3. **AI Font Subsetter & Typography Advisor**: Inspects Unicode character glyph maps, defines lightweight font subset ranges, and generates AI font pairing systems.
+4. **AI SVG Component & Vector Code Studio**: Interactive Bezier path manipulator that converts natural language prompts into optimized, animated React SVG components.
+
+### Network & Web Performance Lab (\`network\`)
+5. **AI HAR Performance Diagnostic Profiler**: Upload \`.har\` network traces offline to inspect request latency waterfalls and run Local AI performance diagnostics.
+6. **AI cURL to Multi-Language SDK Generator**: Translates raw cURL requests into production-ready JS, Python, Go, Rust, and PHP code snippets or full SDK wrappers with Local AI.
+7. **AI Security Header & CSP Policy Architect**: Visually configures Content Security Policy directives, audits XSS risks, and generates server headers with Local AI.
+
+### Additional AI-Powered Utilities
+8. **AI Cryptographic BIP-39 & Security Auditor**: Inspects BIP-39 seed mnemonics, verifies HD wallet derivation paths, and audits cryptographic entropy offline.
+9. **AI Subtitle Translator & Smart Re-timer**: Shifts SRT/VTT subtitle timing offsets (+/- ms) and translates subtitle text line-by-line preserving timestamp formatting.
+10. **AI CSV Schema & Data Drift Diagnostic Tool**: Compares two CSV datasets column-by-column, detects structural schema shifts, and generates SQL migration scripts with Local AI.
+
+---
+
+## 🔒 100% Client-Side & Local AI Security
+
+As with all DomoDomo utilities, processing executes locally inside your browser sandbox and your local Ollama daemon. No files, code, or queries are ever sent to external cloud servers.`
+  },
+  {
     slug: 'introducing-spatial-3d-and-web-graphics-suite-domodomo',
     title: 'Introducing Spatial 3D & Web Engine: 10 Offline 3D Model, Mesh, PBR & Audio Utilities',
     excerpt: 'DomoDomo releases 10 new local-first Spatial 3D tools for 3D model inspection, polygon decimation, PBR texture map synthesis, heightmap 3D terrain sculpting, LiDAR point cloud visualization, voxel studio, 3D spatial audio, particle force fields, camera flight path animation, and AR markers.',

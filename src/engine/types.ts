@@ -14,7 +14,9 @@ export type ToolCategory =
   | 'ai'
   | 'cv'
   | 'ml'
-  | 'spatial';
+  | 'spatial'
+  | 'design'
+  | 'network';
 
 export interface Tool {
   id: string;
