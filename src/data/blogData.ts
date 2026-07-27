@@ -60,45 +60,40 @@ We are thrilled to announce a major expansion: **Design Studio** and **Network S
 All processing runs entirely inside your browser sandbox and your local Ollama LLM daemon. No data is ever transmitted to cloud servers.`
   },
   {
-    slug: 'introducing-design-and-network-suites-10-local-ai-tools',
-    title: 'Introducing Design & Network Suites: 10 New Local LLM-Powered Utilities',
-    excerpt: 'DomoDomo expands with 2 new categories (Design & Network) and 10 brand-new Local LLM-powered tools for WCAG contrast, mesh gradients, font subsetting, SVG vector code, HAR waterfalls, cURL SDK generation, CSP security headers, BIP-39 seed auditing, SRT subtitles, and CSV data drift.',
-    date: 'July 27, 2026',
+    slug: 'introducing-offline-investigative-research-suite-domodomo',
+    title: 'Introducing Offline Investigative Research: 10 Local AI-Powered Academic & Data Synthesis Utilities',
+    excerpt: 'DomoDomo releases 10 new local-first tools for literature reviews, clinical trial audits, patent mapping, archive comparison, citation checks, and statistical methodology advisory running 100% locally with private LLMs.',
+    date: 'July 24, 2026',
     readTime: '6 min read',
     category: 'Product Updates',
     author: 'Arron Parejas',
-    keywords: 'design studio, wcag accessibility, mesh gradient, font subsetter, svg path studio, har waterfall, curl converter, csp security, bip39 crypto, srt subtitle, csv data drift, local ai, ollama, domodomo',
-    content: `# Introducing Design & Network Suites: 10 New Local LLM-Powered Utilities
+    keywords: 'investigative research, academic literature, clinical trial evaluation, patent claim mapper, citation check, hypothesis generator, qualitative coder, method advisor, meta-analysis aggregator, proposal optimizer, local llm, ollama, privacy-first, domodomo',
+    content: `# Introducing Offline Investigative Research: 10 Local AI-Powered Academic & Data Synthesis Utilities
 
-We are thrilled to announce the expansion of DomoDomo with **2 brand-new categories** (\`design\` and \`network\`) and **10 Local LLM-powered utilities**!
-
-Every tool in this release natively integrates DomoDomo's **Local AI Engine (\`aiService\` / Ollama)**, allowing developers, designers, and security engineers to leverage offline AI intelligence (model selection, custom prompts, automated audits, code generation) with 100% privacy guarantees.
+We are excited to launch the **Investigative Research Suite** in DomoDomo! This suite introduces 10 advanced, local-first tools designed for researchers, academics, students, and legal analysts. Run literature synthesis, clinical trial evaluations, patent claim mapping, archive cross-examinations, citation audits, and meta-analysis calculations 100% locally and securely.
 
 ---
 
-## 🛠️ The 10 New Local LLM-Powered Tools
+## 🛠️ The 10 New Investigative Research Utilities
 
-### Design & UI/UX Studio (\`design\`)
-1. **AI WCAG Contrast & Accessibility Auditor**: Calculates WCAG 2.1 AA/AAA contrast ratios, simulates 4 color vision deficiencies, and runs Local AI accessibility remediation audits.
-2. **AI CSS Glass & Mesh Gradient Architect**: Synthesizes fluid mesh background gradients, glassmorphism cards, and backdrop-filter CSS with natural language Local AI prompts.
-3. **AI Font Subsetter & Typography Advisor**: Inspects Unicode character glyph maps, defines lightweight font subset ranges, and generates AI font pairing systems.
-4. **AI SVG Component & Vector Code Studio**: Interactive Bezier path manipulator that converts natural language prompts into optimized, animated React SVG components.
-
-### Network & Web Performance Lab (\`network\`)
-5. **AI HAR Performance Diagnostic Profiler**: Upload \`.har\` network traces offline to inspect request latency waterfalls and run Local AI performance diagnostics.
-6. **AI cURL to Multi-Language SDK Generator**: Translates raw cURL requests into production-ready JS, Python, Go, Rust, and PHP code snippets or full SDK wrappers with Local AI.
-7. **AI Security Header & CSP Policy Architect**: Visually configures Content Security Policy directives, audits XSS risks, and generates server headers with Local AI.
-
-### Additional AI-Powered Utilities
-8. **AI Cryptographic BIP-39 & Security Auditor**: Inspects BIP-39 seed mnemonics, verifies HD wallet derivation paths, and audits cryptographic entropy offline.
-9. **AI Subtitle Translator & Smart Re-timer**: Shifts SRT/VTT subtitle timing offsets (+/- ms) and translates subtitle text line-by-line preserving timestamp formatting.
-10. **AI CSV Schema & Data Drift Diagnostic Tool**: Compares two CSV datasets column-by-column, detects structural schema shifts, and generates SQL migration scripts with Local AI.
+1. **Scientific Literature Synthesizer**: Paste raw academic text to extract hypotheses, methodology, and empirical findings. Runs client-side using local AI models with zero server overhead.
+2. **Clinical Trial Evaluator**: Extract clinical trial phase information, sample cohort statistics, control groups, and adverse endpoints.
+3. **Patent Claim Mapper**: Deconstruct claims from patent documentation to identify dependencies and generate ASCII visual tree diagrams.
+4. **Historical Archive Cross-Examiner**: Contrast timelines, ideological biases, and perspective variations between multiple primary witness accounts.
+5. **Academic Citation Cross-Referencer**: Audit and validate bibliography entries against APA 7th, MLA 9th, Chicago, and IEEE formatting standards.
+6. **Research Hypothesis Generator**: Input variables and research fields to brainstorm 5 novel scientific hypotheses complete with control recommendations.
+7. **Qualitative Text Coder & Labeler**: Tag interview transcripts, count qualitative code occurrences, and outline thematic codes.
+8. **Research Method Advisory**: Select optimal research designs, statistical tests, and sample sizes based on input variables.
+9. **Meta-Analysis Statistics Aggregator**: Aggregate study sizes and effect sizes (Cohen's d) to compute pooled effect metrics and render SVG Forest Plots.
+10. **Funding Proposal Optimizer**: Audit research proposal drafts against funding guidelines and evaluate structural alignment.
 
 ---
 
-## 🔒 100% Client-Side & Local AI Security
+## 🔒 Private Local AI and Ollama Integration
 
-As with all DomoDomo utilities, processing executes locally inside your browser sandbox and your local Ollama daemon. No files, code, or queries are ever sent to external cloud servers.`
+All tools in the Investigative Research Suite integrate with DomoDomo's local AI engine. By connecting to your local **Ollama** daemon (running models like Llama 3.2 or Qwen 2.5), all text analysis and literature synthesis remain completely on your machine. If Ollama is offline, the tools automatically transition to a local simulated execution mode to guarantee continuous functionality.
+
+Check out the new **Investigative Research** suite on your dashboard today!`
   },
   {
     slug: 'introducing-spatial-3d-and-web-graphics-suite-domodomo',

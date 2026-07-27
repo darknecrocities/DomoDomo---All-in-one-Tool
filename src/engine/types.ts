@@ -16,7 +16,8 @@ export type ToolCategory =
   | 'ml'
   | 'spatial'
   | 'design'
-  | 'network';
+  | 'network'
+  | 'investigation';
 
 export interface Tool {
   id: string;

@@ -13,10 +13,13 @@ import {
 	Star,
 	Copy,
 	Check,
+	Trophy,
+	Award,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
 import { aiService } from "../utils/aiService";
+import { LocalAISetupModal } from "../components/LocalAISetupModal";
 import betterGovLogo from "../assets/bettergovph.jpg";
 import upamateLogo from "../assets/upamate.png";
 import stageByAntLogo from "../assets/stagebyant.png";
@@ -51,6 +54,7 @@ export const CATEGORIES = [
 	{ id: "spatial", name: "Spatial 3D & Web" },
 	{ id: "design", name: "Design & UI Studio" },
 	{ id: "network", name: "Network & Web Lab" },
+	{ id: "investigation", name: "Investigative Research" },
 ];
 
 const ALL_PLANNED_TOOLS: PlannedTool[] = [
@@ -1894,6 +1898,98 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		requiresOllama: true,
 	},
 
+	// Investigative Research Suite Tools (10)
+	{
+		id: "scientific-synthesizer",
+		name: "Scientific Literature Synthesizer",
+		categories: ["investigation", "ai"],
+		description: "Paste academic literature to extract hypotheses, methodology, and results locally.",
+		icon: "BookOpen",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "clinical-evaluator",
+		name: "Clinical Trial Evaluator",
+		categories: ["investigation", "ai"],
+		description: "Extract trial phase, sample sizes, control groups, and endpoints from medical research text.",
+		icon: "ShieldAlert",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "patent-mapper",
+		name: "Patent Claim Mapper",
+		categories: ["investigation", "ai"],
+		description: "Analyze patent claims, build dependency ASCII trees, and extract novel methods offline.",
+		icon: "Layers",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "archive-examiner",
+		name: "Historical Archive Cross-Examiner",
+		categories: ["investigation", "ai"],
+		description: "Cross-examine multiple primary historical sources, testimonies, or accounts to audit timelines and bias.",
+		icon: "Columns",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "citation-crossref",
+		name: "Academic Citation Cross-Referencer",
+		categories: ["investigation", "ai"],
+		description: "Validate lists of citations against APA 7th, MLA 9th, IEEE, or Chicago manual schemas.",
+		icon: "BookOpen",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "hypothesis-generator",
+		name: "Research Hypothesis Generator",
+		categories: ["investigation", "ai"],
+		description: "Brainstorm novel scientific hypotheses, define control variables, and design experimental structures offline.",
+		icon: "Sparkles",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "qualitative-coder",
+		name: "Qualitative Text Coder & Labeler",
+		categories: ["investigation", "ai"],
+		description: "Perform client-side thematic analysis on transcripts, tag interview quotes, and extract codes.",
+		icon: "Tag",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "method-adviser",
+		name: "Research Method Advisory",
+		categories: ["investigation", "ai"],
+		description: "Deterministic expert system to configure variables, choose research designs, and suggest statistical tests.",
+		icon: "HelpCircle",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "meta-analysis-aggregator",
+		name: "Meta-Analysis Statistics Aggregator",
+		categories: ["investigation", "ai"],
+		description: "Aggregate study effect sizes, calculate pooling metrics, and render visual SVG Forest Plots client-side.",
+		icon: "AreaChart",
+		status: "functional",
+		requiresOllama: true,
+	},
+	{
+		id: "proposal-optimizer",
+		name: "Funding Proposal Optimizer",
+		categories: ["investigation", "ai"],
+		description: "Review proposal drafts against grant guidelines and outline gaps in compliance offline.",
+		icon: "Sparkles",
+		status: "functional",
+		requiresOllama: true,
+	},
+
 	// Additional Local AI Tools (3)
 	{
 		id: "bip39-wallet-inspector",
@@ -1938,6 +2034,11 @@ export const Dashboard = () => {
 	const [downloadProgress, setDownloadProgress] = useState(0);
 	const [downloadError, setDownloadError] = useState("");
 	const [showManageModels, setShowManageModels] = useState(false);
+	const [setupModalState, setSetupModalState] = useState<{
+		open: boolean;
+		toolName?: string;
+		categoryName?: string;
+	}>({ open: false });
 
 	const [copiedTerminalIndex, setCopiedTerminalIndex] = useState<number | null>(
 		null,
@@ -2143,12 +2244,13 @@ export const Dashboard = () => {
 
 				<div className="lg:col-span-7 flex flex-col gap-4 text-left z-10 justify-center">
 					<div className="flex flex-wrap gap-3 items-center">
+						{/* App Builders PH #1 All Time Overall Badge */}
 						<a
 							href="https://www.appbuildersph.com/apps/domodomo"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="gold-shining-border inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/badge w-fit"
-							title="Featured on App Builders PH"
+							title="#1 All Time Overall on App Builders PH"
 						>
 							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
 								<svg
@@ -2222,23 +2324,50 @@ export const Dashboard = () => {
 									AppBuilders PH
 								</span>
 								<span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
-									#1 All Time Overall & in AI Categories
+									#1 All Time Overall
 								</span>
 							</div>
 						</a>
 
-						{/* BetterGov.ph Featured Badge */}
+						{/* #1 in AI Category Badge */}
+						<div
+							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+							title="#1 Product in AI & Local LLM Category"
+						>
+							<Cpu size={15} className="text-[#3C6B4D]" />
+							<span>#1 in AI Category</span>
+						</div>
+
+						{/* #1 in Productivity Badge */}
+						<div
+							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+							title="#1 Product in Productivity Category"
+						>
+							<Trophy size={15} className="text-[#3C6B4D]" />
+							<span>#1 in Productivity</span>
+						</div>
+
+						{/* #1 in Developer Tools Badge */}
+						<div
+							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+							title="#1 Product in Developer Tools Category"
+						>
+							<Award size={15} className="text-[#3C6B4D]" />
+							<span>#1 in Developer Tools</span>
+						</div>
+
+						{/* BetterGov PH */}
 						<a
-							href="https://web.facebook.com/share/p/17HgfjZoPk/"
+							href="https://bettergov.ph"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
-							title="As Featured on BetterGov.ph"
+							title="Featured on BetterGov PH"
 						>
 							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
 								<img
 									src={betterGovLogo}
-									alt="BetterGov.ph Logo"
+									alt="BetterGov PH Logo"
 									className="w-8 h-8 object-contain rounded-md"
 								/>
 							</div>
@@ -2477,10 +2606,12 @@ export const Dashboard = () => {
 						className="flex-1 flex gap-1 overflow-x-auto pb-2 -mb-2 md:pb-0 md:mb-0 scrollbar-none scroll-smooth pr-1"
 					>
 						{CATEGORIES.map((cat) => {
-							const isAICat = cat.id === "ai";
-							const isUnavailable = isAICat && (!isLocal || !hasOllama);
+							const isRequiresOllamaCat =
+								cat.id === "ai" || cat.id === "investigation";
+							const isUnavailable =
+								isRequiresOllamaCat && (!isLocal || !hasOllama);
 							const displayName = isUnavailable
-								? "Local AI (Unavailable)"
+								? `${cat.name} (Unavailable)`
 								: cat.name;
 							return (
 								<button
@@ -2546,8 +2677,8 @@ export const Dashboard = () => {
 				</div>
 			</div>
 
-			{activeCategory === "ai" && (!isLocal || !hasOllama) ? (
-				<div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto border-[#2A2D30] bg-[#18191B]">
+			{(activeCategory === "ai" || activeCategory === "investigation") && (!isLocal || !hasOllama) && (
+				<div className="glass-card p-6 md:p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B] mb-6">
 					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
 						<div className="flex items-center gap-3">
 							<div className="p-3 bg-[#E29E2D]/10 border border-[#E29E2D]/20 text-[#E29E2D] rounded-xl">
@@ -2555,11 +2686,14 @@ export const Dashboard = () => {
 							</div>
 							<div>
 								<h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">
-									Local AI Offline Setup Required
+									{activeCategory === "investigation"
+										? "Investigative Research Suite — Local LLM Setup Required"
+										: "Local AI Offline Setup Required"}
 								</h2>
 								<p className="text-[#A3A09B] text-xs mt-1">
-									To run fully private models client-side, some configuration is
-									required.
+									{activeCategory === "investigation"
+										? "All 10 Investigative Research tools run client-side via Local Ollama models to guarantee 100% data and literature privacy."
+										: "To run fully private models client-side, some configuration is required."}
 								</p>
 							</div>
 						</div>
@@ -2575,24 +2709,20 @@ export const Dashboard = () => {
 						</div>
 					</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-						<div className="flex flex-col gap-4">
-							<h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-								<span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-1">
+						<div className="flex flex-col gap-3">
+							<h3 className="font-bold text-[#ECEBE9] text-xs flex items-center gap-2">
+								<span className="w-4 h-4 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">
 									1
 								</span>
 								<span>Host DomoDomo Locally</span>
 							</h3>
-							<p className="text-[#A3A09B] text-xs leading-relaxed">
-								Due to browser security protocols (CORS & Mixed Content),
-								websites loaded over{" "}
-								<code className="text-[#3C6B4D] font-mono">https://</code>{" "}
-								cannot communicate with your local machine's ports. DomoDomo
-								must be run locally:
+							<p className="text-[#A3A09B] text-[11px] leading-relaxed">
+								Due to browser security protocols (CORS & Mixed Content), websites loaded over <code className="text-[#3C6B4D] font-mono">https://</code> cannot talk to localhost ports. DomoDomo must be run locally:
 							</p>
-							<div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
+							<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] font-mono text-[10px] text-[#ECEBE9]">
 								<pre className="overflow-x-auto">
-									{`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+{`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
 cd DomoDomo---All-in-one-Tool
 npm install
 npm run dev`}
@@ -2600,82 +2730,56 @@ npm run dev`}
 							</div>
 						</div>
 
-						<div className="flex flex-col gap-4">
-							<h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-								<span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">
+						<div className="flex flex-col gap-3">
+							<h3 className="font-bold text-[#ECEBE9] text-xs flex items-center gap-2">
+								<span className="w-4 h-4 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">
 									2
 								</span>
 								<span>Install & Start Ollama</span>
 							</h3>
-							<p className="text-[#A3A09B] text-xs leading-relaxed">
-								Ollama runs LLMs locally on your own machine. Install Ollama and
-								run a model of your choice:
+							<p className="text-[#A3A09B] text-[11px] leading-relaxed">
+								Ollama runs LLMs locally on your own machine. Install Ollama and run a model of your choice:
 							</p>
-							<div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
+							<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] font-mono text-[10px] text-[#ECEBE9]">
 								<pre className="overflow-x-auto">
-									{`# 1. Install Ollama from ollama.com
+{`# 1. Install Ollama from ollama.com
 # 2. Run your preferred model:
-ollama run llama3`}
+ollama run llama3.2`}
 								</pre>
 							</div>
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-4 border-t border-[#2A2D30] pt-6 mt-2">
-						<h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-							<span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">
+					<div className="flex flex-col gap-3 border-t border-[#2A2D30] pt-4 mt-1">
+						<h3 className="font-bold text-[#ECEBE9] text-xs flex items-center gap-2">
+							<span className="w-4 h-4 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">
 								3
 							</span>
 							<span>Enable Browser CORS Access</span>
 						</h3>
-						<p className="text-[#A3A09B] text-xs leading-relaxed">
-							Ollama blocks browser access by default. You must configure the
-							environment variable{" "}
-							<code className="text-[#3C6B4D] font-mono">
-								OLLAMA_ORIGINS="*"
-							</code>{" "}
-							before starting the application:
+						<p className="text-[#A3A09B] text-[11px] leading-relaxed">
+							Ollama blocks browser access by default. Configure environment variable <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> before starting Ollama:
 						</p>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-							<div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
-								<span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">
-									macOS
-								</span>
-								<pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
-									{`launchctl setenv OLLAMA_ORIGINS "*"`}
-								</pre>
-								<p className="text-[9px] text-[#72706C] mt-2">
-									Restart the Ollama application afterward.
-								</p>
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+							<div className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl">
+								<span className="text-[#E29E2D] font-bold text-[10px] uppercase tracking-wider">macOS</span>
+								<pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">{`launchctl setenv OLLAMA_ORIGINS "*"`}</pre>
 							</div>
-							<div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
-								<span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">
-									Windows
-								</span>
-								<p className="text-[10px] text-[#A3A09B] mt-1 leading-relaxed">
-									Add <code className="text-[#3C6B4D]">OLLAMA_ORIGINS</code>{" "}
-									with value <code className="text-[#3C6B4D]">*</code> to System
-									Environment Variables, then restart Ollama from the tray.
-								</p>
+							<div className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl">
+								<span className="text-[#E29E2D] font-bold text-[10px] uppercase tracking-wider">Windows</span>
+								<p className="text-[10px] text-[#A3A09B] mt-1 leading-relaxed">Set System Env <code className="text-[#3C6B4D]">OLLAMA_ORIGINS</code> to <code className="text-[#3C6B4D]">*</code></p>
 							</div>
-							<div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
-								<span className="text-[#E29E2D] font-bold text-[11px] uppercase tracking-wider">
-									Linux
-								</span>
-								<pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">
-									{`systemctl edit ollama.service
-# Add:
-# [Service]
-# Environment="OLLAMA_ORIGINS=*"`}
-								</pre>
+							<div className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl">
+								<span className="text-[#E29E2D] font-bold text-[10px] uppercase tracking-wider">Linux</span>
+								<pre className="text-[10px] text-[#A3A09B] font-mono mt-1 overflow-x-auto whitespace-pre-wrap">{`Environment="OLLAMA_ORIGINS=*"`}</pre>
 							</div>
 						</div>
 					</div>
 
-					<div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4 mt-2">
-						<div className="flex items-center gap-3 self-start sm:self-center">
+					<div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3 mt-1">
+						<div className="flex items-center gap-3">
 							<div className="animate-spin text-[#3C6B4D]">
-								<Cpu size={18} />
+								<Cpu size={16} />
 							</div>
 							<div className="text-left">
 								<span className="text-xs font-bold text-[#ECEBE9] block">
@@ -2697,8 +2801,10 @@ ollama run llama3`}
 						</button>
 					</div>
 				</div>
-			) : activeCategory === "ai" && ollamaModels.length === 0 ? (
-				<div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B]">
+			)}
+
+			{activeCategory === "ai" && hasOllama && ollamaModels.length === 0 && (
+				<div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B] mb-6">
 					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
 						<div className="flex items-center gap-3">
 							<div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
@@ -2872,9 +2978,10 @@ ollama run llama3`}
 						</div>
 					</div>
 				</div>
-			) : (
-				<div className="flex flex-col gap-6 w-full text-left">
-					{activeCategory === "ai" && (
+			)}
+
+			<div className="flex flex-col gap-6 w-full text-left">
+				{activeCategory === "ai" && hasOllama && (
 						<div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
 							<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 								<div className="flex items-center gap-3">
@@ -3047,20 +3154,34 @@ ollama run llama3`}
 							.map((tool) => {
 								const isReady = tool.status === "functional";
 								const isTeased =
-									tool.requiresOllama && (!isLocal || !hasOllama);
+									(tool.requiresOllama ||
+										tool.categories.includes("investigation") ||
+										tool.categories.includes("ai")) &&
+									(!isLocal || !hasOllama);
 
 								return (
 									<div
 										key={tool.id}
-										onClick={() =>
-											isReady && !isTeased && navigate(`/tool/${tool.id}`)
-										}
+										onClick={() => {
+											if (isTeased) {
+												const primaryCat = tool.categories.includes("investigation")
+													? "Investigative Research"
+													: "Local AI";
+												setSetupModalState({
+													open: true,
+													toolName: tool.name,
+													categoryName: primaryCat,
+												});
+											} else if (isReady) {
+												navigate(`/tool/${tool.id}`);
+											}
+										}}
 										className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
 											isReady && !isTeased
 												? tool.popular
 													? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]"
 													: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50"
-												: "opacity-60 border-dashed border-[#2A2D30] select-none bg-[#111213]/40"
+												: "opacity-75 border-dashed border-[#E29E2D]/35 hover:border-[#E29E2D]/70 bg-[#111213]/60 cursor-pointer select-none"
 										} transition-all duration-200`}
 									>
 										<div className="flex flex-col gap-4">
@@ -3071,7 +3192,7 @@ ollama run llama3`}
 															? tool.popular
 																? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
 																: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform"
-															: "bg-[#111213] border-[#2A2D30] text-[#72706C]"
+															: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
 													}`}
 												>
 													<DynamicIcon name={tool.icon} size={22} />
@@ -3079,7 +3200,7 @@ ollama run llama3`}
 												{isTeased ? (
 													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
 														<Cpu size={10} />
-														Needs Local AI
+														Requires Local LLM
 													</span>
 												) : isReady ? (
 													<div className="flex items-center gap-1.5">
@@ -3103,9 +3224,11 @@ ollama run llama3`}
 											<div className="flex flex-col gap-1.5">
 												<h3
 													className={`font-bold text-lg text-[#ECEBE9] ${
-														tool.popular
-															? "group-hover:text-[#D4AF37]"
-															: "group-hover:text-[#3C6B4D]"
+														isTeased
+															? "group-hover:text-[#E29E2D]"
+															: tool.popular
+																? "group-hover:text-[#D4AF37]"
+																: "group-hover:text-[#3C6B4D]"
 													} transition-colors`}
 												>
 													{tool.name}
@@ -3140,9 +3263,9 @@ ollama run llama3`}
 												</span>
 											)}
 											{isTeased && (
-												<span className="text-[10px] font-bold text-[#E29E2D] flex items-center gap-1">
+												<span className="text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1">
 													<ShieldAlert size={12} />
-													Unlock in Dashboard
+													Setup Local AI to Unlock →
 												</span>
 											)}
 										</div>
@@ -3177,7 +3300,13 @@ ollama run llama3`}
 						</div>
 					)}
 				</div>
-			)}
+
+				<LocalAISetupModal
+					isOpen={setupModalState.open}
+					onClose={() => setSetupModalState({ open: false })}
+					toolName={setupModalState.toolName}
+					categoryName={setupModalState.categoryName}
+				/>
 		</div>
 	);
 };

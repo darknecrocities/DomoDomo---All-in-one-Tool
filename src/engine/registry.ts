@@ -263,6 +263,17 @@ import { BIP39WalletInspectorTool } from '../tools/security/BIP39WalletInspector
 import { SRTSubtitleTool } from '../tools/converter/SRTSubtitleTool';
 import { CSVSchemaDiffTool } from '../tools/data/CSVSchemaDiff';
 
+// Investigative Research Suite Imports
+import { ScientificSynthesizerTool } from '../tools/investigation/ScientificSynthesizer';
+import { ClinicalTrialEvaluatorTool } from '../tools/investigation/ClinicalTrialEvaluator';
+import { PatentClaimMapperTool } from '../tools/investigation/PatentClaimMapper';
+import { ArchiveCrossExaminerTool } from '../tools/investigation/ArchiveCrossExaminer';
+import { CitationCrossReferencerTool } from '../tools/investigation/CitationCrossReferencer';
+import { HypothesisGeneratorTool } from '../tools/investigation/HypothesisGenerator';
+import { QualitativeTextCoderTool } from '../tools/investigation/QualitativeTextCoder';
+import { MethodAdvisoryTool } from '../tools/investigation/MethodAdvisory';
+import { MetaAnalysisAggregatorTool } from '../tools/investigation/MetaAnalysisAggregator';
+import { ProposalOptimizerTool } from '../tools/investigation/ProposalOptimizer';
 
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
@@ -527,7 +538,19 @@ export const TOOLS: Tool[] = [
   // Additional Local AI Tools (3)
   { id: 'bip39-wallet-inspector', name: 'AI Cryptographic BIP-39 & Security Auditor', categories: ['security', 'ai'], description: 'Inspect BIP-39 seed mnemonics, verify HD wallet derivation paths, and audit cryptographic entropy offline with Local AI.', icon: 'KeyRound', run: async (i) => i, component: BIP39WalletInspectorTool },
   { id: 'srt-subtitle-tool', name: 'AI Subtitle Translator & Smart Re-timer', categories: ['converter', 'video', 'ai'], description: 'Edit SRT/VTT subtitle timing offsets (+/- ms), re-sync subtitle drift, and translate subtitles line-by-line preserving timestamp markup with Local AI.', icon: 'Subtitles', run: async (i) => i, component: SRTSubtitleTool },
-  { id: 'csv-schema-diff', name: 'AI CSV Schema & Data Drift Diagnostic Tool', categories: ['data', 'ai'], description: 'Compare two CSV/TSV spreadsheets column-by-column, detect structural schema shifts, and generate database migration SQL scripts with Local AI.', icon: 'FileSpreadsheet', run: async (i) => i, component: CSVSchemaDiffTool }
+  { id: 'csv-schema-diff', name: 'AI CSV Schema & Data Drift Diagnostic Tool', categories: ['data', 'ai'], description: 'Compare two CSV/TSV spreadsheets column-by-column, detect structural schema shifts, and generate database migration SQL scripts with Local AI.', icon: 'FileSpreadsheet', run: async (i) => i, component: CSVSchemaDiffTool },
+
+  // Investigative Research Suite Tools (10)
+  ScientificSynthesizerTool,
+  ClinicalTrialEvaluatorTool,
+  PatentClaimMapperTool,
+  ArchiveCrossExaminerTool,
+  CitationCrossReferencerTool,
+  HypothesisGeneratorTool,
+  QualitativeTextCoderTool,
+  MethodAdvisoryTool,
+  MetaAnalysisAggregatorTool,
+  ProposalOptimizerTool
 ];
 
 export const getToolById = (id: string): Tool | undefined => {

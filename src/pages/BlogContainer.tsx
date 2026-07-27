@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, BookOpen, ChevronRight, Search, ExternalLink, Trophy, Award, Crown, Cpu } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogData';
 import { useState } from 'react';
 import { AdSenseUnit } from '../components/AdSenseUnit';
@@ -61,7 +61,55 @@ export const BlogContainer = () => {
         </div>
 
         {/* Featured Media Highlights */}
-        <div className="lg:col-span-5 w-full z-10 flex flex-col gap-3">
+        <div className="lg:col-span-5 w-full z-10 flex flex-col gap-2.5">
+          {/* #1 All Time Overall Badge */}
+          <div
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#d4af37]/10 border border-[#d4af37]/40 text-[#d4af37] shadow-md"
+            title="#1 All Time Overall Platform"
+          >
+            <Crown size={18} className="text-[#d4af37] shrink-0" />
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-bold uppercase tracking-widest text-[#d4af37]/80">Rank Badge</span>
+              <span className="text-xs font-extrabold text-[#d4af37]">#1 All Time Overall</span>
+            </div>
+          </div>
+
+          {/* #1 in AI Category Badge */}
+          <div
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
+            title="#1 Product in AI & Local LLM Category"
+          >
+            <Cpu size={18} className="text-[#3C6B4D] shrink-0" />
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
+              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in AI Category</span>
+            </div>
+          </div>
+
+          {/* #1 in Productivity Badge */}
+          <div
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
+            title="#1 Product in Productivity Category"
+          >
+            <Trophy size={18} className="text-[#3C6B4D] shrink-0" />
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
+              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in Productivity</span>
+            </div>
+          </div>
+
+          {/* #1 in Developer Tools Badge */}
+          <div
+            className="flex items-center gap-3 p-3 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-md"
+            title="#1 Product in Developer Tools Category"
+          >
+            <Award size={18} className="text-[#3C6B4D] shrink-0" />
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80">Rank Badge</span>
+              <span className="text-xs font-extrabold text-[#ECEBE9]">#1 in Dev Tools</span>
+            </div>
+          </div>
+
           <a
             href="https://web.facebook.com/share/p/17HgfjZoPk/"
             target="_blank"
