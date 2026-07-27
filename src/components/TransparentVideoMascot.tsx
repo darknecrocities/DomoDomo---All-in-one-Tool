@@ -3,15 +3,11 @@ import { useEffect, useRef } from 'react';
 interface TransparentVideoMascotProps {
   src: string;
   className?: string;
-  width?: number;
-  height?: number;
 }
 
 export const TransparentVideoMascot = ({
   src,
-  className = '',
-  width = 240,
-  height = 240
+  className = ''
 }: TransparentVideoMascotProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -97,10 +93,18 @@ export const TransparentVideoMascot = ({
 
     const processFrame = () => {
       if (!video.paused && !video.ended && video.readyState >= 2) {
-        ctx.drawImage(video, 0, 0, width, height);
+        const vw = video.videoWidth || 640;
+        const vh = video.videoHeight || 360;
 
-        const frame = ctx.getImageData(0, 0, width, height);
-        removeConnectedBackground(frame.data, width, height);
+        if (canvas.width !== vw || canvas.height !== vh) {
+          canvas.width = vw;
+          canvas.height = vh;
+        }
+
+        ctx.drawImage(video, 0, 0, vw, vh);
+
+        const frame = ctx.getImageData(0, 0, vw, vh);
+        removeConnectedBackground(frame.data, vw, vh);
         ctx.putImageData(frame, 0, 0);
       }
       animFrameId = requestAnimationFrame(processFrame);
@@ -111,7 +115,7 @@ export const TransparentVideoMascot = ({
     return () => {
       cancelAnimationFrame(animFrameId);
     };
-  }, [src, width, height]);
+  }, [src]);
 
   return (
     <div className={`relative ${className}`}>
@@ -127,8 +131,6 @@ export const TransparentVideoMascot = ({
       />
       <canvas
         ref={canvasRef}
-        width={width}
-        height={height}
         className="w-full h-full object-contain pointer-events-none"
       />
     </div>
