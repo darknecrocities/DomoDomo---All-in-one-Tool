@@ -23,6 +23,7 @@ import { LocalAISetupModal } from "../components/LocalAISetupModal";
 import betterGovLogo from "../assets/bettergovph.jpg";
 import upamateLogo from "../assets/upamate.png";
 import stageByAntLogo from "../assets/stagebyant.png";
+import { TransparentVideoMascot } from "../components/TransparentVideoMascot";
 
 interface PlannedTool {
 	id: string;
@@ -593,6 +594,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 			"Locally detect and blur human face coordinates in video frames.",
 		icon: "Shield",
 		status: "functional",
+	},
+	{
+		id: "video-bg-remover",
+		name: "Video Background Remover",
+		categories: ["video"],
+		description:
+			"Remove green screen or custom background color from videos and replace with transparent alpha, solid colors, or custom background images.",
+		icon: "Video",
+		status: "functional",
+		popular: true,
 	},
 
 	// Audio (10)
@@ -2456,7 +2467,7 @@ export const Dashboard = () => {
 
 				{/* Right side mock status console */}
 				<div className="lg:col-span-5 w-full z-10 flex flex-col">
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative group/terminal">
 						{/* Header console bar */}
 						<div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
 							<div className="flex items-center gap-1.5">
@@ -2578,6 +2589,14 @@ export const Dashboard = () => {
 								</span>
 							</div>
 						</div>
+
+						{/* Animated Mascot Video Overlay (Chroma Keyed 100% Transparent Background) */}
+						<TransparentVideoMascot
+							src="/domo_tap.mp4"
+							className="absolute -bottom-2 -right-2 md:-bottom-3 md:-right-3 w-36 h-36 md:w-48 md:h-48 z-20 pointer-events-none group-hover/terminal:scale-105 transition-transform duration-500"
+							width={280}
+							height={280}
+						/>
 					</div>
 				</div>
 			</div>

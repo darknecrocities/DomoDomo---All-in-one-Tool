@@ -122,6 +122,7 @@ import { VideoCropTool } from '../tools/video/VideoCrop';
 import { VideoGifMakerTool } from '../tools/video/VideoGifMaker';
 import { VideoThumbnailTool } from '../tools/video/VideoThumbnail';
 import { VideoFaceBlurTool } from '../tools/video/VideoFaceBlur';
+import { VideoBgRemoverTool } from '../tools/video/VideoBgRemover';
 
 // Audio Suite Imports
 import { AudioCutterTool } from '../tools/audio/AudioCutter';
@@ -362,6 +363,7 @@ export const TOOLS: Tool[] = [
   { id: 'gif-maker', name: 'GIF Maker', categories: ['video'], description: 'Export video loops into animated GIF files.', icon: 'Image', run: async (i) => i, component: VideoGifMakerTool },
   { id: 'thumbnail-gen', name: 'Thumbnail Generator', categories: ['video'], description: 'Capture custom frames from videos as JPEG thumbnails.', icon: 'Image', run: async (i) => i, component: VideoThumbnailTool },
   { id: 'face-blur', name: 'Face Blur', categories: ['video'], description: 'Locally detect and blur human face coordinates in video frames.', icon: 'Shield', run: async (i) => i, component: VideoFaceBlurTool },
+  { id: 'video-bg-remover', name: 'Video Background Remover', categories: ['video'], description: 'Remove green screen or custom background color from videos and replace with transparent alpha, solid colors, or custom background images.', icon: 'Video', run: async (i) => i, component: VideoBgRemoverTool },
 
   // Audio Suite (10)
   { id: 'audio-cutter', name: 'Audio Cutter', categories: ['audio'], description: 'Trim start and end offsets of audio tracks.', icon: 'FileText', run: async (i) => i, component: AudioCutterTool },
