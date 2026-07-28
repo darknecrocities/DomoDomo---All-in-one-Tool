@@ -406,15 +406,26 @@ export const AIHubStudio = () => {
     }
   }, [aiSettings.fastApiEndpoint]);
 
-  useEffect(() => {
-    checkOllama();
-    checkFastApi();
-  }, [checkOllama, checkFastApi]);
+  const chatBottomRef = useRef<HTMLDivElement | null>(null);
+  const chatListRef = useRef<HTMLDivElement | null>(null);
+  const mainContainerRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Scroll Chat to Bottom
+  // Reset Scroll to Top on Tab Change & Initial Mount
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    window.scrollTo(0, 0);
+    if (mainContainerRef.current) {
+      mainContainerRef.current.scrollTop = 0;
+    }
+  }, [activeTab]);
+
+  // Scroll Chat to Bottom ONLY when streaming or sending messages in chat tab
+  useEffect(() => {
+    if (activeTab === 'chat' && chatListRef.current && isStreaming) {
+      chatListRef.current.scrollTop = chatListRef.current.scrollHeight;
+    }
+  }, [messages, isStreaming, activeTab]);
+
 
   // PII Masking Helper
   const maskPII = (text: string) => {
@@ -1373,7 +1384,7 @@ export function useOllama(modelName = '${selectedModel}') {
         </aside>
 
         {/* ── MAIN CONTENT ── */}
-        <main className="flex-1 overflow-y-auto">
+        <main ref={mainContainerRef} className="flex-1 overflow-y-auto">
 
           {/* Topbar inside content */}
           <div className="sticky top-0 z-10 bg-[#18191B]/95 backdrop-blur-sm border-b border-[#2A2D30] px-6 h-11 flex items-center justify-between">
@@ -1462,7 +1473,7 @@ export function useOllama(modelName = '${selectedModel}') {
                 </div>
 
                 {/* Chat Message List */}
-                <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+                <div ref={chatListRef} className="flex-1 overflow-y-auto space-y-4 pr-1">
                   {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-full text-center gap-4 py-16">
                       <div className="w-16 h-16 rounded-2xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 flex items-center justify-center">
