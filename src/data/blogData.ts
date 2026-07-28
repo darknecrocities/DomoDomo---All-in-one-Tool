@@ -14,16 +14,16 @@ export interface BlogPost {
 export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'ai-hub-studio-unsloth-flow-release',
-    title: 'Introducing AI Hub Studio: ChatGPT Interface, Fine-Tune QLoRA Studio & Local Flow Automations',
-    excerpt: 'DomoDomo releases AI Hub Studio, featuring local Ollama integration, ChatGPT-style chat, Fine-Tune QLoRA recipe builder with document analysis and loss curve visualization, side-by-side model benchmarks, and interactive Local AI Flow Studio automations.',
+    title: 'Introducing AI Hub Studio: n8n Flow Automation, Fine-Tune Studio & Local LLM Workspace',
+    excerpt: 'DomoDomo releases AI Hub Studio with n8n-style visual node graph automation, curved Bezier port wiring, multi-workflow management, live chat console, node execution logs JSON inspector, ChatGPT-style chat, Fine-Tune QLoRA recipe builder, and dual-model benchmarks.',
     date: 'July 28, 2026',
     readTime: '5 min read',
     category: 'Product Updates',
     author: 'Arron Parejas',
-    keywords: 'ai hub studio, fine tune studio, QLoRA recipe, local flow automation, ollama chatgpt interface, local model benchmark, domodomo',
-    content: `# Introducing AI Hub Studio: ChatGPT Interface, Fine-Tune QLoRA Studio & Local Flow Automations
+    keywords: 'n8n flow automation, ai hub studio, fine tune studio, QLoRA recipe, local flow graph, ollama chatgpt interface, local model benchmark, domodomo',
+    content: `# Introducing AI Hub Studio: n8n Flow Automation, Fine-Tune Studio & Local LLM Workspace
 
-We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local LLM workspace integrating ChatGPT-style inference, local QLoRA fine-tuning recipes, multi-format document analysis, dual-model benchmarks, and interactive Local AI Flow Studio automations!
+We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local LLM workspace integrating an **n8n-style visual graph canvas**, multi-workflow presets, curved Bezier port wiring, live chat console, node execution logs JSON inspector, ChatGPT-style inference, local QLoRA fine-tuning recipes, multi-format document analysis, and dual-model benchmarks!
 
 ---
 
@@ -33,10 +33,11 @@ We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local L
 
 ### 🌟 Key Workspaces Included:
 
-1. **💬 ChatGPT-Style Chat & Inference Workspace**:
-   - Multi-thread conversation management with model switching (\`llama3.2:1b\`, \`qwen2.5:0.5b\`, \`deepseek-r1:1.5b\`, etc.).
-   - Live token throughput indicator (tokens/sec) and latency metrics ($ms$).
-   - Customizable system prompt persona and parameter sliders (Temperature $T$, Top-P).
+1. **⚡ n8n Visual Flow Automation Canvas**:
+   - Drag-and-drop node graph canvas with pan/zoom viewport controls (+, -, reset, fit view).
+   - Multi-workflow management (create, rename, duplicate, share JSON, and switch between presets like *Battlecard bot*, *Document Knowledge RAG*, and *Fine-Tune Synthetic Generator*).
+   - Curved SVG Bezier port handle wiring connecting outputs to inputs with port type badges (*Model*, *Memory*, *Tool*, *Vector Store*, *Embedding*).
+   - Interactive split bottom console with live test Chat and step-by-step Node Execution Logs JSON payload debugger.
 
 2. **🏋️ Multi-Format Fine-Tune & Data Recipe Studio**:
    - **Document Analysis & Extraction**: Drop JSON, PDF, CSV, TXT, MD, and Docx files to extract Q&A instruction pairs.
@@ -44,15 +45,16 @@ We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local L
    - **JSONL Dataset Export**: Export Instruct-formatted JSONL datasets.
    - **QLoRA Hyperparameter Studio**: Configure LoRA rank ($r=8/16/32/64$), Alpha ($\alpha$), learning rate, epochs, and GGUF quantization target (\`q4_k_m\`, \`q8_0\`, \`f16\`).
    - **Live Loss Convergence Graph**: Interactive canvas rendering loss decay curves and step logs.
-   - **Modelfile Exporter**: One-click export for Ollama \`Modelfile\` manifests.
+   - **1-Click Model Deployment**: Load fine-tuned Modelfiles directly into local Ollama runtime.
 
 3. **🧪 Test & Evaluation Benchmarks**:
    - **Side-by-Side Dual Model Comparator**: Run prompts on two models simultaneously.
    - **Automated Performance Metrics**: Compare latency ($ms$), throughput ($t/s$), and code quality.
 
-4. **⚡ Local AI Flow Studio (Workflow Automation)**:
-   - Interactive node flowchart builder chaining triggers, system prompt injectors, local LLM inferences, output formatters, and file exports.
-   - Custom node editing, reordering, node deletion, and live step-by-step pipeline execution.
+4. **💬 ChatGPT-Style Chat & Inference Workspace**:
+   - Multi-thread conversation management with model switching (\`llama3.2:1b\`, \`qwen2.5:0.5b\`, \`deepseek-r1:1.5b\`, etc.).
+   - Live token throughput indicator (tokens/sec) and latency metrics ($ms$).
+   - Customizable system prompt persona and parameter sliders (Temperature $T$, Top-P).
 
 ---
 

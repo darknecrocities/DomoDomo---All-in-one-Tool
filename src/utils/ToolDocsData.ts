@@ -1322,12 +1322,12 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-hub-studio',
-        name: 'AI Hub Studio (Fine-Tune & Flow Automation)',
-        engine: 'Ollama REST Stream Engine & QLoRA Recipe Builder',
-        details: 'Comprehensive local AI Hub Studio featuring a ChatGPT-style chat workspace, Fine-Tune QLoRA recipe builder with synthetic dataset generation and document analysis, side-by-side model evaluation benchmarks, and interactive local AI flow automations.',
-        functionality: 'Multi-tab local AI environment: Chat & inference, dataset recipe synthesizer, QLoRA hyperparameter tuning, loss curve graph canvas, GGUF/Modelfile export, dual-model comparison, and node workflow automation.',
-        howItWorks: '1. Connects to local Ollama runtime port 11434. 2. Streams token generations in real-time. 3. Synthesizes JSONL dataset recipes and simulates LoRA weight convergence curves. 4. Executes interactive node flowchart automation pipelines locally.',
-        technicalSpecs: '100% offline-first. Requires local Ollama connection or simulation mode when running on localhost.'
+        name: 'AI Hub Studio (n8n Flow Automation & Fine-Tune Studio)',
+        engine: 'n8n Visual Flow Graph Canvas Engine, Ollama REST Stream & QLoRA Builder',
+        details: 'Comprehensive local AI Hub Studio featuring an n8n-style visual graph flowchart canvas, multi-workflow manager, curved Bezier port wiring, live chat console, node execution logs JSON payload inspector, ChatGPT-style chat workspace, Fine-Tune QLoRA recipe builder, and side-by-side model benchmarks.',
+        functionality: 'Multi-tab local AI environment: n8n visual automation board with interactive drag-and-drop nodes, pan/zoom canvas viewport, port handle wiring, real-time node payload inspector, synthetic dataset recipe builder, QLoRA hyperparameter tuning, loss curve monitor, GGUF/Modelfile export, and dual-model comparison.',
+        howItWorks: '1. Drag and position nodes on an n8n-style grid canvas with Bezier wire connections. 2. Inspect real-time step execution timing and JSON payload inputs/outputs in the split bottom console. 3. Connects to local Ollama runtime port 11434 with zero server data transfer.',
+        technicalSpecs: '100% client-side offline execution. Features interactive zoom/pan controls, LocalStorage workflow persistence, and custom JSON import/export.'
       }
     ]
   },

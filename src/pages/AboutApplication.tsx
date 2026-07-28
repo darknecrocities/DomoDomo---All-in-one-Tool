@@ -628,10 +628,10 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                   {
                     version: "v2.0.0 (Latest)",
                     date: "July 28, 2026",
-                    title: "AI Hub Studio, Fine-Tune Multi-Format Analysis & Edge-to-Edge Layout",
+                    title: "n8n Visual Flow Automation, AI Hub Expansion & Fine-Tune Studio",
                     changes: [
-                      "AI Hub Studio Release: Integrated ChatGPT-style multi-thread chat interface, local Ollama model management, dual-model side-by-side benchmark evaluator, and interactive node workflow automation pipeline.",
-                      "Fine-Tune Studio & Multi-Format Ingestion: Expanded fine-tuning capabilities to ingest .json, .csv, .pdf, .txt, .md, and .docx document files with live word & token analysis, automated Q&A instruction pair extraction, and GGUF/Modelfile exports.",
+                      "n8n Visual Flow Automation Canvas: Integrated full drag-and-drop n8n-style visual graph flowchart board with pan/zoom viewport controls, curved Bezier port handle wiring, multi-workflow management, live chat console, and real-time execution logs JSON payload inspector.",
+                      "Fine-Tune Studio & Multi-Format Ingestion: Expanded fine-tuning capabilities to ingest .json, .csv, .pdf, .txt, .md, and .docx document files with live word & token analysis, automated Q&A instruction pair extraction, synthetic dataset recipe builder, and GGUF/Modelfile exports.",
                       "1-Click Model Deployment: Integrated 1-click model registration to compile and load custom fine-tuned models directly into Ollama via /api/create for live testing in Chat.",
                       "Full-Bleed Responsive Design & Expanded API Docs: Upgraded AI Hub Studio with 100% edge-to-edge max-width responsive layout, full desktop hamburger navigation integration, and comprehensive code snippets for JavaScript, Python, cURL, React, LangChain, and LlamaIndex."
                     ]
