@@ -48,6 +48,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
+import { Logo } from '../components/Logo';
 
 interface OllamaModel {
   name: string;
@@ -1634,13 +1635,15 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
         >
           {/* Sidebar Header */}
           <div className="flex items-center justify-between px-3 py-3 border-b border-[#2A2D30]">
-            {!sidebarCollapsed && (
+            {!sidebarCollapsed ? (
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[#3C6B4D] flex items-center justify-center">
-                  <Bot size={13} className="text-white" />
-                </div>
+                <Logo size={24} showText={false} />
                 <span className="text-sm font-extrabold text-[#ECEBE9] tracking-tight">AI Hub</span>
                 <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full">BETA</span>
+              </div>
+            ) : (
+              <div className="mx-auto">
+                <Logo size={22} showText={false} />
               </div>
             )}
             <button
