@@ -299,6 +299,7 @@ export const Shell = () => {
 
             {[
               { to: '/about', label: 'About' },
+              { to: '/library-api', label: 'API Library' },
               { to: '/docs', label: 'Docs' },
               { to: '/blog', label: 'Blog' },
             ].map(({ to, label }) => (

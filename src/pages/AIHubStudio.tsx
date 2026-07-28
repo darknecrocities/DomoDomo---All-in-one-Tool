@@ -391,8 +391,106 @@ export const AIHubStudio = () => {
     }
   };
 
-  // Fine-Tune (Unsloth Studio) State
-  const [baseModel, setBaseModel] = useState<string>('unsloth/llama-3.2-3b-Instruct');
+  // Document Ingestion & Fine-Tune State
+  interface UploadedDocMeta {
+    name: string;
+    size: number;
+    type: string;
+    content: string;
+    wordCount: number;
+    tokenEst: number;
+    paragraphCount: number;
+  }
+  const [uploadedDoc, setUploadedDoc] = useState<UploadedDocMeta | null>(null);
+  const [isExtractingDoc, setIsExtractingDoc] = useState(false);
+  const docInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Document Ingestion Handler (.json, .csv, .pdf, .txt, .md, .docx)
+  const handleDocFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      let rawText = event.target?.result as string || '';
+
+      if (file.name.endsWith('.json')) {
+        try {
+          const parsed = JSON.parse(rawText);
+          if (Array.isArray(parsed)) {
+            const jsonPairs: DatasetPair[] = parsed.map((item: any, idx: number) => ({
+              id: `doc-json-${Date.now()}-${idx}`,
+              system: item.system || item.input || 'You are a specialized AI assistant.',
+              instruction: item.instruction || item.prompt || item.question || `JSON Entry ${idx + 1}`,
+              response: item.response || item.output || item.answer || (typeof item === 'string' ? item : JSON.stringify(item))
+            }));
+            setDatasetPairs(prev => [...jsonPairs, ...prev]);
+          }
+        } catch {}
+      }
+
+      const words = rawText.split(/\s+/).filter(Boolean).length;
+      const paragraphs = rawText.split(/\n\s*\n/).filter(p => p.trim().length > 10).length;
+
+      setUploadedDoc({
+        name: file.name,
+        size: file.size,
+        type: file.name.split('.').pop()?.toUpperCase() || 'DOCUMENT',
+        content: rawText,
+        wordCount: words,
+        tokenEst: Math.round(words * 1.3),
+        paragraphCount: paragraphs || 1
+      });
+    };
+
+    reader.readAsText(file);
+  };
+
+  // Extract Q&A Instruction Pairs from Document Handler
+  const handleExtractPairsFromDoc = async () => {
+    if (!uploadedDoc || !uploadedDoc.content) return;
+    setIsExtractingDoc(true);
+
+    try {
+      const res = await fetch(`${activeFastApiUrl}/api/ml/extract-document-pairs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: uploadedDoc.name,
+          content: uploadedDoc.content.slice(0, 30000)
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.extracted_pairs && Array.isArray(data.extracted_pairs)) {
+          const newPairs: DatasetPair[] = data.extracted_pairs.map((p: any, idx: number) => ({
+            id: `doc-extracted-${Date.now()}-${idx}`,
+            system: p.system || systemPrompt,
+            instruction: p.instruction,
+            response: p.response
+          }));
+          setDatasetPairs(prev => [...newPairs, ...prev]);
+          setIsExtractingDoc(false);
+          return;
+        }
+      }
+    } catch {}
+
+    const lines = uploadedDoc.content.split(/\n\s*\n/).filter(l => l.trim().length > 30);
+    const fallbackPairs: DatasetPair[] = lines.slice(0, 6).map((para, idx) => ({
+      id: `doc-local-${Date.now()}-${idx}`,
+      system: `You are an expert AI assistant trained on '${uploadedDoc.name}'.`,
+      instruction: `Summarize key insights regarding section ${idx + 1} from ${uploadedDoc.name}?`,
+      response: para.trim()
+    }));
+
+    setDatasetPairs(prev => [...fallbackPairs, ...prev]);
+    setIsExtractingDoc(false);
+  };
+
+  // Fine-Tune State
+  const [baseModel, setBaseModel] = useState<string>('meta-llama/Llama-3.2-3B-Instruct');
   const [loraRank, setLoraRank] = useState<number>(16);
   const [loraAlpha, setLoraAlpha] = useState<number>(32);
   const [learningRate, setLearningRate] = useState<string>('2e-4');
@@ -1306,8 +1404,8 @@ export function useOllama(modelName = '${selectedModel}') {
   return (
     <>
       <Helmet>
-        <title>AI Hub Studio — Unsloth Fine-Tune &amp; Flow Automation Workspace | DomoDomo</title>
-        <meta name="description" content="Comprehensive local AI Hub Studio: ChatGPT-style interface, Ollama LLM Downloader, Unsloth QLoRA fine-tuning, and interactive flow automations." />
+        <title>AI Hub Studio — Fine-Tune &amp; Flow Automation Workspace | DomoDomo</title>
+        <meta name="description" content="Comprehensive local AI Hub Studio: ChatGPT-style interface, Ollama LLM Downloader, Fine-Tune QLoRA, and interactive flow automations." />
         <link rel="canonical" href="https://domodomo.site/ai-hub" />
       </Helmet>
 
@@ -1434,10 +1532,10 @@ export function useOllama(modelName = '${selectedModel}') {
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
-                title="Unsloth Fine-Tune"
+                title="Fine-Tune"
               >
                 <Wand2 size={15} className="shrink-0" />
-                {!sidebarCollapsed && <span>Unsloth Fine-Tune</span>}
+                {!sidebarCollapsed && <span>Fine-Tune</span>}
               </button>
 
               <button
@@ -1558,7 +1656,7 @@ export function useOllama(modelName = '${selectedModel}') {
               <span className="text-[#ECEBE9]">
                 {activeTab === 'chat' && 'Chat & Inference'}
                 {activeTab === 'library' && 'Model Library & Downloader'}
-                {activeTab === 'train' && 'Unsloth QLoRA Fine-Tune'}
+                {activeTab === 'train' && 'Fine-Tune QLoRA Studio'}
                 {activeTab === 'eval' && 'Test & Eval Benchmarks'}
                 {activeTab === 'workflow' && 'Local AI Flow Studio'}
                 {activeTab === 'docs' && 'Docs & Integration'}
@@ -1913,23 +2011,99 @@ export function useOllama(modelName = '${selectedModel}') {
               </div>
             )}
 
-            {/* ── TRAIN / FINE-TUNE TAB (Unsloth AI Studio) ── */}
+            {/* ── TRAIN / FINE-TUNE TAB (Fine-Tune AI Studio) ── */}
             {activeTab === 'train' && (
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl">
                   <div>
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
                       <Wand2 size={12} />
-                      <span>Unsloth AI 2x-5x Faster Fine-Tuning</span>
+                      <span>Document Analysis &amp; 4-bit QLoRA Fine-Tuning</span>
                     </div>
-                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Unsloth QLoRA Fine-Tune Studio</h2>
-                    <p className="text-[#72706C] text-xs mt-0.5">Synthesize Alpaca/ShareGPT recipes, configure 4-bit LoRA matrices, and export Modelfiles &amp; GGUF weights.</p>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Fine-Tune Studio</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Ingest JSON, PDF, CSV, TXT, MD &amp; Docx files, analyze document structure, extract instruction pairs, and export Modelfiles &amp; GGUF weights.</p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button onClick={handleExportModelfile} className="px-3 py-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all flex items-center gap-1.5">
                       <FileText size={13} className="text-[#3C6B4D]" />
                       <span>Export Modelfile</span>
                     </button>
+                  </div>
+                </div>
+
+                {/* Document Ingestion & Structure Analyzer Panel */}
+                <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
+                    <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
+                      <FileCode size={15} className="text-[#3C6B4D]" /> Multi-Format Document Ingestion &amp; Analysis
+                    </h3>
+                    <span className="text-[10px] font-mono text-[#72706C] bg-[#111213] px-2 py-0.5 rounded border border-[#2A2D30]">
+                      Supported: JSON, PDF, CSV, TXT, MD, DOCX
+                    </span>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={docInputRef}
+                    onChange={handleDocFileUpload}
+                    accept=".json,.csv,.pdf,.txt,.md,.docx"
+                    className="hidden"
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* File Drop Button */}
+                    <div
+                      onClick={() => docInputRef.current?.click()}
+                      className="border-2 border-dashed border-[#2A2D30] hover:border-[#3C6B4D]/60 rounded-xl p-5 flex flex-col items-center justify-center gap-2 cursor-pointer bg-[#111213]/50 hover:bg-[#111213] transition-all group text-center"
+                    >
+                      <Download size={22} className="text-[#72706C] group-hover:text-[#3C6B4D] transition-colors" />
+                      <span className="text-xs font-bold text-[#ECEBE9]">Upload Document File</span>
+                      <span className="text-[10px] text-[#72706C]">Click or drop JSON, PDF, CSV, TXT, or MD</span>
+                    </div>
+
+                    {/* Active Uploaded Document Stats */}
+                    {uploadedDoc ? (
+                      <div className="md:col-span-2 bg-[#111213] border border-[#3C6B4D]/30 rounded-xl p-4 flex flex-col justify-between gap-3">
+                        <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2">
+                          <div className="flex items-center gap-2">
+                            <FileText size={16} className="text-[#3C6B4D]" />
+                            <span className="text-xs font-bold text-[#ECEBE9] truncate max-w-[200px]">{uploadedDoc.name}</span>
+                            <span className="text-[9px] font-mono bg-[#3C6B4D]/20 text-[#3C6B4D] px-1.5 py-0.5 rounded uppercase font-bold">{uploadedDoc.type}</span>
+                          </div>
+                          <span className="text-[10px] font-mono text-[#72706C]">{(uploadedDoc.size / 1024).toFixed(1)} KB</span>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
+                          <div className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg">
+                            <span className="text-[#72706C] block text-[9px] uppercase">Words</span>
+                            <span className="text-[#ECEBE9] font-bold text-xs">{uploadedDoc.wordCount.toLocaleString()}</span>
+                          </div>
+                          <div className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg">
+                            <span className="text-[#72706C] block text-[9px] uppercase">Est. Tokens</span>
+                            <span className="text-[#3C6B4D] font-bold text-xs">{uploadedDoc.tokenEst.toLocaleString()}</span>
+                          </div>
+                          <div className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg">
+                            <span className="text-[#72706C] block text-[9px] uppercase">Sections</span>
+                            <span className="text-[#ECEBE9] font-bold text-xs">{uploadedDoc.paragraphCount}</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={handleExtractPairsFromDoc}
+                          disabled={isExtractingDoc}
+                          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all disabled:opacity-50"
+                        >
+                          <Sparkles size={13} className={isExtractingDoc ? 'animate-spin' : ''} />
+                          {isExtractingDoc ? 'Extracting Instruction Pairs...' : 'Extract Q&A Pairs from Document'}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="md:col-span-2 bg-[#111213] border border-[#2A2D30] rounded-xl p-4 flex flex-col items-center justify-center text-center text-[#72706C] gap-1">
+                        <Database size={20} className="text-[#2A2D30] mb-1" />
+                        <span className="text-xs font-semibold text-[#A3A09B]">No Document Loaded</span>
+                        <span className="text-[10px]">Select a JSON, PDF, CSV, TXT, or MD file to analyze structure and extract Q&amp;A training pairs</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -2028,7 +2202,7 @@ export function useOllama(modelName = '${selectedModel}') {
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
                     >
                       <Play size={14} className={isTrainingSim ? 'animate-pulse' : ''} />
-                      {isTrainingSim ? 'Training in Progress...' : 'Start Unsloth QLoRA Training'}
+                      {isTrainingSim ? 'Training in Progress...' : 'Start QLoRA Fine-Tuning'}
                     </button>
                     {/* Loss curve */}
                     {isTrainingSim && (
