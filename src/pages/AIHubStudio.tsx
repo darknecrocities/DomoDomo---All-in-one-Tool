@@ -406,10 +406,8 @@ export const AIHubStudio = () => {
     }
   }, [aiSettings.fastApiEndpoint]);
 
-  const chatBottomRef = useRef<HTMLDivElement | null>(null);
   const chatListRef = useRef<HTMLDivElement | null>(null);
   const mainContainerRef = useRef<HTMLDivElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Reset Scroll to Top on Tab Change & Initial Mount
   useEffect(() => {
