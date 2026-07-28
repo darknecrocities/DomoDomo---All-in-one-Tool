@@ -1,20 +1,32 @@
-# 🐼 DomoDomo — All-in-One Local Toolbox
+# 🐼 DomoDomo — 100% Client-Side Agentic AI & Local-First Toolbox
 
-DomoDomo is a 100% client-side, offline-first web utility application. Built as a high-performance, private, zero-server architecture toolbox, all operations run completely inside your browser sandbox. Your data, images, PDFs, and files never leave your computer—no servers, no APIs, and no external clouds are ever touched.
+DomoDomo is an open-source, **100% client-side, offline-first Agentic AI platform and productivity workshop**. Built with a high-performance, zero-cloud architecture, all operations—including autonomous multi-agent orchestration, local model context protocol (MCP) tool execution, document processing, and media suite tools—run completely inside your browser sandbox and local environment. Your data, code, images, PDFs, and files never leave your computer—no external servers or cloud APIs are ever touched.
 
 [👥 View Contributors](CONTRIBUTORS.md) | [🛠️ Contributing Guidelines](CONTRIBUTING.md)
 
 ---
+
+## 🤖 Agentic Architecture & Zero-Leak Privacy Guarantee
+
+DomoDomo operates on a strict **zero-leak agentic mandate**. Unlike cloud-based AI tools that upload sensitive code, contracts, or private data to remote servers, DomoDomo empowers autonomous **Agentic AI Workflows** running 100% locally on your hardware.
+
+### Key Agentic Capabilities
+- **Autonomous Multi-Agent Orchestration**: Execute multi-agent chains (Sequential & Parallel persona pipelines) locally using Ollama models.
+- **Local Model Context Protocol (MCP) Server**: Provides local LLMs and agents with structured access to filesystem tools, codebase inspection, and local process controls via a local SSE server (`mcp-server/`).
+- **Local Cognitive Journaling (`domo_journal.md`)**: Background AI agents automatically write reflective cognitive journal entries documenting internal reasoning, user interaction lessons, and code insights locally.
+- **Browser-Side Vector Memory (RAG)**: Fast in-memory and IndexedDB vector embeddings (`all-MiniLM-L6-v2`) enable semantic search and document retrieval without cloud dependencies.
+
+---
+
 ## 🛠️ Codebase Architecture & Design Philosophy
 
-DomoDomo operates on a **zero-leak mandate**. Standard SaaS utilities require uploading sensitive business contracts or personal photos to remote cloud servers. DomoDomo compiles and processes all assets locally on your CPU/GPU using modern browser sandboxing.
-
 ### Component-Based Architecture
-- **`/src/engine`**: Contains the core registry (`registry.ts`) registering all 100 functional tools.
+- **`/src/engine`**: Contains the core registry (`registry.ts`) registering all 100+ functional tools.
 - **`/src/pages`**: Handles routing, the primary tool frame containers, and the main visual dashboard.
-- **`/src/tools`**: Categorized directory holding React/TypeScript components for all utility modules.
+- **`/src/tools`**: Categorized directory holding React/TypeScript components for all utility modules (AI, Video, Photo, Audio, PDF, Dev, Network, Security, Spatial 3D, and Investigation).
 - **`/src/utils`**: Core service files containing brand tokens, helpers, and singleton API layers.
 - **`/backend`**: FastAPI Python server providing local persistence, vector searches, and caching.
+- **`/mcp-server`**: Model Context Protocol (MCP) server exposing local tool execution endpoints for local AI agents.
 
 ### 🧠 Unified Memory & Cognitive Core
 DomoDomo coordinates memory and knowledge context across multiple local layers:
@@ -28,7 +40,7 @@ DomoDomo coordinates memory and knowledge context across multiple local layers:
 3. **CORS-Free SSE Stream Proxy**:
    * The Python backend proxy `/api/chat` coordinates server-sent event (SSE) streams and NDJSON packages from Ollama.
    * It caches prompt queries (5-minute TTL) and yields tokens progressively, reducing the perceived initial loading latency to under 300ms.
-4. **Adaptive Model recommendation Engine**:
+4. **Adaptive Model Recommendation Engine**:
    * Inspects the user's downloaded local models dynamically and matches system RAM and CPU core threads to recommend the best instruct-tuned model variant available.
 
 ---
@@ -45,8 +57,9 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 - **Icons**: [Lucide React](https://lucide.dev/) (Scalable, lightweight vector icons)
 - **Head Management**: [React Helmet Async](https://github.com/staylor/react-helmet-async) (SEO and dynamic meta tags)
 
-### AI, Machine Learning & Local Models
-- **Generative LLMs (Ollama Integration)**: Supports various models like `llama3.2:1b` (recommended for medium setups), `qwen2.5:0.5b` (for low specs), and `deepseek-coder` for code generation. Operations happen locally on port `11434`.
+### Agentic AI, Machine Learning & Local Models
+- **Generative LLMs & Agentic Runtimes (Ollama Integration)**: Supports various models like `llama3.2:1b` (recommended for medium setups), `qwen2.5:0.5b` (for low specs), and `deepseek-coder` for agentic code generation. Operations happen locally on port `11434`.
+- **Model Context Protocol (MCP)**: Custom MCP SSE server (`mcp-server/`) allowing local agents to interact with file contexts and developer tools securely.
 - **Text Classification & Embeddings**: Uses [Transformers.js (`@xenova/transformers`)](https://huggingface.co/docs/transformers.js) executing inside the browser via WebAssembly.
   - **Models utilized**: `all-MiniLM-L6-v2` for semantic search/embeddings and `distilbert` for text classification.
 - **Facial Recognition & Tracking**: Utilizes [MediaPipe Tasks Vision](https://developers.google.com/mediapipe) loaded dynamically via CDN.
@@ -55,7 +68,7 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 
 ### Media & Document Processing Engine
 - **Video & Audio Processing**:
-  - [FFmpeg.wasm](https://ffmpegwasm.netlify.app/): WebAssembly port of FFmpeg enabling local video cropping, trimming, subtitle hardcoding, and audio extraction.
+  - [FFmpeg.wasm](https://ffmpegwasm.netlify.app/): WebAssembly port of FFmpeg enabling local video cropping, background removal, subtitle hardcoding, and audio extraction.
   - **Web Audio API**: Native operating system audio synthesis, recording, visual frequency parsing, and speed modulation.
 - **PDF Manipulation & Security**:
   - [pdf-lib](https://pdf-lib.js.org/): Client-side parser to merge, split, watermark, compress, and modify PDF byte arrays.
@@ -63,7 +76,7 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
   - [@pdfsmaller/pdf-encrypt](https://www.npmjs.com/package/@pdfsmaller/pdf-encrypt): Local utility enabling client-side password encryption (AES) and permission restrictions on PDF exports.
 - **Image & Photo Utilities**:
   - [exifr](https://mutiny.cz/exifr/): High-performance, memory-efficient EXIF parser to read/strip metadata from photos.
-  - **Canvas API**: Extensive use of the HTML5 Canvas for collage making, image compression, format conversion (WebP/JPG/PNG), and pixel manipulations.
+  - **Canvas API**: Extensive use of the HTML5 Canvas for collage making, background removal chroma keying, image compression, format conversion (WebP/JPG/PNG), and pixel manipulations.
 
 ### Barcode & Networking Tools
 - **QR Code & Barcode**: 
@@ -73,17 +86,17 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 
 ---
 
-## 🤖 Local Ollama Integration & Domo Agent Hub
+## 🤖 Agentic Domo Hub & Local AI Suite
 
-To ensure complete privacy without external API subscription costs, DomoDomo integrates directly with local **Ollama** runtimes on `http://localhost:11434`.
+To ensure complete privacy without external API subscription costs, DomoDomo integrates directly with local **Ollama** runtimes on `http://localhost:11434` and local MCP servers.
 
 ### 🧠 Domo Agent Hub & Multi-Agent Orchestrator
-The Domo Agent Hub is a local-first custom IDE workspace that hooks directly to your local folders using browser file system handles. It is designed specifically for users who want a lightweight coding, rapid debugging, and streamlined environment without the heavy complexity and bloat of traditional setups.
+The Domo Agent Hub is a local-first agentic workspace that hooks directly to your local folders using browser file system handles and local MCP server tools. It is designed specifically for developers and creators who want an intelligent, agentic coding and debugging assistant without cloud subscription costs or telemetry.
 - **Multi-Agent Orchestrator:** Configure, name, and assign distinct LLM models to multiple specialized agent personas (e.g., Domo Architect, Domo Hacker, Domo Auditor) to work simultaneously or sequentially.
   - *Sequential Chain:* Flows agent outputs downstream as context to the next agent (optimal for low VRAM specs).
   - *Parallel Evaluation:* Processes agent responses concurrently to compare perspectives.
 - **Debounced Autosave & Auto-write:** Includes automatic saving as you edit files, and an optional auto-write compiler that automatically writes generated agent artifacts straight to your mounted directory.
-- **Live Coding simulation:** Offers a visual typing simulation of generated code that can be toggled on/off to display output instantly.
+- **Live Coding Simulation:** Offers a visual typing simulation of generated code that can be toggled on/off to display output instantly.
 - **File Extension Correction:** Dynamically maps fallback code extensions (e.g., mapping `.python` -> `.py`, `.javascript` -> `.js`, `.typescript` -> `.ts`) when parsing block responses.
 
 ### Premium Offline AI Tool Suite (20 Tools Total)
@@ -169,6 +182,8 @@ Get DomoDomo running locally in less than 2 minutes:
    npm run build
    ```
    *Compiles strict type-checking checks, bundles static client assets, generates site maps, and prerenders static snapshots for all 377 tool variations.*
+
+---
 
 ## 🐳 Docker Installation
 

@@ -38,7 +38,7 @@ jobs:
           git add public/updates.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: auto-generate public/updates.json [skip ci]"
-            git push origin main
+            git push origin HEAD:main || true
           else
             echo "No changes in updates.json to commit."
           fi
