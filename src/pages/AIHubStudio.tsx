@@ -541,6 +541,19 @@ export const AIHubStudio = () => {
     setFastApiStatus('offline');
   }, [aiSettings.fastApiEndpoint]);
 
+  // Initial check & periodic status polling
+  useEffect(() => {
+    checkOllama();
+    checkFastApi();
+
+    const interval = setInterval(() => {
+      checkOllama();
+      checkFastApi();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [checkOllama, checkFastApi]);
+
   const chatListRef = useRef<HTMLDivElement | null>(null);
   const mainContainerRef = useRef<HTMLDivElement | null>(null);
 
