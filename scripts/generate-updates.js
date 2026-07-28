@@ -12,7 +12,11 @@ try {
   // Extract last 15 commits in format: hash|date|author|subject
   const logOutput = execSync('git log -n 15 --pretty=format:"%h|%ad|%an|%s" --date=short', { encoding: 'utf-8' }).trim();
   const commits = logOutput.split('\n').filter(Boolean).map(line => {
-    const [hash, date, author, message] = line.split('|');
+    const parts = line.split('|');
+    const hash = parts[0] || '';
+    const date = parts[1] || '';
+    const author = parts[2] || '';
+    const message = parts.slice(3).join('|') || '';
     return { hash, date, author, message };
   });
 
