@@ -466,45 +466,71 @@ export const AIHubStudio = () => {
     }
   }, []);
 
-  // Check Ollama Connection & Downloaded Models
+  // Active connection endpoint url state (fallback aware)
+  const [activeOllamaUrl, setActiveOllamaUrl] = useState<string>(aiSettings.ollamaEndpoint);
+  const [activeFastApiUrl, setActiveFastApiUrl] = useState<string>(aiSettings.fastApiEndpoint);
+
+  // Check Ollama Connection & Downloaded Models across candidate endpoints
   const checkOllama = useCallback(async () => {
     setOllamaStatus('checking');
-    try {
-      const res = await fetch(`${aiSettings.ollamaEndpoint}/api/tags`, { method: 'GET' });
-      if (res.ok) {
-        const data = await res.json();
-        const fetchedModels: OllamaModel[] = data.models || [];
-        setModels(fetchedModels);
-        if (fetchedModels.length > 0) {
-          if (!fetchedModels.some(m => m.name === selectedModel)) {
-            setSelectedModel(fetchedModels[0].name);
-          }
-          if (fetchedModels.length > 1 && !fetchedModels.some(m => m.name === secondaryModel)) {
-            setSecondaryModel(fetchedModels[1].name);
-          }
-        }
-        setOllamaStatus('connected');
-      } else {
-        setOllamaStatus('offline');
-      }
-    } catch {
-      setOllamaStatus('offline');
-    }
-  }, [aiSettings.ollamaEndpoint, selectedModel, secondaryModel]);
+    const candidates = Array.from(new Set([
+      aiSettings.ollamaEndpoint,
+      'http://127.0.0.1:11434',
+      'http://localhost:11434',
+      '/ollama-proxy'
+    ]));
 
-  // Check Python FastAPI Backend Status
+    for (const endpoint of candidates) {
+      try {
+        const res = await fetch(`${endpoint}/api/tags`, { method: 'GET' });
+        if (res.ok) {
+          const data = await res.json();
+          const fetchedModels: OllamaModel[] = data.models || [];
+          setModels(fetchedModels);
+          if (fetchedModels.length > 0) {
+            setSelectedModel(prev => {
+              if (fetchedModels.some(m => m.name === prev)) return prev;
+              return fetchedModels[0].name;
+            });
+            setSecondaryModel(prev => {
+              if (fetchedModels.some(m => m.name === prev)) return prev;
+              return fetchedModels[1]?.name || fetchedModels[0].name;
+            });
+          }
+          setActiveOllamaUrl(endpoint);
+          setOllamaStatus('connected');
+          return;
+        }
+      } catch {
+        // Try next candidate endpoint
+      }
+    }
+    setOllamaStatus('offline');
+  }, [aiSettings.ollamaEndpoint]);
+
+  // Check Python FastAPI Backend Status across candidate endpoints
   const checkFastApi = useCallback(async () => {
     setFastApiStatus('checking');
-    try {
-      const res = await fetch(`${aiSettings.fastApiEndpoint}/api/ml/status`, { method: 'GET' });
-      if (res.ok) {
-        setFastApiStatus('connected');
-      } else {
-        setFastApiStatus('offline');
+    const candidates = Array.from(new Set([
+      aiSettings.fastApiEndpoint,
+      'http://127.0.0.1:8000',
+      'http://localhost:8000',
+      '/fastapi-proxy'
+    ]));
+
+    for (const endpoint of candidates) {
+      try {
+        const res = await fetch(`${endpoint}/api/ml/status`, { method: 'GET' });
+        if (res.ok) {
+          setActiveFastApiUrl(endpoint);
+          setFastApiStatus('connected');
+          return;
+        }
+      } catch {
+        // Try next candidate
       }
-    } catch {
-      setFastApiStatus('offline');
     }
+    setFastApiStatus('offline');
   }, [aiSettings.fastApiEndpoint]);
 
   const chatListRef = useRef<HTMLDivElement | null>(null);
@@ -654,7 +680,7 @@ export const AIHubStudio = () => {
 
     try {
       if (ollamaStatus === 'connected') {
-        const response = await fetch(`${aiSettings.ollamaEndpoint}/api/pull`, {
+        const response = await fetch(`${activeOllamaUrl}/api/pull`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: modelName, stream: true })
@@ -740,7 +766,7 @@ export const AIHubStudio = () => {
 
     try {
       if (ollamaStatus === 'connected') {
-        const response = await fetch(`${aiSettings.ollamaEndpoint}/api/generate`, {
+        const response = await fetch(`${activeOllamaUrl}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -842,7 +868,7 @@ export const AIHubStudio = () => {
   const handleSynthesizeDataset = async () => {
     setIsSynthesizing(true);
     try {
-      const res = await fetch(`${aiSettings.fastApiEndpoint}/api/ml/synthesize-recipe`, {
+      const res = await fetch(`${activeFastApiUrl}/api/ml/synthesize-recipe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -933,10 +959,10 @@ export const AIHubStudio = () => {
     setTrainingStep(0);
     setTotalSteps(100);
     setTrainingLoss(2.428);
-    setTrainingLogs([`🚀 Connecting to DomoDomo Python FastAPI Training Engine (${aiSettings.fastApiEndpoint})...`]);
+    setTrainingLogs([`🚀 Connecting to DomoDomo Python FastAPI Training Engine (${activeFastApiUrl})...`]);
 
     try {
-      const res = await fetch(`${aiSettings.fastApiEndpoint}/api/ml/train-qlora`, {
+      const res = await fetch(`${activeFastApiUrl}/api/ml/train-qlora`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
