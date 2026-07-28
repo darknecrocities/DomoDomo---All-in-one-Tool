@@ -165,6 +165,14 @@ interface ChatMessage {
   modelUsed?: string;
 }
 
+interface ChatSession {
+  id: string;
+  title: string;
+  model: string;
+  messages: ChatMessage[];
+  updatedAt: string;
+}
+
 interface DatasetPair {
   id: string;
   system: string;
@@ -253,22 +261,35 @@ export const AIHubStudio = () => {
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const [customPullInput, setCustomPullInput] = useState<string>('');
 
-  // Chat Tab State
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+  // Multi-session Chat State
+  const [sessions, setSessions] = useState<ChatSession[]>(() => {
     try {
-      const saved = localStorage.getItem('domodomo_aihub_chat_history');
-      return saved ? JSON.parse(saved) : [
-        {
-          id: 'welcome-1',
-          sender: 'assistant',
-          content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or download models, fine-tune recipes, and flow automations in the sidebar!",
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ];
-    } catch {
-      return [];
-    }
+      const saved = localStorage.getItem('domodomo_aihub_sessions');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [
+      {
+        id: 'default-session',
+        title: 'New Chat',
+        model: 'llama3.2:1b',
+        messages: [
+          {
+            id: 'welcome-1',
+            sender: 'assistant',
+            content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or download models, fine-tune recipes, and flow automations in the sidebar!",
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ],
+        updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ];
   });
+
+  const [activeSessionId, setActiveSessionId] = useState<string>(() => sessions[0]?.id || 'default-session');
+
+  const activeSession = sessions.find(s => s.id === activeSessionId) || sessions[0];
+  const [messages, setMessages] = useState<ChatMessage[]>(activeSession ? activeSession.messages : []);
+
   const [chatInput, setChatInput] = useState('');
   const [attachedFile, setAttachedFile] = useState<{ name: string; content: string } | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -281,14 +302,94 @@ export const AIHubStudio = () => {
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Save chat messages to LocalStorage
+  // Save sessions to LocalStorage
   useEffect(() => {
     try {
-      localStorage.setItem('domodomo_aihub_chat_history', JSON.stringify(messages));
-    } catch {
-      // Ignore
+      localStorage.setItem('domodomo_aihub_sessions', JSON.stringify(sessions));
+    } catch {}
+  }, [sessions]);
+
+  // Sync messages with active session
+  useEffect(() => {
+    setSessions(prev =>
+      prev.map(s => {
+        if (s.id === activeSessionId) {
+          const firstUserMsg = messages.find(m => m.sender === 'user');
+          const title = firstUserMsg ? (firstUserMsg.content.length > 28 ? firstUserMsg.content.slice(0, 28) + '…' : firstUserMsg.content) : s.title;
+          return { ...s, title, messages, model: selectedModel, updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+        }
+        return s;
+      })
+    );
+  }, [messages, activeSessionId, selectedModel]);
+
+  // Handle New Chat Action
+  const handleNewChat = () => {
+    const newId = `session-${Date.now()}`;
+    const newSession: ChatSession = {
+      id: newId,
+      title: 'New Conversation',
+      model: selectedModel,
+      messages: [
+        {
+          id: `welcome-${Date.now()}`,
+          sender: 'assistant',
+          content: `Hello! Started a new chat session using ${selectedModel}. Ask me anything!`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ],
+      updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setSessions(prev => [newSession, ...prev]);
+    setActiveSessionId(newId);
+    setMessages(newSession.messages);
+    setActiveTab('chat');
+    setChatInput('');
+    setAttachedFile(null);
+  };
+
+  // Handle Select Session from Recents Sidebar
+  const handleSelectSession = (sessionId: string) => {
+    const sess = sessions.find(s => s.id === sessionId);
+    if (sess) {
+      setActiveSessionId(sessionId);
+      setMessages(sess.messages);
+      if (sess.model) setSelectedModel(sess.model);
+      setActiveTab('chat');
     }
-  }, [messages]);
+  };
+
+  // Handle Delete Session
+  const handleDeleteSession = (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const filtered = sessions.filter(s => s.id !== sessionId);
+    setSessions(filtered);
+    if (activeSessionId === sessionId) {
+      if (filtered.length > 0) {
+        setActiveSessionId(filtered[0].id);
+        setMessages(filtered[0].messages);
+      } else {
+        const newId = `session-${Date.now()}`;
+        const defaultSess: ChatSession = {
+          id: newId,
+          title: 'New Conversation',
+          model: selectedModel,
+          messages: [
+            {
+              id: `welcome-${Date.now()}`,
+              sender: 'assistant',
+              content: "Hello! Started a fresh conversation. Ask me anything!",
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ],
+          updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setSessions([defaultSess]);
+        setActiveSessionId(newId);
+        setMessages(defaultSess.messages);
+      }
+    }
+  };
 
   // Fine-Tune (Unsloth Studio) State
   const [baseModel, setBaseModel] = useState<string>('unsloth/llama-3.2-3b-Instruct');
@@ -1232,15 +1333,15 @@ export function useOllama(modelName = '${selectedModel}') {
           <nav className="flex flex-col gap-0.5 p-2 pt-2">
             {/* New Chat */}
             <button
-              onClick={() => setActiveTab('chat')}
+              onClick={handleNewChat}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
                 activeTab === 'chat'
-                  ? 'bg-[#2A2D30] text-[#ECEBE9]'
+                  ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40'
                   : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
               }`}
-              title="Chat & Inference"
+              title="Start New Chat Session"
             >
-              <MessageSquare size={15} className="shrink-0" />
+              <Plus size={15} className="shrink-0" />
               {!sidebarCollapsed && <span>New Chat</span>}
             </button>
 
@@ -1320,23 +1421,41 @@ export function useOllama(modelName = '${selectedModel}') {
             </div>
           </div>
 
-          {/* Recents */}
+          {/* Recents Sessions */}
           {!sidebarCollapsed && (
             <div className="px-2 mt-3 flex-1 overflow-y-auto">
-              <p className="text-[10px] font-bold text-[#2A2D30] uppercase tracking-widest px-1 mb-1">Recents</p>
-              {messages.length === 0 ? (
-                <p className="text-[11px] text-[#2A2D30] px-1">No recent chats</p>
+              <div className="flex items-center justify-between px-1 mb-1">
+                <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest">Recents</p>
+                <button onClick={handleNewChat} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="New Chat">
+                  <Plus size={11} />
+                </button>
+              </div>
+              {sessions.length === 0 ? (
+                <p className="text-[11px] text-[#72706C] px-1">No saved sessions</p>
               ) : (
                 <div className="flex flex-col gap-0.5">
-                  {messages.filter(m => m.sender === 'user').slice(-5).map((m, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveTab('chat')}
-                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all text-left"
+                  {sessions.map((session) => (
+                    <div
+                      key={session.id}
+                      onClick={() => handleSelectSession(session.id)}
+                      className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] cursor-pointer transition-all ${
+                        activeSessionId === session.id && activeTab === 'chat'
+                          ? 'bg-[#2A2D30] text-[#ECEBE9] font-bold'
+                          : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
                     >
-                      <Clock size={11} className="shrink-0" />
-                      <span className="truncate">{m.content.slice(0, 28)}…</span>
-                    </button>
+                      <div className="flex items-center gap-2 truncate">
+                        <MessageSquare size={12} className="shrink-0 text-[#3C6B4D]" />
+                        <span className="truncate">{session.title}</span>
+                      </div>
+                      <button
+                        onClick={(e) => handleDeleteSession(session.id, e)}
+                        className="opacity-0 group-hover:opacity-100 p-0.5 text-[#72706C] hover:text-red-400 transition-opacity"
+                        title="Delete chat"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
