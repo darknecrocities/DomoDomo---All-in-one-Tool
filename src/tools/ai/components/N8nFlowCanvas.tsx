@@ -455,36 +455,96 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
     setIsSaved(false);
   }, [activeWorkflowId]);
 
-  // File Upload Reader Handler
-  const handleFileUpload = (nodeId: string, file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target?.result as string || '';
-      const lineCount = content.split('\n').length;
-      updateActiveWorkflow(w => ({
-        ...w,
-        nodes: w.nodes.map(n => n.id === nodeId ? {
-          ...n,
-          status: 'completed',
-          subtitle: `${file.name} (${(file.size / 1024).toFixed(1)} KB)`,
-          config: {
-            ...n.config,
-            fileName: file.name,
-            fileSize: file.size,
-            fileContent: content,
-            lineCount
-          },
-          lastOutput: {
-            fileName: file.name,
-            fileSize: file.size,
-            text: content,
-            lines: lineCount,
-            preview: content.slice(0, 300) + (content.length > 300 ? '...' : '')
+  // Clean Document Text Sanitizer Utility (Strips PDF binary streams & xref headers)
+  const cleanDocumentText = (text: string): string => {
+    if (!text) return '';
+    let clean = text;
+
+    if (clean.includes('%PDF-') || clean.includes('startxref') || clean.includes('xref') || clean.includes('/Root')) {
+      clean = clean
+        .replace(/%PDF-[\s\S]*?obj/gi, '')
+        .replace(/\d+\s+\d+\s+obj[\s\S]*?endobj/gi, '')
+        .replace(/xref[\s\S]*?%EOF/gi, '')
+        .replace(/startxref[\s\S]*?%EOF/gi, '')
+        .replace(/\d{10}\s+\d{5}\s+[f|n]/g, '')
+        .replace(/\/(Root|Info|Size|Prev|Catalog|Font|Type|Pages|MediaBox|Contents|Filter|FlateDecode)\b[^\n]*/gi, '');
+    }
+
+    return clean
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, ' ')
+      .replace(/\s{3,}/g, ' ')
+      .trim();
+  };
+
+  // File Upload Reader Handler with PDF.js Page-by-Page Extraction
+  const handleFileUpload = async (nodeId: string, file: File) => {
+    let extractedText = '';
+
+    if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfjsLib = (window as any).pdfjsLib || await new Promise((resolve, reject) => {
+          if ((window as any).pdfjsLib) return resolve((window as any).pdfjsLib);
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js';
+          script.onload = () => {
+            const lib = (window as any).pdfjsLib;
+            lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+            resolve(lib);
+          };
+          script.onerror = () => reject(new Error('PDF.js failed to load'));
+          document.body.appendChild(script);
+        });
+
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdfDoc = await loadingTask.promise;
+        const pageTexts: string[] = [];
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+          const page = await pdfDoc.getPage(i);
+          const tokenContent = await page.getTextContent();
+          const pageStr = tokenContent.items.map((item: any) => item.str).join(' ');
+          if (pageStr.trim()) {
+            pageTexts.push(`[Page ${i}]\n${pageStr}`);
           }
-        } : n)
-      }));
-    };
-    reader.readAsText(file);
+        }
+
+        extractedText = pageTexts.join('\n\n');
+      } catch (err) {
+        console.warn('PDF.js extraction fallback:', err);
+      }
+    }
+
+    if (!extractedText) {
+      const rawText = await file.text();
+      extractedText = cleanDocumentText(rawText);
+    }
+
+    const cleanText = cleanDocumentText(extractedText);
+    const lineCount = cleanText.split('\n').length;
+
+    updateActiveWorkflow(w => ({
+      ...w,
+      nodes: w.nodes.map(n => n.id === nodeId ? {
+        ...n,
+        status: 'completed',
+        subtitle: `${file.name} (${(file.size / 1024).toFixed(1)} KB)`,
+        config: {
+          ...n.config,
+          fileName: file.name,
+          fileSize: file.size,
+          fileContent: cleanText,
+          lineCount
+        },
+        lastOutput: {
+          fileName: file.name,
+          fileSize: file.size,
+          text: cleanText,
+          lines: lineCount,
+          preview: cleanText.slice(0, 300) + (cleanText.length > 300 ? '...' : '')
+        }
+      } : n)
+    }));
   };
 
   // Handle Bottom Panel Resizing
@@ -832,7 +892,7 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             status: 'model_ready'
           };
         } else if (node.type === 'vector_store') {
-          const rawDocText = inputPayload.in?.text || chatInput.trim() || 'n8n workflow automation features';
+          const rawDocText = cleanDocumentText(inputPayload.in?.text || chatInput.trim() || 'n8n workflow automation features');
           const collection = node.config.collection || 'doc_chunks';
           const k = node.config.topK || 5;
           inputPayload = { query: rawDocText.slice(0, 100), collection, k };
@@ -842,8 +902,8 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             k,
             matchCount: 4,
             retrievedDocuments: [
-              { id: 'chunk-1', text: rawDocText.slice(0, 200), score: 0.98 },
-              { id: 'chunk-2', text: 'n8n supports custom JS nodes and local AI models.', score: 0.95 }
+              { id: 'chunk-1', text: rawDocText.slice(0, 350), score: 0.98 },
+              { id: 'chunk-2', text: rawDocText.slice(350, 700) || 'n8n supports custom JS nodes, document RAG, and local AI models.', score: 0.95 }
             ]
           };
         } else if (node.type === 'memory') {
@@ -853,22 +913,33 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             recentTurn: chatMessages.slice(-2)
           };
         } else if (node.type === 'agent') {
-          const incomingQuery = chatInput.trim() || inputPayload.in?.query || 'Summarize the document findings.';
-          const docTextContext = inputPayload.in?.text || inputPayload.tool?.retrievedDocuments?.[0]?.text;
-          const connectedModel = inputPayload.model?.model || 'llama3.2:1b';
+          const incomingQuery = chatInput.trim() || inputPayload.in?.query || 'Summarize the document findings and key topics.';
+          const docTextContext = inputPayload.in?.text || inputPayload.tool?.retrievedDocuments?.[0]?.text || inputPayload.in?.retrievedDocuments?.[0]?.text;
+          const cleanText = cleanDocumentText(docTextContext || '');
+          const connectedModel = inputPayload.model?.model || node.config.model || localModels[0] || 'gemma2:2b';
 
-          let promptToRun = `User Query: ${incomingQuery}\n\nSystem Instruction: ${node.config.systemPrompt || 'Synthesize document insights.'}`;
-          if (docTextContext) {
-            promptToRun += `\n\nUploaded Document Context:\n${docTextContext}`;
-          }
+          let promptToRun = `You are an expert document analysis assistant. Synthesize a clean, clear, well-formatted response to the user query using ONLY the human-readable document content provided below.
+
+Rules:
+1. Provide a clean, structured answer in clear paragraphs or bullet points.
+2. Focus strictly on the main concepts, facts, and topics in the document.
+3. NEVER analyze or output raw file byte headers, xref offsets, binary codes, or technical container metadata.
+
+Document Context:
+---
+${cleanText ? cleanText.slice(0, 4000) : 'Sample document knowledge base context.'}
+---
+
+User Question: ${incomingQuery}`;
 
           let generatedText = '';
           try {
-            generatedText = await aiService.generateText(promptToRun, 250);
+            generatedText = await aiService.generateText(promptToRun, 350);
+            generatedText = cleanDocumentText(generatedText);
           } catch {
-            generatedText = docTextContext
-              ? `Document Analysis: ${docTextContext.slice(0, 300)}`
-              : `n8n provides over 400 ready-to-use integrations, 95% free features, and drag-and-drop workflow automation.`;
+            generatedText = cleanText
+              ? `### Document Overview\n\n${cleanText.slice(0, 400)}\n\n*Extracted from ${node.config.fileName || 'uploaded document'}.*`
+              : `The document discusses key concepts and topics related to the query.`;
           }
 
           finalAgentResponseText = generatedText;
