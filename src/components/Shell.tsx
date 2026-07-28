@@ -647,96 +647,97 @@ export const Shell = () => {
                 </div>
               </div>
 
-            {/* Right Link Columns */}
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
-              {/* Column 1 */}
-              <div className="flex flex-col gap-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Quicklinks</span>
-                <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
-                  <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
-                  <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
-                  <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
-                  <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Docs</Link></li>
-                  <li><Link to="/blog" className="hover:text-[#ECEBE9] transition-colors">Blog</Link></li>
-                </ul>
+              {/* Right Link Columns */}
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
+                {/* Column 1 */}
+                <div className="flex flex-col gap-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Quicklinks</span>
+                  <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
+                    <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
+                    <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
+                    <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Docs</Link></li>
+                    <li><Link to="/blog" className="hover:text-[#ECEBE9] transition-colors">Blog</Link></li>
+                  </ul>
+                </div>
+
+                {/* Column 2 */}
+                <div className="flex flex-col gap-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Resources</span>
+                  <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
+                    <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link></li>
+                    <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link></li>
+                    <li>
+                      <a
+                        href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors"
+                      >
+                        Contribute on GitHub
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Column 3 */}
+                <div className="flex flex-col gap-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">DomoDomo</span>
+                  <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
+                    <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li><Link to="/about?tab=updates" className="hover:text-[#ECEBE9] transition-colors">Updates &amp; Patches</Link></li>
+                    <li><Link to="/about?tab=docs" className="hover:text-[#ECEBE9] transition-colors">Local Docs</Link></li>
+                    <li>
+                      <a
+                        href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool/issues"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors"
+                      >
+                        Contacts
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Sub-footer / Copyright bar */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-[#2A2D30]/30 text-[10px] text-[#72706C] font-semibold">
+              <div className="flex gap-4">
+                <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link>
+                <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link>
+                <button
+                  onClick={handleClearAIData}
+                  className="hover:text-rose-450 transition-colors flex items-center gap-1"
+                  title="Purge all offline client-side storage"
+                >
+                  <Trash2 size={10} />
+                  <span>Purge AI Memory</span>
+                </button>
               </div>
 
-              {/* Column 2 */}
-              <div className="flex flex-col gap-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Resources</span>
-                <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
-                  <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link></li>
-                  <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link></li>
-                  <li>
-                    <a
-                      href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#ECEBE9] transition-colors"
-                    >
-                      Contribute on GitHub
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Column 3 */}
-              <div className="flex flex-col gap-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">DomoDomo</span>
-                <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
-                  <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
-                  <li><Link to="/about?tab=updates" className="hover:text-[#ECEBE9] transition-colors">Updates &amp; Patches</Link></li>
-                  <li><Link to="/about?tab=docs" className="hover:text-[#ECEBE9] transition-colors">Local Docs</Link></li>
-                  <li>
-                    <a
-                      href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool/issues"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#ECEBE9] transition-colors"
-                    >
-                      Contacts
-                    </a>
-                  </li>
-                </ul>
+              <div className="flex flex-wrap items-center justify-center md:justify-end gap-3.5">
+                <span>Copyright © {new Date().getFullYear()} DomoDomo. All rights reserved.</span>
+                <span className="text-[#2A2D30] hidden md:inline">•</span>
+                <span>Zero-Server Architecture</span>
+                <span className="text-[#2A2D30]">•</span>
+                <span className="font-mono">v2.0.0</span>
+                <span className="text-[#2A2D30]">•</span>
+                <a
+                  href="https://forms.gle/ahQXtFoietABJZpg8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
+                >
+                  <MessageSquare size={10} />
+                  <span>Feedback Report</span>
+                </a>
               </div>
             </div>
           </div>
-
-          {/* Sub-footer / Copyright bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-[#2A2D30]/30 text-[10px] text-[#72706C] font-semibold">
-            <div className="flex gap-4">
-              <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link>
-              <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link>
-              <button
-                onClick={handleClearAIData}
-                className="hover:text-rose-450 transition-colors flex items-center gap-1"
-                title="Purge all offline client-side storage"
-              >
-                <Trash2 size={10} />
-                <span>Purge AI Memory</span>
-              </button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3.5">
-              <span>Copyright © {new Date().getFullYear()} DomoDomo. All rights reserved.</span>
-              <span className="text-[#2A2D30] hidden md:inline">•</span>
-              <span>Zero-Server Architecture</span>
-              <span className="text-[#2A2D30]">•</span>
-              <span className="font-mono">v2.0.0</span>
-              <span className="text-[#2A2D30]">•</span>
-              <a
-                href="https://forms.gle/ahQXtFoietABJZpg8"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
-              >
-                <MessageSquare size={10} />
-                <span>Feedback Report</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };
