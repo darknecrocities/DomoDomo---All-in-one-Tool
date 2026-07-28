@@ -199,6 +199,7 @@ export const AIHubStudio = () => {
   const [systemPrompt, setSystemPrompt] = useState('You are DomoDomo AI, a helpful, private, offline-first assistant.');
   const [temperature, setTemperature] = useState<number>(0.7);
   const [topP, setTopP] = useState<number>(0.9);
+  const [maxTokens, setMaxTokens] = useState<number>(2048);
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
 
   // Fine-Tune (Unsloth Studio) State
