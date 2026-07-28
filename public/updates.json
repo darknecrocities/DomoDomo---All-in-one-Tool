@@ -1,5 +1,23 @@
 [
   {
+    "hash": "c27125e",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-studio-finetune-docs-multi-format'"
+  },
+  {
+    "hash": "5f73a51",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add n8n visual flow automation, document data ingestion, and expanded integration docs"
+  },
+  {
+    "hash": "68a0f5d",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "d32354b",
     "date": "2026-07-28",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-28",
     "author": "darknecrocities",
     "message": "fix(shell): resolve adjacent JSX elements closing tag error in Shell.tsx"
-  },
-  {
-    "hash": "07f30fb",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ui): make AI Hub Studio 100% full-bleed edge-to-edge max-w-none layout without outer margins or padding"
-  },
-  {
-    "hash": "4fe9ab8",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): restore initial mount and 4s polling interval useEffect for checkOllama & checkFastApi"
-  },
-  {
-    "hash": "febbd8c",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): prioritize /ollama-proxy and /fastapi-proxy as first candidates with AbortController timeout to instantly load local models"
   }
 ]
