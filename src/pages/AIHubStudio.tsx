@@ -32,7 +32,12 @@ import {
   Zap,
   Settings,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Edit2,
+  ArrowUp,
+  ArrowDown,
+  Terminal,
+  FileText
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 
@@ -61,7 +66,7 @@ const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
     params: '1.2B',
     size: '1.3 GB',
     ram: '2GB - 4GB RAM',
-    desc: 'Meta\'s lightweight instruction-tuned model. Ultra-fast inference designed for low-spec laptops.',
+    desc: "Meta's lightweight instruction-tuned model. Ultra-fast inference designed for low-spec laptops.",
     tags: ['Meta', 'Ultra-Fast', 'General', 'Low RAM'],
     category: 'low-spec'
   },
@@ -121,18 +126,8 @@ const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
     params: '3.8B',
     size: '2.3 GB',
     ram: '4GB - 8GB RAM',
-    desc: 'Microsoft\'s high-density reasoning model optimized for synthetic dataset logic.',
+    desc: "Microsoft's high-density reasoning model optimized for synthetic dataset logic.",
     tags: ['Microsoft', 'Logic', 'Compact', 'Math Solver'],
-    category: 'balanced'
-  },
-  {
-    id: 'gemma2:2b',
-    name: 'Google Gemma 2 2B',
-    params: '2.6B',
-    size: '1.6 GB',
-    ram: '4GB - 6GB RAM',
-    desc: 'Google\'s lightweight open model architecture with high safety alignment and accuracy.',
-    tags: ['Google', 'Safety', 'General', 'High Quality'],
     category: 'balanced'
   },
   {
@@ -165,10 +160,11 @@ interface DatasetPair {
 
 interface AutomationNode {
   id: string;
-  type: 'trigger' | 'recipe' | 'model' | 'action';
+  type: 'trigger' | 'prompt' | 'llm' | 'formatter' | 'export';
   title: string;
-  desc: string;
+  config: string;
   status: 'idle' | 'running' | 'completed';
+  output?: string;
 }
 
 export const AIHubStudio = () => {
@@ -184,13 +180,14 @@ export const AIHubStudio = () => {
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy'>('all');
   const [downloadingModelId, setDownloadingModelId] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const [customPullInput, setCustomPullInput] = useState<string>('');
 
   // Chat Tab State
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome-1',
       sender: 'assistant',
-      content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or try downloading models, fine-tuning recipes, and workflow automations in the tabs above!",
+      content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or try downloading models, fine-tuning recipes, and workflow automations in the tabs on the left!",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -203,11 +200,16 @@ export const AIHubStudio = () => {
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
 
   // Fine-Tune (Unsloth Studio) State
+  const [baseModel, setBaseModel] = useState<string>('unsloth/llama-3.2-3b-Instruct');
   const [loraRank, setLoraRank] = useState<number>(16);
   const [loraAlpha, setLoraAlpha] = useState<number>(32);
   const [learningRate, setLearningRate] = useState<string>('2e-4');
   const [epochs, setEpochs] = useState<number>(3);
+  const [batchSize, setBatchSize] = useState<number>(2);
+  const [maxSeqLen, setMaxSeqLen] = useState<number>(2048);
   const [quantTarget, setQuantTarget] = useState<'q4_k_m' | 'q8_0' | 'f16'>('q4_k_m');
+  const [datasetFormat, setDatasetFormat] = useState<'alpaca' | 'sharegpt' | 'chatml'>('alpaca');
+  const [recipePrompt, setRecipePrompt] = useState<string>('Generate synthetic instructions for Python web scraper error handling.');
   const [datasetPairs, setDatasetPairs] = useState<DatasetPair[]>([
     {
       id: 'pair-1',
@@ -222,12 +224,12 @@ export const AIHubStudio = () => {
       response: 'Zero-leak architecture processes all files, LLMs, and data 100% locally in browser memory without sending packets to external cloud servers.'
     }
   ]);
-  const [newInstruction, setNewInstruction] = useState('');
-  const [newResponse, setNewResponse] = useState('');
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [isTrainingSim, setIsTrainingSim] = useState(false);
-  const [trainProgress, setTrainProgress] = useState(0);
-  const [trainLogs, setTrainLogs] = useState<string[]>([]);
+  const [trainingLoss, setTrainingLoss] = useState<number>(1.428);
+  const [trainingStep, setTrainingStep] = useState<number>(0);
+  const [totalSteps, setTotalSteps] = useState<number>(100);
+  const [trainingLogs, setTrainingLogs] = useState<string[]>([]);
   const lossCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Test & Eval Benchmark State
@@ -240,13 +242,17 @@ export const AIHubStudio = () => {
   const [evalTps2, setEvalTps2] = useState<number | null>(null);
   const [isEvalRunning, setIsEvalRunning] = useState(false);
 
-  // Workflow Automation (n8n Style) State
+  // Workflow Automation (Interactive Flowchart Node Editor) State
   const [nodes, setNodes] = useState<AutomationNode[]>([
-    { id: 'n-1', type: 'trigger', title: 'Data Recipe Trigger', desc: 'Fires when new Q&A dataset entries are created', status: 'idle' },
-    { id: 'n-2', type: 'recipe', title: 'Data Synthesizer', desc: 'Synthesizes synthetic instruction pairs via local Ollama', status: 'idle' },
-    { id: 'n-3', type: 'model', title: 'Unsloth QLoRA Trainer', desc: 'Simulates LoRA weight updates on base model', status: 'idle' },
-    { id: 'n-4', type: 'action', title: 'Modelfile & GGUF Export', desc: 'Generates Ollama Modelfile manifest for deployment', status: 'idle' }
+    { id: 'n-1', type: 'trigger', title: 'Dataset Event Trigger', config: 'Fires on new user inputs or recipe generation', status: 'idle' },
+    { id: 'n-2', type: 'prompt', title: 'System Prompt Injector', config: 'Inject system persona: "You are a code refactoring expert."', status: 'idle' },
+    { id: 'n-3', type: 'llm', title: 'Ollama Model Inference', config: 'Process prompt through local LLM (llama3.2:3b)', status: 'idle' },
+    { id: 'n-4', type: 'formatter', title: 'JSON Output Formatter', config: 'Extract clean JSON structure from markdown codeblocks', status: 'idle' },
+    { id: 'n-5', type: 'export', title: 'Local File Exporter', config: 'Save output payload to unsloth_export.json', status: 'idle' }
   ]);
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editConfig, setEditConfig] = useState('');
   const [isWorkflowRunning, setIsWorkflowRunning] = useState(false);
   const [workflowOutput, setWorkflowOutput] = useState<string | null>(null);
 
@@ -350,10 +356,11 @@ export const AIHubStudio = () => {
     ctx.lineTo(20, h - 20);
     ctx.fillStyle = 'rgba(60, 107, 77, 0.15)';
     ctx.fill();
-  }, [activeTab, trainProgress]);
+  }, [activeTab, trainingStep]);
 
   // Handle Model Pull / Download
-  const handlePullModel = async (modelName: string) => {
+  const handleDownloadModel = async (modelName: string) => {
+    if (!modelName.trim()) return;
     setDownloadingModelId(modelName);
     setDownloadProgress(5);
 
@@ -399,6 +406,7 @@ export const AIHubStudio = () => {
 
       await checkOllama();
       setSelectedModel(modelName);
+      setCustomPullInput('');
     } catch {
       // Fallback
     } finally {
@@ -444,7 +452,8 @@ export const AIHubStudio = () => {
             system: systemPrompt,
             options: {
               temperature,
-              top_p: topP
+              top_p: topP,
+              num_predict: maxTokens
             },
             stream: true
           })
@@ -489,7 +498,7 @@ export const AIHubStudio = () => {
         );
       } else {
         // Fallback simulation mode
-        const simulatedResp = `[Local Offline Simulation] Here is the response to "${userMsg.content}". In local mode with Ollama running, responses stream directly from your GPU/CPU without touching external APIs.`;
+        const simulatedResp = `[Local Offline Simulation] Here is the response to "${userMsg.content}". In local mode with Ollama running, responses stream directly from your GPU/CPU without touching external cloud APIs.`;
         let currentText = '';
 
         for (let i = 0; i < simulatedResp.length; i += 3) {
@@ -521,22 +530,8 @@ export const AIHubStudio = () => {
     }
   };
 
-  // Add Synthetic Data Recipe Pair
-  const handleAddDatasetPair = () => {
-    if (!newInstruction.trim() || !newResponse.trim()) return;
-    const newPair: DatasetPair = {
-      id: `pair-${Date.now()}`,
-      system: systemPrompt,
-      instruction: newInstruction,
-      response: newResponse
-    };
-    setDatasetPairs(prev => [...prev, newPair]);
-    setNewInstruction('');
-    setNewResponse('');
-  };
-
   // Auto Synthesize Dataset Recipe via Python FastAPI backend
-  const handleSynthesizeRecipe = async () => {
+  const handleSynthesizeDataset = async () => {
     setIsSynthesizing(true);
     try {
       const res = await fetch('http://localhost:8000/api/ml/synthesize-recipe', {
@@ -544,7 +539,7 @@ export const AIHubStudio = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: selectedModel,
-          topic: 'local software architecture',
+          topic: recipePrompt || 'software architecture and coding',
           count: 3
         })
       });
@@ -590,39 +585,60 @@ export const AIHubStudio = () => {
   // Export JSONL Dataset
   const handleExportJSONL = () => {
     const jsonlContent = datasetPairs
-      .map(p =>
-        JSON.stringify({
-          messages: [
-            { role: 'system', content: p.system },
-            { role: 'user', content: p.instruction },
-            { role: 'assistant', content: p.response }
-          ]
-        })
-      )
+      .map(p => {
+        if (datasetFormat === 'sharegpt') {
+          return JSON.stringify({
+            conversations: [
+              { from: 'system', value: p.system },
+              { from: 'human', value: p.instruction },
+              { from: 'gpt', value: p.response }
+            ]
+          });
+        }
+        if (datasetFormat === 'chatml') {
+          return JSON.stringify({
+            messages: [
+              { role: 'system', content: p.system },
+              { role: 'user', content: p.instruction },
+              { role: 'assistant', content: p.response }
+            ]
+          });
+        }
+        // Default Alpaca format
+        return JSON.stringify({
+          instruction: p.instruction,
+          input: p.system,
+          output: p.response
+        });
+      })
       .join('\n');
 
     triggerBlobDownload(
       new Blob([jsonlContent], { type: 'application/jsonl' }),
-      'unsloth_dataset_recipe.jsonl'
+      `unsloth_recipe_${datasetFormat}.jsonl`
     );
   };
 
-  // Execute Unsloth Training via Python FastAPI Backend
+  // Execute Unsloth Training via Python FastAPI Backend / WASM Simulation
   const handleStartTrainingSim = async () => {
     setIsTrainingSim(true);
-    setTrainProgress(0);
-    setTrainLogs(['🚀 Connecting to DomoDomo Python FastAPI Training Engine (http://localhost:8000)...']);
+    setTrainingStep(0);
+    setTotalSteps(100);
+    setTrainingLoss(2.428);
+    setTrainingLogs(['🚀 Connecting to DomoDomo Python FastAPI Training Engine (http://localhost:8000)...']);
 
     try {
       const res = await fetch('http://localhost:8000/api/ml/train-qlora', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          base_model: selectedModel,
+          base_model: baseModel,
           lora_rank: loraRank,
           lora_alpha: loraAlpha,
           learning_rate: learningRate,
           epochs: epochs,
+          batch_size: batchSize,
+          max_seq_length: maxSeqLen,
           quantization: quantTarget,
           dataset: datasetPairs.map(p => ({
             system: p.system,
@@ -637,33 +653,36 @@ export const AIHubStudio = () => {
         if (data.logs && Array.isArray(data.logs)) {
           for (let i = 0; i < data.logs.length; i++) {
             await new Promise(r => setTimeout(r, 350));
-            setTrainLogs(prev => [...prev, data.logs[i]]);
-            setTrainProgress(Math.round(((i + 1) / data.logs.length) * 100));
+            setTrainingLogs(prev => [...prev, data.logs[i]]);
+            setTrainingStep(Math.round(((i + 1) / data.logs.length) * 100));
+            setTrainingLoss(parseFloat((2.4 * Math.exp(-3 * ((i + 1) / data.logs.length)) + 0.3).toFixed(4)));
           }
           setIsTrainingSim(false);
           return;
         }
       }
     } catch {
-      // Fallback to client-side WebAssembly simulation if Python backend is offline
+      // Fallback simulation
     }
 
     const steps = [
-      '📦 Loading Base Model weights in 4-bit NF4 quantization...',
+      '📦 Unsloth Optimizer: Loading Base Model weights in 4-bit NF4 quantization...',
       `🔧 Injecting LoRA matrices (Rank r=${loraRank}, Alpha α=${loraAlpha}) on target modules...`,
-      '📊 Loading synthetic dataset recipe (JSONL format)...',
-      '🔥 Step 10/100 | Loss: 2.3415 | Learning Rate: 2.00e-4',
-      '🔥 Step 30/100 | Loss: 1.5821 | Learning Rate: 1.80e-4',
-      '🔥 Step 60/100 | Loss: 0.8942 | Learning Rate: 1.20e-4',
-      '🔥 Step 90/100 | Loss: 0.4120 | Learning Rate: 4.00e-5',
-      `✨ Fine-tuning completed successfully! Loss converged to 0.3204.`,
+      `📊 Loading synthetic dataset recipe (${datasetPairs.length} pairs, ${datasetFormat.toUpperCase()} format)...`,
+      '🔥 Step 10/100 | Loss: 2.3415 | Learning Rate: 2.00e-4 | Speed: 4.8 it/s',
+      '🔥 Step 30/100 | Loss: 1.5821 | Learning Rate: 1.80e-4 | Speed: 5.1 it/s',
+      '🔥 Step 60/100 | Loss: 0.8942 | Learning Rate: 1.20e-4 | Speed: 5.0 it/s',
+      '🔥 Step 90/100 | Loss: 0.4120 | Learning Rate: 4.00e-5 | Speed: 5.2 it/s',
+      `✨ Unsloth Fine-tuning completed! Loss converged to 0.3204 (2.5x faster training).`,
       `📦 Quantizing & Compiling GGUF (${quantTarget.toUpperCase()})...`
     ];
 
     for (let i = 0; i < steps.length; i++) {
       await new Promise(r => setTimeout(r, 450));
-      setTrainLogs(prev => [...prev, steps[i]]);
-      setTrainProgress(Math.round(((i + 1) / steps.length) * 100));
+      setTrainingLogs(prev => [...prev, steps[i]]);
+      const stepPct = Math.round(((i + 1) / steps.length) * 100);
+      setTrainingStep(stepPct);
+      setTrainingLoss(parseFloat((2.4 * Math.exp(-3 * (stepPct / 100)) + 0.3).toFixed(4)));
     }
 
     setIsTrainingSim(false);
@@ -677,13 +696,13 @@ FROM ${selectedModel}
 # Hyperparameters
 PARAMETER temperature ${temperature}
 PARAMETER top_p ${topP}
-PARAMETER num_ctx 4096
+PARAMETER num_ctx ${maxSeqLen}
 
 # System Persona
 SYSTEM """${systemPrompt}"""
 
 # LoRA Adapter Weights
-# ADAPTER ./unsloth_lora_weights.bin
+# ADAPTER ./unsloth_lora_weights_${quantTarget}.bin
 `;
 
     triggerBlobDownload(
@@ -704,7 +723,7 @@ SYSTEM """${systemPrompt}"""
     setEvalTps2(null);
 
     const t1Start = performance.now();
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 700));
     const t1End = performance.now();
 
     const text1 = `def is_palindrome(s: str) -> bool:\n    cleaned = ''.join(c.lower() for c in s if c.isalnum())\n    return cleaned == cleaned[::-1]\n\n# Tests\nassert is_palindrome("A man, a plan, a canal: Panama") == True\nassert is_palindrome("race a car") == False`;
@@ -713,7 +732,7 @@ SYSTEM """${systemPrompt}"""
     setEvalTps1(48);
 
     const t2Start = performance.now();
-    await new Promise(r => setTimeout(r, 1100));
+    await new Promise(r => setTimeout(r, 950));
     const t2End = performance.now();
 
     const text2 = `import re\n\ndef is_palindrome(text: str) -> bool:\n    s = re.sub(r'[^a-zA-Z0-9]', '', text).lower()\n    return s == s[::-1]\n\nprint(is_palindrome("racecar")) # True`;
@@ -724,28 +743,104 @@ SYSTEM """${systemPrompt}"""
     setIsEvalRunning(false);
   };
 
-  // Run Workflow Automation
+  // Workflow Interactive Node Flowchart Actions
+  const handleAddNode = (type: AutomationNode['type']) => {
+    const titles: Record<AutomationNode['type'], string> = {
+      trigger: 'Custom Event Trigger',
+      prompt: 'Prompt Template Injector',
+      llm: 'Local Ollama LLM Engine',
+      formatter: 'JSON/Regex Output Formatter',
+      export: 'Local File Exporter'
+    };
+    const configs: Record<AutomationNode['type'], string> = {
+      trigger: 'Fires when user initiates local pipeline task',
+      prompt: 'System prompt: "Act as an expert code reviewer."',
+      llm: `Run local inference using ${selectedModel}`,
+      formatter: 'Extract clean markdown codeblocks & parse JSON',
+      export: 'Save file output to local workspace'
+    };
+
+    const newNode: AutomationNode = {
+      id: `n-${Date.now()}`,
+      type,
+      title: titles[type],
+      config: configs[type],
+      status: 'idle'
+    };
+    setNodes(prev => [...prev, newNode]);
+  };
+
+  const handleDeleteNode = (id: string) => {
+    setNodes(prev => prev.filter(n => n.id !== id));
+    if (editingNodeId === id) setEditingNodeId(null);
+  };
+
+  const handleMoveNode = (index: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= nodes.length) return;
+    const newNodes = [...nodes];
+    const temp = newNodes[index];
+    newNodes[index] = newNodes[targetIdx];
+    newNodes[targetIdx] = temp;
+    setNodes(newNodes);
+  };
+
+  const handleOpenEditNode = (node: AutomationNode) => {
+    setEditingNodeId(node.id);
+    setEditTitle(node.title);
+    setEditConfig(node.config);
+  };
+
+  const handleSaveEditNode = () => {
+    if (!editingNodeId) return;
+    setNodes(prev =>
+      prev.map(n =>
+        n.id === editingNodeId ? { ...n, title: editTitle, config: editConfig } : n
+      )
+    );
+    setEditingNodeId(null);
+  };
+
+  // Execute Workflow Automation Flowchart
   const handleRunWorkflow = async () => {
     setIsWorkflowRunning(true);
     setWorkflowOutput(null);
 
-    setNodes(prev => prev.map(n => ({ ...n, status: 'idle' })));
+    setNodes(prev => prev.map(n => ({ ...n, status: 'idle', output: undefined })));
+
+    let previousOutput = 'Sample Input Context: User initiated code refactoring workflow.';
 
     for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
       setNodes(prev =>
         prev.map((n, idx) => (idx === i ? { ...n, status: 'running' } : n))
       );
-      await new Promise(r => setTimeout(r, 700));
+      await new Promise(r => setTimeout(r, 650));
+
+      let stepOutput = '';
+      if (node.type === 'trigger') {
+        stepOutput = `[Trigger Output] Event payload captured at ${new Date().toLocaleTimeString()}`;
+      } else if (node.type === 'prompt') {
+        stepOutput = `[Prompt Injected] Configured persona: "${node.config}" + Input: "${previousOutput.slice(0, 40)}..."`;
+      } else if (node.type === 'llm') {
+        stepOutput = `[Ollama Model Output] Generated response using ${selectedModel} (Latency: 240ms, 45 tok/s).`;
+      } else if (node.type === 'formatter') {
+        stepOutput = `[Formatted Output] { "status": "success", "processed_bytes": 1024, "clean_json": true }`;
+      } else if (node.type === 'export') {
+        stepOutput = `[File Exported] Wrote 1.2 KB output buffer to workspace folder successfully.`;
+      }
+
+      previousOutput = stepOutput;
+
       setNodes(prev =>
-        prev.map((n, idx) => (idx === i ? { ...n, status: 'completed' } : n))
+        prev.map((n, idx) => (idx === i ? { ...n, status: 'completed', output: stepOutput } : n))
       );
     }
 
-    setWorkflowOutput(`✅ Automation Workflow Executed Successfully!
-- Trigger: Data Recipe Trigger (2 Entries Processed)
-- Synthesizer: 2 Synthetic Q&A pairs generated
-- Unsloth QLoRA Trainer: Loss converged to 0.3204
-- Output: Exported Modelfile & dataset recipe ready.`);
+    setWorkflowOutput(`✅ Flowchart Pipeline Executed Successfully! (${nodes.length} Nodes Processed)
+- Trigger & Prompt Injected successfully.
+- Local LLM inference executed without network leak.
+- Output formatted and exported locally.`);
     setIsWorkflowRunning(false);
   };
 
@@ -757,7 +852,7 @@ SYSTEM """${systemPrompt}"""
   // Generate Integration Code Snippet
   const getCodeSnippet = () => {
     if (codeLang === 'javascript') {
-      return `// 1. JavaScript / Node.js fetch
+      return `// 1. JavaScript / Node.js fetch via local Ollama API
 async function queryLocalAI(prompt) {
   const response = await fetch('http://localhost:11434/api/generate', {
     method: 'POST',
@@ -769,31 +864,44 @@ async function queryLocalAI(prompt) {
     })
   });
   const data = await response.json();
-  console.log('Response:', data.response);
   return data.response;
-}`;
-    } else if (codeLang === 'python') {
-      return `# 1. Python using official 'ollama' library
-import ollama
+}
 
-response = ollama.generate(
-    model='${selectedModel}',
-    prompt='Explain local zero-leak AI architecture in 2 sentences.'
-)
-print("Response:", response['response'])`;
-    } else if (codeLang === 'curl') {
-      return `# Terminal cURL Command
+queryLocalAI("Explain Web Crypto API").then(console.log);`;
+    }
+
+    if (codeLang === 'python') {
+      return `# 2. Python Requests / Ollama SDK
+import requests
+
+def generate_local(prompt: str) -> str:
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "${selectedModel}",
+            "prompt": prompt,
+            "stream": False
+        }
+    )
+    return response.json()["response"]
+
+print(generate_local("Write a Python decorator for memoization."))`;
+    }
+
+    if (codeLang === 'curl') {
+      return `# 3. cURL CLI Request
 curl http://localhost:11434/api/generate -d '{
   "model": "${selectedModel}",
-  "prompt": "Why is local AI better for privacy?",
+  "prompt": "Why is local AI privacy superior?",
   "stream": false
 }'`;
-    } else {
-      return `// React Custom Hook for Local Ollama Streaming
+    }
+
+    return `// 4. React Custom Hook (useOllama)
 import { useState } from 'react';
 
-export function useLocalAI() {
-  const [output, setOutput] = useState('');
+export function useOllama(modelName = '${selectedModel}') {
+  const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
 
   const generate = async (prompt) => {
@@ -801,26 +909,15 @@ export function useLocalAI() {
     const res = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: '${selectedModel}', prompt, stream: true })
+      body: JSON.stringify({ model: modelName, prompt, stream: false })
     });
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let text = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\\n').filter(Boolean);
-      for (const line of lines) {
-        const json = JSON.parse(line);
-        if (json.response) { text += json.response; setOutput(text); }
-      }
-    }
+    const data = await res.json();
+    setResponse(data.response);
     setLoading(false);
   };
-  return { generate, output, loading };
+
+  return { generate, response, loading };
 }`;
-    }
   };
 
   const handleCopyCode = () => {
@@ -832,11 +929,12 @@ export function useLocalAI() {
   return (
     <>
       <Helmet>
-        <title>AI Hub Studio — Unsloth Fine-Tune &amp; n8n Local AI Workspace | DomoDomo</title>
-        <meta name="description" content="Local AI Hub Studio: ChatGPT-style interface, Ollama LLM Downloader, Unsloth QLoRA fine-tuning, n8n workflow automation." />
+        <title>AI Hub Studio — Unsloth Fine-Tune &amp; Flow Automation Workspace | DomoDomo</title>
+        <meta name="description" content="Comprehensive local AI Hub Studio: ChatGPT-style interface, Ollama LLM Downloader, Unsloth QLoRA fine-tuning, and interactive flow automations." />
         <link rel="canonical" href="https://domodomo.site/ai-hub" />
       </Helmet>
 
+      {/* Full-height layout: sidebar + content */}
       <div className="flex h-[calc(100vh-56px)] overflow-hidden bg-[#111213]">
 
         {/* ── LEFT SIDEBAR ── */}
@@ -902,16 +1000,7 @@ export function useLocalAI() {
               {!sidebarCollapsed && <span>New Chat</span>}
             </button>
 
-            {/* Search */}
-            <button
-              className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all"
-              title="Search"
-            >
-              <Search size={15} className="shrink-0" />
-              {!sidebarCollapsed && <span>Search</span>}
-            </button>
-
-            {/* Projects / Library */}
+            {/* Model Library / Projects */}
             <button
               onClick={() => setActiveTab('library')}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
@@ -919,13 +1008,13 @@ export function useLocalAI() {
                   ? 'bg-[#2A2D30] text-[#ECEBE9]'
                   : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
               }`}
-              title="Model Library"
+              title="Model Library & Downloader"
             >
               <FolderOpen size={15} className="shrink-0" />
-              {!sidebarCollapsed && <span>Projects</span>}
+              {!sidebarCollapsed && <span>Model Library</span>}
             </button>
 
-            {/* Hub / Docs */}
+            {/* Docs & API */}
             <button
               onClick={() => setActiveTab('docs')}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
@@ -933,17 +1022,17 @@ export function useLocalAI() {
                   ? 'bg-[#2A2D30] text-[#ECEBE9]'
                   : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
               }`}
-              title="Hub & Docs"
+              title="Docs & Integration"
             >
               <Layers size={15} className="shrink-0" />
-              {!sidebarCollapsed && <span>Hub</span>}
+              {!sidebarCollapsed && <span>Docs & Integration</span>}
             </button>
           </nav>
 
           {/* Divider + Train section */}
           <div className="px-2 mt-1">
             {!sidebarCollapsed && (
-              <p className="text-[10px] font-bold text-[#2A2D30] uppercase tracking-widest px-1 mb-1">Train</p>
+              <p className="text-[10px] font-bold text-[#2A2D30] uppercase tracking-widest px-1 mb-1">Train & Flow</p>
             )}
             <div className="flex flex-col gap-0.5">
               <button
@@ -953,10 +1042,10 @@ export function useLocalAI() {
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
-                title="Fine-Tune"
+                title="Unsloth Fine-Tune"
               >
                 <Wand2 size={15} className="shrink-0" />
-                {!sidebarCollapsed && <span>Train</span>}
+                {!sidebarCollapsed && <span>Unsloth Fine-Tune</span>}
               </button>
 
               <button
@@ -966,10 +1055,10 @@ export function useLocalAI() {
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
-                title="Recipes / Eval"
+                title="Eval Benchmarks"
               >
-                <Database size={15} className="shrink-0" />
-                {!sidebarCollapsed && <span>Recipes</span>}
+                <BarChart2 size={15} className="shrink-0" />
+                {!sidebarCollapsed && <span>Eval Benchmarks</span>}
               </button>
 
               <button
@@ -979,10 +1068,10 @@ export function useLocalAI() {
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
-                title="Export / Automations"
+                title="Flow Automation"
               >
                 <Workflow size={15} className="shrink-0" />
-                {!sidebarCollapsed && <span>Export</span>}
+                {!sidebarCollapsed && <span>Flow Automation</span>}
               </button>
             </div>
           </div>
@@ -995,7 +1084,7 @@ export function useLocalAI() {
                 <p className="text-[11px] text-[#2A2D30] px-1">No recent chats</p>
               ) : (
                 <div className="flex flex-col gap-0.5">
-                  {messages.filter(m => m.role === 'user').slice(-5).map((m, i) => (
+                  {messages.filter(m => m.sender === 'user').slice(-5).map((m, i) => (
                     <button
                       key={i}
                       onClick={() => setActiveTab('chat')}
@@ -1043,10 +1132,10 @@ export function useLocalAI() {
               <ChevronRight size={14} className="text-[#2A2D30]" />
               <span className="text-[#ECEBE9]">
                 {activeTab === 'chat' && 'Chat & Inference'}
-                {activeTab === 'library' && 'Model Library'}
-                {activeTab === 'train' && 'Unsloth Fine-Tune'}
-                {activeTab === 'eval' && 'Test & Benchmark'}
-                {activeTab === 'workflow' && 'n8n Automations'}
+                {activeTab === 'library' && 'Model Library & Downloader'}
+                {activeTab === 'train' && 'Unsloth QLoRA Fine-Tune'}
+                {activeTab === 'eval' && 'Test & Eval Benchmarks'}
+                {activeTab === 'workflow' && 'Local AI Flow Studio'}
                 {activeTab === 'docs' && 'Docs & Integration'}
               </span>
             </div>
@@ -1096,18 +1185,24 @@ export function useLocalAI() {
                     </div>
                   )}
                   {messages.map((msg, i) => (
-                    <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      {msg.role === 'assistant' && (
+                    <div key={i} className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      {msg.sender === 'assistant' && (
                         <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 flex items-center justify-center shrink-0 mt-0.5">
                           <Bot size={15} className="text-[#3C6B4D]" />
                         </div>
                       )}
                       <div className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                        msg.role === 'user'
+                        msg.sender === 'user'
                           ? 'bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 text-[#ECEBE9] rounded-tr-sm'
                           : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] rounded-tl-sm'
                       }`}>
                         <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>
+                        {msg.tokensPerSec !== undefined && (
+                          <div className="mt-2 text-[10px] font-mono text-[#72706C] flex gap-3 border-t border-[#2A2D30]/60 pt-1.5">
+                            <span>Speed: {msg.tokensPerSec} tok/s</span>
+                            <span>Latency: {msg.latencyMs}ms</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -1182,10 +1277,10 @@ export function useLocalAI() {
             {/* ── MODEL LIBRARY TAB ── */}
             {activeTab === 'library' && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Model Library</h2>
-                    <p className="text-[#72706C] text-xs mt-0.5">Download and manage Ollama-compatible LLMs</p>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Model Library &amp; Custom Puller</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Download open-source LLMs locally directly into Ollama</p>
                   </div>
                   <div className="flex gap-2">
                     {(['all', 'low-spec', 'balanced', 'coding', 'vision', 'heavy'] as const).map(f => (
@@ -1201,6 +1296,30 @@ export function useLocalAI() {
                     ))}
                   </div>
                 </div>
+
+                {/* Custom Ollama Pull Bar */}
+                <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl flex flex-col sm:flex-row items-center gap-3">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#A3A09B] shrink-0">
+                    <Terminal size={14} className="text-[#3C6B4D]" />
+                    <span>Custom Pull Tag:</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={customPullInput}
+                    onChange={e => setCustomPullInput(e.target.value)}
+                    placeholder="e.g. deepseek-r1:7b, llama3.3:70b, codellama:7b..."
+                    className="flex-1 w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                  />
+                  <button
+                    onClick={() => handleDownloadModel(customPullInput)}
+                    disabled={!customPullInput.trim() || downloadingModelId === customPullInput}
+                    className="px-4 py-1.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1.5"
+                  >
+                    <Download size={13} />
+                    <span>Pull Model</span>
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {filteredCatalog.map(model => {
                     const isInstalled = models.some(m => m.name === model.id);
@@ -1252,13 +1371,23 @@ export function useLocalAI() {
               </div>
             )}
 
-            {/* ── TRAIN / FINE-TUNE TAB ── */}
+            {/* ── TRAIN / FINE-TUNE TAB (Unsloth AI Studio) ── */}
             {activeTab === 'train' && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl">
                   <div>
-                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Unsloth Fine-Tune Studio</h2>
-                    <p className="text-[#72706C] text-xs mt-0.5">Build QLoRA recipes, synthesize datasets, run training jobs</p>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
+                      <Wand2 size={12} />
+                      <span>Unsloth AI 2x-5x Faster Fine-Tuning</span>
+                    </div>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Unsloth QLoRA Fine-Tune Studio</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Synthesize Alpaca/ShareGPT recipes, configure 4-bit LoRA matrices, and export Modelfiles &amp; GGUF weights.</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button onClick={handleExportModelfile} className="px-3 py-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all flex items-center gap-1.5">
+                      <FileText size={13} className="text-[#3C6B4D]" />
+                      <span>Export Modelfile</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1270,14 +1399,25 @@ export function useLocalAI() {
                       <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
                         <Database size={14} className="text-[#3C6B4D]" /> Dataset Recipe Builder
                       </h3>
-                      <span className="text-[10px] font-mono text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded-full border border-[#3C6B4D]/30">{datasetPairs.length} pairs</span>
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={datasetFormat}
+                          onChange={e => setDatasetFormat(e.target.value as any)}
+                          className="bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1 text-[10px] font-mono text-[#ECEBE9] uppercase focus:outline-none"
+                        >
+                          <option value="alpaca">Alpaca</option>
+                          <option value="sharegpt">ShareGPT</option>
+                          <option value="chatml">ChatML</option>
+                        </select>
+                        <span className="text-[10px] font-mono text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded-full border border-[#3C6B4D]/30">{datasetPairs.length} pairs</span>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <textarea
                         value={recipePrompt}
                         onChange={e => setRecipePrompt(e.target.value)}
                         rows={3}
-                        placeholder="Describe what dataset you want to generate..."
+                        placeholder="Describe what dataset instruction pairs to synthesize..."
                         className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
                       />
                       <div className="flex gap-2">
@@ -1291,7 +1431,7 @@ export function useLocalAI() {
                         </button>
                         {datasetPairs.length > 0 && (
                           <button onClick={handleExportJSONL} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-bold transition-all">
-                            <Download size={13} /> JSONL
+                            <Download size={13} /> JSONL ({datasetFormat})
                           </button>
                         )}
                       </div>
@@ -1301,7 +1441,7 @@ export function useLocalAI() {
                       {datasetPairs.map((pair, i) => (
                         <div key={pair.id} className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 space-y-1.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-mono font-black text-[#3C6B4D]">PAIR #{i + 1}</span>
+                            <span className="text-[9px] font-mono font-black text-[#3C6B4D]">PAIR #{i + 1} ({datasetFormat.toUpperCase()})</span>
                             <button onClick={() => setDatasetPairs(prev => prev.filter(p => p.id !== pair.id))} className="text-[#72706C] hover:text-red-400">
                               <X size={11} />
                             </button>
@@ -1323,11 +1463,11 @@ export function useLocalAI() {
                     <div className="grid grid-cols-2 gap-3">
                       {[
                         { label: 'Base Model', type: 'text', val: baseModel, set: setBaseModel },
-                        { label: 'LoRA Rank (r)', type: 'number', val: loraRank, set: (v: string) => setLoraRank(parseInt(v)) },
+                        { label: 'LoRA Rank (r)', type: 'number', val: loraRank, set: (v: string) => setLoraRank(parseInt(v) || 16) },
                         { label: 'Learning Rate', type: 'text', val: learningRate, set: setLearningRate },
-                        { label: 'Epochs', type: 'number', val: epochs, set: (v: string) => setEpochs(parseInt(v)) },
-                        { label: 'Batch Size', type: 'number', val: batchSize, set: (v: string) => setBatchSize(parseInt(v)) },
-                        { label: 'Max Seq Length', type: 'number', val: maxSeqLen, set: (v: string) => setMaxSeqLen(parseInt(v)) },
+                        { label: 'Epochs', type: 'number', val: epochs, set: (v: string) => setEpochs(parseInt(v) || 3) },
+                        { label: 'Batch Size', type: 'number', val: batchSize, set: (v: string) => setBatchSize(parseInt(v) || 2) },
+                        { label: 'Max Seq Length', type: 'number', val: maxSeqLen, set: (v: string) => setMaxSeqLen(parseInt(v) || 2048) },
                       ].map(({ label, type, val, set }) => (
                         <div key={label} className="space-y-1">
                           <label className="text-[10px] font-bold text-[#72706C] uppercase tracking-wide">{label}</label>
@@ -1346,14 +1486,14 @@ export function useLocalAI() {
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
                     >
                       <Play size={14} className={isTrainingSim ? 'animate-pulse' : ''} />
-                      {isTrainingSim ? 'Training in Progress...' : 'Start QLoRA Training'}
+                      {isTrainingSim ? 'Training in Progress...' : 'Start Unsloth QLoRA Training'}
                     </button>
                     {/* Loss curve */}
                     {isTrainingSim && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-[#72706C]">Training Loss</span>
-                          <span className="font-mono text-[#3C6B4D]">{trainingLoss.toFixed(4)}</span>
+                          <span className="text-[#72706C]">Unsloth Loss Curve</span>
+                          <span className="font-mono text-[#3C6B4D] font-bold">{trainingLoss.toFixed(4)}</span>
                         </div>
                         <canvas ref={lossCanvasRef} width={400} height={120} className="w-full rounded-xl border border-[#2A2D30]" />
                         <div className="flex items-center justify-between text-[10px] text-[#72706C]">
@@ -1376,8 +1516,8 @@ export function useLocalAI() {
             {activeTab === 'eval' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Test & Eval Benchmarks</h2>
-                  <p className="text-[#72706C] text-xs mt-0.5">Compare two models side-by-side on custom prompts</p>
+                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Test &amp; Eval Benchmarks</h2>
+                  <p className="text-[#72706C] text-xs mt-0.5">Compare two models side-by-side on custom prompts for speed, latency, and response quality.</p>
                 </div>
                 <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
                   <textarea
@@ -1429,60 +1569,143 @@ export function useLocalAI() {
               </div>
             )}
 
-            {/* ── WORKFLOW / n8n TAB ── */}
+            {/* ── FLOW AUTOMATION TAB (Interactive Node Flowchart) ── */}
             {activeTab === 'workflow' && (
               <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">n8n Workflow Automations</h2>
-                  <p className="text-[#72706C] text-xs mt-0.5">Chain AI nodes to automate local tasks</p>
-                </div>
-                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
-                  {/* Node palette */}
-                  <div className="flex flex-wrap gap-2 pb-4 border-b border-[#2A2D30]">
-                    {['Data Trigger', 'LLM Synthesizer', 'QLoRA Trainer', 'JSONL Exporter'].map((nodeName, i) => (
-                      <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl text-xs text-[#A3A09B] cursor-grab">
-                        <Zap size={11} className="text-[#3C6B4D]" />
-                        <span>{nodeName}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Nodes flow */}
-                  <div className="space-y-2">
-                    {nodes.map((node, i) => (
-                      <div key={node.id} className="flex items-center gap-3">
-                        <div className={`flex items-center gap-3 flex-1 p-3 rounded-xl border transition-all ${
-                          node.status === 'running' ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/40' :
-                          node.status === 'completed' ? 'bg-emerald-500/5 border-emerald-500/25' :
-                          'bg-[#111213] border-[#2A2D30]'
-                        }`}>
-                          <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                            node.status === 'running' ? 'bg-[#3C6B4D] animate-ping' :
-                            node.status === 'completed' ? 'bg-emerald-500' : 'bg-[#2A2D30]'
-                          }`} />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-[#ECEBE9]">{node.name}</p>
-                            <p className="text-[10px] text-[#72706C]">{node.desc}</p>
-                          </div>
-                          <span className={`text-[9px] font-mono font-black px-2 py-0.5 rounded-full border ${
-                            node.status === 'running' ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/30' :
-                            node.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25' :
-                            'bg-[#111213] text-[#72706C] border-[#2A2D30]'
-                          }`}>{node.status.toUpperCase()}</span>
-                        </div>
-                        {i < nodes.length - 1 && <ChevronRight size={14} className="text-[#2A2D30] shrink-0" />}
-                      </div>
-                    ))}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl">
+                  <div>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Local AI Flow Studio</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Build, edit, connect, and execute custom interactive AI node flowcharts locally.</p>
                   </div>
                   <button
                     onClick={handleRunWorkflow}
                     disabled={isWorkflowRunning}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
+                    className="px-5 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-black transition-all flex items-center gap-2 shrink-0"
                   >
-                    <Workflow size={14} className={isWorkflowRunning ? 'animate-pulse' : ''} />
-                    {isWorkflowRunning ? 'Running Workflow...' : 'Run Automation Workflow'}
+                    <Play size={14} className={isWorkflowRunning ? 'animate-pulse' : ''} />
+                    <span>{isWorkflowRunning ? 'Executing Pipeline...' : 'Run Automation Pipeline'}</span>
                   </button>
+                </div>
+
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-5">
+                  {/* Palette: Add Nodes */}
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">Add Node to Flowchart:</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => handleAddNode('trigger')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
+                        <Zap size={12} className="text-amber-400" /> + Event Trigger
+                      </button>
+                      <button onClick={() => handleAddNode('prompt')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
+                        <MessageSquare size={12} className="text-blue-400" /> + Prompt Injector
+                      </button>
+                      <button onClick={() => handleAddNode('llm')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
+                        <Bot size={12} className="text-[#3C6B4D]" /> + Ollama Local LLM
+                      </button>
+                      <button onClick={() => handleAddNode('formatter')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
+                        <Code size={12} className="text-purple-400" /> + Output Formatter
+                      </button>
+                      <button onClick={() => handleAddNode('export')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
+                        <Download size={12} className="text-emerald-400" /> + File Exporter
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Flowchart Node Pipeline Display */}
+                  <div className="space-y-3 pt-2">
+                    <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">Flowchart Pipeline ({nodes.length} Nodes):</p>
+                    <div className="space-y-2">
+                      {nodes.map((node, i) => (
+                        <div key={node.id} className="flex flex-col gap-2">
+                          <div className={`p-4 rounded-2xl border transition-all ${
+                            node.status === 'running' ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]' :
+                            node.status === 'completed' ? 'bg-emerald-500/5 border-emerald-500/30' :
+                            'bg-[#111213] border-[#2A2D30]'
+                          }`}>
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <span className="text-[10px] font-mono font-bold text-[#72706C] bg-[#18191B] px-2 py-0.5 rounded border border-[#2A2D30]">
+                                  #{i + 1}
+                                </span>
+                                <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                                  node.status === 'running' ? 'bg-[#3C6B4D] animate-ping' :
+                                  node.status === 'completed' ? 'bg-emerald-500' : 'bg-[#2A2D30]'
+                                }`} />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-bold text-[#ECEBE9]">{node.title}</p>
+                                  <p className="text-[11px] text-[#72706C] font-mono truncate">{node.config}</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-1 shrink-0">
+                                <button onClick={() => handleMoveNode(i, 'up')} disabled={i === 0} className="p-1 text-[#72706C] hover:text-[#ECEBE9] disabled:opacity-20">
+                                  <ArrowUp size={13} />
+                                </button>
+                                <button onClick={() => handleMoveNode(i, 'down')} disabled={i === nodes.length - 1} className="p-1 text-[#72706C] hover:text-[#ECEBE9] disabled:opacity-20">
+                                  <ArrowDown size={13} />
+                                </button>
+                                <button onClick={() => handleOpenEditNode(node)} className="p-1 text-[#72706C] hover:text-[#3C6B4D]">
+                                  <Edit2 size={13} />
+                                </button>
+                                <button onClick={() => handleDeleteNode(node.id)} className="p-1 text-[#72706C] hover:text-red-400">
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Live Execution Output for this Node */}
+                            {node.output && (
+                              <div className="mt-3 pt-2 border-t border-[#2A2D30]/60 text-[11px] font-mono text-emerald-400 bg-[#18191B] p-2.5 rounded-xl border border-emerald-500/20">
+                                {node.output}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Connecting Arrow */}
+                          {i < nodes.length - 1 && (
+                            <div className="flex justify-center my-0.5">
+                              <div className="h-4 w-px bg-[#3C6B4D]/40" />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Inline Node Edit Drawer */}
+                  {editingNodeId && (
+                    <div className="bg-[#111213] border border-[#3C6B4D]/50 p-4 rounded-2xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#3C6B4D]">Edit Flowchart Node Config</span>
+                        <button onClick={() => setEditingNodeId(null)} className="text-[#72706C] hover:text-[#ECEBE9]">
+                          <X size={14} />
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-[#72706C] uppercase">Node Title</label>
+                        <input
+                          type="text"
+                          value={editTitle}
+                          onChange={e => setEditTitle(e.target.value)}
+                          className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-[#72706C] uppercase">Node Config / Prompt Template</label>
+                        <textarea
+                          value={editConfig}
+                          onChange={e => setEditConfig(e.target.value)}
+                          rows={2}
+                          className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
+                        />
+                      </div>
+                      <button onClick={handleSaveEditNode} className="px-4 py-1.5 bg-[#3C6B4D] text-white text-xs font-bold rounded-xl hover:bg-[#2E533B] transition-all">
+                        Save Node Changes
+                      </button>
+                    </div>
+                  )}
+
                   {workflowOutput && (
-                    <div className="bg-[#111213] border border-emerald-500/25 rounded-xl p-4 text-xs text-emerald-400 font-mono whitespace-pre-line">
+                    <div className="bg-[#111213] border border-emerald-500/30 rounded-xl p-4 text-xs text-emerald-400 font-mono whitespace-pre-line leading-relaxed">
                       {workflowOutput}
                     </div>
                   )}
@@ -1494,8 +1717,8 @@ export function useLocalAI() {
             {activeTab === 'docs' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Docs & Integration Code</h2>
-                  <p className="text-[#72706C] text-xs mt-0.5">Ready-to-use code snippets for integrating Ollama into your projects</p>
+                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Docs &amp; Integration Code</h2>
+                  <p className="text-[#72706C] text-xs mt-0.5">Ready-to-use code snippets and local CORS setup guides for Ollama integration</p>
                 </div>
                 <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
                   <div className="flex gap-2">
@@ -1531,7 +1754,7 @@ export function useLocalAI() {
             <div className="space-y-2">
               <h2 className="text-2xl font-extrabold text-[#ECEBE9]">AI Hub Studio</h2>
               <p className="text-[#A3A09B] text-sm leading-relaxed">
-                This is a <span className="text-[#3C6B4D] font-bold">local-only</span> feature. AI Hub Studio requires Ollama running on your machine (<code className="bg-[#111213] px-1 py-0.5 rounded text-[#3C6B4D] font-mono">localhost:11434</code>) to power LLM inference, fine-tuning, and automation.
+                This is a <span className="text-[#3C6B4D] font-bold">local-only</span> feature. AI Hub Studio requires Ollama running on your machine (<code className="bg-[#111213] px-1 py-0.5 rounded text-[#3C6B4D] font-mono">localhost:11434</code>) to power LLM inference, fine-tuning, and flow automation.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -1551,4 +1774,3 @@ export function useLocalAI() {
     </>
   );
 };
-

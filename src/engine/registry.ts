@@ -453,7 +453,7 @@ export const TOOLS: Tool[] = [
   { id: 'ai-pii-redactor', name: 'AI PII Data Redactor', categories: ['ai'], description: 'Locally redact sensitive info (names, IPs, emails) from logs and text.', icon: 'Shield', run: async (i) => i, component: AIPiiRedactorTool },
   { id: 'ai-regex-architect', name: 'AI Regex Explainer & Builder', categories: ['ai'], description: 'Explain complex regex patterns or build them from English descriptions.', icon: 'Code', run: async (i) => i, component: AIRegexArchitectTool },
   { id: 'ai-devops-architect', name: 'AI DevOps Command Architect', categories: ['ai'], description: 'Generate complex bash, Docker, and cron commands from natural language.', icon: 'Terminal', run: async (i) => i, component: AIDevOpsArchitectTool },
-  { id: 'ai-hub-studio', name: 'AI Hub Studio (Unsloth & n8n)', categories: ['ai'], description: 'Local AI workspace featuring ChatGPT-style chat, Unsloth QLoRA fine-tuning recipe builder, side-by-side benchmark evaluator, and n8n workflow automations.', icon: 'Bot', run: async (i) => i, component: AIHubStudio },
+  { id: 'ai-hub-studio', name: 'AI Hub Studio (Unsloth & Flow Automation)', categories: ['ai'], description: 'Local AI workspace featuring ChatGPT-style chat, Unsloth QLoRA fine-tuning recipe builder, side-by-side benchmark evaluator, and interactive local AI flow automations.', icon: 'Bot', run: async (i) => i, component: AIHubStudio },
 
   // Data & Visualizer Suite Tools (10)
   { id: 'json-chart-builder', name: 'JSON Chart Builder', categories: ['data'], description: 'Paste JSON data arrays, auto-detect variables, and render line, bar, pie, or radar charts using clean SVG vector designs.', icon: 'Hammer', run: async (i) => i, component: JSONChartBuilderTool },
