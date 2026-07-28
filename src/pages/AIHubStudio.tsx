@@ -18,7 +18,6 @@ import {
   Workflow,
   Plus,
   X,
-  Code,
   Copy,
   Check,
   Search,
@@ -29,9 +28,6 @@ import {
   Settings,
   PanelLeftClose,
   PanelLeftOpen,
-  Edit2,
-  ArrowUp,
-  ArrowDown,
   Terminal,
   FileText,
   ShieldCheck,
@@ -49,6 +45,7 @@ import {
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 import { Logo } from '../components/Logo';
+import { N8nFlowCanvas } from '../tools/ai/components/N8nFlowCanvas';
 
 interface OllamaModel {
   name: string;
@@ -174,15 +171,6 @@ interface DatasetPair {
   system: string;
   instruction: string;
   response: string;
-}
-
-interface AutomationNode {
-  id: string;
-  type: 'trigger' | 'prompt' | 'llm' | 'formatter' | 'export';
-  title: string;
-  config: string;
-  status: 'idle' | 'running' | 'completed';
-  output?: string;
 }
 
 export interface AISettings {
@@ -528,22 +516,8 @@ export const AIHubStudio = () => {
   const [evalTps2, setEvalTps2] = useState<number | null>(null);
   const [isEvalRunning, setIsEvalRunning] = useState(false);
 
-  // Workflow Automation (Interactive Flowchart Node Editor) State
-  const [nodes, setNodes] = useState<AutomationNode[]>([
-    { id: 'n-1', type: 'trigger', title: 'Dataset Event Trigger', config: 'Fires on new user inputs or recipe generation', status: 'idle' },
-    { id: 'n-2', type: 'prompt', title: 'System Prompt Injector', config: 'Inject system persona: "You are a code refactoring expert."', status: 'idle' },
-    { id: 'n-3', type: 'llm', title: 'Ollama Model Inference', config: 'Process prompt through local LLM (llama3.2:3b)', status: 'idle' },
-    { id: 'n-4', type: 'formatter', title: 'JSON Output Formatter', config: 'Extract clean JSON structure from markdown codeblocks', status: 'idle' },
-    { id: 'n-5', type: 'export', title: 'Local File Exporter', config: 'Save output payload to unsloth_export.json', status: 'idle' }
-  ]);
-  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editConfig, setEditConfig] = useState('');
-  const [isWorkflowRunning, setIsWorkflowRunning] = useState(false);
-  const [workflowOutput, setWorkflowOutput] = useState<string | null>(null);
-
   // Code Integration Snippet State
-  const [codeLang, setCodeLang] = useState<'javascript' | 'python' | 'curl' | 'react' | 'langchain' | 'llamaindex' | 'fine-tune'>('javascript');
+  const [codeLang, setCodeLang] = useState<'javascript' | 'python' | 'curl' | 'react' | 'langchain' | 'llamaindex' | 'fine-tune' | 'n8n-workflow' | 'mcp-protocol'>('javascript');
   const [isRegisteringModel, setIsRegisteringModel] = useState(false);
   const [registeredModelName, setRegisteredModelName] = useState('domodomo-fine-tuned:latest');
 
@@ -1275,106 +1249,7 @@ SYSTEM """${systemPrompt}"""
     setIsEvalRunning(false);
   };
 
-  // Workflow Interactive Node Flowchart Actions
-  const handleAddNode = (type: AutomationNode['type']) => {
-    const titles: Record<AutomationNode['type'], string> = {
-      trigger: 'Custom Event Trigger',
-      prompt: 'Prompt Template Injector',
-      llm: 'Local Ollama LLM Engine',
-      formatter: 'JSON/Regex Output Formatter',
-      export: 'Local File Exporter'
-    };
-    const configs: Record<AutomationNode['type'], string> = {
-      trigger: 'Fires when user initiates local pipeline task',
-      prompt: 'System prompt: "Act as an expert code reviewer."',
-      llm: `Run local inference using ${selectedModel}`,
-      formatter: 'Extract clean markdown codeblocks & parse JSON',
-      export: 'Save file output to local workspace'
-    };
 
-    const newNode: AutomationNode = {
-      id: `n-${Date.now()}`,
-      type,
-      title: titles[type],
-      config: configs[type],
-      status: 'idle'
-    };
-    setNodes(prev => [...prev, newNode]);
-  };
-
-  const handleDeleteNode = (id: string) => {
-    setNodes(prev => prev.filter(n => n.id !== id));
-    if (editingNodeId === id) setEditingNodeId(null);
-  };
-
-  const handleMoveNode = (index: number, direction: 'up' | 'down') => {
-    const targetIdx = direction === 'up' ? index - 1 : index + 1;
-    if (targetIdx < 0 || targetIdx >= nodes.length) return;
-    const newNodes = [...nodes];
-    const temp = newNodes[index];
-    newNodes[index] = newNodes[targetIdx];
-    newNodes[targetIdx] = temp;
-    setNodes(newNodes);
-  };
-
-  const handleOpenEditNode = (node: AutomationNode) => {
-    setEditingNodeId(node.id);
-    setEditTitle(node.title);
-    setEditConfig(node.config);
-  };
-
-  const handleSaveEditNode = () => {
-    if (!editingNodeId) return;
-    setNodes(prev =>
-      prev.map(n =>
-        n.id === editingNodeId ? { ...n, title: editTitle, config: editConfig } : n
-      )
-    );
-    setEditingNodeId(null);
-  };
-
-  // Execute Workflow Automation Flowchart
-  const handleRunWorkflow = async () => {
-    setIsWorkflowRunning(true);
-    setWorkflowOutput(null);
-
-    setNodes(prev => prev.map(n => ({ ...n, status: 'idle', output: undefined })));
-
-    let previousOutput = 'Sample Input Context: User initiated code refactoring workflow.';
-
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      setNodes(prev =>
-        prev.map((n, idx) => (idx === i ? { ...n, status: 'running' } : n))
-      );
-      await new Promise(r => setTimeout(r, 650));
-
-      let stepOutput = '';
-      if (node.type === 'trigger') {
-        stepOutput = `[Trigger Output] Event payload captured at ${new Date().toLocaleTimeString()}`;
-      } else if (node.type === 'prompt') {
-        stepOutput = `[Prompt Injected] Configured persona: "${node.config}" + Input: "${previousOutput.slice(0, 40)}..."`;
-      } else if (node.type === 'llm') {
-        stepOutput = `[Ollama Model Output] Generated response using ${selectedModel} (Latency: 240ms, 45 tok/s).`;
-      } else if (node.type === 'formatter') {
-        stepOutput = `[Formatted Output] { "status": "success", "processed_bytes": 1024, "clean_json": true }`;
-      } else if (node.type === 'export') {
-        stepOutput = `[File Exported] Wrote 1.2 KB output buffer to workspace folder successfully.`;
-      }
-
-      previousOutput = stepOutput;
-
-      setNodes(prev =>
-        prev.map((n, idx) => (idx === i ? { ...n, status: 'completed', output: stepOutput } : n))
-      );
-    }
-
-    setWorkflowOutput(`✅ Flowchart Pipeline Executed Successfully! (${nodes.length} Nodes Processed)
-- Trigger & Prompt Injected successfully.
-- Local LLM inference executed without network leak.
-- Output formatted and exported locally.`);
-    setIsWorkflowRunning(false);
-  };
 
   // Filter Model Catalog
   const filteredCatalog = COMPATIBLE_MODEL_CATALOG.filter(m => {
@@ -1585,8 +1460,63 @@ response = query_engine.query("What are the key findings in our document?")
 print(response)`;
     }
 
+    if (codeLang === 'n8n-workflow') {
+      return `// 7. n8n Visual Workflow Programmatic Export & Runner
+// Load or execute DomoDomo n8n JSON workflow schema in Node.js / Browser
+
+const sampleWorkflowJson = {
+  "id": "battlecard-bot",
+  "name": "Battlecard bot",
+  "nodes": [
+    { "id": "trigger-1", "type": "trigger", "title": "When chat message received", "x": 100, "y": 280 },
+    { "id": "agent-1", "type": "agent", "title": "AI Agent (Tools Agent)", "x": 480, "y": 260 },
+    { "id": "vector-1", "type": "vector_store", "title": "Qdrant Vector Store1", "x": 640, "y": 460 }
+  ],
+  "connections": [
+    { "fromNodeId": "trigger-1", "toNodeId": "agent-1", "label": "1 item" },
+    { "fromNodeId": "vector-1", "toNodeId": "agent-1", "label": "Vector Store" }
+  ]
+};
+
+async function executeN8nWorkflow(workflow) {
+  console.log(\`Executing \${workflow.name} (\${workflow.nodes.length} nodes)...\`);
+  for (const node of workflow.nodes) {
+    console.log(\`[NODE \${node.id}] Processing \${node.title}...\`);
+  }
+  return { status: "success", executedAt: new Date().toISOString() };
+}
+
+executeN8nWorkflow(sampleWorkflowJson).then(console.log);`;
+    }
+
+    if (codeLang === 'mcp-protocol') {
+      return `// 8. Model Context Protocol (MCP) Integration (TypeScript)
+// Connect local AI Agent to DomoDomo MCP Server over stdio/SSE
+
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+async function runMcpClient() {
+  const transport = new StdioClientTransport({
+    command: "node",
+    args: ["./mcp-server/index.js"]
+  });
+
+  const client = new Client({
+    name: "DomoDomo-Local-Agent",
+    version: "2.0.0"
+  }, { capabilities: {} });
+
+  await client.connect(transport);
+  const tools = await client.listTools();
+  console.log("Connected MCP Server Tools:", tools);
+}
+
+runMcpClient();`;
+    }
+
     // Default 'fine-tune' model deployment guide
-    return `# 7. 🏋️ Local Fine-Tuned Model Deployment & Integration Guide
+    return `# 9. 🏋️ Local Fine-Tuned Model Deployment & Integration Guide
 
 ### Step 1: Export Modelfile & Weights from DomoDomo AI Hub
 1. Open DomoDomo AI Hub > Fine-Tune tab.
@@ -2532,160 +2462,28 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               </div>
             )}
 
-            {/* ── FLOW AUTOMATION TAB (Interactive Node Flowchart) ── */}
+            {/* ── FLOW AUTOMATION TAB (n8n-style Interactive Node Graph Board) ── */}
             {activeTab === 'workflow' && (
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl">
-                  <div>
-                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Local AI Flow Studio</h2>
-                    <p className="text-[#72706C] text-xs mt-0.5">Build, edit, connect, and execute custom interactive AI node flowcharts locally.</p>
-                  </div>
-                  <button
-                    onClick={handleRunWorkflow}
-                    disabled={isWorkflowRunning}
-                    className="px-5 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-black transition-all flex items-center gap-2 shrink-0"
-                  >
-                    <Play size={14} className={isWorkflowRunning ? 'animate-pulse' : ''} />
-                    <span>{isWorkflowRunning ? 'Executing Pipeline...' : 'Run Automation Pipeline'}</span>
-                  </button>
-                </div>
-
-                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-5">
-                  {/* Palette: Add Nodes */}
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">Add Node to Flowchart:</p>
-                    <div className="flex flex-wrap gap-2">
-                      <button onClick={() => handleAddNode('trigger')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
-                        <Zap size={12} className="text-amber-400" /> + Event Trigger
-                      </button>
-                      <button onClick={() => handleAddNode('prompt')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
-                        <MessageSquare size={12} className="text-blue-400" /> + Prompt Injector
-                      </button>
-                      <button onClick={() => handleAddNode('llm')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
-                        <Bot size={12} className="text-[#3C6B4D]" /> + Ollama Local LLM
-                      </button>
-                      <button onClick={() => handleAddNode('formatter')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
-                        <Code size={12} className="text-purple-400" /> + Output Formatter
-                      </button>
-                      <button onClick={() => handleAddNode('export')} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 rounded-xl text-xs text-[#ECEBE9] transition-all">
-                        <Download size={12} className="text-emerald-400" /> + File Exporter
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Flowchart Node Pipeline Display */}
-                  <div className="space-y-3 pt-2">
-                    <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">Flowchart Pipeline ({nodes.length} Nodes):</p>
-                    <div className="space-y-2">
-                      {nodes.map((node, i) => (
-                        <div key={node.id} className="flex flex-col gap-2">
-                          <div className={`p-4 rounded-2xl border transition-all ${
-                            node.status === 'running' ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]' :
-                            node.status === 'completed' ? 'bg-emerald-500/5 border-emerald-500/30' :
-                            'bg-[#111213] border-[#2A2D30]'
-                          }`}>
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <span className="text-[10px] font-mono font-bold text-[#72706C] bg-[#18191B] px-2 py-0.5 rounded border border-[#2A2D30]">
-                                  #{i + 1}
-                                </span>
-                                <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                                  node.status === 'running' ? 'bg-[#3C6B4D] animate-ping' :
-                                  node.status === 'completed' ? 'bg-emerald-500' : 'bg-[#2A2D30]'
-                                }`} />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs font-bold text-[#ECEBE9]">{node.title}</p>
-                                  <p className="text-[11px] text-[#72706C] font-mono truncate">{node.config}</p>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center gap-1 shrink-0">
-                                <button onClick={() => handleMoveNode(i, 'up')} disabled={i === 0} className="p-1 text-[#72706C] hover:text-[#ECEBE9] disabled:opacity-20">
-                                  <ArrowUp size={13} />
-                                </button>
-                                <button onClick={() => handleMoveNode(i, 'down')} disabled={i === nodes.length - 1} className="p-1 text-[#72706C] hover:text-[#ECEBE9] disabled:opacity-20">
-                                  <ArrowDown size={13} />
-                                </button>
-                                <button onClick={() => handleOpenEditNode(node)} className="p-1 text-[#72706C] hover:text-[#3C6B4D]">
-                                  <Edit2 size={13} />
-                                </button>
-                                <button onClick={() => handleDeleteNode(node.id)} className="p-1 text-[#72706C] hover:text-red-400">
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Live Execution Output for this Node */}
-                            {node.output && (
-                              <div className="mt-3 pt-2 border-t border-[#2A2D30]/60 text-[11px] font-mono text-emerald-400 bg-[#18191B] p-2.5 rounded-xl border border-emerald-500/20">
-                                {node.output}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Connecting Arrow */}
-                          {i < nodes.length - 1 && (
-                            <div className="flex justify-center my-0.5">
-                              <div className="h-4 w-px bg-[#3C6B4D]/40" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Inline Node Edit Drawer */}
-                  {editingNodeId && (
-                    <div className="bg-[#111213] border border-[#3C6B4D]/50 p-4 rounded-2xl space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#3C6B4D]">Edit Flowchart Node Config</span>
-                        <button onClick={() => setEditingNodeId(null)} className="text-[#72706C] hover:text-[#ECEBE9]">
-                          <X size={14} />
-                        </button>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#72706C] uppercase">Node Title</label>
-                        <input
-                          type="text"
-                          value={editTitle}
-                          onChange={e => setEditTitle(e.target.value)}
-                          className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#72706C] uppercase">Node Config / Prompt Template</label>
-                        <textarea
-                          value={editConfig}
-                          onChange={e => setEditConfig(e.target.value)}
-                          rows={2}
-                          className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
-                        />
-                      </div>
-                      <button onClick={handleSaveEditNode} className="px-4 py-1.5 bg-[#3C6B4D] text-white text-xs font-bold rounded-xl hover:bg-[#2E533B] transition-all">
-                        Save Node Changes
-                      </button>
-                    </div>
-                  )}
-
-                  {workflowOutput && (
-                    <div className="bg-[#111213] border border-emerald-500/30 rounded-xl p-4 text-xs text-emerald-400 font-mono whitespace-pre-line leading-relaxed">
-                      {workflowOutput}
-                    </div>
-                  )}
-                </div>
+              <div className="w-full">
+                <N8nFlowCanvas initialWorkflowId="battlecard-bot" availableModels={models.map(m => m.name)} />
               </div>
             )}
 
-            {/* ── DOCS TAB ── */}
+
+            {/* ── DOCS & INTEGRATION CODE TAB ── */}
             {activeTab === 'docs' && (
               <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Docs &amp; Integration Code</h2>
-                  <p className="text-[#72706C] text-xs mt-0.5">Ready-to-use code snippets and local CORS setup guides for Ollama integration</p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl">
+                  <div>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Docs &amp; Integration Code Center</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Comprehensive developer guide, code integration snippets, API endpoints reference, and local runtime setup manual.</p>
+                  </div>
                 </div>
+
+                {/* Code Snippets Viewer Box */}
                 <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    {(['javascript', 'python', 'curl', 'react', 'langchain', 'llamaindex', 'fine-tune'] as const).map(lang => (
+                    {(['javascript', 'python', 'curl', 'react', 'n8n-workflow', 'fine-tune', 'langchain', 'llamaindex', 'mcp-protocol'] as const).map(lang => (
                       <button key={lang} onClick={() => setCodeLang(lang)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border uppercase font-mono ${
                         codeLang === lang
                           ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
@@ -2700,8 +2498,89 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     {getCodeSnippet()}
                   </pre>
                 </div>
+
+                {/* Getting Started & Architecture Guide */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Quick Start Guide */}
+                  <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                    <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                      <Terminal size={16} className="text-[#3C6B4D]" /> How to Start (Local Setup in 3 Steps)
+                    </h3>
+                    <div className="space-y-3 text-xs text-[#ECEBE9]">
+                      <div className="space-y-1">
+                        <span className="font-bold text-[#3C6B4D]">Step 1: Install &amp; Launch Ollama</span>
+                        <pre className="bg-[#111213] border border-[#2A2D30] p-2.5 rounded-xl font-mono text-[10px] text-amber-300">
+                          # macOS: brew install ollama && ollama serve{'\n'}
+                          # Linux: curl -fsSL https://ollama.com/install.sh | sh
+                        </pre>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="font-bold text-[#3C6B4D]">Step 2: Enable CORS for Browser Access</span>
+                        <pre className="bg-[#111213] border border-[#2A2D30] p-2.5 rounded-xl font-mono text-[10px] text-amber-300">
+                          export OLLAMA_ORIGINS="*"{'\n'}
+                          ollama serve
+                        </pre>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="font-bold text-[#3C6B4D]">Step 3: Pull Recommended Models</span>
+                        <pre className="bg-[#111213] border border-[#2A2D30] p-2.5 rounded-xl font-mono text-[10px] text-amber-300">
+                          ollama pull llama3.2:1b{'\n'}
+                          ollama pull qwen2.5-coder:1.5b
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Core Features Breakdown */}
+                  <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                    <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+                      <Layers size={16} className="text-[#3C6B4D]" /> Application Features Breakdown
+                    </h3>
+                    <div className="space-y-2.5 text-xs">
+                      <div className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-0.5">
+                        <span className="font-bold text-[#ECEBE9] block">1. n8n Visual Flow Automation Canvas</span>
+                        <p className="text-[11px] text-[#72706C]">Drag-and-drop node graph canvas with pan/zoom viewport, curved Bezier port wiring, multi-workflow management, live chat console, and execution logs JSON payload inspector.</p>
+                      </div>
+                      <div className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-0.5">
+                        <span className="font-bold text-[#ECEBE9] block">2. Fine-Tune Studio &amp; Synthetic Data Generator</span>
+                        <p className="text-[11px] text-[#72706C]">Multi-format document ingestion (.json, .pdf, .csv, .txt, .md, .docx), automatic Q&amp;A instruction pair extraction, synthetic recipe generator, and 1-click Ollama Modelfile deployment.</p>
+                      </div>
+                      <div className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-0.5">
+                        <span className="font-bold text-[#ECEBE9] block">3. Dual-Model Evaluation &amp; Speed Benchmarks</span>
+                        <p className="text-[11px] text-[#72706C]">Run side-by-side prompt comparisons across two Ollama models with real-time latency ($ms$), throughput ($tok/s$), and code quality diagnostics.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* API Endpoint Quick Reference Table */}
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-3">
+                  <h3 className="text-sm font-extrabold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">
+                    Local API Endpoints Quick Reference
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs font-mono">
+                      <thead>
+                        <tr className="border-b border-[#2A2D30] text-[#72706C] uppercase text-[10px]">
+                          <th className="py-2">Method</th>
+                          <th className="py-2">Endpoint Route</th>
+                          <th className="py-2">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#2A2D30]/60 text-[#ECEBE9]">
+                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/generate</td><td>Stream token completion for local prompts</td></tr>
+                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/chat</td><td>Multi-turn chat completion with message role history</td></tr>
+                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/create</td><td>1-Click build &amp; register local fine-tuned Modelfile</td></tr>
+                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/embeddings</td><td>Generate high-density vector embeddings</td></tr>
+                        <tr><td className="py-2 text-blue-400 font-bold">GET</td><td>/api/tags</td><td>List local installed models and digests</td></tr>
+                        <tr><td className="py-2 text-amber-400 font-bold">POST</td><td>/api/ml/extract-document-pairs</td><td>Extract Q&amp;A instruction pairs from documents</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
+
 
           </div>
         </main>
