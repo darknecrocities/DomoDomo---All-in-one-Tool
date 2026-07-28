@@ -18,7 +18,13 @@ import {
   Database,
   Workflow,
   Plus,
-  X
+  X,
+  BookOpen,
+  Code,
+  Copy,
+  Check,
+  HardDrive,
+  Globe
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 
@@ -28,6 +34,110 @@ interface OllamaModel {
   modified_at: string;
   digest: string;
 }
+
+interface CatalogModel {
+  id: string;
+  name: string;
+  params: string;
+  size: string;
+  ram: string;
+  desc: string;
+  tags: string[];
+  category: 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy';
+}
+
+const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
+  {
+    id: 'llama3.2:1b',
+    name: 'Meta Llama 3.2 1B',
+    params: '1.2B',
+    size: '1.3 GB',
+    ram: '2GB - 4GB RAM',
+    desc: 'Meta\'s lightweight instruction-tuned model. Ultra-fast inference designed for low-spec laptops.',
+    tags: ['Meta', 'Ultra-Fast', 'General', 'Low RAM'],
+    category: 'low-spec'
+  },
+  {
+    id: 'llama3.2:3b',
+    name: 'Meta Llama 3.2 3B',
+    params: '3.2B',
+    size: '2.0 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'High quality balance of speed and complex instruction following for desktop environments.',
+    tags: ['Meta', 'Balanced', 'Instruction-Tuned', 'Recommended'],
+    category: 'balanced'
+  },
+  {
+    id: 'qwen2.5:0.5b',
+    name: 'Alibaba Qwen 2.5 0.5B',
+    params: '490M',
+    size: '350 MB',
+    ram: '1GB - 2GB RAM',
+    desc: 'Ultra-compact micro model with negligible RAM footprint. Excellent for fast JSON extraction.',
+    tags: ['Alibaba', 'Micro-Model', 'Fast', 'JSON Parsing'],
+    category: 'low-spec'
+  },
+  {
+    id: 'qwen2.5:1.5b',
+    name: 'Alibaba Qwen 2.5 1.5B',
+    params: '1.5B',
+    size: '900 MB',
+    ram: '2GB - 4GB RAM',
+    desc: 'Lightweight multilingual model with strong programming syntax and translation capabilities.',
+    tags: ['Alibaba', 'Multilingual', 'Coding', 'Bilingual'],
+    category: 'coding'
+  },
+  {
+    id: 'qwen2.5-coder:1.5b',
+    name: 'Qwen 2.5 Coder 1.5B',
+    params: '1.5B',
+    size: '980 MB',
+    ram: '2GB - 4GB RAM',
+    desc: 'Specialized code generation and bug-fixing model trained on massive software repositories.',
+    tags: ['Coding Specialist', 'Python', 'JS/TS', 'Fast Autocomplete'],
+    category: 'coding'
+  },
+  {
+    id: 'deepseek-r1:1.5b',
+    name: 'DeepSeek R1 Distill 1.5B',
+    params: '1.5B',
+    size: '1.1 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'Reasoning model featuring chain-of-thought step breakdowns for logic and math.',
+    tags: ['DeepSeek', 'Reasoning', 'Chain-of-Thought', 'Logic'],
+    category: 'heavy'
+  },
+  {
+    id: 'phi3:latest',
+    name: 'Microsoft Phi-3 Mini 3.8B',
+    params: '3.8B',
+    size: '2.3 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'Microsoft\'s high-density reasoning model optimized for synthetic dataset logic.',
+    tags: ['Microsoft', 'Logic', 'Compact', 'Math Solver'],
+    category: 'balanced'
+  },
+  {
+    id: 'gemma2:2b',
+    name: 'Google Gemma 2 2B',
+    params: '2.6B',
+    size: '1.6 GB',
+    ram: '4GB - 6GB RAM',
+    desc: 'Google\'s lightweight open model architecture with high safety alignment and accuracy.',
+    tags: ['Google', 'Safety', 'General', 'High Quality'],
+    category: 'balanced'
+  },
+  {
+    id: 'llava:7b',
+    name: 'Llava 7B Multimodal Vision',
+    params: '7.0B',
+    size: '4.5 GB',
+    ram: '8GB - 16GB RAM',
+    desc: 'Multimodal vision model capable of answering questions about uploaded images and diagrams.',
+    tags: ['Vision', 'Multimodal', 'Image Captions', 'OCR'],
+    category: 'vision'
+  }
+];
 
 interface ChatMessage {
   id: string;
@@ -54,7 +164,7 @@ interface AutomationNode {
 }
 
 export const AIHubStudio = () => {
-  const [activeTab, setActiveTab] = useState<'chat' | 'train' | 'eval' | 'workflow'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs'>('chat');
 
   // Ollama Connection State
   const [ollamaStatus, setOllamaStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
@@ -62,12 +172,17 @@ export const AIHubStudio = () => {
   const [selectedModel, setSelectedModel] = useState<string>('llama3.2:1b');
   const [secondaryModel, setSecondaryModel] = useState<string>('qwen2.5:0.5b');
 
+  // Model Library Downloader State
+  const [catalogFilter, setCatalogFilter] = useState<'all' | 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy'>('all');
+  const [downloadingModelId, setDownloadingModelId] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<number>(0);
+
   // Chat Tab State
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome-1',
       sender: 'assistant',
-      content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or try fine-tuning models and building workflow automations in the tabs above!",
+      content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or try downloading models, fine-tuning recipes, and workflow automations in the tabs above!",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -125,6 +240,10 @@ export const AIHubStudio = () => {
   ]);
   const [isWorkflowRunning, setIsWorkflowRunning] = useState(false);
   const [workflowOutput, setWorkflowOutput] = useState<string | null>(null);
+
+  // Code Integration Snippet State
+  const [codeLang, setCodeLang] = useState<'javascript' | 'python' | 'curl' | 'react'>('javascript');
+  const [copiedCode, setCopiedCode] = useState(false);
 
   // Teaser Modal for Remote Web Visitors
   const [showTeaserModal, setShowTeaserModal] = useState(false);
@@ -220,6 +339,61 @@ export const AIHubStudio = () => {
     ctx.fillStyle = 'rgba(60, 107, 77, 0.15)';
     ctx.fill();
   }, [activeTab, trainProgress]);
+
+  // Handle Model Pull / Download
+  const handlePullModel = async (modelName: string) => {
+    setDownloadingModelId(modelName);
+    setDownloadProgress(5);
+
+    try {
+      if (ollamaStatus === 'connected') {
+        const response = await fetch('http://localhost:11434/api/pull', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: modelName, stream: true })
+        });
+
+        if (response.ok && response.body) {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n').filter(Boolean);
+
+            for (const line of lines) {
+              try {
+                const parsed = JSON.parse(line);
+                if (parsed.total && parsed.completed) {
+                  const pct = Math.round((parsed.completed / parsed.total) * 100);
+                  setDownloadProgress(pct);
+                }
+              } catch {
+                // Ignore chunk parse error
+              }
+            }
+          }
+        }
+      } else {
+        // Simulation progress for offline mode
+        for (let p = 10; p <= 100; p += 15) {
+          await new Promise(r => setTimeout(r, 250));
+          setDownloadProgress(p);
+        }
+      }
+
+      await checkOllama();
+      setSelectedModel(modelName);
+    } catch {
+      // Fallback
+    } finally {
+      setDownloadingModelId(null);
+      setDownloadProgress(0);
+    }
+  };
 
   // Handle Send Chat
   const handleSendChat = async () => {
@@ -500,13 +674,93 @@ SYSTEM """${systemPrompt}"""
     setIsWorkflowRunning(false);
   };
 
+  // Filter Model Catalog
+  const filteredCatalog = COMPATIBLE_MODEL_CATALOG.filter(
+    m => catalogFilter === 'all' || m.category === catalogFilter
+  );
+
+  // Generate Integration Code Snippet
+  const getCodeSnippet = () => {
+    if (codeLang === 'javascript') {
+      return `// 1. JavaScript / Node.js fetch
+async function queryLocalAI(prompt) {
+  const response = await fetch('http://localhost:11434/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: '${selectedModel}',
+      prompt: prompt,
+      stream: false
+    })
+  });
+  const data = await response.json();
+  console.log('Response:', data.response);
+  return data.response;
+}`;
+    } else if (codeLang === 'python') {
+      return `# 1. Python using official 'ollama' library
+import ollama
+
+response = ollama.generate(
+    model='${selectedModel}',
+    prompt='Explain local zero-leak AI architecture in 2 sentences.'
+)
+print("Response:", response['response'])`;
+    } else if (codeLang === 'curl') {
+      return `# Terminal cURL Command
+curl http://localhost:11434/api/generate -d '{
+  "model": "${selectedModel}",
+  "prompt": "Why is local AI better for privacy?",
+  "stream": false
+}'`;
+    } else {
+      return `// React Custom Hook for Local Ollama Streaming
+import { useState } from 'react';
+
+export function useLocalAI() {
+  const [output, setOutput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const generate = async (prompt) => {
+    setLoading(true);
+    const res = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: '${selectedModel}', prompt, stream: true })
+    });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let text = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\\n').filter(Boolean);
+      for (const line of lines) {
+        const json = JSON.parse(line);
+        if (json.response) { text += json.response; setOutput(text); }
+      }
+    }
+    setLoading(false);
+  };
+  return { generate, output, loading };
+}`;
+    }
+  };
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(getCodeSnippet());
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       <Helmet>
         <title>AI Hub Studio — Unsloth Fine-Tune & n8n Local AI Workspace | DomoDomo</title>
         <meta
           name="description"
-          content="Comprehensive local AI Hub Studio: ChatGPT-style interface, Unsloth QLoRA fine-tuning recipe builder, model eval benchmarks, and n8n-style workflow automation."
+          content="Comprehensive local AI Hub Studio: ChatGPT-style interface, Ollama LLM Downloader, Unsloth QLoRA fine-tuning recipe builder, model eval benchmarks, and n8n-style workflow automation."
         />
         <link rel="canonical" href="https://domodomo.site/ai-hub" />
       </Helmet>
@@ -525,7 +779,7 @@ SYSTEM """${systemPrompt}"""
               AI Hub Studio
             </h1>
             <p className="text-[#A3A09B] text-xs md:text-sm leading-relaxed">
-              ChatGPT-style interface, Unsloth-inspired local QLoRA fine-tuning recipes, side-by-side model evaluation benchmarks, and n8n-style workflow automations.
+              Download any local LLM, chat in a ChatGPT interface, fine-tune models with Unsloth-style QLoRA recipes, evaluate side-by-side benchmarks, and automate workflows with n8n nodes.
             </p>
           </div>
 
@@ -601,6 +855,18 @@ SYSTEM """${systemPrompt}"""
         </button>
 
         <button
+          onClick={() => setActiveTab('library')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+            activeTab === 'library'
+              ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/35 shadow-sm'
+              : 'bg-[#18191B] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+          }`}
+        >
+          <HardDrive size={14} />
+          <span>Model Library & Downloader</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('train')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
             activeTab === 'train'
@@ -633,7 +899,19 @@ SYSTEM """${systemPrompt}"""
           }`}
         >
           <Workflow size={14} />
-          <span>n8n Workflow Automations</span>
+          <span>n8n Automations</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('docs')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+            activeTab === 'docs'
+              ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/35 shadow-sm'
+              : 'bg-[#18191B] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+          }`}
+        >
+          <BookOpen size={14} />
+          <span>Docs & Integration Code</span>
         </button>
       </div>
 
@@ -771,7 +1049,117 @@ SYSTEM """${systemPrompt}"""
         </div>
       )}
 
-      {/* TAB 2: UNSLOTH FINE-TUNE & DATA RECIPE STUDIO */}
+      {/* TAB 2: OLLAMA MODEL LIBRARY & DOWNLOADER */}
+      {activeTab === 'library' && (
+        <div className="space-y-6 text-left">
+          {/* Header & Filter Controls */}
+          <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2A2D30] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
+                  <HardDrive size={16} className="text-[#3C6B4D]" />
+                  Compatible Ollama LLM Downloader
+                </h3>
+                <p className="text-xs text-[#A3A09B] mt-0.5">
+                  Browse, 1-click download, and switch compatible local LLMs for instant use across your tools and projects.
+                </p>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2">
+                {(['all', 'low-spec', 'balanced', 'coding', 'vision', 'heavy'] as const).map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setCatalogFilter(cat)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border uppercase tracking-wider text-[10px] ${
+                      catalogFilter === cat
+                        ? 'bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D]'
+                        : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+                    }`}
+                  >
+                    {cat.replace('-', ' ')}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Catalog Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+              {filteredCatalog.map(m => {
+                const isInstalled = models.some(x => x.name.includes(m.id) || m.id.includes(x.name));
+                const isDownloading = downloadingModelId === m.id;
+
+                return (
+                  <div
+                    key={m.id}
+                    className="bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 p-5 rounded-2xl flex flex-col justify-between gap-4 transition-all shadow-md group"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-sm font-extrabold text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors">
+                          {m.name}
+                        </h4>
+                        <span className="text-[10px] font-mono font-bold bg-[#18191B] px-2 py-0.5 rounded border border-[#2A2D30] text-[#A3A09B] shrink-0">
+                          {m.size}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-[#A3A09B] leading-relaxed">{m.desc}</p>
+
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {m.tags.map(t => (
+                          <span
+                            key={t}
+                            className="px-2 py-0.5 rounded bg-[#18191B] text-[10px] font-semibold text-[#72706C] border border-[#2A2D30]"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-[#2A2D30] flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-[#3C6B4D] font-bold">
+                        {m.ram}
+                      </span>
+
+                      {isDownloading ? (
+                        <div className="flex items-center gap-2 w-32">
+                          <div className="flex-1 bg-[#18191B] h-2 rounded-full overflow-hidden border border-[#2A2D30]">
+                            <div
+                              className="bg-[#3C6B4D] h-full transition-all duration-300"
+                              style={{ width: `${downloadProgress}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] font-mono text-[#3C6B4D]">{downloadProgress}%</span>
+                        </div>
+                      ) : isInstalled ? (
+                        <button
+                          onClick={() => setSelectedModel(m.id)}
+                          className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-1.5"
+                        >
+                          <Check size={13} />
+                          <span>Active Model</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handlePullModel(m.id)}
+                          className="px-3 py-1.5 rounded-xl bg-[#3C6B4D] hover:bg-[#3C6B4D]/80 text-[#ECEBE9] text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                        >
+                          <Download size={13} />
+                          <span>Download Model</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: UNSLOTH FINE-TUNE & DATA RECIPE STUDIO */}
       {activeTab === 'train' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start text-left">
           {/* Column 1: Hyperparameters & Recipe Settings */}
@@ -983,7 +1371,7 @@ SYSTEM """${systemPrompt}"""
         </div>
       )}
 
-      {/* TAB 3: TEST & EVAL BENCHMARKS */}
+      {/* TAB 4: TEST & EVAL BENCHMARKS */}
       {activeTab === 'eval' && (
         <div className="space-y-6 text-left">
           <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
@@ -1056,7 +1444,7 @@ SYSTEM """${systemPrompt}"""
         </div>
       )}
 
-      {/* TAB 4: n8n WORKFLOW AUTOMATIONS */}
+      {/* TAB 5: n8n WORKFLOW AUTOMATIONS */}
       {activeTab === 'workflow' && (
         <div className="space-y-6 text-left">
           <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
@@ -1120,6 +1508,89 @@ SYSTEM """${systemPrompt}"""
                 {workflowOutput}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 6: DOCS & INTEGRATION CODE SNIPPETS */}
+      {activeTab === 'docs' && (
+        <div className="space-y-6 text-left">
+          {/* Section 1: CORS & Setup Instructions */}
+          <div className="bg-[#18191B] border border-[#2A2D30] p-6 rounded-2xl space-y-4">
+            <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
+              <Globe size={16} className="text-[#3C6B4D]" />
+              Ollama CORS & Environment Configuration
+            </h3>
+
+            <p className="text-xs text-[#A3A09B] leading-relaxed">
+              Ollama blocks browser origins by default. To connect AI Hub Studio and your local project apps to Ollama on <code className="text-[#3C6B4D] font-mono">http://localhost:11434</code>, configure <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS</code>:
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                <span className="text-[#3C6B4D] font-bold">🍎 macOS</span>
+                <div className="text-[#ECEBE9]">$ launchctl setenv OLLAMA_ORIGINS "*"</div>
+                <div className="text-[10px] text-[#72706C]"># Restart Ollama app from top menu bar</div>
+              </div>
+
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                <span className="text-[#3C6B4D] font-bold">🪟 Windows</span>
+                <div className="text-[#ECEBE9]">set OLLAMA_ORIGINS="*"</div>
+                <div className="text-[10px] text-[#72706C]"># Set in Environment Variables and restart</div>
+              </div>
+
+              <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                <span className="text-[#3C6B4D] font-bold">🐧 Linux</span>
+                <div className="text-[#ECEBE9]">$ systemctl edit ollama.service</div>
+                <div className="text-[10px] text-[#72706C]"># Add Environment="OLLAMA_ORIGINS=*"</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Code Integration Generator */}
+          <div className="bg-[#18191B] border border-[#2A2D30] p-6 rounded-2xl space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2A2D30] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
+                  <Code size={16} className="text-[#3C6B4D]" />
+                  Project Integration Code Generator
+                </h3>
+                <p className="text-xs text-[#A3A09B] mt-0.5">
+                  Use your downloaded model (<span className="text-[#3C6B4D] font-mono font-bold">{selectedModel}</span>) in any of your own projects.
+                </p>
+              </div>
+
+              {/* Language Selector */}
+              <div className="flex items-center gap-1.5 p-1 bg-[#111213] border border-[#2A2D30] rounded-xl">
+                {(['javascript', 'python', 'curl', 'react'] as const).map(lang => (
+                  <button
+                    key={lang}
+                    onClick={() => setCodeLang(lang)}
+                    className={`px-3 py-1 rounded-lg text-[11px] font-bold uppercase transition-all ${
+                      codeLang === lang
+                        ? 'bg-[#3C6B4D] text-[#ECEBE9]'
+                        : 'text-[#72706C] hover:text-[#ECEBE9]'
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative">
+              <pre className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl font-mono text-xs text-[#ECEBE9] overflow-x-auto">
+                {getCodeSnippet()}
+              </pre>
+
+              <button
+                onClick={handleCopyCode}
+                className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-[#18191B] border border-[#2A2D30] text-xs font-bold text-[#A3A09B] hover:text-[#ECEBE9] transition-all flex items-center gap-1.5 shadow-sm"
+              >
+                {copiedCode ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                <span>{copiedCode ? 'Copied!' : 'Copy Code'}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
