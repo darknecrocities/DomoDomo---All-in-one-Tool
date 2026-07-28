@@ -77,6 +77,37 @@ if (needsInstall) {
   }
 }
 
+// 3. Auto-detect and start Ollama service if not running
+const http = require('http');
+
+function ensureOllamaRunning() {
+  const req = http.get('http://localhost:11434/api/tags', (res) => {
+    if (res.statusCode === 200) {
+      console.log('🦙 Local Ollama service is active on http://localhost:11434');
+    }
+  });
+
+  req.on('error', () => {
+    console.log('🦙 Ollama is not responding on port 11434. Auto-launching local Ollama server...');
+    const checkOllamaCli = spawnSync(isWindows ? 'where' : 'which', ['ollama']);
+    if (checkOllamaCli.status === 0) {
+      console.log('🚀 Starting: OLLAMA_ORIGINS="*" ollama serve');
+      const env = { ...process.env, OLLAMA_ORIGINS: '*' };
+      const ollamaProcess = spawn('ollama', ['serve'], {
+        env,
+        stdio: 'ignore',
+        detached: true
+      });
+      ollamaProcess.unref();
+      console.log('✅ Local Ollama service launched in background!');
+    } else {
+      console.warn('⚠️ Ollama CLI not found on system PATH. Install Ollama from https://ollama.ai for local LLM inference.');
+    }
+  });
+}
+
+ensureOllamaRunning();
+
 console.log(`🐍 Starting Python FastAPI backend using: ${pythonBin}...`);
 
 // Launch Uvicorn server as a child process
@@ -99,3 +130,4 @@ process.on('SIGTERM', () => {
   backendProcess.kill('SIGTERM');
   process.exit(0);
 });
+
