@@ -474,15 +474,19 @@ export const AIHubStudio = () => {
   const checkOllama = useCallback(async () => {
     setOllamaStatus('checking');
     const candidates = Array.from(new Set([
+      '/ollama-proxy',
       aiSettings.ollamaEndpoint,
       'http://127.0.0.1:11434',
-      'http://localhost:11434',
-      '/ollama-proxy'
+      'http://localhost:11434'
     ]));
 
     for (const endpoint of candidates) {
       try {
-        const res = await fetch(`${endpoint}/api/tags`, { method: 'GET' });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const res = await fetch(`${endpoint}/api/tags`, { method: 'GET', signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (res.ok) {
           const data = await res.json();
           const fetchedModels: OllamaModel[] = data.models || [];
@@ -512,15 +516,19 @@ export const AIHubStudio = () => {
   const checkFastApi = useCallback(async () => {
     setFastApiStatus('checking');
     const candidates = Array.from(new Set([
+      '/fastapi-proxy',
       aiSettings.fastApiEndpoint,
       'http://127.0.0.1:8000',
-      'http://localhost:8000',
-      '/fastapi-proxy'
+      'http://localhost:8000'
     ]));
 
     for (const endpoint of candidates) {
       try {
-        const res = await fetch(`${endpoint}/api/ml/status`, { method: 'GET' });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const res = await fetch(`${endpoint}/api/ml/status`, { method: 'GET', signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (res.ok) {
           setActiveFastApiUrl(endpoint);
           setFastApiStatus('connected');
