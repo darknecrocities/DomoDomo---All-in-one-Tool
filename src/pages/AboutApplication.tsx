@@ -626,7 +626,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v1.6.0 (Latest)",
+                    version: "v2.0.0 (Latest)",
+                    date: "July 28, 2026",
+                    title: "AI Hub Studio, Fine-Tune Multi-Format Analysis & Edge-to-Edge Layout",
+                    changes: [
+                      "AI Hub Studio Release: Integrated ChatGPT-style multi-thread chat interface, local Ollama model management, dual-model side-by-side benchmark evaluator, and interactive node workflow automation pipeline.",
+                      "Fine-Tune Studio & Multi-Format Ingestion: Expanded fine-tuning capabilities to ingest .json, .csv, .pdf, .txt, .md, and .docx document files with live word & token analysis, automated Q&A instruction pair extraction, and GGUF/Modelfile exports.",
+                      "1-Click Model Deployment: Integrated 1-click model registration to compile and load custom fine-tuned models directly into Ollama via /api/create for live testing in Chat.",
+                      "Full-Bleed Responsive Design & Expanded API Docs: Upgraded AI Hub Studio with 100% edge-to-edge max-width responsive layout, full desktop hamburger navigation integration, and comprehensive code snippets for JavaScript, Python, cURL, React, LangChain, and LlamaIndex."
+                    ]
+                  },
+                  {
+                    version: "v1.6.0",
                     date: "July 19, 2026",
                     title: "Machine Learning Evaluation & Model Benchmark Suite",
                     changes: [
