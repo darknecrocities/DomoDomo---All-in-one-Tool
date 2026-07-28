@@ -1,5 +1,29 @@
 [
   {
+    "hash": "6e7188c",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): add file upload dropzone to trigger and document nodes, plus canvas drag-and-drop ingestion"
+  },
+  {
+    "hash": "99a9dee",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "7be59a2",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): add PDF page-by-page text extraction and sanitize binary stream headers in RAG pipeline"
+  },
+  {
+    "hash": "74cefc9",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "c27125e",
     "date": "2026-07-28",
     "author": "darknecrocities",
@@ -64,29 +88,5 @@
     "date": "2026-07-28",
     "author": "RhonzKieee",
     "message": "Merge pull request #55 from darknecrocities/feat/appbar-hamburger-ai-hub-unsloth-studio"
-  },
-  {
-    "hash": "bf5e379",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ci): resolve TS2739 missing properties in ToolDocsData and remove unused icon imports in AIHubStudio"
-  },
-  {
-    "hash": "4f83aba",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): expand Docs & Integration code (LangChain, LlamaIndex, Fine-Tune guide) and add 1-click model load & weights download"
-  },
-  {
-    "hash": "0223a64",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): rename Unsloth to Fine-Tune and add multi-format document analysis (.json, .pdf, .csv, .txt, .md, .docx) with Q&A dataset extraction"
-  },
-  {
-    "hash": "bc00417",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(shell): resolve adjacent JSX elements closing tag error in Shell.tsx"
   }
 ]
