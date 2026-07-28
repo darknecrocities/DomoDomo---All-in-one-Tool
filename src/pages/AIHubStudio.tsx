@@ -37,7 +37,12 @@ import {
   ArrowUp,
   ArrowDown,
   Terminal,
-  FileText
+  FileText,
+  ShieldCheck,
+  Server,
+  Gauge,
+  Sliders,
+  RotateCcw
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 
@@ -149,6 +154,7 @@ interface ChatMessage {
   timestamp: string;
   tokensPerSec?: number;
   latencyMs?: number;
+  modelUsed?: string;
 }
 
 interface DatasetPair {
@@ -167,11 +173,63 @@ interface AutomationNode {
   output?: string;
 }
 
+export interface AISettings {
+  ollamaEndpoint: string;
+  fastApiEndpoint: string;
+  defaultSystemPrompt: string;
+  temperature: number;
+  topP: number;
+  maxTokens: number;
+  numCtx: number;
+  gpuLayers: number;
+  cpuThreads: number;
+  flashAttention: boolean;
+  quantization: 'q4_k_m' | 'q8_0' | 'f16';
+  autoRefreshOllama: boolean;
+}
+
+const DEFAULT_SETTINGS: AISettings = {
+  ollamaEndpoint: 'http://localhost:11434',
+  fastApiEndpoint: 'http://localhost:8000',
+  defaultSystemPrompt: 'You are DomoDomo AI, a helpful, private, offline-first assistant.',
+  temperature: 0.7,
+  topP: 0.9,
+  maxTokens: 2048,
+  numCtx: 4096,
+  gpuLayers: 33,
+  cpuThreads: 8,
+  flashAttention: true,
+  quantization: 'q4_k_m',
+  autoRefreshOllama: true
+};
+
 export const AIHubStudio = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs'>('chat');
 
+  // AI Hub Settings State (Persisted in LocalStorage)
+  const [aiSettings, setAiSettings] = useState<AISettings>(() => {
+    try {
+      const saved = localStorage.getItem('domodomo_aihub_settings');
+      return saved ? { ...DEFAULT_SETTINGS, ...JSON.parse(saved) } : DEFAULT_SETTINGS;
+    } catch {
+      return DEFAULT_SETTINGS;
+    }
+  });
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<'endpoints' | 'generation' | 'hardware' | 'storage'>('endpoints');
+
+  // Save settings to LocalStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('domodomo_aihub_settings', JSON.stringify(aiSettings));
+    } catch {
+      // Ignore storage write error
+    }
+  }, [aiSettings]);
+
   // Ollama Connection State
   const [ollamaStatus, setOllamaStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
+  const [fastApiStatus, setFastApiStatus] = useState<'checking' | 'connected' | 'offline'>('checking');
   const [models, setModels] = useState<OllamaModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>('llama3.2:1b');
   const [secondaryModel, setSecondaryModel] = useState<string>('qwen2.5:0.5b');
@@ -183,21 +241,37 @@ export const AIHubStudio = () => {
   const [customPullInput, setCustomPullInput] = useState<string>('');
 
   // Chat Tab State
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome-1',
-      sender: 'assistant',
-      content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or try downloading models, fine-tuning recipes, and workflow automations in the tabs on the left!",
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    try {
+      const saved = localStorage.getItem('domodomo_aihub_chat_history');
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 'welcome-1',
+          sender: 'assistant',
+          content: "Hello! I'm your local AI Assistant powered by Ollama. Ask me anything, or download models, fine-tune recipes, and flow automations in the sidebar!",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ];
+    } catch {
+      return [];
     }
-  ]);
+  });
   const [chatInput, setChatInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
-  const [systemPrompt, setSystemPrompt] = useState('You are DomoDomo AI, a helpful, private, offline-first assistant.');
-  const [temperature, setTemperature] = useState<number>(0.7);
-  const [topP, setTopP] = useState<number>(0.9);
-  const [maxTokens, setMaxTokens] = useState<number>(2048);
+  const [systemPrompt, setSystemPrompt] = useState(aiSettings.defaultSystemPrompt);
+  const [temperature, setTemperature] = useState<number>(aiSettings.temperature);
+  const [topP, setTopP] = useState<number>(aiSettings.topP);
+  const [maxTokens, setMaxTokens] = useState<number>(aiSettings.maxTokens);
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
+
+  // Save chat messages to LocalStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('domodomo_aihub_chat_history', JSON.stringify(messages));
+    } catch {
+      // Ignore
+    }
+  }, [messages]);
 
   // Fine-Tune (Unsloth Studio) State
   const [baseModel, setBaseModel] = useState<string>('unsloth/llama-3.2-3b-Instruct');
@@ -206,8 +280,8 @@ export const AIHubStudio = () => {
   const [learningRate, setLearningRate] = useState<string>('2e-4');
   const [epochs, setEpochs] = useState<number>(3);
   const [batchSize, setBatchSize] = useState<number>(2);
-  const [maxSeqLen, setMaxSeqLen] = useState<number>(2048);
-  const [quantTarget, setQuantTarget] = useState<'q4_k_m' | 'q8_0' | 'f16'>('q4_k_m');
+  const [maxSeqLen, setMaxSeqLen] = useState<number>(aiSettings.numCtx);
+  const [quantTarget, setQuantTarget] = useState<'q4_k_m' | 'q8_0' | 'f16'>(aiSettings.quantization);
   const [datasetFormat, setDatasetFormat] = useState<'alpaca' | 'sharegpt' | 'chatml'>('alpaca');
   const [recipePrompt, setRecipePrompt] = useState<string>('Generate synthetic instructions for Python web scraper error handling.');
   const [datasetPairs, setDatasetPairs] = useState<DatasetPair[]>([
@@ -274,18 +348,22 @@ export const AIHubStudio = () => {
     }
   }, []);
 
-  // Check Ollama Connection
+  // Check Ollama Connection & Downloaded Models
   const checkOllama = useCallback(async () => {
     setOllamaStatus('checking');
     try {
-      const res = await fetch('http://localhost:11434/api/tags', { method: 'GET' });
+      const res = await fetch(`${aiSettings.ollamaEndpoint}/api/tags`, { method: 'GET' });
       if (res.ok) {
         const data = await res.json();
-        setModels(data.models || []);
-        if (data.models && data.models.length > 0) {
-          setSelectedModel(data.models[0].name);
-          if (data.models.length > 1) {
-            setSecondaryModel(data.models[1].name);
+        const fetchedModels: OllamaModel[] = data.models || [];
+        setModels(fetchedModels);
+        if (fetchedModels.length > 0) {
+          // If current selectedModel is not in fetched models, pick the first fetched model
+          if (!fetchedModels.some(m => m.name === selectedModel)) {
+            setSelectedModel(fetchedModels[0].name);
+          }
+          if (fetchedModels.length > 1 && !fetchedModels.some(m => m.name === secondaryModel)) {
+            setSecondaryModel(fetchedModels[1].name);
           }
         }
         setOllamaStatus('connected');
@@ -295,11 +373,27 @@ export const AIHubStudio = () => {
     } catch {
       setOllamaStatus('offline');
     }
-  }, []);
+  }, [aiSettings.ollamaEndpoint, selectedModel, secondaryModel]);
+
+  // Check Python FastAPI Backend Status
+  const checkFastApi = useCallback(async () => {
+    setFastApiStatus('checking');
+    try {
+      const res = await fetch(`${aiSettings.fastApiEndpoint}/api/ml/status`, { method: 'GET' });
+      if (res.ok) {
+        setFastApiStatus('connected');
+      } else {
+        setFastApiStatus('offline');
+      }
+    } catch {
+      setFastApiStatus('offline');
+    }
+  }, [aiSettings.fastApiEndpoint]);
 
   useEffect(() => {
     checkOllama();
-  }, [checkOllama]);
+    checkFastApi();
+  }, [checkOllama, checkFastApi]);
 
   // Scroll Chat to Bottom
   useEffect(() => {
@@ -366,7 +460,7 @@ export const AIHubStudio = () => {
 
     try {
       if (ollamaStatus === 'connected') {
-        const response = await fetch('http://localhost:11434/api/pull', {
+        const response = await fetch(`${aiSettings.ollamaEndpoint}/api/pull`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: modelName, stream: true })
@@ -437,13 +531,14 @@ export const AIHubStudio = () => {
       id: assistantMsgId,
       sender: 'assistant',
       content: '',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      modelUsed: selectedModel
     };
     setMessages(prev => [...prev, assistantMsg]);
 
     try {
       if (ollamaStatus === 'connected') {
-        const response = await fetch('http://localhost:11434/api/generate', {
+        const response = await fetch(`${aiSettings.ollamaEndpoint}/api/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -453,7 +548,10 @@ export const AIHubStudio = () => {
             options: {
               temperature,
               top_p: topP,
-              num_predict: maxTokens
+              num_predict: maxTokens,
+              num_ctx: aiSettings.numCtx,
+              num_gpu: aiSettings.gpuLayers,
+              num_thread: aiSettings.cpuThreads
             },
             stream: true
           })
@@ -498,7 +596,7 @@ export const AIHubStudio = () => {
         );
       } else {
         // Fallback simulation mode
-        const simulatedResp = `[Local Offline Simulation] Here is the response to "${userMsg.content}". In local mode with Ollama running, responses stream directly from your GPU/CPU without touching external cloud APIs.`;
+        const simulatedResp = `[Local Offline Simulation · Model: ${selectedModel}] Here is the response to "${userMsg.content}". When Ollama is running on ${aiSettings.ollamaEndpoint}, inference streams directly from your hardware without sending data to cloud servers.`;
         let currentText = '';
 
         for (let i = 0; i < simulatedResp.length; i += 3) {
@@ -521,7 +619,7 @@ export const AIHubStudio = () => {
       setMessages(prev =>
         prev.map(m =>
           m.id === assistantMsgId
-            ? { ...m, content: `Error communicating with local model: ${String(error)}` }
+            ? { ...m, content: `Error communicating with local model (${selectedModel}): ${String(error)}` }
             : m
         )
       );
@@ -534,7 +632,7 @@ export const AIHubStudio = () => {
   const handleSynthesizeDataset = async () => {
     setIsSynthesizing(true);
     try {
-      const res = await fetch('http://localhost:8000/api/ml/synthesize-recipe', {
+      const res = await fetch(`${aiSettings.fastApiEndpoint}/api/ml/synthesize-recipe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -625,10 +723,10 @@ export const AIHubStudio = () => {
     setTrainingStep(0);
     setTotalSteps(100);
     setTrainingLoss(2.428);
-    setTrainingLogs(['🚀 Connecting to DomoDomo Python FastAPI Training Engine (http://localhost:8000)...']);
+    setTrainingLogs([`🚀 Connecting to DomoDomo Python FastAPI Training Engine (${aiSettings.fastApiEndpoint})...`]);
 
     try {
-      const res = await fetch('http://localhost:8000/api/ml/train-qlora', {
+      const res = await fetch(`${aiSettings.fastApiEndpoint}/api/ml/train-qlora`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -849,12 +947,29 @@ SYSTEM """${systemPrompt}"""
     m => catalogFilter === 'all' || m.category === catalogFilter
   );
 
+  // Reset AI Settings to Factory Defaults
+  const handleResetSettings = () => {
+    setAiSettings(DEFAULT_SETTINGS);
+    setSystemPrompt(DEFAULT_SETTINGS.defaultSystemPrompt);
+    setTemperature(DEFAULT_SETTINGS.temperature);
+    setTopP(DEFAULT_SETTINGS.topP);
+    setMaxTokens(DEFAULT_SETTINGS.maxTokens);
+    setMaxSeqLen(DEFAULT_SETTINGS.numCtx);
+    setQuantTarget(DEFAULT_SETTINGS.quantization);
+  };
+
+  // Clear Local Chat History
+  const handleClearChatHistory = () => {
+    setMessages([]);
+    localStorage.removeItem('domodomo_aihub_chat_history');
+  };
+
   // Generate Integration Code Snippet
   const getCodeSnippet = () => {
     if (codeLang === 'javascript') {
       return `// 1. JavaScript / Node.js fetch via local Ollama API
 async function queryLocalAI(prompt) {
-  const response = await fetch('http://localhost:11434/api/generate', {
+  const response = await fetch('${aiSettings.ollamaEndpoint}/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -876,7 +991,7 @@ import requests
 
 def generate_local(prompt: str) -> str:
     response = requests.post(
-        "http://localhost:11434/api/generate",
+        "${aiSettings.ollamaEndpoint}/api/generate",
         json={
             "model": "${selectedModel}",
             "prompt": prompt,
@@ -890,7 +1005,7 @@ print(generate_local("Write a Python decorator for memoization."))`;
 
     if (codeLang === 'curl') {
       return `# 3. cURL CLI Request
-curl http://localhost:11434/api/generate -d '{
+curl ${aiSettings.ollamaEndpoint}/api/generate -d '{
   "model": "${selectedModel}",
   "prompt": "Why is local AI privacy superior?",
   "stream": false
@@ -906,7 +1021,7 @@ export function useOllama(modelName = '${selectedModel}') {
 
   const generate = async (prompt) => {
     setLoading(true);
-    const res = await fetch('http://localhost:11434/api/generate', {
+    const res = await fetch('${aiSettings.ollamaEndpoint}/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: modelName, prompt, stream: false })
@@ -965,7 +1080,7 @@ export function useOllama(modelName = '${selectedModel}') {
 
           {/* Ollama Status Pill */}
           {!sidebarCollapsed && (
-            <div className="px-3 py-2 border-b border-[#2A2D30]">
+            <div className="px-3 py-2 border-b border-[#2A2D30] space-y-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <span className={`w-2 h-2 rounded-full ${
@@ -973,12 +1088,27 @@ export function useOllama(modelName = '${selectedModel}') {
                     ollamaStatus === 'checking' ? 'bg-amber-400 animate-ping' : 'bg-red-500'
                   }`} />
                   <span className="text-[11px] text-[#A3A09B] font-medium">
-                    {ollamaStatus === 'connected' ? `Ollama · ${models.length} models` :
+                    {ollamaStatus === 'connected' ? `Ollama (${models.length} models)` :
                      ollamaStatus === 'checking' ? 'Connecting...' : 'Offline (sim)'}
                   </span>
                 </div>
-                <button onClick={checkOllama} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Refresh">
+                <button onClick={checkOllama} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Refresh Ollama">
                   <RefreshCw size={10} className={ollamaStatus === 'checking' ? 'animate-spin' : ''} />
+                </button>
+              </div>
+
+              {/* FastAPI Python Status */}
+              <div className="flex items-center justify-between pt-0.5">
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-1.5 h-1.5 rounded-full ${
+                    fastApiStatus === 'connected' ? 'bg-[#3C6B4D]' : 'bg-[#72706C]'
+                  }`} />
+                  <span className="text-[10px] text-[#72706C]">
+                    {fastApiStatus === 'connected' ? 'Python ML Engine Ready' : 'Python ML Standby'}
+                  </span>
+                </div>
+                <button onClick={checkFastApi} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Check Python ML status">
+                  <RefreshCw size={9} className={fastApiStatus === 'checking' ? 'animate-spin' : ''} />
                 </button>
               </div>
             </div>
@@ -1100,24 +1230,39 @@ export function useOllama(modelName = '${selectedModel}') {
           )}
 
           {/* Bottom: model selector + settings */}
-          <div className="mt-auto border-t border-[#2A2D30] p-2">
-            {!sidebarCollapsed && ollamaStatus === 'connected' && models.length > 0 && (
-              <select
-                value={selectedModel}
-                onChange={e => setSelectedModel(e.target.value)}
-                className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1.5 text-[11px] text-[#ECEBE9] font-medium focus:outline-none focus:border-[#3C6B4D] mb-1"
-              >
-                {models.map(m => (
-                  <option key={m.digest} value={m.name}>{m.name}</option>
-                ))}
-              </select>
+          <div className="mt-auto border-t border-[#2A2D30] p-2 space-y-1">
+            {!sidebarCollapsed && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[#72706C]">Active Local Model</span>
+                <select
+                  value={selectedModel}
+                  onChange={e => setSelectedModel(e.target.value)}
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1.5 text-[11px] text-[#ECEBE9] font-medium focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  {models.length > 0 ? (
+                    models.map(m => (
+                      <option key={m.digest} value={m.name}>
+                        {m.name} ({(m.size / (1024 * 1024 * 1024)).toFixed(1)} GB)
+                      </option>
+                    ))
+                  ) : (
+                    COMPATIBLE_MODEL_CATALOG.map(c => (
+                      <option key={c.id} value={c.id}>
+                        {c.id} ({c.size})
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
             )}
+
             <button
+              onClick={() => setSettingsOpen(true)}
               className="flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all"
-              title="Settings"
+              title="AI Hub Settings"
             >
               <Settings size={15} className="shrink-0" />
-              {!sidebarCollapsed && <span>Settings</span>}
+              {!sidebarCollapsed && <span>AI Hub Settings</span>}
             </button>
           </div>
         </aside>
@@ -1146,10 +1291,14 @@ export function useOllama(modelName = '${selectedModel}') {
                   : 'bg-[#1E2022] border-[#2A2D30] text-[#72706C]'
               }`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${ollamaStatus === 'connected' ? 'bg-emerald-500' : 'bg-[#2A2D30]'}`} />
-                {ollamaStatus === 'connected' ? `Ollama · ${selectedModel || models[0]?.name || 'No model'}` : 'Ollama Offline'}
+                {ollamaStatus === 'connected' ? `Ollama · ${selectedModel}` : 'Ollama Offline'}
               </span>
-              <button onClick={checkOllama} className="p-1.5 rounded-lg text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all" title="Refresh connection">
-                <RefreshCw size={13} className={ollamaStatus === 'checking' ? 'animate-spin' : ''} />
+              <button
+                onClick={() => setSettingsOpen(true)}
+                className="p-1.5 rounded-lg text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all"
+                title="AI Hub Settings"
+              >
+                <Settings size={14} />
               </button>
             </div>
           </div>
@@ -1157,10 +1306,47 @@ export function useOllama(modelName = '${selectedModel}') {
           {/* TAB CONTENT — scrollable */}
           <div className="p-6">
 
-            {/* ── CHAT TAB ── */}
+            {/* ── CHAT TAB (Dynamic Ollama Model Selection) ── */}
             {activeTab === 'chat' && (
               <div className="flex flex-col h-[calc(100vh-56px-44px-48px)] gap-4">
-                {/* Chat area */}
+                {/* Header Model Selection Bar for New Chat */}
+                <div className="flex flex-wrap items-center justify-between gap-3 bg-[#18191B] border border-[#2A2D30] px-4 py-2.5 rounded-2xl shrink-0">
+                  <div className="flex items-center gap-2">
+                    <Bot size={16} className="text-[#3C6B4D]" />
+                    <span className="text-xs font-extrabold text-[#ECEBE9]">Local LLM Model:</span>
+                    <select
+                      value={selectedModel}
+                      onChange={e => setSelectedModel(e.target.value)}
+                      className="bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-[#3C6B4D]"
+                    >
+                      {models.length > 0 ? (
+                        models.map(m => (
+                          <option key={m.digest} value={m.name}>
+                            {m.name} ({(m.size / (1024 * 1024 * 1024)).toFixed(1)} GB)
+                          </option>
+                        ))
+                      ) : (
+                        COMPATIBLE_MODEL_CATALOG.map(c => (
+                          <option key={c.id} value={c.id}>
+                            {c.id} ({c.size} · sim)
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveTab('library')}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all"
+                    >
+                      <Download size={12} />
+                      <span>Pull New Model</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Chat Message List */}
                 <div className="flex-1 overflow-y-auto space-y-4 pr-1">
                   {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-full text-center gap-4 py-16">
@@ -1169,7 +1355,9 @@ export function useOllama(modelName = '${selectedModel}') {
                       </div>
                       <div>
                         <p className="text-[#ECEBE9] font-bold text-lg">Start a conversation</p>
-                        <p className="text-[#72706C] text-sm mt-1">Ask your local LLM anything — it runs entirely offline.</p>
+                        <p className="text-[#72706C] text-sm mt-1">
+                          Connected model: <span className="text-[#3C6B4D] font-mono font-bold">{selectedModel}</span>
+                        </p>
                       </div>
                       <div className="grid grid-cols-2 gap-2 max-w-sm w-full mt-2">
                         {['Explain LoRA fine-tuning', 'Write a Python data pipeline', 'Summarize this code', 'What is RAG?'].map(s => (
@@ -1199,6 +1387,7 @@ export function useOllama(modelName = '${selectedModel}') {
                         <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>
                         {msg.tokensPerSec !== undefined && (
                           <div className="mt-2 text-[10px] font-mono text-[#72706C] flex gap-3 border-t border-[#2A2D30]/60 pt-1.5">
+                            <span>Model: {msg.modelUsed || selectedModel}</span>
                             <span>Speed: {msg.tokensPerSec} tok/s</span>
                             <span>Latency: {msg.latencyMs}ms</span>
                           </div>
@@ -1227,13 +1416,13 @@ export function useOllama(modelName = '${selectedModel}') {
                     value={chatInput}
                     onChange={e => setChatInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
-                    placeholder="Message your local AI... (Enter to send, Shift+Enter for newline)"
+                    placeholder={`Message ${selectedModel}... (Enter to send, Shift+Enter for newline)`}
                     rows={2}
                     className="flex-1 bg-transparent text-sm text-[#ECEBE9] placeholder-[#72706C] resize-none focus:outline-none"
                   />
                   <div className="flex items-center gap-2 shrink-0">
                     {messages.length > 0 && (
-                      <button onClick={() => setMessages([])} className="p-2 rounded-xl text-[#72706C] hover:text-red-400 hover:bg-red-950/20 transition-all" title="Clear chat">
+                      <button onClick={handleClearChatHistory} className="p-2 rounded-xl text-[#72706C] hover:text-red-400 hover:bg-red-950/20 transition-all" title="Clear chat history">
                         <Trash2 size={15} />
                       </button>
                     )}
@@ -1249,26 +1438,22 @@ export function useOllama(modelName = '${selectedModel}') {
                 </div>
 
                 {/* Config strip */}
-                <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#72706C]">
-                  <div className="flex items-center gap-1.5">
-                    <SlidersIcon size={11} />
-                    <span>Temp:</span>
-                    <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-[#3C6B4D]" />
-                    <span className="font-mono text-[#3C6B4D]">{temperature}</span>
+                <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] text-[#72706C] px-1">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <SlidersIcon size={11} />
+                      <span>Temp:</span>
+                      <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-[#3C6B4D]" />
+                      <span className="font-mono text-[#3C6B4D]">{temperature}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span>Max tokens:</span>
+                      <input type="number" value={maxTokens} onChange={e => setMaxTokens(parseInt(e.target.value) || 2048)} className="w-16 bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] font-mono focus:outline-none" />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span>Max tokens:</span>
-                    <input type="number" value={maxTokens} onChange={e => setMaxTokens(parseInt(e.target.value))} className="w-16 bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] font-mono focus:outline-none" />
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span>Model:</span>
-                    {models.length > 0 ? (
-                      <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)} className="bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] focus:outline-none">
-                        {models.map(m => <option key={m.digest} value={m.name}>{m.name}</option>)}
-                      </select>
-                    ) : (
-                      <span className="text-[#3C6B4D]">{selectedModel || 'llama3.2:3b (sim)'}</span>
-                    )}
+
+                  <div className="flex items-center gap-2">
+                    <span>Endpoint: <code className="text-[#ECEBE9] font-mono">{aiSettings.ollamaEndpoint}</code></span>
                   </div>
                 </div>
               </div>
@@ -1743,6 +1928,332 @@ export function useOllama(modelName = '${selectedModel}') {
           </div>
         </main>
       </div>
+
+      {/* ── FULL AI HUB SETTINGS MODAL ── */}
+      {settingsOpen && (
+        <div className="fixed inset-0 bg-[#0A0B0C]/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 space-y-5 shadow-2xl animate-scaleIn">
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-[#2A2D30] pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/40 flex items-center justify-center">
+                  <Settings size={16} className="text-[#3C6B4D]" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-[#ECEBE9]">AI Hub Settings</h3>
+                  <p className="text-[11px] text-[#72706C]">Configure local Ollama endpoints, ML training servers, generation parameters &amp; GPU hardware acceleration.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSettingsOpen(false)}
+                className="p-1.5 rounded-xl text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30] transition-all"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Settings Tab Selector */}
+            <div className="flex items-center gap-2 border-b border-[#2A2D30] pb-2">
+              <button
+                onClick={() => setSettingsTab('endpoints')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                  settingsTab === 'endpoints'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+                }`}
+              >
+                <Server size={13} />
+                <span>Runtime Endpoints</span>
+              </button>
+
+              <button
+                onClick={() => setSettingsTab('generation')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                  settingsTab === 'generation'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+                }`}
+              >
+                <Sliders size={13} />
+                <span>Generation Defaults</span>
+              </button>
+
+              <button
+                onClick={() => setSettingsTab('hardware')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                  settingsTab === 'hardware'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+                }`}
+              >
+                <Gauge size={13} />
+                <span>GPU Acceleration</span>
+              </button>
+
+              <button
+                onClick={() => setSettingsTab('storage')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                  settingsTab === 'storage'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+                }`}
+              >
+                <HardDrive size={13} />
+                <span>Data &amp; Storage</span>
+              </button>
+            </div>
+
+            {/* TAB 1: RUNTIME ENDPOINTS */}
+            {settingsTab === 'endpoints' && (
+              <div className="space-y-4 text-left">
+                {/* Ollama URL */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-[#A3A09B]">Local Ollama API Endpoint</label>
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                      ollamaStatus === 'connected' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                    }`}>
+                      {ollamaStatus === 'connected' ? 'CONNECTED' : 'OFFLINE'}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={aiSettings.ollamaEndpoint}
+                      onChange={e => setAiSettings(prev => ({ ...prev, ollamaEndpoint: e.target.value }))}
+                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                    <button
+                      onClick={checkOllama}
+                      className="px-3 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all shrink-0"
+                    >
+                      Test Connection
+                    </button>
+                  </div>
+                </div>
+
+                {/* Python FastAPI Backend URL */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-[#A3A09B]">Python FastAPI ML Backend Endpoint</label>
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
+                      fastApiStatus === 'connected' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                    }`}>
+                      {fastApiStatus === 'connected' ? 'CONNECTED' : 'OFFLINE'}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={aiSettings.fastApiEndpoint}
+                      onChange={e => setAiSettings(prev => ({ ...prev, fastApiEndpoint: e.target.value }))}
+                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                    <button
+                      onClick={checkFastApi}
+                      className="px-3 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all shrink-0"
+                    >
+                      Test Backend
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: GENERATION DEFAULTS */}
+            {settingsTab === 'generation' && (
+              <div className="space-y-4 text-left">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#A3A09B]">Default System Persona</label>
+                  <textarea
+                    value={aiSettings.defaultSystemPrompt}
+                    onChange={e => {
+                      const v = e.target.value;
+                      setAiSettings(prev => ({ ...prev, defaultSystemPrompt: v }));
+                      setSystemPrompt(v);
+                    }}
+                    rows={2}
+                    className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-bold text-[#A3A09B]">Default Temperature</span>
+                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings.temperature}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={aiSettings.temperature}
+                      onChange={e => {
+                        const v = parseFloat(e.target.value);
+                        setAiSettings(prev => ({ ...prev, temperature: v }));
+                        setTemperature(v);
+                      }}
+                      className="w-full h-1 accent-[#3C6B4D]"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-bold text-[#A3A09B]">Default Top-P</span>
+                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings.topP}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={aiSettings.topP}
+                      onChange={e => {
+                        const v = parseFloat(e.target.value);
+                        setAiSettings(prev => ({ ...prev, topP: v }));
+                        setTopP(v);
+                      }}
+                      className="w-full h-1 accent-[#3C6B4D]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[#A3A09B]">Max Predict Tokens</label>
+                    <input
+                      type="number"
+                      value={aiSettings.maxTokens}
+                      onChange={e => {
+                        const v = parseInt(e.target.value) || 2048;
+                        setAiSettings(prev => ({ ...prev, maxTokens: v }));
+                        setMaxTokens(v);
+                      }}
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[#A3A09B]">Context Window ($N_{ctx}$)</label>
+                    <select
+                      value={aiSettings.numCtx}
+                      onChange={e => setAiSettings(prev => ({ ...prev, numCtx: parseInt(e.target.value) }))}
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    >
+                      <option value={2048}>2048 tokens (2K)</option>
+                      <option value={4096}>4096 tokens (4K)</option>
+                      <option value={8192}>8192 tokens (8K)</option>
+                      <option value={16384}>16384 tokens (16K)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: HARDWARE ACCELERATION */}
+            {settingsTab === 'hardware' && (
+              <div className="space-y-4 text-left">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[#A3A09B]">GPU Offload Layers (`n_gpu_layers`)</label>
+                    <input
+                      type="number"
+                      value={aiSettings.gpuLayers}
+                      onChange={e => setAiSettings(prev => ({ ...prev, gpuLayers: parseInt(e.target.value) || 0 }))}
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[#A3A09B]">CPU Threads</label>
+                    <input
+                      type="number"
+                      value={aiSettings.cpuThreads}
+                      onChange={e => setAiSettings(prev => ({ ...prev, cpuThreads: parseInt(e.target.value) || 4 }))}
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-[#A3A09B]">Quantization Target</label>
+                    <select
+                      value={aiSettings.quantization}
+                      onChange={e => setAiSettings(prev => ({ ...prev, quantization: e.target.value as any }))}
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    >
+                      <option value="q4_k_m">Q4_K_M (4-bit NF4 Recommended)</option>
+                      <option value="q8_0">Q8_0 (8-bit High Precision)</option>
+                      <option value="f16">F16 (16-bit Full Precision)</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-[#111213] border border-[#2A2D30] rounded-xl">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[#ECEBE9]">Flash Attention</p>
+                      <p className="text-[10px] text-[#72706C]">Accelerates matrix multiplication on modern GPUs</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={aiSettings.flashAttention}
+                      onChange={e => setAiSettings(prev => ({ ...prev, flashAttention: e.target.checked }))}
+                      className="w-4 h-4 accent-[#3C6B4D] rounded cursor-pointer"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: DATA & STORAGE */}
+            {settingsTab === 'storage' && (
+              <div className="space-y-4 text-left">
+                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                  <p className="text-xs font-bold text-[#ECEBE9] flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-[#3C6B4D]" />
+                    Local Privacy &amp; Data Path
+                  </p>
+                  <p className="text-[11px] text-[#A3A09B]">
+                    Ollama models are stored on disk at <code className="bg-[#18191B] px-1.5 py-0.5 rounded text-[#3C6B4D] font-mono">~/.ollama/models</code>. All AI Hub Studio sessions and JSONL datasets remain inside browser IndexedDB memory.
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleClearChatHistory}
+                    className="flex-1 py-2.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <Trash2 size={13} />
+                    <span>Clear Local Chat Storage</span>
+                  </button>
+
+                  <button
+                    onClick={handleResetSettings}
+                    className="flex-1 py-2.5 rounded-xl border border-[#2A2D30] bg-[#111213] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <RotateCcw size={13} />
+                    <span>Reset Settings to Defaults</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between border-t border-[#2A2D30] pt-4">
+              <span className="text-[10px] text-[#72706C]">Settings auto-saved to browser storage</span>
+              <button
+                onClick={() => setSettingsOpen(false)}
+                className="px-5 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all"
+              >
+                Done
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* Teaser Modal for remote visitors */}
       {showTeaserModal && (
