@@ -1796,7 +1796,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
         <main ref={mainContainerRef} className="flex-1 overflow-y-auto">
 
           {/* Topbar inside content */}
-          <div className="sticky top-0 z-10 bg-[#18191B]/95 backdrop-blur-sm border-b border-[#2A2D30] px-6 h-11 flex items-center justify-between">
+          <div className="sticky top-0 z-30 bg-[#18191B] border-b border-[#2A2D30] px-6 h-11 flex items-center justify-between">
             <div className="flex items-center gap-2 text-[13px] font-semibold text-[#A3A09B]">
               <span className="text-[#72706C]">AI Hub</span>
               <ChevronRight size={14} className="text-[#2A2D30]" />

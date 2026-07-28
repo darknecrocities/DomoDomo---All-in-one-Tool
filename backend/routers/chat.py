@@ -18,7 +18,7 @@ async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
         async def stream_generator():
             full_response = ""
             try:
-                async with httpx.AsyncClient(timeout=60.0) as client:
+                async with httpx.AsyncClient(timeout=httpx.Timeout(300.0, connect=15.0)) as client:
                     async with client.stream("POST", f"{OLLAMA_BASE_URL}/api/generate", json={
                         "model": req.model,
                         "prompt": f"{system_instruction}\n\nUser: {req.prompt}\nAssistant:",
@@ -39,6 +39,10 @@ async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
                                 except Exception:
                                     pass
                                 yield f"data: {line.strip()}\n\n"
+            except httpx.TimeoutException:
+                yield f"data: {json.dumps({'error': 'Ollama generation timed out after 300s.'})}\n\n"
+            except httpx.ConnectError:
+                yield f"data: {json.dumps({'error': f'Unable to connect to Ollama at {OLLAMA_BASE_URL}. Ensure Ollama is running.'})}\n\n"
             except Exception as e:
                 yield f"data: {json.dumps({'error': str(e)})}\n\n"
             finally:
@@ -64,7 +68,7 @@ async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
     }
 
     try:
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(300.0, connect=15.0)) as client:
             res = await client.post(f"{OLLAMA_BASE_URL}/api/generate", json=payload)
             if res.status_code != 200:
                 raise HTTPException(status_code=res.status_code, detail=f"Ollama returned error: {res.text}")
@@ -83,4 +87,19 @@ async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
         raise HTTPException(
             status_code=503, 
             detail=f"Unable to connect to Ollama at {OLLAMA_BASE_URL}. Ensure Ollama is running."
+        )
+    except httpx.TimeoutException:
+        raise HTTPException(
+            status_code=504,
+            detail="Ollama generation timed out after 300 seconds. Ensure the selected model is loaded and responsive."
+        )
+    except httpx.HTTPError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"HTTP error occurred while communicating with Ollama: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error in chat proxy: {str(e)}"
         )

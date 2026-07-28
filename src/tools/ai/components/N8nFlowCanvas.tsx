@@ -110,7 +110,7 @@ const PRESET_WORKFLOWS: WorkflowPreset[] = [
         iconName: 'Sparkles',
         color: '#059669',
         x: 380,
-        y: 120,
+        y: 200,
         status: 'completed',
         config: { model: 'nomic-embed-text', collection: 'doc_chunks', topK: 5 },
         inputs: [{ id: 'in', name: 'Document Input', type: 'input' }],
@@ -914,7 +914,10 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
           };
         } else if (node.type === 'agent') {
           const incomingQuery = chatInput.trim() || inputPayload.in?.query || 'Summarize the document findings and key topics.';
-          const docTextContext = inputPayload.in?.text || inputPayload.tool?.retrievedDocuments?.[0]?.text || inputPayload.in?.retrievedDocuments?.[0]?.text;
+          const docTextContext = inputPayload.in?.text 
+            || inputPayload.vector_store?.retrievedDocuments?.map((d: any) => d.text).join('\n\n')
+            || inputPayload.tool?.retrievedDocuments?.[0]?.text 
+            || inputPayload.in?.retrievedDocuments?.[0]?.text;
           const cleanText = cleanDocumentText(docTextContext || '');
           const connectedModel = inputPayload.model?.model || node.config.model || localModels[0] || 'gemma2:2b';
 
@@ -934,7 +937,7 @@ User Question: ${incomingQuery}`;
 
           let generatedText = '';
           try {
-            generatedText = await aiService.generateText(promptToRun, 350);
+            generatedText = await aiService.generateText(promptToRun, 350, undefined, connectedModel);
             generatedText = cleanDocumentText(generatedText);
           } catch {
             generatedText = cleanText
@@ -1132,8 +1135,12 @@ User Question: ${incomingQuery}`;
   };
 
   // Rich Markdown & Text Formatting Renderer for Chat Console
-  const renderFormattedChatMessage = (text: string) => {
+  const renderFormattedChatMessage = (text: string, isUser = false) => {
     if (!text) return null;
+
+    const textColorClass = isUser ? 'text-white' : 'text-[#ECEBE9]';
+    const headingColorClass = isUser ? 'text-emerald-200 font-extrabold' : 'text-[#3C6B4D] font-extrabold';
+    const bulletColorClass = isUser ? 'text-emerald-200 font-bold' : 'text-[#3C6B4D] font-bold';
 
     const lines = text.split('\n');
     const elements: React.ReactNode[] = [];
@@ -1165,13 +1172,15 @@ User Question: ${incomingQuery}`;
         const token = match[0];
         if (token.startsWith('**') && token.endsWith('**')) {
           parts.push(
-            <strong key={`b-${match.index}`} className="font-extrabold text-[#ECEBE9]">
+            <strong key={`b-${match.index}`} className={`font-extrabold ${isUser ? 'text-white' : 'text-[#ECEBE9]'}`}>
               {token.slice(2, -2)}
             </strong>
           );
         } else if (token.startsWith('`') && token.endsWith('`')) {
           parts.push(
-            <code key={`c-${match.index}`} className="px-1.5 py-0.5 rounded bg-[#18191B] border border-[#2A2D30] font-mono text-[11px] text-[#10A37F]">
+            <code key={`c-${match.index}`} className={`px-1.5 py-0.5 rounded font-mono text-[11px] ${
+              isUser ? 'bg-[#18191B]/60 border border-white/20 text-emerald-200' : 'bg-[#18191B] border border-[#2A2D30] text-[#10A37F]'
+            }`}>
               {token.slice(1, -1)}
             </code>
           );
@@ -1186,19 +1195,19 @@ User Question: ${incomingQuery}`;
       if (isBullet) {
         elements.push(
           <div key={`bullet-${idx}`} className="flex items-start gap-2 my-1 pl-1">
-            <span className="text-[#3C6B4D] font-bold text-sm shrink-0 leading-none mt-0.5">•</span>
-            <div className="flex-1 text-xs text-[#ECEBE9] leading-relaxed">{parts}</div>
+            <span className={`${bulletColorClass} text-sm shrink-0 leading-none mt-0.5`}>•</span>
+            <div className={`flex-1 text-xs ${textColorClass} leading-relaxed`}>{parts}</div>
           </div>
         );
       } else if (trimmed.startsWith('###')) {
         elements.push(
-          <h4 key={`h3-${idx}`} className="text-xs font-extrabold text-[#3C6B4D] mt-2 mb-1 uppercase tracking-wide">
+          <h4 key={`h3-${idx}`} className={`text-xs ${headingColorClass} mt-2 mb-1 uppercase tracking-wide`}>
             {trimmed.replace(/^###\s*/, '')}
           </h4>
         );
       } else {
         elements.push(
-          <p key={`p-${idx}`} className="text-xs text-[#ECEBE9] leading-relaxed my-0.5">
+          <p key={`p-${idx}`} className={`text-xs ${textColorClass} leading-relaxed my-0.5`}>
             {parts}
           </p>
         );
@@ -1606,16 +1615,28 @@ User Question: ${incomingQuery}`;
             {bottomPanelTab === 'chat' ? (
               <div className="flex-1 flex flex-col p-3 min-w-0">
                 <div className="flex-1 overflow-y-auto space-y-3 font-sans text-xs pr-2">
-                  {chatMessages.map((msg, i) => (
-                    <div key={i} className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] rounded-2xl p-3 ${
-                        msg.sender === 'user' ? 'bg-[#3C6B4D] text-white' : 'bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]'
-                      }`}>
-                        <div className="leading-relaxed">{renderFormattedChatMessage(msg.text)}</div>
-                        <span className="text-[9px] font-mono text-white/60 block mt-1 text-right">{msg.time}</span>
+                  {chatMessages.map((msg, i) => {
+                    const isUser = msg.sender === 'user';
+                    return (
+                      <div key={i} className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+                        <div
+                          style={{
+                            backgroundColor: isUser ? '#1E3A2B' : '#111213',
+                            color: '#ECEBE9',
+                            borderColor: isUser ? 'rgba(60, 107, 77, 0.6)' : '#2A2D30'
+                          }}
+                          className={`max-w-[80%] rounded-2xl p-3 border shadow-md ${
+                            isUser ? 'rounded-tr-xs' : 'rounded-tl-xs'
+                          }`}
+                        >
+                          <div className="leading-relaxed">{renderFormattedChatMessage(msg.text, isUser)}</div>
+                          <span className={`text-[9px] font-mono block mt-1 text-right ${isUser ? 'text-emerald-200/70' : 'text-[#72706C]'}`}>
+                            {msg.time}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="mt-2 flex items-center gap-2">
@@ -1749,7 +1770,7 @@ User Question: ${incomingQuery}`;
 
       {/* ── RICH CUSTOMIZABLE NODE CONFIG DRAWER ── */}
       {selectedNode && (
-        <div className="absolute right-4 top-16 z-30 w-80 bg-[#18191B] border border-[#3C6B4D]/60 rounded-2xl shadow-2xl p-4 space-y-3 font-sans max-h-[580px] overflow-y-auto">
+        <div className="absolute right-3 top-3 z-30 w-80 bg-[#18191B] border border-[#3C6B4D]/60 rounded-2xl shadow-2xl p-4 space-y-3 font-sans max-h-[calc(100%-24px)] overflow-y-auto">
           <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2">
             <span className="text-xs font-black text-[#3C6B4D] flex items-center gap-1.5">
               <Settings size={14} /> Edit Node Settings

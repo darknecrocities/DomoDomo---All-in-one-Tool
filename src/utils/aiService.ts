@@ -551,7 +551,7 @@ export const aiService = {
           temperature: options?.temperature || 0.7,
           stream: isStreaming
         })
-      }, 120000);
+      }, 300000);
 
       if (proxyRes.ok) {
         if (isStreaming && proxyRes.body) {
@@ -585,7 +585,7 @@ export const aiService = {
         }
       }
     } catch (e) {
-      // Local Python backend is offline, fall back to direct Ollama
+      // Local Python backend is offline or timed out, fall back to direct Ollama
     }
 
     // 2. Direct fallback to Ollama endpoint (Port 11434)
@@ -606,7 +606,7 @@ export const aiService = {
           top_p: options?.topP
         }
       })
-    }, 120000);
+    }, 300000);
 
     if (!res.ok) throw new Error('Ollama failed to generate text');
 
