@@ -1,6 +1,6 @@
 # 🐼 DomoDomo — 100% Client-Side Agentic AI & Local-First Toolbox
 
-DomoDomo is an open-source, **100% client-side, offline-first Agentic AI platform and productivity workshop**. Built with a high-performance, zero-cloud architecture, all operations—including autonomous multi-agent orchestration, local model context protocol (MCP) tool execution, document processing, and media suite tools—run completely inside your browser sandbox and local environment. Your data, code, images, PDFs, and files never leave your computer—no external servers or cloud APIs are ever touched.
+DomoDomo is an open-source, **100% client-side, offline-first Agentic AI platform and productivity workshop**. Built as a high-performance, private, zero-server architecture toolbox, all operations—including autonomous multi-agent orchestration, local model context protocol (MCP) tool execution, document processing, and media suite tools—run completely inside your browser sandbox and local environment. Your data, code, images, PDFs, and files never leave your computer—no servers, no APIs, and no external clouds are ever touched.
 
 [👥 View Contributors](CONTRIBUTORS.md) | [🛠️ Contributing Guidelines](CONTRIBUTING.md)
 
