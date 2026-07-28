@@ -1096,6 +1096,41 @@ User Question: ${incomingQuery}`;
     }
   };
 
+  // Global Canvas Drag & Drop File Ingestion Handler
+  const handleCanvasDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    let targetNode = nodes.find(n => n.type === 'document_upload' || n.type === 'trigger' || n.id.includes('doc') || n.title.toLowerCase().includes('document') || n.title.toLowerCase().includes('input'));
+
+    if (targetNode) {
+      handleFileUpload(targetNode.id, file);
+      setSelectedNodeId(targetNode.id);
+    } else {
+      const newId = `doc-${Date.now()}`;
+      const newNode: FlowNode = {
+        id: newId,
+        type: 'document_upload',
+        title: 'Document & Data Ingestion',
+        subtitle: file.name,
+        category: 'Data Ingestion',
+        iconName: 'FileText',
+        color: '#A855F7',
+        x: 180,
+        y: 200,
+        status: 'idle',
+        config: { fileName: file.name, fileSize: file.size },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Document Text', type: 'output', label: '1 file' }]
+      };
+      updateActiveWorkflow(w => ({ ...w, nodes: [...w.nodes, newNode] }));
+      handleFileUpload(newId, file);
+      setSelectedNodeId(newId);
+    }
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] min-h-[640px] max-h-[920px] w-full bg-[#111213] text-[#ECEBE9] font-sans rounded-3xl border border-[#2A2D30] overflow-hidden select-none relative">
       {/* ── TOP HEADER / NAVIGATION ── */}
@@ -1189,6 +1224,8 @@ User Question: ${incomingQuery}`;
         onMouseDown={handleCanvasMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        onDragOver={e => e.preventDefault()}
+        onDrop={handleCanvasDrop}
         className="flex-1 relative overflow-hidden bg-[#111213] cursor-grab active:cursor-grabbing"
       >
         <div
@@ -1312,12 +1349,13 @@ User Question: ${incomingQuery}`;
 
                 {/* Node Body & Inline Document Uploader */}
                 <div className="p-3 space-y-2 relative">
-                  {isDocUpload && (
-                    <label className="block p-2 bg-[#111213] border border-dashed border-[#A855F7]/40 hover:border-[#A855F7] rounded-xl text-center cursor-pointer transition-colors group">
+                  {(isDocUpload || node.type === 'trigger' || node.id.includes('doc') || node.title.toLowerCase().includes('document') || node.title.toLowerCase().includes('input')) && (
+                    <label className="block p-2.5 bg-[#111213] border border-dashed border-[#A855F7]/60 hover:border-[#A855F7] rounded-xl text-center cursor-pointer transition-colors group">
                       <Upload size={14} className="mx-auto text-[#A855F7] mb-1 group-hover:scale-110 transition-transform" />
-                      <span className="text-[10px] font-bold text-[#ECEBE9] block">
-                        {node.config.fileName ? `Uploaded: ${node.config.fileName}` : 'Drop or Upload File (.txt, .json, .csv, .pdf)'}
+                      <span className="text-[10px] font-bold text-[#ECEBE9] block truncate">
+                        {node.config.fileName ? `📄 ${node.config.fileName}` : '📁 Upload PDF / Text Data'}
                       </span>
+                      <span className="text-[9px] text-[#72706C] block">(.pdf, .txt, .json, .csv, .docx)</span>
                       <input
                         type="file"
                         accept=".txt,.json,.csv,.md,.pdf,.docx"
@@ -1644,23 +1682,41 @@ User Question: ${incomingQuery}`;
             </button>
           </div>
 
-          {selectedNode.type === 'document_upload' && (
+          {(selectedNode.type === 'document_upload' || selectedNode.type === 'trigger' || selectedNode.id.includes('doc') || selectedNode.title.toLowerCase().includes('document') || selectedNode.title.toLowerCase().includes('input') || selectedNode.config.fileName) && (
             <div className="p-3 bg-[#111213] border border-[#A855F7]/40 rounded-xl space-y-2">
-              <span className="text-[10px] font-bold text-[#A855F7] uppercase block">Upload Data File</span>
-              <input
-                type="file"
-                accept=".txt,.json,.csv,.md,.pdf,.docx"
-                onChange={e => {
-                  if (e.target.files?.[0]) {
-                    handleFileUpload(selectedNode.id, e.target.files[0]);
-                  }
-                }}
-                className="w-full text-xs text-[#ECEBE9] file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-[#A855F7] file:text-white"
-              />
+              <span className="text-[10px] font-bold text-[#A855F7] uppercase block">Upload Data File (.pdf, .txt, .json, .csv)</span>
+              <label className="flex items-center justify-center gap-2 p-2.5 bg-[#18191B] border border-dashed border-[#A855F7]/60 hover:border-[#A855F7] rounded-xl cursor-pointer text-xs text-[#ECEBE9] font-bold transition-all">
+                <Upload size={14} className="text-[#A855F7]" />
+                <span>{selectedNode.config.fileName ? `Change File: ${selectedNode.config.fileName}` : '📁 Choose PDF / Data File'}</span>
+                <input
+                  type="file"
+                  accept=".txt,.json,.csv,.md,.pdf,.docx"
+                  className="hidden"
+                  onChange={e => {
+                    if (e.target.files?.[0]) {
+                      handleFileUpload(selectedNode.id, e.target.files[0]);
+                    }
+                  }}
+                />
+              </label>
               {selectedNode.config.fileContent && (
-                <div className="text-[10px] font-mono text-[#72706C] space-y-1">
-                  <p>File: {selectedNode.config.fileName}</p>
-                  <p>Size: {selectedNode.config.fileSize} bytes ({selectedNode.config.lineCount} lines)</p>
+                <div className="text-[10px] text-[#72706C] space-y-1 font-mono pt-1">
+                  <div className="flex justify-between">
+                    <span>File Name:</span>
+                    <span className="text-[#ECEBE9] font-bold truncate max-w-[140px]">{selectedNode.config.fileName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Extracted Size:</span>
+                    <span className="text-[#ECEBE9] font-bold">{(selectedNode.config.fileSize / 1024).toFixed(1)} KB</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Parsed Lines:</span>
+                    <span className="text-[#ECEBE9] font-bold">{selectedNode.config.lineCount || 1}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Character Count:</span>
+                    <span className="text-[#ECEBE9] font-bold">{selectedNode.config.fileContent.length}</span>
+                  </div>
                 </div>
               )}
             </div>
