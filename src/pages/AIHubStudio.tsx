@@ -24,7 +24,15 @@ import {
   Copy,
   Check,
   HardDrive,
-  Globe
+  Search,
+  FolderOpen,
+  Layers,
+  ChevronRight,
+  Clock,
+  Zap,
+  Settings,
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 
@@ -247,6 +255,9 @@ export const AIHubStudio = () => {
 
   // Teaser Modal for Remote Web Visitors
   const [showTeaserModal, setShowTeaserModal] = useState(false);
+
+  // Sidebar collapse state
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const hostname = window.location.hostname;
@@ -818,7 +829,729 @@ export function useLocalAI() {
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
+    <>
+      <Helmet>
+        <title>AI Hub Studio — Unsloth Fine-Tune &amp; n8n Local AI Workspace | DomoDomo</title>
+        <meta name="description" content="Local AI Hub Studio: ChatGPT-style interface, Ollama LLM Downloader, Unsloth QLoRA fine-tuning, n8n workflow automation." />
+        <link rel="canonical" href="https://domodomo.site/ai-hub" />
+      </Helmet>
+
+      <div className="flex h-[calc(100vh-56px)] overflow-hidden bg-[#111213]">
+
+        {/* ── LEFT SIDEBAR ── */}
+        <aside
+          className={`flex flex-col shrink-0 bg-[#18191B] border-r border-[#2A2D30] transition-all duration-300 ${
+            sidebarCollapsed ? 'w-14' : 'w-56'
+          }`}
+        >
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between px-3 py-3 border-b border-[#2A2D30]">
+            {!sidebarCollapsed && (
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#3C6B4D] flex items-center justify-center">
+                  <Bot size={13} className="text-white" />
+                </div>
+                <span className="text-sm font-extrabold text-[#ECEBE9] tracking-tight">AI Hub</span>
+                <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full">BETA</span>
+              </div>
+            )}
+            <button
+              onClick={() => setSidebarCollapsed(p => !p)}
+              className="p-1.5 rounded-lg text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30] transition-all"
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {sidebarCollapsed ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
+            </button>
+          </div>
+
+          {/* Ollama Status Pill */}
+          {!sidebarCollapsed && (
+            <div className="px-3 py-2 border-b border-[#2A2D30]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${
+                    ollamaStatus === 'connected' ? 'bg-emerald-500' :
+                    ollamaStatus === 'checking' ? 'bg-amber-400 animate-ping' : 'bg-red-500'
+                  }`} />
+                  <span className="text-[11px] text-[#A3A09B] font-medium">
+                    {ollamaStatus === 'connected' ? `Ollama · ${models.length} models` :
+                     ollamaStatus === 'checking' ? 'Connecting...' : 'Offline (sim)'}
+                  </span>
+                </div>
+                <button onClick={checkOllama} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Refresh">
+                  <RefreshCw size={10} className={ollamaStatus === 'checking' ? 'animate-spin' : ''} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Main nav */}
+          <nav className="flex flex-col gap-0.5 p-2 pt-2">
+            {/* New Chat */}
+            <button
+              onClick={() => setActiveTab('chat')}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                activeTab === 'chat'
+                  ? 'bg-[#2A2D30] text-[#ECEBE9]'
+                  : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+              }`}
+              title="Chat & Inference"
+            >
+              <MessageSquare size={15} className="shrink-0" />
+              {!sidebarCollapsed && <span>New Chat</span>}
+            </button>
+
+            {/* Search */}
+            <button
+              className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all"
+              title="Search"
+            >
+              <Search size={15} className="shrink-0" />
+              {!sidebarCollapsed && <span>Search</span>}
+            </button>
+
+            {/* Projects / Library */}
+            <button
+              onClick={() => setActiveTab('library')}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                activeTab === 'library'
+                  ? 'bg-[#2A2D30] text-[#ECEBE9]'
+                  : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+              }`}
+              title="Model Library"
+            >
+              <FolderOpen size={15} className="shrink-0" />
+              {!sidebarCollapsed && <span>Projects</span>}
+            </button>
+
+            {/* Hub / Docs */}
+            <button
+              onClick={() => setActiveTab('docs')}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                activeTab === 'docs'
+                  ? 'bg-[#2A2D30] text-[#ECEBE9]'
+                  : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+              }`}
+              title="Hub & Docs"
+            >
+              <Layers size={15} className="shrink-0" />
+              {!sidebarCollapsed && <span>Hub</span>}
+            </button>
+          </nav>
+
+          {/* Divider + Train section */}
+          <div className="px-2 mt-1">
+            {!sidebarCollapsed && (
+              <p className="text-[10px] font-bold text-[#2A2D30] uppercase tracking-widest px-1 mb-1">Train</p>
+            )}
+            <div className="flex flex-col gap-0.5">
+              <button
+                onClick={() => setActiveTab('train')}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                  activeTab === 'train'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                    : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Fine-Tune"
+              >
+                <Wand2 size={15} className="shrink-0" />
+                {!sidebarCollapsed && <span>Train</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('eval')}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                  activeTab === 'eval'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                    : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Recipes / Eval"
+              >
+                <Database size={15} className="shrink-0" />
+                {!sidebarCollapsed && <span>Recipes</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('workflow')}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                  activeTab === 'workflow'
+                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                    : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Export / Automations"
+              >
+                <Workflow size={15} className="shrink-0" />
+                {!sidebarCollapsed && <span>Export</span>}
+              </button>
+            </div>
+          </div>
+
+          {/* Recents */}
+          {!sidebarCollapsed && (
+            <div className="px-2 mt-3 flex-1 overflow-y-auto">
+              <p className="text-[10px] font-bold text-[#2A2D30] uppercase tracking-widest px-1 mb-1">Recents</p>
+              {messages.length === 0 ? (
+                <p className="text-[11px] text-[#2A2D30] px-1">No recent chats</p>
+              ) : (
+                <div className="flex flex-col gap-0.5">
+                  {messages.filter(m => m.role === 'user').slice(-5).map((m, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveTab('chat')}
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all text-left"
+                    >
+                      <Clock size={11} className="shrink-0" />
+                      <span className="truncate">{m.content.slice(0, 28)}…</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Bottom: model selector + settings */}
+          <div className="mt-auto border-t border-[#2A2D30] p-2">
+            {!sidebarCollapsed && ollamaStatus === 'connected' && models.length > 0 && (
+              <select
+                value={selectedModel}
+                onChange={e => setSelectedModel(e.target.value)}
+                className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1.5 text-[11px] text-[#ECEBE9] font-medium focus:outline-none focus:border-[#3C6B4D] mb-1"
+              >
+                {models.map(m => (
+                  <option key={m.digest} value={m.name}>{m.name}</option>
+                ))}
+              </select>
+            )}
+            <button
+              className="flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all"
+              title="Settings"
+            >
+              <Settings size={15} className="shrink-0" />
+              {!sidebarCollapsed && <span>Settings</span>}
+            </button>
+          </div>
+        </aside>
+
+        {/* ── MAIN CONTENT ── */}
+        <main className="flex-1 overflow-y-auto">
+
+          {/* Topbar inside content */}
+          <div className="sticky top-0 z-10 bg-[#18191B]/95 backdrop-blur-sm border-b border-[#2A2D30] px-6 h-11 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[13px] font-semibold text-[#A3A09B]">
+              <span className="text-[#72706C]">AI Hub</span>
+              <ChevronRight size={14} className="text-[#2A2D30]" />
+              <span className="text-[#ECEBE9]">
+                {activeTab === 'chat' && 'Chat & Inference'}
+                {activeTab === 'library' && 'Model Library'}
+                {activeTab === 'train' && 'Unsloth Fine-Tune'}
+                {activeTab === 'eval' && 'Test & Benchmark'}
+                {activeTab === 'workflow' && 'n8n Automations'}
+                {activeTab === 'docs' && 'Docs & Integration'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border ${
+                ollamaStatus === 'connected'
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                  : 'bg-[#1E2022] border-[#2A2D30] text-[#72706C]'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${ollamaStatus === 'connected' ? 'bg-emerald-500' : 'bg-[#2A2D30]'}`} />
+                {ollamaStatus === 'connected' ? `Ollama · ${selectedModel || models[0]?.name || 'No model'}` : 'Ollama Offline'}
+              </span>
+              <button onClick={checkOllama} className="p-1.5 rounded-lg text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-all" title="Refresh connection">
+                <RefreshCw size={13} className={ollamaStatus === 'checking' ? 'animate-spin' : ''} />
+              </button>
+            </div>
+          </div>
+
+          {/* TAB CONTENT — scrollable */}
+          <div className="p-6">
+
+            {/* ── CHAT TAB ── */}
+            {activeTab === 'chat' && (
+              <div className="flex flex-col h-[calc(100vh-56px-44px-48px)] gap-4">
+                {/* Chat area */}
+                <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+                  {messages.length === 0 && (
+                    <div className="flex flex-col items-center justify-center h-full text-center gap-4 py-16">
+                      <div className="w-16 h-16 rounded-2xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 flex items-center justify-center">
+                        <Bot size={28} className="text-[#3C6B4D]" />
+                      </div>
+                      <div>
+                        <p className="text-[#ECEBE9] font-bold text-lg">Start a conversation</p>
+                        <p className="text-[#72706C] text-sm mt-1">Ask your local LLM anything — it runs entirely offline.</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 max-w-sm w-full mt-2">
+                        {['Explain LoRA fine-tuning', 'Write a Python data pipeline', 'Summarize this code', 'What is RAG?'].map(s => (
+                          <button
+                            key={s}
+                            onClick={() => { setChatInput(s); }}
+                            className="px-3 py-2.5 rounded-xl bg-[#18191B] border border-[#2A2D30] text-xs text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 transition-all text-left"
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {messages.map((msg, i) => (
+                    <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      {msg.role === 'assistant' && (
+                        <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 flex items-center justify-center shrink-0 mt-0.5">
+                          <Bot size={15} className="text-[#3C6B4D]" />
+                        </div>
+                      )}
+                      <div className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                        msg.role === 'user'
+                          ? 'bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 text-[#ECEBE9] rounded-tr-sm'
+                          : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] rounded-tl-sm'
+                      }`}>
+                        <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>
+                      </div>
+                    </div>
+                  ))}
+                  {isStreaming && (
+                    <div className="flex gap-3 justify-start">
+                      <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 flex items-center justify-center shrink-0">
+                        <Bot size={15} className="text-[#3C6B4D] animate-pulse" />
+                      </div>
+                      <div className="bg-[#18191B] border border-[#2A2D30] px-4 py-3 rounded-2xl rounded-tl-sm">
+                        <div className="flex gap-1">
+                          {[0,1,2].map(d => <span key={d} className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-bounce" style={{ animationDelay: `${d * 150}ms` }} />)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={chatBottomRef} />
+                </div>
+
+                {/* Input row */}
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-3 flex gap-3 items-end">
+                  <textarea
+                    value={chatInput}
+                    onChange={e => setChatInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
+                    placeholder="Message your local AI... (Enter to send, Shift+Enter for newline)"
+                    rows={2}
+                    className="flex-1 bg-transparent text-sm text-[#ECEBE9] placeholder-[#72706C] resize-none focus:outline-none"
+                  />
+                  <div className="flex items-center gap-2 shrink-0">
+                    {messages.length > 0 && (
+                      <button onClick={() => setMessages([])} className="p-2 rounded-xl text-[#72706C] hover:text-red-400 hover:bg-red-950/20 transition-all" title="Clear chat">
+                        <Trash2 size={15} />
+                      </button>
+                    )}
+                    <button
+                      onClick={handleSendChat}
+                      disabled={!chatInput.trim() || isStreaming}
+                      className="px-4 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-bold transition-all flex items-center gap-2"
+                    >
+                      <Send size={14} />
+                      <span>Send</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Config strip */}
+                <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#72706C]">
+                  <div className="flex items-center gap-1.5">
+                    <SlidersIcon size={11} />
+                    <span>Temp:</span>
+                    <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-[#3C6B4D]" />
+                    <span className="font-mono text-[#3C6B4D]">{temperature}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span>Max tokens:</span>
+                    <input type="number" value={maxTokens} onChange={e => setMaxTokens(parseInt(e.target.value))} className="w-16 bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] font-mono focus:outline-none" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span>Model:</span>
+                    {models.length > 0 ? (
+                      <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)} className="bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] focus:outline-none">
+                        {models.map(m => <option key={m.digest} value={m.name}>{m.name}</option>)}
+                      </select>
+                    ) : (
+                      <span className="text-[#3C6B4D]">{selectedModel || 'llama3.2:3b (sim)'}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── MODEL LIBRARY TAB ── */}
+            {activeTab === 'library' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Model Library</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Download and manage Ollama-compatible LLMs</p>
+                  </div>
+                  <div className="flex gap-2">
+                    {(['all', 'low-spec', 'balanced', 'coding', 'vision', 'heavy'] as const).map(f => (
+                      <button
+                        key={f}
+                        onClick={() => setCatalogFilter(f)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                          catalogFilter === f
+                            ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40'
+                            : 'bg-[#18191B] text-[#72706C] border border-[#2A2D30] hover:text-[#ECEBE9]'
+                        }`}
+                      >{f}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {filteredCatalog.map(model => {
+                    const isInstalled = models.some(m => m.name === model.id);
+                    const isDownloading = downloadingModelId === model.id;
+                    return (
+                      <div key={model.id} className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-4 hover:border-[#3C6B4D]/40 transition-all flex flex-col gap-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-sm font-bold text-[#ECEBE9]">{model.name}</p>
+                            <p className="text-[11px] text-[#72706C] font-mono">{model.id}</p>
+                          </div>
+                          {isInstalled && (
+                            <span className="text-[9px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0">INSTALLED</span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-[#A3A09B] leading-relaxed flex-1">{model.desc}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {model.tags.map(t => <span key={t} className="text-[9px] bg-[#111213] border border-[#2A2D30] text-[#72706C] px-1.5 py-0.5 rounded">{t}</span>)}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-[11px] text-[#72706C]">
+                            <span className="font-mono text-[#ECEBE9]">{model.size}</span> · {model.ram}
+                          </div>
+                          <button
+                            onClick={() => handleDownloadModel(model.id)}
+                            disabled={isDownloading || isInstalled}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                              isInstalled
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 cursor-default'
+                                : isDownloading
+                                ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/30 cursor-wait'
+                                : 'bg-[#3C6B4D] hover:bg-[#2E533B] text-white border-0'
+                            }`}
+                          >
+                            {isInstalled ? <><Check size={12} /> Ready</> :
+                             isDownloading ? <><Activity size={12} className="animate-spin" /> {downloadProgress}%</> :
+                             <><Download size={12} /> Pull</>}
+                          </button>
+                        </div>
+                        {isDownloading && (
+                          <div className="h-1.5 bg-[#111213] rounded-full overflow-hidden">
+                            <div className="h-full bg-[#3C6B4D] transition-all duration-300 rounded-full" style={{ width: `${downloadProgress}%` }} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── TRAIN / FINE-TUNE TAB ── */}
+            {activeTab === 'train' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Unsloth Fine-Tune Studio</h2>
+                    <p className="text-[#72706C] text-xs mt-0.5">Build QLoRA recipes, synthesize datasets, run training jobs</p>
+                  </div>
+                </div>
+
+                {/* Two-column layout: recipe builder + training config */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                  {/* Dataset Recipe Builder */}
+                  <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
+                      <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
+                        <Database size={14} className="text-[#3C6B4D]" /> Dataset Recipe Builder
+                      </h3>
+                      <span className="text-[10px] font-mono text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded-full border border-[#3C6B4D]/30">{datasetPairs.length} pairs</span>
+                    </div>
+                    <div className="space-y-2">
+                      <textarea
+                        value={recipePrompt}
+                        onChange={e => setRecipePrompt(e.target.value)}
+                        rows={3}
+                        placeholder="Describe what dataset you want to generate..."
+                        className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleSynthesizeDataset}
+                          disabled={isSynthesizing}
+                          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] text-xs font-bold hover:bg-[#3C6B4D]/25 disabled:opacity-50 transition-all"
+                        >
+                          <Sparkles size={13} className={isSynthesizing ? 'animate-spin' : ''} />
+                          {isSynthesizing ? 'Synthesizing...' : 'Synthesize Dataset'}
+                        </button>
+                        {datasetPairs.length > 0 && (
+                          <button onClick={handleExportJSONL} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-bold transition-all">
+                            <Download size={13} /> JSONL
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {/* Dataset rows */}
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {datasetPairs.map((pair, i) => (
+                        <div key={pair.id} className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[9px] font-mono font-black text-[#3C6B4D]">PAIR #{i + 1}</span>
+                            <button onClick={() => setDatasetPairs(prev => prev.filter(p => p.id !== pair.id))} className="text-[#72706C] hover:text-red-400">
+                              <X size={11} />
+                            </button>
+                          </div>
+                          <p className="text-[11px] text-[#A3A09B]"><span className="text-[#72706C] font-bold">Q:</span> {pair.instruction}</p>
+                          <p className="text-[11px] text-[#ECEBE9] leading-relaxed line-clamp-2"><span className="text-[#72706C] font-bold">A:</span> {pair.response}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Training Config + Run */}
+                  <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                    <div className="border-b border-[#2A2D30] pb-3">
+                      <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
+                        <Wand2 size={14} className="text-[#3C6B4D]" /> QLoRA Training Config
+                      </h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { label: 'Base Model', type: 'text', val: baseModel, set: setBaseModel },
+                        { label: 'LoRA Rank (r)', type: 'number', val: loraRank, set: (v: string) => setLoraRank(parseInt(v)) },
+                        { label: 'Learning Rate', type: 'text', val: learningRate, set: setLearningRate },
+                        { label: 'Epochs', type: 'number', val: epochs, set: (v: string) => setEpochs(parseInt(v)) },
+                        { label: 'Batch Size', type: 'number', val: batchSize, set: (v: string) => setBatchSize(parseInt(v)) },
+                        { label: 'Max Seq Length', type: 'number', val: maxSeqLen, set: (v: string) => setMaxSeqLen(parseInt(v)) },
+                      ].map(({ label, type, val, set }) => (
+                        <div key={label} className="space-y-1">
+                          <label className="text-[10px] font-bold text-[#72706C] uppercase tracking-wide">{label}</label>
+                          <input
+                            type={type}
+                            value={val}
+                            onChange={e => set(e.target.value)}
+                            className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleStartTrainingSim}
+                      disabled={isTrainingSim || datasetPairs.length === 0}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
+                    >
+                      <Play size={14} className={isTrainingSim ? 'animate-pulse' : ''} />
+                      {isTrainingSim ? 'Training in Progress...' : 'Start QLoRA Training'}
+                    </button>
+                    {/* Loss curve */}
+                    {isTrainingSim && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-[#72706C]">Training Loss</span>
+                          <span className="font-mono text-[#3C6B4D]">{trainingLoss.toFixed(4)}</span>
+                        </div>
+                        <canvas ref={lossCanvasRef} width={400} height={120} className="w-full rounded-xl border border-[#2A2D30]" />
+                        <div className="flex items-center justify-between text-[10px] text-[#72706C]">
+                          <span>Step {trainingStep}/{totalSteps}</span>
+                          <span>{Math.round((trainingStep / totalSteps) * 100)}% complete</span>
+                        </div>
+                      </div>
+                    )}
+                    {trainingLogs.length > 0 && (
+                      <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 max-h-32 overflow-y-auto font-mono text-[10px] text-[#3C6B4D] space-y-0.5">
+                        {trainingLogs.map((log, i) => <div key={i}>{log}</div>)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── EVAL / BENCHMARK TAB ── */}
+            {activeTab === 'eval' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Test & Eval Benchmarks</h2>
+                  <p className="text-[#72706C] text-xs mt-0.5">Compare two models side-by-side on custom prompts</p>
+                </div>
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                  <textarea
+                    value={evalPrompt}
+                    onChange={e => setEvalPrompt(e.target.value)}
+                    rows={3}
+                    placeholder="Enter your evaluation prompt..."
+                    className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-sm text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-[#72706C] uppercase">Model A</label>
+                      <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)} className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]">
+                        {models.length > 0 ? models.map(m => <option key={m.digest} value={m.name}>{m.name}</option>) : <option>llama3.2:3b (sim)</option>}
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-[#72706C] uppercase">Model B</label>
+                      <select value={secondaryModel} onChange={e => setSecondaryModel(e.target.value)} className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]">
+                        {models.length > 0 ? models.map(m => <option key={m.digest} value={m.name}>{m.name}</option>) : <option>qwen2.5:1.5b (sim)</option>}
+                      </select>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleRunEval}
+                    disabled={isEvalRunning}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
+                  >
+                    <BarChart2 size={14} className={isEvalRunning ? 'animate-pulse' : ''} />
+                    {isEvalRunning ? 'Running Benchmark...' : 'Run Side-by-Side Benchmark'}
+                  </button>
+                  {(evalOutput1 || evalOutput2) && (
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                      {[{ label: 'Model A', output: evalOutput1, latency: evalLatency1, tps: evalTps1 }, { label: 'Model B', output: evalOutput2, latency: evalLatency2, tps: evalTps2 }].map(({ label, output, latency, tps }) => (
+                        <div key={label} className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 space-y-3">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-[#3C6B4D]">{label}</span>
+                            <div className="flex items-center gap-3 text-[#72706C] font-mono">
+                              <span>{latency}ms</span>
+                              <span>{tps} tok/s</span>
+                            </div>
+                          </div>
+                          <pre className="text-[11px] text-[#ECEBE9] font-mono whitespace-pre-wrap leading-relaxed max-h-40 overflow-y-auto">{output}</pre>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ── WORKFLOW / n8n TAB ── */}
+            {activeTab === 'workflow' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">n8n Workflow Automations</h2>
+                  <p className="text-[#72706C] text-xs mt-0.5">Chain AI nodes to automate local tasks</p>
+                </div>
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                  {/* Node palette */}
+                  <div className="flex flex-wrap gap-2 pb-4 border-b border-[#2A2D30]">
+                    {['Data Trigger', 'LLM Synthesizer', 'QLoRA Trainer', 'JSONL Exporter'].map((nodeName, i) => (
+                      <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl text-xs text-[#A3A09B] cursor-grab">
+                        <Zap size={11} className="text-[#3C6B4D]" />
+                        <span>{nodeName}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Nodes flow */}
+                  <div className="space-y-2">
+                    {nodes.map((node, i) => (
+                      <div key={node.id} className="flex items-center gap-3">
+                        <div className={`flex items-center gap-3 flex-1 p-3 rounded-xl border transition-all ${
+                          node.status === 'running' ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/40' :
+                          node.status === 'completed' ? 'bg-emerald-500/5 border-emerald-500/25' :
+                          'bg-[#111213] border-[#2A2D30]'
+                        }`}>
+                          <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                            node.status === 'running' ? 'bg-[#3C6B4D] animate-ping' :
+                            node.status === 'completed' ? 'bg-emerald-500' : 'bg-[#2A2D30]'
+                          }`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-[#ECEBE9]">{node.name}</p>
+                            <p className="text-[10px] text-[#72706C]">{node.desc}</p>
+                          </div>
+                          <span className={`text-[9px] font-mono font-black px-2 py-0.5 rounded-full border ${
+                            node.status === 'running' ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border-[#3C6B4D]/30' :
+                            node.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25' :
+                            'bg-[#111213] text-[#72706C] border-[#2A2D30]'
+                          }`}>{node.status.toUpperCase()}</span>
+                        </div>
+                        {i < nodes.length - 1 && <ChevronRight size={14} className="text-[#2A2D30] shrink-0" />}
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleRunWorkflow}
+                    disabled={isWorkflowRunning}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
+                  >
+                    <Workflow size={14} className={isWorkflowRunning ? 'animate-pulse' : ''} />
+                    {isWorkflowRunning ? 'Running Workflow...' : 'Run Automation Workflow'}
+                  </button>
+                  {workflowOutput && (
+                    <div className="bg-[#111213] border border-emerald-500/25 rounded-xl p-4 text-xs text-emerald-400 font-mono whitespace-pre-line">
+                      {workflowOutput}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ── DOCS TAB ── */}
+            {activeTab === 'docs' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-lg font-extrabold text-[#ECEBE9]">Docs & Integration Code</h2>
+                  <p className="text-[#72706C] text-xs mt-0.5">Ready-to-use code snippets for integrating Ollama into your projects</p>
+                </div>
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
+                  <div className="flex gap-2">
+                    {(['javascript', 'python', 'curl', 'react'] as const).map(lang => (
+                      <button key={lang} onClick={() => setCodeLang(lang)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                        codeLang === lang
+                          ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                          : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
+                      }`}>{lang}</button>
+                    ))}
+                    <button onClick={handleCopyCode} className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#111213] border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] transition-all">
+                      {copiedCode ? <><Check size={12} className="text-emerald-400" /> Copied!</> : <><Copy size={12} /> Copy</>}
+                    </button>
+                  </div>
+                  <pre className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 text-[11px] text-[#ECEBE9] font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">
+                    {getCodeSnippet()}
+                  </pre>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </main>
+      </div>
+
+      {/* Teaser Modal for remote visitors */}
+      {showTeaserModal && (
+        <div className="fixed inset-0 bg-[#0A0B0C]/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-[#18191B] border border-[#2A2D30] rounded-3xl p-8 space-y-6 shadow-2xl text-center">
+            <div className="w-16 h-16 rounded-2xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 flex items-center justify-center mx-auto">
+              <Bot size={28} className="text-[#3C6B4D]" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-extrabold text-[#ECEBE9]">AI Hub Studio</h2>
+              <p className="text-[#A3A09B] text-sm leading-relaxed">
+                This is a <span className="text-[#3C6B4D] font-bold">local-only</span> feature. AI Hub Studio requires Ollama running on your machine (<code className="bg-[#111213] px-1 py-0.5 rounded text-[#3C6B4D] font-mono">localhost:11434</code>) to power LLM inference, fine-tuning, and automation.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <a href="https://ollama.ai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-sm font-black transition-all">
+                <Download size={15} /> Get Ollama
+              </a>
+              <a href="/download" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#2A2D30] text-[#ECEBE9] text-sm font-bold hover:bg-[#1E2022] transition-all">
+                Download Desktop App
+              </a>
+            </div>
+            <button onClick={() => setShowTeaserModal(false)} className="text-[#72706C] text-xs hover:text-[#A3A09B] transition-colors">
+              Preview anyway (simulation mode)
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+
       <Helmet>
         <title>AI Hub Studio — Unsloth Fine-Tune & n8n Local AI Workspace | DomoDomo</title>
         <meta
@@ -1704,6 +2437,6 @@ export function useLocalAI() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
