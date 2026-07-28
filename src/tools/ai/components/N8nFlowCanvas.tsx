@@ -1131,6 +1131,83 @@ User Question: ${incomingQuery}`;
     }
   };
 
+  // Rich Markdown & Text Formatting Renderer for Chat Console
+  const renderFormattedChatMessage = (text: string) => {
+    if (!text) return null;
+
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+
+    lines.forEach((line, idx) => {
+      let trimmed = line.trim();
+
+      if (!trimmed) {
+        elements.push(<div key={`blank-${idx}`} className="h-1" />);
+        return;
+      }
+
+      // Check if line is a bullet point (starts with * or - or •)
+      const isBullet = /^[\*\-\•]\s+/.test(trimmed);
+      if (isBullet) {
+        trimmed = trimmed.replace(/^[\*\-\•]\s+/, '');
+      }
+
+      // Parse bold **text** and inline `code`
+      const parts: React.ReactNode[] = [];
+      const regex = /(\*\*.*?\*\*|`.*?`)/g;
+      let lastIndex = 0;
+      let match: RegExpExecArray | null;
+
+      while ((match = regex.exec(trimmed)) !== null) {
+        if (match.index > lastIndex) {
+          parts.push(trimmed.substring(lastIndex, match.index));
+        }
+        const token = match[0];
+        if (token.startsWith('**') && token.endsWith('**')) {
+          parts.push(
+            <strong key={`b-${match.index}`} className="font-extrabold text-[#ECEBE9]">
+              {token.slice(2, -2)}
+            </strong>
+          );
+        } else if (token.startsWith('`') && token.endsWith('`')) {
+          parts.push(
+            <code key={`c-${match.index}`} className="px-1.5 py-0.5 rounded bg-[#18191B] border border-[#2A2D30] font-mono text-[11px] text-[#10A37F]">
+              {token.slice(1, -1)}
+            </code>
+          );
+        }
+        lastIndex = regex.lastIndex;
+      }
+
+      if (lastIndex < trimmed.length) {
+        parts.push(trimmed.substring(lastIndex));
+      }
+
+      if (isBullet) {
+        elements.push(
+          <div key={`bullet-${idx}`} className="flex items-start gap-2 my-1 pl-1">
+            <span className="text-[#3C6B4D] font-bold text-sm shrink-0 leading-none mt-0.5">•</span>
+            <div className="flex-1 text-xs text-[#ECEBE9] leading-relaxed">{parts}</div>
+          </div>
+        );
+      } else if (trimmed.startsWith('###')) {
+        elements.push(
+          <h4 key={`h3-${idx}`} className="text-xs font-extrabold text-[#3C6B4D] mt-2 mb-1 uppercase tracking-wide">
+            {trimmed.replace(/^###\s*/, '')}
+          </h4>
+        );
+      } else {
+        elements.push(
+          <p key={`p-${idx}`} className="text-xs text-[#ECEBE9] leading-relaxed my-0.5">
+            {parts}
+          </p>
+        );
+      }
+    });
+
+    return <div className="space-y-1">{elements}</div>;
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] min-h-[640px] max-h-[920px] w-full bg-[#111213] text-[#ECEBE9] font-sans rounded-3xl border border-[#2A2D30] overflow-hidden select-none relative">
       {/* ── TOP HEADER / NAVIGATION ── */}
@@ -1534,7 +1611,7 @@ User Question: ${incomingQuery}`;
                       <div className={`max-w-[80%] rounded-2xl p-3 ${
                         msg.sender === 'user' ? 'bg-[#3C6B4D] text-white' : 'bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]'
                       }`}>
-                        <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
+                        <div className="leading-relaxed">{renderFormattedChatMessage(msg.text)}</div>
                         <span className="text-[9px] font-mono text-white/60 block mt-1 text-right">{msg.time}</span>
                       </div>
                     </div>

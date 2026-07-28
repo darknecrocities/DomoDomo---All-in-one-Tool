@@ -1,5 +1,5 @@
 // DomoDomo PWA Service Worker (Auto-generated on build)
-const CACHE_NAME = 'domodomo-cache-7be59a2';
+const CACHE_NAME = 'domodomo-cache-6e7188c';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
