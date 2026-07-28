@@ -42,7 +42,15 @@ import {
   Server,
   Gauge,
   Sliders,
-  RotateCcw
+  RotateCcw,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff,
+  Paperclip,
+  GitCommit,
+  Lock,
+  EyeOff
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 
@@ -186,6 +194,8 @@ export interface AISettings {
   flashAttention: boolean;
   quantization: 'q4_k_m' | 'q8_0' | 'f16';
   autoRefreshOllama: boolean;
+  piiRedaction: boolean;
+  autoSpeakResponse: boolean;
 }
 
 const DEFAULT_SETTINGS: AISettings = {
@@ -200,7 +210,9 @@ const DEFAULT_SETTINGS: AISettings = {
   cpuThreads: 8,
   flashAttention: true,
   quantization: 'q4_k_m',
-  autoRefreshOllama: true
+  autoRefreshOllama: true,
+  piiRedaction: false,
+  autoSpeakResponse: false
 };
 
 export const AIHubStudio = () => {
@@ -216,7 +228,7 @@ export const AIHubStudio = () => {
     }
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [settingsTab, setSettingsTab] = useState<'endpoints' | 'generation' | 'hardware' | 'storage'>('endpoints');
+  const [settingsTab, setSettingsTab] = useState<'endpoints' | 'generation' | 'hardware' | 'privacy'>('endpoints');
 
   // Save settings to LocalStorage
   useEffect(() => {
@@ -236,6 +248,7 @@ export const AIHubStudio = () => {
 
   // Model Library Downloader State
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy'>('all');
+  const [catalogSearch, setCatalogSearch] = useState<string>('');
   const [downloadingModelId, setDownloadingModelId] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
   const [customPullInput, setCustomPullInput] = useState<string>('');
@@ -257,12 +270,16 @@ export const AIHubStudio = () => {
     }
   });
   const [chatInput, setChatInput] = useState('');
+  const [attachedFile, setAttachedFile] = useState<{ name: string; content: string } | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isListeningVoice, setIsListeningVoice] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const [systemPrompt, setSystemPrompt] = useState(aiSettings.defaultSystemPrompt);
   const [temperature, setTemperature] = useState<number>(aiSettings.temperature);
   const [topP, setTopP] = useState<number>(aiSettings.topP);
   const [maxTokens, setMaxTokens] = useState<number>(aiSettings.maxTokens);
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Save chat messages to LocalStorage
   useEffect(() => {
@@ -358,7 +375,6 @@ export const AIHubStudio = () => {
         const fetchedModels: OllamaModel[] = data.models || [];
         setModels(fetchedModels);
         if (fetchedModels.length > 0) {
-          // If current selectedModel is not in fetched models, pick the first fetched model
           if (!fetchedModels.some(m => m.name === selectedModel)) {
             setSelectedModel(fetchedModels[0].name);
           }
@@ -399,6 +415,74 @@ export const AIHubStudio = () => {
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // PII Masking Helper
+  const maskPII = (text: string) => {
+    if (!aiSettings.piiRedaction) return text;
+    return text
+      .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_EMAIL]')
+      .replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '[REDACTED_IP]')
+      .replace(/\b(?:\d[ -]*?){13,16}\b/g, '[REDACTED_CARD]');
+  };
+
+  // Text-To-Speech Playback
+  const toggleSpeech = (msgId: string, text: string) => {
+    if ('speechSynthesis' in window) {
+      if (speakingMsgId === msgId) {
+        window.speechSynthesis.cancel();
+        setSpeakingMsgId(null);
+      } else {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.onend = () => setSpeakingMsgId(null);
+        utterance.onerror = () => setSpeakingMsgId(null);
+        window.speechSynthesis.speak(utterance);
+        setSpeakingMsgId(msgId);
+      }
+    }
+  };
+
+  // Voice Input Dictation (Web Speech API)
+  const toggleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Web Speech Recognition API is not supported in this browser.');
+      return;
+    }
+
+    if (isListeningVoice) {
+      setIsListeningVoice(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => setIsListeningVoice(true);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setChatInput(prev => (prev ? `${prev} ${transcript}` : transcript));
+      setIsListeningVoice(false);
+    };
+    recognition.onerror = () => setIsListeningVoice(false);
+    recognition.onend = () => setIsListeningVoice(false);
+
+    recognition.start();
+  };
+
+  // Handle File Upload Attachment
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setAttachedFile({ name: file.name, content: content.slice(0, 10000) });
+    };
+    reader.readAsText(file);
+  };
 
   // Draw Loss Curve Canvas in Train Tab
   useEffect(() => {
@@ -511,17 +595,25 @@ export const AIHubStudio = () => {
 
   // Handle Send Chat
   const handleSendChat = async () => {
-    if (!chatInput.trim() || isStreaming) return;
+    if ((!chatInput.trim() && !attachedFile) || isStreaming) return;
+
+    let fullPromptText = chatInput;
+    if (attachedFile) {
+      fullPromptText = `[Context File: ${attachedFile.name}]\n${attachedFile.content}\n\n[User Query]\n${chatInput}`;
+    }
+
+    const maskedPrompt = maskPII(fullPromptText);
 
     const userMsg: ChatMessage = {
       id: `usr-${Date.now()}`,
       sender: 'user',
-      content: chatInput,
+      content: maskedPrompt,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     setMessages(prev => [...prev, userMsg]);
     setChatInput('');
+    setAttachedFile(null);
     setIsStreaming(true);
 
     const assistantMsgId = `ast-${Date.now()}`;
@@ -543,7 +635,7 @@ export const AIHubStudio = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: selectedModel,
-            prompt: chatInput,
+            prompt: maskedPrompt,
             system: systemPrompt,
             options: {
               temperature,
@@ -594,9 +686,13 @@ export const AIHubStudio = () => {
         setMessages(prev =>
           prev.map(m => (m.id === assistantMsgId ? { ...m, tokensPerSec: tps, latencyMs: lat } : m))
         );
+
+        if (aiSettings.autoSpeakResponse && fullText) {
+          toggleSpeech(assistantMsgId, fullText);
+        }
       } else {
         // Fallback simulation mode
-        const simulatedResp = `[Local Offline Simulation · Model: ${selectedModel}] Here is the response to "${userMsg.content}". When Ollama is running on ${aiSettings.ollamaEndpoint}, inference streams directly from your hardware without sending data to cloud servers.`;
+        const simulatedResp = `[Local Offline Simulation · Model: ${selectedModel}] Here is the response to your prompt. When Ollama is running on ${aiSettings.ollamaEndpoint}, inference streams directly from your hardware without sending data to cloud servers.`;
         let currentText = '';
 
         for (let i = 0; i < simulatedResp.length; i += 3) {
@@ -614,6 +710,10 @@ export const AIHubStudio = () => {
               : m
           )
         );
+
+        if (aiSettings.autoSpeakResponse) {
+          toggleSpeech(assistantMsgId, simulatedResp);
+        }
       }
     } catch (error) {
       setMessages(prev =>
@@ -943,9 +1043,14 @@ SYSTEM """${systemPrompt}"""
   };
 
   // Filter Model Catalog
-  const filteredCatalog = COMPATIBLE_MODEL_CATALOG.filter(
-    m => catalogFilter === 'all' || m.category === catalogFilter
-  );
+  const filteredCatalog = COMPATIBLE_MODEL_CATALOG.filter(m => {
+    const categoryMatch = catalogFilter === 'all' || m.category === catalogFilter;
+    const searchMatch = !catalogSearch.trim() ||
+      m.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+      m.id.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+      m.tags.some(t => t.toLowerCase().includes(catalogSearch.toLowerCase()));
+    return categoryMatch && searchMatch;
+  });
 
   // Reset AI Settings to Factory Defaults
   const handleResetSettings = () => {
@@ -1306,7 +1411,7 @@ export function useOllama(modelName = '${selectedModel}') {
           {/* TAB CONTENT — scrollable */}
           <div className="p-6">
 
-            {/* ── CHAT TAB (Dynamic Ollama Model Selection) ── */}
+            {/* ── CHAT TAB (Dynamic Model Selector, Voice & File Attachments) ── */}
             {activeTab === 'chat' && (
               <div className="flex flex-col h-[calc(100vh-56px-44px-48px)] gap-4">
                 {/* Header Model Selection Bar for New Chat */}
@@ -1336,6 +1441,16 @@ export function useOllama(modelName = '${selectedModel}') {
                   </div>
 
                   <div className="flex items-center gap-2">
+                    {/* Quick Git Commit Generator Template */}
+                    <button
+                      onClick={() => setChatInput('Generate a conventional git commit message for these changes:\n- Add dynamic Ollama model selector\n- Add PII redaction guardrail\n- Add voice dictation and file drop context')}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs text-[#A3A09B] hover:text-[#ECEBE9] font-bold transition-all"
+                      title="Git Commit Template"
+                    >
+                      <GitCommit size={13} className="text-[#3C6B4D]" />
+                      <span>Git Commit</span>
+                    </button>
+
                     <button
                       onClick={() => setActiveTab('library')}
                       className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all"
@@ -1385,11 +1500,20 @@ export function useOllama(modelName = '${selectedModel}') {
                           : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] rounded-tl-sm'
                       }`}>
                         <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>
-                        {msg.tokensPerSec !== undefined && (
-                          <div className="mt-2 text-[10px] font-mono text-[#72706C] flex gap-3 border-t border-[#2A2D30]/60 pt-1.5">
-                            <span>Model: {msg.modelUsed || selectedModel}</span>
-                            <span>Speed: {msg.tokensPerSec} tok/s</span>
-                            <span>Latency: {msg.latencyMs}ms</span>
+                        {msg.sender === 'assistant' && (
+                          <div className="mt-2 text-[10px] font-mono text-[#72706C] flex items-center justify-between border-t border-[#2A2D30]/60 pt-1.5">
+                            <div className="flex items-center gap-3">
+                              <span>Model: {msg.modelUsed || selectedModel}</span>
+                              {msg.tokensPerSec !== undefined && <span>Speed: {msg.tokensPerSec} tok/s</span>}
+                              {msg.latencyMs !== undefined && <span>Latency: {msg.latencyMs}ms</span>}
+                            </div>
+                            <button
+                              onClick={() => toggleSpeech(msg.id, msg.content)}
+                              className="p-1 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                              title="Read out loud"
+                            >
+                              {speakingMsgId === msg.id ? <VolumeX size={12} className="text-[#3C6B4D]" /> : <Volume2 size={12} />}
+                            </button>
                           </div>
                         )}
                       </div>
@@ -1410,8 +1534,36 @@ export function useOllama(modelName = '${selectedModel}') {
                   <div ref={chatBottomRef} />
                 </div>
 
-                {/* Input row */}
+                {/* Attached File Preview */}
+                {attachedFile && (
+                  <div className="flex items-center justify-between bg-[#111213] border border-[#3C6B4D]/50 px-3 py-1.5 rounded-xl text-xs text-[#ECEBE9] font-mono shrink-0">
+                    <div className="flex items-center gap-2 truncate">
+                      <Paperclip size={13} className="text-[#3C6B4D]" />
+                      <span className="truncate">{attachedFile.name} ({attachedFile.content.length} chars)</span>
+                    </div>
+                    <button onClick={() => setAttachedFile(null)} className="text-[#72706C] hover:text-red-400">
+                      <X size={13} />
+                    </button>
+                  </div>
+                )}
+
+                {/* Input row with voice & file attachment */}
                 <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-3 flex gap-3 items-end">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept=".txt,.md,.json,.csv,.js,.py,.html,.css"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-2 rounded-xl text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30] transition-all"
+                    title="Attach text file context (.txt, .md, .json, .csv)"
+                  >
+                    <Paperclip size={16} />
+                  </button>
+
                   <textarea
                     value={chatInput}
                     onChange={e => setChatInput(e.target.value)}
@@ -1420,7 +1572,18 @@ export function useOllama(modelName = '${selectedModel}') {
                     rows={2}
                     className="flex-1 bg-transparent text-sm text-[#ECEBE9] placeholder-[#72706C] resize-none focus:outline-none"
                   />
-                  <div className="flex items-center gap-2 shrink-0">
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={toggleVoiceInput}
+                      className={`p-2 rounded-xl transition-all ${
+                        isListeningVoice ? 'bg-red-500/20 text-red-400 animate-pulse' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30]'
+                      }`}
+                      title="Voice Dictation"
+                    >
+                      {isListeningVoice ? <MicOff size={16} /> : <Mic size={16} />}
+                    </button>
+
                     {messages.length > 0 && (
                       <button onClick={handleClearChatHistory} className="p-2 rounded-xl text-[#72706C] hover:text-red-400 hover:bg-red-950/20 transition-all" title="Clear chat history">
                         <Trash2 size={15} />
@@ -1428,7 +1591,7 @@ export function useOllama(modelName = '${selectedModel}') {
                     )}
                     <button
                       onClick={handleSendChat}
-                      disabled={!chatInput.trim() || isStreaming}
+                      disabled={(!chatInput.trim() && !attachedFile) || isStreaming}
                       className="px-4 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-bold transition-all flex items-center gap-2"
                     >
                       <Send size={14} />
@@ -1452,14 +1615,23 @@ export function useOllama(modelName = '${selectedModel}') {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-1.5 cursor-pointer text-[10px]">
+                      <input
+                        type="checkbox"
+                        checked={aiSettings.piiRedaction}
+                        onChange={e => setAiSettings(prev => ({ ...prev, piiRedaction: e.target.checked }))}
+                        className="w-3 h-3 accent-[#3C6B4D]"
+                      />
+                      <span>PII Masking</span>
+                    </label>
                     <span>Endpoint: <code className="text-[#ECEBE9] font-mono">{aiSettings.ollamaEndpoint}</code></span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* ── MODEL LIBRARY TAB ── */}
+            {/* ── MODEL LIBRARY TAB (Search & Direct Pull) ── */}
             {activeTab === 'library' && (
               <div className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1482,27 +1654,37 @@ export function useOllama(modelName = '${selectedModel}') {
                   </div>
                 </div>
 
-                {/* Custom Ollama Pull Bar */}
-                <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl flex flex-col sm:flex-row items-center gap-3">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#A3A09B] shrink-0">
-                    <Terminal size={14} className="text-[#3C6B4D]" />
-                    <span>Custom Pull Tag:</span>
+                {/* Search Bar & Custom Pull Bar */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl flex items-center gap-2">
+                    <Search size={14} className="text-[#72706C]" />
+                    <input
+                      type="text"
+                      value={catalogSearch}
+                      onChange={e => setCatalogSearch(e.target.value)}
+                      placeholder="Search catalog by model name, tags, or specs..."
+                      className="w-full bg-transparent text-xs text-[#ECEBE9] placeholder-[#72706C] focus:outline-none"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    value={customPullInput}
-                    onChange={e => setCustomPullInput(e.target.value)}
-                    placeholder="e.g. deepseek-r1:7b, llama3.3:70b, codellama:7b..."
-                    className="flex-1 w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
-                  />
-                  <button
-                    onClick={() => handleDownloadModel(customPullInput)}
-                    disabled={!customPullInput.trim() || downloadingModelId === customPullInput}
-                    className="px-4 py-1.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1.5"
-                  >
-                    <Download size={13} />
-                    <span>Pull Model</span>
-                  </button>
+
+                  <div className="bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl flex items-center gap-2">
+                    <Terminal size={14} className="text-[#3C6B4D] shrink-0" />
+                    <input
+                      type="text"
+                      value={customPullInput}
+                      onChange={e => setCustomPullInput(e.target.value)}
+                      placeholder="e.g. deepseek-r1:7b, llama3.3:70b..."
+                      className="flex-1 w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                    />
+                    <button
+                      onClick={() => handleDownloadModel(customPullInput)}
+                      disabled={!customPullInput.trim() || downloadingModelId === customPullInput}
+                      className="px-3 py-1 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1"
+                    >
+                      <Download size={12} />
+                      <span>Pull</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -1941,8 +2123,8 @@ export function useOllama(modelName = '${selectedModel}') {
                   <Settings size={16} className="text-[#3C6B4D]" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-[#ECEBE9]">AI Hub Settings</h3>
-                  <p className="text-[11px] text-[#72706C]">Configure local Ollama endpoints, ML training servers, generation parameters &amp; GPU hardware acceleration.</p>
+                  <h3 className="text-base font-extrabold text-[#ECEBE9]">AI Hub Settings &amp; Privacy</h3>
+                  <p className="text-[11px] text-[#72706C]">Configure endpoints, parameters, hardware acceleration, PII redaction &amp; voice features.</p>
                 </div>
               </div>
               <button
@@ -1992,15 +2174,15 @@ export function useOllama(modelName = '${selectedModel}') {
               </button>
 
               <button
-                onClick={() => setSettingsTab('storage')}
+                onClick={() => setSettingsTab('privacy')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-                  settingsTab === 'storage'
+                  settingsTab === 'privacy'
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
                     : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
                 }`}
               >
-                <HardDrive size={13} />
-                <span>Data &amp; Storage</span>
+                <ShieldCheck size={13} />
+                <span>Privacy &amp; Voice</span>
               </button>
             </div>
 
@@ -2207,20 +2389,42 @@ export function useOllama(modelName = '${selectedModel}') {
               </div>
             )}
 
-            {/* TAB 4: DATA & STORAGE */}
-            {settingsTab === 'storage' && (
+            {/* TAB 4: PRIVACY & VOICE */}
+            {settingsTab === 'privacy' && (
               <div className="space-y-4 text-left">
-                <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
-                  <p className="text-xs font-bold text-[#ECEBE9] flex items-center gap-2">
-                    <ShieldCheck size={14} className="text-[#3C6B4D]" />
-                    Local Privacy &amp; Data Path
-                  </p>
-                  <p className="text-[11px] text-[#A3A09B]">
-                    Ollama models are stored on disk at <code className="bg-[#18191B] px-1.5 py-0.5 rounded text-[#3C6B4D] font-mono">~/.ollama/models</code>. All AI Hub Studio sessions and JSONL datasets remain inside browser IndexedDB memory.
-                  </p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3.5 bg-[#111213] border border-[#2A2D30] rounded-xl">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                        <EyeOff size={13} className="text-[#3C6B4D]" /> Automatic PII Masking Guardrail
+                      </p>
+                      <p className="text-[10px] text-[#72706C]">Redacts emails, IP addresses, and credit card numbers before processing</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={aiSettings.piiRedaction}
+                      onChange={e => setAiSettings(prev => ({ ...prev, piiRedaction: e.target.checked }))}
+                      className="w-4 h-4 accent-[#3C6B4D] rounded cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3.5 bg-[#111213] border border-[#2A2D30] rounded-xl">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                        <Volume2 size={13} className="text-[#3C6B4D]" /> Auto Text-to-Speech Playback
+                      </p>
+                      <p className="text-[10px] text-[#72706C]">Reads local assistant responses out loud using browser speech synthesis</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={aiSettings.autoSpeakResponse}
+                      onChange={e => setAiSettings(prev => ({ ...prev, autoSpeakResponse: e.target.checked }))}
+                      className="w-4 h-4 accent-[#3C6B4D] rounded cursor-pointer"
+                    />
+                  </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-2">
                   <button
                     onClick={handleClearChatHistory}
                     className="flex-1 py-2.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
