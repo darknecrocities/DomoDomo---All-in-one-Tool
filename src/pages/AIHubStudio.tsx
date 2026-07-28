@@ -2403,7 +2403,7 @@ export function useOllama(modelName = '${selectedModel}') {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#A3A09B]">Default System Persona</label>
                   <textarea
-                    value={aiSettings.defaultSystemPrompt}
+                    value={aiSettings?.defaultSystemPrompt ?? DEFAULT_SETTINGS.defaultSystemPrompt}
                     onChange={e => {
                       const v = e.target.value;
                       setAiSettings(prev => ({ ...prev, defaultSystemPrompt: v }));
@@ -2418,16 +2418,16 @@ export function useOllama(modelName = '${selectedModel}') {
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs">
                       <span className="font-bold text-[#A3A09B]">Default Temperature</span>
-                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings.temperature}</span>
+                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings?.temperature ?? DEFAULT_SETTINGS.temperature}</span>
                     </div>
                     <input
                       type="range"
                       min="0"
                       max="1"
                       step="0.1"
-                      value={aiSettings.temperature}
+                      value={aiSettings?.temperature ?? DEFAULT_SETTINGS.temperature}
                       onChange={e => {
-                        const v = parseFloat(e.target.value);
+                        const v = parseFloat(e.target.value) || 0.7;
                         setAiSettings(prev => ({ ...prev, temperature: v }));
                         setTemperature(v);
                       }}
@@ -2438,16 +2438,16 @@ export function useOllama(modelName = '${selectedModel}') {
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs">
                       <span className="font-bold text-[#A3A09B]">Default Top-P</span>
-                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings.topP}</span>
+                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings?.topP ?? DEFAULT_SETTINGS.topP}</span>
                     </div>
                     <input
                       type="range"
                       min="0"
                       max="1"
                       step="0.1"
-                      value={aiSettings.topP}
+                      value={aiSettings?.topP ?? DEFAULT_SETTINGS.topP}
                       onChange={e => {
-                        const v = parseFloat(e.target.value);
+                        const v = parseFloat(e.target.value) || 0.9;
                         setAiSettings(prev => ({ ...prev, topP: v }));
                         setTopP(v);
                       }}
@@ -2461,7 +2461,7 @@ export function useOllama(modelName = '${selectedModel}') {
                     <label className="text-xs font-bold text-[#A3A09B]">Max Predict Tokens</label>
                     <input
                       type="number"
-                      value={aiSettings.maxTokens}
+                      value={aiSettings?.maxTokens ?? DEFAULT_SETTINGS.maxTokens}
                       onChange={e => {
                         const v = parseInt(e.target.value) || 2048;
                         setAiSettings(prev => ({ ...prev, maxTokens: v }));
@@ -2472,10 +2472,10 @@ export function useOllama(modelName = '${selectedModel}') {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[#A3A09B]">Context Window ($N_{ctx}$)</label>
+                    <label className="text-xs font-bold text-[#A3A09B]">Context Window (N_ctx)</label>
                     <select
-                      value={aiSettings.numCtx}
-                      onChange={e => setAiSettings(prev => ({ ...prev, numCtx: parseInt(e.target.value) }))}
+                      value={aiSettings?.numCtx ?? DEFAULT_SETTINGS.numCtx}
+                      onChange={e => setAiSettings(prev => ({ ...prev, numCtx: parseInt(e.target.value) || 4096 }))}
                       className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
                     >
                       <option value={2048}>2048 tokens (2K)</option>
@@ -2493,10 +2493,10 @@ export function useOllama(modelName = '${selectedModel}') {
               <div className="space-y-4 text-left">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[#A3A09B]">GPU Offload Layers (`n_gpu_layers`)</label>
+                    <label className="text-xs font-bold text-[#A3A09B]">GPU Offload Layers (n_gpu_layers)</label>
                     <input
                       type="number"
-                      value={aiSettings.gpuLayers}
+                      value={aiSettings?.gpuLayers ?? DEFAULT_SETTINGS.gpuLayers}
                       onChange={e => setAiSettings(prev => ({ ...prev, gpuLayers: parseInt(e.target.value) || 0 }))}
                       className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
                     />
@@ -2506,7 +2506,7 @@ export function useOllama(modelName = '${selectedModel}') {
                     <label className="text-xs font-bold text-[#A3A09B]">CPU Threads</label>
                     <input
                       type="number"
-                      value={aiSettings.cpuThreads}
+                      value={aiSettings?.cpuThreads ?? DEFAULT_SETTINGS.cpuThreads}
                       onChange={e => setAiSettings(prev => ({ ...prev, cpuThreads: parseInt(e.target.value) || 4 }))}
                       className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
                     />
