@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import PUBLIC_APIS_DATA from '../assets/public-apis.json';
 import PH_APIS_DATA from '../assets/philippine-apis.json';
+import { TransparentVideoMascot } from '../components/TransparentVideoMascot';
 
 
 interface APIEntry {
@@ -182,9 +183,9 @@ curl -X GET "${endpoint}" \\
         <link rel="canonical" href="https://domodomo.site/library-api" />
       </Helmet>
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#18191B] to-[#1E2022] border border-[#2A2D30] p-8 md:p-10 shadow-lg">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#18191B] to-[#1E2022] border border-[#2A2D30] p-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 max-w-3xl space-y-4">
+        <div className="relative z-10 max-w-2xl space-y-4 flex-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-xs font-bold uppercase tracking-wider">
             <Database size={13} />
             <span>Public API Repository</span>
@@ -195,6 +196,15 @@ curl -X GET "${endpoint}" \\
           <p className="text-[#A3A09B] text-sm md:text-base leading-relaxed">
             Browse through 1,900+ verified, free, and open-source public APIs across dozens of industries. Select APIs to check authentication models, CORS details, links, and code snippets.
           </p>
+        </div>
+
+        {/* Right side animated mascot video (domo_ladder.mp4) with real-time white background removal */}
+        <div className="relative z-20 shrink-0 flex items-center justify-center -my-4 md:-my-6">
+          <TransparentVideoMascot
+            src="/domo_ladder.mp4"
+            className="w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+            clickable={true}
+          />
         </div>
       </div>
 
