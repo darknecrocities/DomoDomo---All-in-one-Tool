@@ -1,6 +1,78 @@
 [
   {
+    "hash": "7053e13",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): expand AI Hub Studio with Model Library Downloader and Docs Integration Code Generator"
+  },
+  {
+    "hash": "56cb671",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "4a06c4d",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/appbar-hamburger-ai-hub-unsloth-studio'"
+  },
+  {
+    "hash": "9f47943",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(appbar): redesign appbar with responsive mobile hamburger drawer and add AI Hub Studio (Unsloth & n8n automation)"
+  },
+  {
+    "hash": "cc9acd8",
+    "date": "2026-07-28",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #53 from darknecrocities/feat/expanded-design-network-suites"
+  },
+  {
+    "hash": "810f285",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "4012736",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(library-api): add transparent domo_ladder.mp4 mascot video overlay to Library API Hub header card"
+  },
+  {
+    "hash": "22e660f",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(library-api): add transparent domo_ladder.mp4 mascot video overlay to Library API Hub header card"
+  },
+  {
+    "hash": "c820038",
+    "date": "2026-07-28",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #52 from darknecrocities/feat/expanded-design-network-suites"
+  },
+  {
+    "hash": "76a0ac0",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
+    "hash": "bf031b2",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "docs(readme): merge updated agentic README from main"
+  },
+  {
     "hash": "b5e4565",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "docs(readme): focus README on agentic AI capabilities & fix release-manifest detached HEAD push"
+  },
+  {
+    "hash": "71202c3",
     "date": "2026-07-28",
     "author": "darknecrocities",
     "message": "docs(readme): focus README on agentic AI capabilities & fix release-manifest detached HEAD push"
@@ -16,77 +88,5 @@
     "date": "2026-07-28",
     "author": "RhonzKieee",
     "message": "Update description to include 'Agentic'"
-  },
-  {
-    "hash": "83069b4",
-    "date": "2026-07-27",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "e243f44",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ci): remove invalid secrets reference in step if condition in release-manifest workflow"
-  },
-  {
-    "hash": "675b5b0",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(blog): remove community feedback section from blog container"
-  },
-  {
-    "hash": "5125c6b",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ui): expand 3D cube box stage container height and translateZ depth to prevent clipping"
-  },
-  {
-    "hash": "e1c1af8",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ci): fix release-manifest workflow to handle empty secrets, quote escaping, and paths-ignore"
-  },
-  {
-    "hash": "2cf7881",
-    "date": "2026-07-27",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "4e8d509",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/expanded-design-network-suites'"
-  },
-  {
-    "hash": "f52f5c7",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(mascot): update mascot overlay with domotap2.mp4 and interactive white popup speech bubble"
-  },
-  {
-    "hash": "bf5ad99",
-    "date": "2026-07-27",
-    "author": "darknecrocities",
-    "message": "fix(mascot): render mascot as top layer floating overlay on bottom-right corner without affecting terminal card height"
-  },
-  {
-    "hash": "a7ff446",
-    "date": "2026-07-27",
-    "author": "darknecrocities",
-    "message": "fix(mascot): preserve natural video aspect ratio and lock position to bottom right corner of terminal card"
-  },
-  {
-    "hash": "e3065be",
-    "date": "2026-07-27",
-    "author": "darknecrocities",
-    "message": "fix(mascot): implement connected flood fill algorithm to strip outer video background while preserving panda character face and belly"
-  },
-  {
-    "hash": "36d95f2",
-    "date": "2026-07-27",
-    "author": "darknecrocities",
-    "message": "feat(video): add auto-detection for checkerboard grids and typical background colors"
   }
 ]
