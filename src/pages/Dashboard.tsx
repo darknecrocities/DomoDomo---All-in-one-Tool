@@ -1192,6 +1192,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		status: "functional",
 		requiresOllama: true,
 	},
+	{
+		id: "ai-hub-studio",
+		name: "AI Hub Studio (Unsloth & n8n)",
+		categories: ["ai"],
+		description: "Local AI workspace featuring ChatGPT-style chat, Unsloth QLoRA fine-tuning recipe builder, side-by-side benchmark evaluator, and n8n workflow automations.",
+		icon: "Bot",
+		status: "functional",
+		popular: true,
+		requiresOllama: true,
+	},
 
 	// Data & Visualizer (10)
 	{

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2 } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
 import { unifiedMemory } from '../utils/unifiedMemory';
@@ -272,6 +272,22 @@ export const Shell = () => {
               Tools
             </NavLink>
             <NavLink
+              to="/ai-hub"
+              className={({ isActive }) =>
+                `tracking-wide transition-all flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${
+                  isActive
+                    ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border-[#3C6B4D]/35'
+                    : 'text-[#A3A09B] hover:text-[#ECEBE9] border-transparent hover:bg-[#1E2022]'
+                }`
+              }
+            >
+              <Bot size={13} className="text-[#3C6B4D]" />
+              <span>AI Hub</span>
+              <span className="text-[9px] font-mono font-bold bg-[#3C6B4D]/20 text-[#3C6B4D] px-1.5 rounded-full border border-[#3C6B4D]/30">
+                NEW
+              </span>
+            </NavLink>
+            <NavLink
               to="/about"
               className={({ isActive }) =>
                 `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
@@ -415,135 +431,160 @@ export const Shell = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 border-t border-[#2A2D30]">
-            <nav className="flex flex-col gap-1 pb-3">
+          <div className="md:hidden mt-3 pt-4 border-t border-[#2A2D30] animate-fadeIn">
+            <nav className="flex flex-col gap-1.5 pb-4">
               <NavLink
                 to="/"
                 end
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center justify-between ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
-                Tools
+                <span>Tools Workspace</span>
+                <span className="text-[10px] font-mono text-[#72706C]">100+</span>
               </NavLink>
+
+              <NavLink
+                to="/ai-hub"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center justify-between ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#ECEBE9] bg-[#111213] border border-[#3C6B4D]/40'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-2">
+                  <Bot size={16} className="text-[#3C6B4D]" />
+                  <span>AI Hub Studio</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold bg-[#3C6B4D]/25 text-[#3C6B4D] px-2 py-0.5 rounded-full border border-[#3C6B4D]/40">
+                  Unsloth & n8n
+                </span>
+              </NavLink>
+
               <NavLink
                 to="/about"
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
-                About
+                About Application
               </NavLink>
+
               <NavLink
                 to="/download"
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/10' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
-                Download
+                Download Desktop App
               </NavLink>
-              <Link
+
+              <NavLink
+                to="/library-api"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
+              >
+                API Library Repository
+              </NavLink>
+
+              <NavLink
                 to="/docs"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
+                className={({ isActive }) =>
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
               >
-                Docs
-              </Link>
-              <Link
+                Documentation
+              </NavLink>
+
+              <NavLink
                 to="/blog"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
+                className={({ isActive }) =>
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
               >
-                Blog
-              </Link>
-              <Link
+                Blog & News
+              </NavLink>
+
+              <NavLink
                 to="/settings"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors"
+                className={({ isActive }) =>
+                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
+                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
               >
-                Settings
-              </Link>
-              <a
-                href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors flex items-center gap-2"
-              >
-                <GithubIcon size={16} />
-                <span>GitHub</span>
-                {stars !== null && (
-                  <>
-                    <Star size={12} className="text-[#E29E2D] fill-[#E29E2D]" />
-                    <span className="text-[10px] font-mono">{stars}</span>
-                  </>
-                )}
-              </a>
-              <a
-                href="https://www.facebook.com/profile.php?id=61590872807465"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#3C6B4D] hover:text-[#ECEBE9] hover:bg-[#3C6B4D]/10 transition-colors flex items-center gap-2"
-              >
-                <FacebookIcon size={16} />
-                <span>Follow Facebook Page</span>
-              </a>
-              <a
-                href="https://ko-fi.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#FF5E5B] hover:text-[#ECEBE9] hover:bg-[#FF5E5B]/10 transition-colors flex items-center gap-2"
-              >
-                <Coffee size={16} />
-                <span>Buy me Ko-fi</span>
-              </a>
+                Settings & Preferences
+              </NavLink>
+            </nav>
+
+            {/* Mobile Actions Grid */}
+            <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#2A2D30]">
               <a
                 href="https://forms.gle/ahQXtFoietABJZpg8"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#E29E2D] hover:text-[#ECEBE9] hover:bg-[#E29E2D]/10 transition-colors flex items-center gap-2"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/30 text-[#E29E2D] text-xs font-bold"
               >
-                <MessageSquare size={16} />
+                <MessageSquare size={14} />
                 <span>Feedback Report</span>
               </a>
+
               {isInstallable && (
                 <button
                   onClick={() => {
-                    setMobileMenuOpen(false);
                     handleInstallClick();
+                    setMobileMenuOpen(false);
                   }}
-                  className="mx-3 my-1 px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-400 text-emerald-400 hover:text-emerald-300 transition-all flex items-center gap-2"
+                  className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold"
                 >
-                  <Download size={16} />
+                  <Download size={14} />
                   <span>Download App</span>
                 </button>
               )}
 
-              <button
-                onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-                className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] transition-colors flex items-center gap-2 text-left w-full"
+              <a
+                href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs font-bold"
               >
-                {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-                <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
-              </button>
+                <GithubIcon size={14} />
+                <span>GitHub ⭐ {stars || 79}</span>
+              </a>
 
-              {isLocalhost && (
-                <button
-                  onClick={handleClearAIData}
-                  className="px-3 py-2.5 rounded-lg text-sm font-bold tracking-wide text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-colors flex items-center gap-2 text-left w-full"
-                >
-                  <Trash2 size={16} />
-                  <span>Purge Local AI Data</span>
-                </button>
-              )}
-            </nav>
+              <a
+                href="https://ko-fi.com/domodomoo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-[#FF5E5B]/10 border border-[#FF5E5B]/30 text-[#FF5E5B] text-xs font-bold"
+              >
+                <Coffee size={14} />
+                <span>Buy Ko-fi</span>
+              </a>
+            </div>
           </div>
         )}
       </header>
