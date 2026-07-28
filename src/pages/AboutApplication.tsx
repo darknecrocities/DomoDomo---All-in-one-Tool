@@ -14,10 +14,11 @@ import { Documentation } from './Documentation';
 import { TOOLS } from '../engine/registry';
 import { CATEGORIES } from './Dashboard';
 import { CommunityTestimonials } from '../components/CommunityTestimonials';
+import { useVisitCounter } from '../utils/visitCounter';
 
-const stats = [
+const getStats = (activeUsersCount: string) => [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
-  { label: 'Active Users', value: '7,876', detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
+  { label: 'Active Users', value: activeUsersCount, detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
   { label: 'Categories', value: `${CATEGORIES.length - 2}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and security.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
@@ -161,6 +162,8 @@ export const CATEGORY_DETAILS = [
 ];
 
 export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about' | 'categories' | 'updates' | 'docs' }) => {
+  const { formattedCount } = useVisitCounter();
+  const stats = getStats(formattedCount);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const queryTab = searchParams.get('tab') as 'about' | 'categories' | 'updates' | 'docs';

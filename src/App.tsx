@@ -16,8 +16,10 @@ import { ScrollToTop } from './components/ScrollToTop';
 import { DomoSettings } from './pages/DomoSettings';
 import { FloatingDomo } from './components/FloatingDomo';
 import { AIHubStudio } from './pages/AIHubStudio';
+import { useVisitCounter } from './utils/visitCounter';
 
 function App() {
+  useVisitCounter(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
