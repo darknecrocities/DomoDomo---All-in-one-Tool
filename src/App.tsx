@@ -15,6 +15,7 @@ import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilo
 import { ScrollToTop } from './components/ScrollToTop';
 import { DomoSettings } from './pages/DomoSettings';
 import { FloatingDomo } from './components/FloatingDomo';
+import { AIHubStudio } from './pages/AIHubStudio';
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -50,6 +51,7 @@ function App() {
             <Route path="blog" element={<BlogContainer />} />
             <Route path="blog/:slug" element={<BlogPost />} />
             <Route path="settings" element={<DomoSettings />} />
+            <Route path="ai-hub" element={<AIHubStudio />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

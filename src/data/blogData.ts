@@ -13,6 +13,53 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ai-hub-studio-unsloth-n8n-release',
+    title: 'Introducing AI Hub Studio: ChatGPT Interface, Unsloth QLoRA Fine-Tuning & n8n Workflow Automations',
+    excerpt: 'DomoDomo releases AI Hub Studio, featuring local Ollama integration, ChatGPT-style chat, Unsloth QLoRA fine-tuning recipe builder with loss curve visualization, side-by-side model benchmarks, and n8n-style workflow automations.',
+    date: 'July 28, 2026',
+    readTime: '5 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'ai hub studio, unsloth fine tuning, QLoRA recipe, n8n local automation, ollama chatgpt interface, local model benchmark, domodomo',
+    content: `# Introducing AI Hub Studio: ChatGPT Interface, Unsloth QLoRA Fine-Tuning & n8n Workflow Automations
+
+We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local LLM workspace integrating ChatGPT-style inference, Unsloth-inspired local QLoRA fine-tuning recipes, dual-model benchmarks, and n8n-style workflow automations!
+
+---
+
+## 🤖 What Is AI Hub Studio?
+
+**AI Hub Studio** brings powerful local LLM development tools to your desktop browser sandbox. It connects to your local Ollama runtime on \`http://localhost:11434\` and operates with 100% zero-leak privacy.
+
+### 🌟 Key Workspaces Included:
+
+1. **💬 ChatGPT-Style Chat & Inference Workspace**:
+   - Multi-thread conversation management with model switching (\`llama3.2:1b\`, \`qwen2.5:0.5b\`, \`deepseek-r1:1.5b\`, etc.).
+   - Live token throughput indicator (tokens/sec) and latency metrics ($ms$).
+   - Customizable system prompt persona and parameter sliders (Temperature $T$, Top-P).
+
+2. **🏋️ Unsloth-Inspired Fine-Tune & Data Recipe Studio**:
+   - **Synthetic Data Recipe Generator**: Synthesize Q&A dataset pairs via local LLM or add custom pairs.
+   - **JSONL Dataset Export**: Export Instruct-formatted JSONL datasets.
+   - **QLoRA Hyperparameter Studio**: Configure LoRA rank ($r=8/16/32/64$), Alpha ($\alpha$), learning rate, epochs, and GGUF quantization target (\`q4_k_m\`, \`q8_0\`, \`f16\`).
+   - **Live Loss Convergence Graph**: Interactive canvas rendering loss decay curves and step logs.
+   - **Modelfile Exporter**: One-click export for Ollama \`Modelfile\` manifests.
+
+3. **🧪 Test & Evaluation Benchmarks**:
+   - **Side-by-Side Dual Model Comparator**: Run prompts on two models simultaneously.
+   - **Automated Performance Metrics**: Compare latency ($ms$), throughput ($t/s$), and code quality.
+
+4. **⚡ n8n-Style Workflow Automation**:
+   - Visual step-based automation builder chaining triggers, data recipes, LLM inferences, and file exports.
+   - Pre-built automation templates for PDF summarization, synthetic dataset synthesis, and security audits.
+
+---
+
+## 🔒 Offline Local Exclusive
+
+AI Hub Studio features an **Offline Exclusive Teaser** preview when visited on remote web deployments, encouraging users to run DomoDomo locally for full hardware-accelerated LLM control and file handles.`
+  },
+  {
     slug: 'video-background-remover-chroma-keying-tool',
     title: 'Introducing Video Background Remover: Client-Side Chroma Keying & Background Replacement',
     excerpt: 'DomoDomo releases the Video Background Remover tool, empowering creators and developers to strip green screen backgrounds, replace colors, or composite custom images behind video subjects 100% inside the browser sandbox.',
