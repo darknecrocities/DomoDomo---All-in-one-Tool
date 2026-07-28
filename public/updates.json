@@ -1,5 +1,29 @@
 [
   {
+    "hash": "b5e4565",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "docs(readme): focus README on agentic AI capabilities & fix release-manifest detached HEAD push"
+  },
+  {
+    "hash": "c388fbf",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "02522af",
+    "date": "2026-07-28",
+    "author": "RhonzKieee",
+    "message": "Update description to include 'Agentic'"
+  },
+  {
+    "hash": "83069b4",
+    "date": "2026-07-27",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "e243f44",
     "date": "2026-07-28",
     "author": "darknecrocities",
@@ -64,29 +88,5 @@
     "date": "2026-07-27",
     "author": "darknecrocities",
     "message": "feat(video): add auto-detection for checkerboard grids and typical background colors"
-  },
-  {
-    "hash": "307bf6f",
-    "date": "2026-07-27",
-    "author": "darknecrocities",
-    "message": "feat(video): add Video Background Remover tool with chroma keying, background replacement, and exports"
-  },
-  {
-    "hash": "5959f0d",
-    "date": "2026-07-27",
-    "author": "darknecrocities",
-    "message": "feat(blog): redesign blog workspace UI, unstack rank badges, and add continuous 3D rotating box community testimonials"
-  },
-  {
-    "hash": "d1a7e01",
-    "date": "2026-07-27",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "57d3f93",
-    "date": "2026-07-27",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #51 from darknecrocities/feat/expanded-design-network-suites"
   }
 ]
