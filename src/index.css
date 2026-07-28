@@ -137,9 +137,12 @@
   .bg-\[\#0A0B0C\] { background-color: var(--background) !important; }
   .bg-\[\#18191B\] { background-color: var(--card) !important; }
   .bg-\[\#1E2022\] { background-color: var(--surface-dim) !important; }
+  .bg-\[\#2A2D30\] { background-color: var(--surface-container) !important; }
   .bg-\[\#151C2C\]\/60 { background-color: var(--surface-dim) !important; }
   .bg-slate-950\/40 { background-color: rgba(var(--primary-rgb), 0.05) !important; }
   .bg-slate-900 { background-color: var(--surface-dim) !important; }
+  
+  .border-\[\#2A2D30\] { border-color: var(--border) !important; }
   
   .text-\[\#ECEBE9\] { color: var(--text) !important; }
   .text-\[\#A3A09B\] { color: var(--text-secondary) !important; }

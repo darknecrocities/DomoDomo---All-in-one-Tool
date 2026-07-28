@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot } from 'lucide-react';
+import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
 import { unifiedMemory } from '../utils/unifiedMemory';
@@ -91,6 +91,8 @@ export const Shell = () => {
     return () => window.removeEventListener('domo-navigate' as any, handleDomoNavigate);
   }, [navigate]);
 
+  const location = useLocation();
+  const isAIHub = location.pathname === '/ai-hub';
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -253,337 +255,294 @@ export const Shell = () => {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#111213]">
       {/* Top Navbar */}
-      <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50 px-4 sm:px-6 py-3.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="hover:opacity-95 transition-opacity shrink-0">
+      <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+
+          {/* Logo */}
+          <Link to="/" className="hover:opacity-90 transition-opacity shrink-0">
             <Logo />
           </Link>
 
           {/* Desktop nav links */}
-          <nav className="hidden md:flex flex-1 justify-center items-center gap-6 text-xs font-bold mx-4">
+          <nav className="hidden lg:flex items-center gap-0.5 text-[13px] font-semibold">
             <NavLink
               to="/"
               end
               className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
+                `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
+                  isActive
+                    ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                    : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`
               }
             >
               Tools
             </NavLink>
+
+            {/* AI Hub — always-on green pill */}
             <NavLink
               to="/ai-hub"
               className={({ isActive }) =>
-                `tracking-wide transition-all flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${
+                `mx-1 px-3 py-1.5 rounded-lg tracking-wide transition-all flex items-center gap-1.5 ${
                   isActive
-                    ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border-[#3C6B4D]/35'
-                    : 'text-[#A3A09B] hover:text-[#ECEBE9] border-transparent hover:bg-[#1E2022]'
+                    ? 'text-[#3C6B4D] bg-[#3C6B4D]/20 ring-1 ring-[#3C6B4D]/40'
+                    : 'text-[#3C6B4D] bg-[#3C6B4D]/10 hover:bg-[#3C6B4D]/20 ring-1 ring-[#3C6B4D]/25 hover:ring-[#3C6B4D]/40'
                 }`
               }
             >
-              <Bot size={13} className="text-[#3C6B4D]" />
+              <Bot size={13} />
               <span>AI Hub</span>
-              <span className="text-[9px] font-mono font-bold bg-[#3C6B4D]/20 text-[#3C6B4D] px-1.5 rounded-full border border-[#3C6B4D]/30">
+              <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full leading-none">
                 NEW
               </span>
             </NavLink>
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                }`
-              }
-            >
-              About
-            </NavLink>
-            <NavLink
-              to="/download"
-              className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                }`
-              }
-            >
-              Download
-            </NavLink>
-            <NavLink
-              to="/library-api"
-              className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                }`
-              }
-            >
-              API Library
-            </NavLink>
-            <NavLink
-              to="/docs"
-              className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                }`
-              }
-            >
-              Docs
-            </NavLink>
-            <NavLink
-              to="/blog"
-              className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                }`
-              }
-            >
-              Blog
-            </NavLink>
-            <NavLink
-              to="/settings"
-              className={({ isActive }) =>
-                `tracking-wide transition-colors ${isActive ? 'text-[#3C6B4D]' : 'text-[#A3A09B] hover:text-[#ECEBE9]'
-                }`
-              }
-            >
-              Settings
-            </NavLink>
+
+            {[
+              { to: '/about', label: 'About' },
+              { to: '/library-api', label: 'API Library' },
+              { to: '/docs', label: 'Docs' },
+              { to: '/blog', label: 'Blog' },
+            ].map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
+                    isActive
+                      ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                      : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          {/* Right-side actions */}
+          <div className="flex items-center gap-1.5 shrink-0">
+
+            {/* Feedback — desktop only */}
             <a
               href="https://forms.gle/ahQXtFoietABJZpg8"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#E29E2D]/10 border border-[#E29E2D]/35 hover:border-[#E29E2D]/60 hover:bg-[#E29E2D]/25 text-[#E29E2D] hover:text-[#ECEBE9] transition-all text-[11px] font-bold"
-              title="Submit Feedback or Report Issue"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#E29E2D]/50 text-[#A3A09B] hover:text-[#E29E2D] transition-all hover:bg-[#E29E2D]/10"
+              title="Submit Feedback"
             >
-              <MessageSquare size={13} className="shrink-0" />
-              <span>Feedback Report</span>
+              <MessageSquare size={15} />
             </a>
 
-
-            {isInstallable && (
-              <button
-                onClick={handleInstallClick}
-                className="hidden md:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 transition-all text-[11px] font-bold shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-pulse"
-                title="Download DomoDomo as Progressive Web App"
-              >
-                <Download size={13} className="shrink-0 animate-bounce" style={{ animationDuration: '2s' }} />
-                <span>Download App</span>
-              </button>
-            )}
-
+            {/* Facebook — desktop only */}
             <a
               href="https://www.facebook.com/profile.php?id=61590872807465"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center justify-center h-8 w-8 rounded-lg bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 hover:border-[#3C6B4D]/60 hover:bg-[#3C6B4D]/25 text-[#3C6B4D] hover:text-[#ECEBE9] transition-all"
-              title="Follow Facebook Page"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#3C6B4D] transition-all hover:bg-[#3C6B4D]/10"
+              title="Follow on Facebook"
             >
               <FacebookIcon size={14} />
             </a>
 
+            {/* Ko-fi — desktop only */}
             <a
               href="https://ko-fi.com/domodomoo"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center justify-center h-8 w-8 rounded-lg bg-[#FF5E5B]/10 border border-[#FF5E5B]/35 hover:border-[#FF5E5B]/60 hover:bg-[#FF5E5B]/25 text-[#FF5E5B] hover:text-[#ECEBE9] transition-all"
-              title="Buy me Ko-fi"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#FF5E5B]/50 text-[#A3A09B] hover:text-[#FF5E5B] transition-all hover:bg-[#FF5E5B]/10"
+              title="Support on Ko-fi"
             >
               <Coffee size={14} />
             </a>
 
+            {/* Divider */}
+            <div className="hidden xl:block h-5 w-px bg-[#2A2D30] mx-0.5" />
+
+            {/* GitHub stars */}
             <a
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all group"
-              title="GitHub Repository"
+              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022] group"
+              title="Star on GitHub"
             >
               <GithubIcon size={14} />
-              <div className="h-3 w-[1px] bg-[#2A2D30] group-hover:bg-[#3C6B4D]/30" />
+              <div className="h-3 w-px bg-[#2A2D30] group-hover:bg-[#3C6B4D]/40" />
               <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
-              <span className="text-[10px] font-mono leading-none">{stars !== null ? stars : '—'}</span>
+              <span className="font-mono text-[11px]">{stars !== null ? stars : '—'}</span>
             </a>
 
-            {/* Clear AI Data Button (Offline Only) */}
-            {isLocalhost && (
+            {/* Install PWA — only when available */}
+            {isInstallable && (
               <button
-                onClick={handleClearAIData}
-                className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#111213] border border-red-950/40 hover:border-red-500/40 text-red-400 hover:text-red-300 transition-all"
-                title="Purge Local AI Data"
+                onClick={handleInstallClick}
+                className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 hover:bg-[#3C6B4D]/25 hover:border-[#3C6B4D]/60 text-[#3C6B4D] transition-all text-[12px] font-semibold"
+                title="Install as desktop app"
               >
-                <Trash2 size={14} />
+                <Download size={13} />
+                <span>Install</span>
               </button>
             )}
 
-            {/* Theme Toggle Button */}
+            {/* Divider */}
+            <div className="hidden md:block h-5 w-px bg-[#2A2D30] mx-0.5" />
+
+            {/* Theme toggle */}
             <button
               onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-              className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all"
-              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
-              {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+              {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
             </button>
 
-            {/* Hamburger button - mobile only */}
+            {/* Settings shortcut */}
+            <NavLink
+              to="/settings"
+              className={({ isActive }) =>
+                `hidden md:flex items-center justify-center h-8 w-8 rounded-lg border transition-all ${
+                  isActive
+                    ? 'border-[#3C6B4D]/50 text-[#3C6B4D] bg-[#3C6B4D]/10'
+                    : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 hover:bg-[#1E2022]'
+                }`
+              }
+              title="Settings"
+            >
+              <Settings size={15} />
+            </NavLink>
+
+            {/* Hamburger — mobile / tablet only */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#A3A09B] hover:text-[#ECEBE9] transition-colors"
-              aria-label="Toggle mobile menu"
+              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
+              aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
           </div>
         </div>
 
+
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-4 border-t border-[#2A2D30] animate-fadeIn">
-            <nav className="flex flex-col gap-1.5 pb-4">
+          <div className="lg:hidden border-t border-[#2A2D30] bg-[#18191B] px-4 pb-4 animate-fadeIn">
+            {/* Quick links */}
+            <nav className="flex flex-col gap-0.5 py-3">
               <NavLink
                 to="/"
                 end
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center justify-between ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  `px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between ${
+                    isActive
+                      ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                      : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`
                 }
               >
-                <span>Tools Workspace</span>
-                <span className="text-[10px] font-mono text-[#72706C]">100+</span>
+                <span>Tools</span>
+                <span className="text-[10px] font-mono text-[#3C6B4D]">229 tools</span>
               </NavLink>
 
               <NavLink
                 to="/ai-hub"
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all flex items-center justify-between ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#ECEBE9] bg-[#111213] border border-[#3C6B4D]/40'
+                  `px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center gap-2 ${
+                    isActive
+                      ? 'text-[#3C6B4D] bg-[#3C6B4D]/15'
+                      : 'text-[#3C6B4D] bg-[#3C6B4D]/8 hover:bg-[#3C6B4D]/15'
                   }`
                 }
               >
-                <div className="flex items-center gap-2">
-                  <Bot size={16} className="text-[#3C6B4D]" />
-                  <span>AI Hub Studio</span>
-                </div>
-                <span className="text-[10px] font-mono font-bold bg-[#3C6B4D]/25 text-[#3C6B4D] px-2 py-0.5 rounded-full border border-[#3C6B4D]/40">
-                  Unsloth & n8n
-                </span>
+                <Bot size={15} />
+                <span>AI Hub Studio</span>
+                <span className="ml-auto text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-2 py-0.5 rounded-full">NEW</span>
               </NavLink>
 
-              <NavLink
-                to="/about"
-                onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                About Application
-              </NavLink>
-
-              <NavLink
-                to="/download"
-                onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                Download Desktop App
-              </NavLink>
-
-              <NavLink
-                to="/library-api"
-                onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                API Library Repository
-              </NavLink>
-
-              <NavLink
-                to="/docs"
-                onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                Documentation
-              </NavLink>
-
-              <NavLink
-                to="/blog"
-                onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                Blog & News
-              </NavLink>
-
-              <NavLink
-                to="/settings"
-                onClick={() => setMobileMenuOpen(false)}
-                className={({ isActive }) =>
-                  `px-3.5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all ${
-                    isActive ? 'text-[#3C6B4D] bg-[#3C6B4D]/15 border border-[#3C6B4D]/30' : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                Settings & Preferences
-              </NavLink>
+              {[
+                { to: '/about', label: 'About' },
+                { to: '/download', label: 'Download' },
+                { to: '/library-api', label: 'API Library' },
+                { to: '/docs', label: 'Documentation' },
+                { to: '/blog', label: 'Blog & News' },
+                { to: '/settings', label: 'Settings' },
+              ].map(({ to, label }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all ${
+                      isActive
+                        ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                        : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    }`
+                  }
+                >
+                  {label}
+                </NavLink>
+              ))}
             </nav>
 
-            {/* Mobile Actions Grid */}
+            {/* Quick action buttons */}
             <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#2A2D30]">
               <a
                 href="https://forms.gle/ahQXtFoietABJZpg8"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/30 text-[#E29E2D] text-xs font-bold"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#E29E2D]/10 border border-[#E29E2D]/30 text-[#E29E2D] text-[12px] font-semibold hover:bg-[#E29E2D]/20 transition-all"
               >
                 <MessageSquare size={14} />
-                <span>Feedback Report</span>
-              </a>
-
-              {isInstallable && (
-                <button
-                  onClick={() => {
-                    handleInstallClick();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold"
-                >
-                  <Download size={14} />
-                  <span>Download App</span>
-                </button>
-              )}
-
-              <a
-                href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs font-bold"
-              >
-                <GithubIcon size={14} />
-                <span>GitHub ⭐ {stars || 79}</span>
+                <span>Feedback</span>
               </a>
 
               <a
                 href="https://ko-fi.com/domodomoo"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-[#FF5E5B]/10 border border-[#FF5E5B]/30 text-[#FF5E5B] text-xs font-bold"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#FF5E5B]/10 border border-[#FF5E5B]/30 text-[#FF5E5B] text-[12px] font-semibold hover:bg-[#FF5E5B]/20 transition-all"
               >
                 <Coffee size={14} />
-                <span>Buy Ko-fi</span>
+                <span>Ko-fi</span>
               </a>
+
+              <a
+                href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-[12px] font-semibold hover:border-[#3C6B4D]/40 transition-all"
+              >
+                <GithubIcon size={14} />
+                <span>GitHub</span>
+                <span className="flex items-center gap-0.5 text-[#E29E2D] font-mono text-[11px]">
+                  <Star size={10} className="fill-[#E29E2D]" />
+                  {stars || 79}
+                </span>
+              </a>
+
+              {isInstallable && (
+                <button
+                  onClick={() => { handleInstallClick(); setMobileMenuOpen(false); }}
+                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] text-[12px] font-semibold hover:bg-[#3C6B4D]/25 transition-all"
+                >
+                  <Download size={14} />
+                  <span>Install App</span>
+                </button>
+              )}
+
+              {isLocalhost && (
+                <button
+                  onClick={() => { handleClearAIData(); setMobileMenuOpen(false); }}
+                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-red-950/20 border border-red-900/40 text-red-400 text-[12px] font-semibold col-span-2"
+                >
+                  <Trash2 size={14} />
+                  <span>Purge Local AI Data</span>
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -654,160 +613,132 @@ export const Shell = () => {
       )}
 
       {/* Main Content Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className={isAIHub ? 'flex-1 w-full p-0 max-w-none' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8'}>
         <Outlet />
       </main>
 
       {/* Google AdSense Unit */}
-      <AdSenseUnit />
+      {!isAIHub && <AdSenseUnit />}
 
-      {/* Bottom Footer */}
-      <footer className="bg-[#111213] border-t border-[#2A2D30] pt-16 pb-8 px-6 sm:px-12 mt-12 w-full">
-        <div className="max-w-7xl mx-auto flex flex-col gap-12">
-          {/* Main Footer Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
-            {/* Left Tagline */}
-            <div className="lg:col-span-5 flex flex-col justify-between text-left gap-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Logo size={36} showText={false} />
-                  <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-[#ECEBE9] font-heading">
-                    DomoDomo
-                  </h2>
-                </div>
-                <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
-                  <span className="text-[#72706C] text-[10px] uppercase tracking-wider font-bold">Developed By</span>
-                  <div className="flex flex-wrap gap-x-2 gap-y-1 text-[#ECEBE9] text-[11px]">
-                    <a href="https://github.com/darknecrocities" target="_blank" rel="noopener noreferrer" className="hover:text-[#3C6B4D] transition-colors font-bold">Ram Achilles Guinto</a>
-                    <span className="text-[#72706C] font-normal">•</span>
-                    <span className="text-[#ECEBE9] font-bold">Arron Kian Parejas</span>
-                    <span className="text-[#72706C] font-normal">•</span>
-                    <span className="text-[#ECEBE9] font-bold">Rudy Miguel Calzita</span>
+      {/* Bottom Footer (Hidden on /ai-hub full-bleed layout) */}
+      {!isAIHub && (
+        <footer className="bg-[#111213] border-t border-[#2A2D30] pt-16 pb-8 px-6 sm:px-12 mt-12 w-full">
+          <div className="max-w-7xl mx-auto flex flex-col gap-12">
+            {/* Main Footer Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+              {/* Left Tagline */}
+              <div className="lg:col-span-5 flex flex-col justify-between text-left gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Logo size={36} showText={false} />
+                    <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-[#ECEBE9] font-heading">
+                      DomoDomo
+                    </h2>
+                  </div>
+                  <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
+                    <span className="text-[#72706C] text-[10px] uppercase tracking-wider font-bold">Developed By</span>
+                    <div className="flex flex-wrap gap-x-2 gap-y-1 text-[#ECEBE9] text-[11px]">
+                      <a href="https://github.com/darknecrocities" target="_blank" rel="noopener noreferrer" className="hover:text-[#3C6B4D] transition-colors font-bold">Ram Achilles Guinto</a>
+                      <span className="text-[#72706C] font-normal">•</span>
+                      <span className="text-[#ECEBE9] font-bold">Arron Kian Parejas</span>
+                      <span className="text-[#72706C] font-normal">•</span>
+                      <span className="text-[#ECEBE9] font-bold">Rudy Miguel Calzita</span>
+                    </div>
                   </div>
                 </div>
-                {/* Social Options */}
-                <div className="flex items-center gap-3 pt-2">
-                  <a
-                    href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all shadow-sm"
-                    title="GitHub Repository"
-                  >
-                    <GithubIcon size={16} />
-                  </a>
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all shadow-sm"
-                    title="Facebook"
-                  >
-                    <FacebookIcon size={16} />
-                  </a>
-                  <a
-                    href="https://ko-fi.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all shadow-sm flex items-center justify-center"
-                    title="Support us on Ko-Fi"
-                  >
-                    <Coffee size={16} />
-                  </a>
+              </div>
+
+              {/* Right Link Columns */}
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
+                {/* Column 1 */}
+                <div className="flex flex-col gap-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Quicklinks</span>
+                  <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
+                    <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
+                    <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
+                    <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Docs</Link></li>
+                    <li><Link to="/blog" className="hover:text-[#ECEBE9] transition-colors">Blog</Link></li>
+                  </ul>
+                </div>
+
+                {/* Column 2 */}
+                <div className="flex flex-col gap-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Resources</span>
+                  <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
+                    <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link></li>
+                    <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link></li>
+                    <li>
+                      <a
+                        href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors"
+                      >
+                        Contribute on GitHub
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Column 3 */}
+                <div className="flex flex-col gap-4">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">DomoDomo</span>
+                  <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
+                    <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li><Link to="/about?tab=updates" className="hover:text-[#ECEBE9] transition-colors">Updates &amp; Patches</Link></li>
+                    <li><Link to="/about?tab=docs" className="hover:text-[#ECEBE9] transition-colors">Local Docs</Link></li>
+                    <li>
+                      <a
+                        href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool/issues"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors"
+                      >
+                        Contacts
+                      </a>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
 
-            {/* Right Link Columns */}
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
-              {/* Column 1 */}
-              <div className="flex flex-col gap-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Quicklinks</span>
-                <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
-                  <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
-                  <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
-                  <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
-                  <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Docs</Link></li>
-                  <li><Link to="/blog" className="hover:text-[#ECEBE9] transition-colors">Blog</Link></li>
-                </ul>
+            {/* Sub-footer / Copyright bar */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-[#2A2D30]/30 text-[10px] text-[#72706C] font-semibold">
+              <div className="flex gap-4">
+                <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link>
+                <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link>
+                <button
+                  onClick={handleClearAIData}
+                  className="hover:text-rose-450 transition-colors flex items-center gap-1"
+                  title="Purge all offline client-side storage"
+                >
+                  <Trash2 size={10} />
+                  <span>Purge AI Memory</span>
+                </button>
               </div>
 
-              {/* Column 2 */}
-              <div className="flex flex-col gap-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Resources</span>
-                <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
-                  <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link></li>
-                  <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link></li>
-                  <li>
-                    <a
-                      href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#ECEBE9] transition-colors"
-                    >
-                      Contribute on GitHub
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Column 3 */}
-              <div className="flex flex-col gap-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">DomoDomo</span>
-                <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
-                  <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
-                  <li><Link to="/about?tab=updates" className="hover:text-[#ECEBE9] transition-colors">Updates &amp; Patches</Link></li>
-                  <li><Link to="/about?tab=docs" className="hover:text-[#ECEBE9] transition-colors">Local Docs</Link></li>
-                  <li>
-                    <a
-                      href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool/issues"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#ECEBE9] transition-colors"
-                    >
-                      Contacts
-                    </a>
-                  </li>
-                </ul>
+              <div className="flex flex-wrap items-center justify-center md:justify-end gap-3.5">
+                <span>Copyright © {new Date().getFullYear()} DomoDomo. All rights reserved.</span>
+                <span className="text-[#2A2D30] hidden md:inline">•</span>
+                <span>Zero-Server Architecture</span>
+                <span className="text-[#2A2D30]">•</span>
+                <span className="font-mono">v2.0.0</span>
+                <span className="text-[#2A2D30]">•</span>
+                <a
+                  href="https://forms.gle/ahQXtFoietABJZpg8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
+                >
+                  <MessageSquare size={10} />
+                  <span>Feedback Report</span>
+                </a>
               </div>
             </div>
           </div>
-
-          {/* Sub-footer / Copyright bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-[#2A2D30]/30 text-[10px] text-[#72706C] font-semibold">
-            <div className="flex gap-4">
-              <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link>
-              <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link>
-              <button
-                onClick={handleClearAIData}
-                className="hover:text-rose-450 transition-colors flex items-center gap-1"
-                title="Purge all offline client-side storage"
-              >
-                <Trash2 size={10} />
-                <span>Purge AI Memory</span>
-              </button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3.5">
-              <span>Copyright © {new Date().getFullYear()} DomoDomo. All rights reserved.</span>
-              <span className="text-[#2A2D30] hidden md:inline">•</span>
-              <span>Zero-Server Architecture</span>
-              <span className="text-[#2A2D30]">•</span>
-              <span className="font-mono">v2.0.0</span>
-              <span className="text-[#2A2D30]">•</span>
-              <a
-                href="https://forms.gle/ahQXtFoietABJZpg8"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#A3A09B] hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
-              >
-                <MessageSquare size={10} />
-                <span>Feedback Report</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };

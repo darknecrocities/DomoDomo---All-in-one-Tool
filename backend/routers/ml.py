@@ -1,5 +1,6 @@
 import math
 import random
+import re
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -27,6 +28,11 @@ class SynthesizeRecipeRequest(BaseModel):
     topic: Optional[str] = "software development"
     count: Optional[int] = 3
 
+class ExtractDocumentRequest(BaseModel):
+    filename: str
+    content: str
+    format: Optional[str] = "txt"
+
 router = APIRouter(prefix="/api/ml", tags=["ml"])
 
 @router.get("/status")
@@ -34,8 +40,8 @@ def get_ml_status():
     """Returns status of Python FastAPI ML training backend."""
     return {
         "status": "online",
-        "engine": "Python FastAPI Unsloth QLoRA Training Service",
-        "capabilities": ["classification_eval", "recipe_synthesis", "qlora_training", "modelfile_compilation"],
+        "engine": "Python FastAPI Fine-Tuning & Dataset Service",
+        "capabilities": ["classification_eval", "recipe_synthesis", "document_extraction", "qlora_training", "modelfile_compilation"],
         "pytorch_available": False,  # Lightweight CPU mode
         "supported_quantizations": ["q4_k_m", "q8_0", "f16"]
     }
@@ -80,7 +86,7 @@ def synthesize_recipe(req: SynthesizeRecipeRequest):
             "response": f"Enforce local network isolation, restrict CORS headers (OLLAMA_ORIGINS), process files in memory buffers, and sanitize all trace logs before saving."
         },
         {
-            "system": "You are an Unsloth QLoRA optimization specialist.",
+            "system": "You are a Fine-Tune optimization specialist.",
             "instruction": f"How does quantization affect accuracy during fine-tuning for {topic}?",
             "response": f"4-bit NF4/Q4_K_M quantization reduces GPU VRAM consumption by 60% while maintaining 98%+ of FP16 accuracy when paired with double quantization and page optimizers."
         }
@@ -94,10 +100,49 @@ def synthesize_recipe(req: SynthesizeRecipeRequest):
         "pairs": selected_pairs
     }
 
+@router.post("/extract-document-pairs")
+def extract_document_pairs(req: ExtractDocumentRequest):
+    """Extracts Q&A instruction pairs from uploaded documents (.json, .csv, .pdf, .txt, .md, .docx)."""
+    text = req.content or ""
+    pairs = []
+    
+    # Document statistical metrics
+    words = len(text.split())
+    char_count = len(text)
+    estimated_tokens = int(words * 1.3)
+    
+    # Paragraph-based extraction heuristic
+    paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if len(p.strip()) > 30]
+    
+    for idx, p in enumerate(paragraphs[:8]):
+        sentences = [s.strip() for s in re.split(r'[.!?]', p) if len(s.strip()) > 10]
+        instruction = sentences[0] if sentences else f"Explain section {idx + 1} from {req.filename}"
+        if not instruction.endswith('?'):
+            instruction = f"Summarize key insights regarding: {instruction[:60]}?"
+            
+        response = p
+        pairs.append({
+            "system": f"You are a specialized AI assistant trained on document '{req.filename}'.",
+            "instruction": instruction,
+            "response": response
+        })
+
+    return {
+        "engine": "Python FastAPI Document NLP Analyzer",
+        "filename": req.filename,
+        "stats": {
+            "char_count": char_count,
+            "word_count": words,
+            "estimated_tokens": estimated_tokens,
+            "paragraph_count": len(paragraphs)
+        },
+        "extracted_pairs": pairs
+    }
+
 @router.post("/train-qlora")
 def train_qlora(req: FineTuneTrainRequest):
     """
-    Executes Python backend Unsloth QLoRA fine-tuning step simulation,
+    Executes Python backend Fine-Tune QLoRA step simulation,
     calculates mathematical loss decay curves, compiles GGUF quantization,
     and returns Ollama Modelfile manifest.
     """
@@ -107,7 +152,7 @@ def train_qlora(req: FineTuneTrainRequest):
     
     total_steps = req.epochs * 30
     logs = [
-        "🐍 [Python Backend] Initializing Unsloth PyTorch QLoRA Engine...",
+        "🐍 [Python Backend] Initializing Fine-Tune PyTorch QLoRA Engine...",
         f"📦 Loading base model '{req.base_model}' in 4-bit NF4 precision...",
         f"🔧 Injecting Low-Rank Adaption (r={req.lora_rank}, alpha={req.lora_alpha}) on Q, K, V, O projections...",
         f"📊 Processing {dataset_count} dataset instruction pairs (Batch Size=4, LR={req.learning_rate})..."
@@ -129,7 +174,7 @@ def train_qlora(req: FineTuneTrainRequest):
     logs.append(f"✨ [Python Backend] Fine-tuning completed! Final loss converged to {round(final_loss, 4)}.")
     logs.append(f"📦 Compiling GGUF manifest for quantization target '{req.quantization.upper()}'...")
     
-    modelfile_content = f"""# DomoDomo Unsloth QLoRA Modelfile (Python Backend Compiled)
+    modelfile_content = f"""# DomoDomo Fine-Tune QLoRA Modelfile (Python Backend Compiled)
 FROM {req.base_model}
 
 # Hyperparameters
@@ -145,7 +190,7 @@ SYSTEM \"\"\"{req.dataset[0].system if req.dataset else 'You are a custom fine-t
 """
 
     return {
-        "engine": "Python FastAPI Unsloth Service",
+        "engine": "Python FastAPI Fine-Tune Service",
         "base_model": req.base_model,
         "epochs": req.epochs,
         "lora_rank": req.lora_rank,

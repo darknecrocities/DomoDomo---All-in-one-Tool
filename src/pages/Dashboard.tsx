@@ -1194,9 +1194,9 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 	},
 	{
 		id: "ai-hub-studio",
-		name: "AI Hub Studio (Unsloth & n8n)",
-		categories: ["ai"],
-		description: "Local AI workspace featuring ChatGPT-style chat, Unsloth QLoRA fine-tuning recipe builder, side-by-side benchmark evaluator, and n8n workflow automations.",
+		name: "AI Hub Studio (Fine-Tune & Flow Automation)",
+		categories: ["AI & Local Models"],
+		description: "Local AI workspace featuring ChatGPT-style chat, Fine-Tune QLoRA recipe builder, side-by-side benchmark evaluator, and interactive local AI flow automations.",
 		icon: "Bot",
 		status: "functional",
 		popular: true,

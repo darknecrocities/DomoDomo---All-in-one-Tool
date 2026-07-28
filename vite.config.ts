@@ -10,6 +10,18 @@ export default defineConfig({
     host: process.env.HOST || '127.0.0.1',
     watch: {
       usePolling: true,
+    },
+    proxy: {
+      '/ollama-proxy': {
+        target: 'http://127.0.0.1:11434',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ollama-proxy/, '')
+      },
+      '/fastapi-proxy': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/fastapi-proxy/, '')
+      }
     }
   },
   resolve: {

@@ -13,17 +13,17 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: 'ai-hub-studio-unsloth-n8n-release',
-    title: 'Introducing AI Hub Studio: ChatGPT Interface, Unsloth QLoRA Fine-Tuning & n8n Workflow Automations',
-    excerpt: 'DomoDomo releases AI Hub Studio, featuring local Ollama integration, ChatGPT-style chat, Unsloth QLoRA fine-tuning recipe builder with loss curve visualization, side-by-side model benchmarks, and n8n-style workflow automations.',
+    slug: 'ai-hub-studio-unsloth-flow-release',
+    title: 'Introducing AI Hub Studio: ChatGPT Interface, Fine-Tune QLoRA Studio & Local Flow Automations',
+    excerpt: 'DomoDomo releases AI Hub Studio, featuring local Ollama integration, ChatGPT-style chat, Fine-Tune QLoRA recipe builder with document analysis and loss curve visualization, side-by-side model benchmarks, and interactive Local AI Flow Studio automations.',
     date: 'July 28, 2026',
     readTime: '5 min read',
     category: 'Product Updates',
     author: 'Arron Parejas',
-    keywords: 'ai hub studio, unsloth fine tuning, QLoRA recipe, n8n local automation, ollama chatgpt interface, local model benchmark, domodomo',
-    content: `# Introducing AI Hub Studio: ChatGPT Interface, Unsloth QLoRA Fine-Tuning & n8n Workflow Automations
+    keywords: 'ai hub studio, fine tune studio, QLoRA recipe, local flow automation, ollama chatgpt interface, local model benchmark, domodomo',
+    content: `# Introducing AI Hub Studio: ChatGPT Interface, Fine-Tune QLoRA Studio & Local Flow Automations
 
-We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local LLM workspace integrating ChatGPT-style inference, Unsloth-inspired local QLoRA fine-tuning recipes, dual-model benchmarks, and n8n-style workflow automations!
+We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local LLM workspace integrating ChatGPT-style inference, local QLoRA fine-tuning recipes, multi-format document analysis, dual-model benchmarks, and interactive Local AI Flow Studio automations!
 
 ---
 
@@ -38,8 +38,9 @@ We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local L
    - Live token throughput indicator (tokens/sec) and latency metrics ($ms$).
    - Customizable system prompt persona and parameter sliders (Temperature $T$, Top-P).
 
-2. **🏋️ Unsloth-Inspired Fine-Tune & Data Recipe Studio**:
-   - **Synthetic Data Recipe Generator**: Synthesize Q&A dataset pairs via local LLM or add custom pairs.
+2. **🏋️ Multi-Format Fine-Tune & Data Recipe Studio**:
+   - **Document Analysis & Extraction**: Drop JSON, PDF, CSV, TXT, MD, and Docx files to extract Q&A instruction pairs.
+   - **Synthetic Data Recipe Generator**: Synthesize Q&A dataset pairs via local LLM or add custom pairs (Alpaca, ShareGPT, ChatML formats).
    - **JSONL Dataset Export**: Export Instruct-formatted JSONL datasets.
    - **QLoRA Hyperparameter Studio**: Configure LoRA rank ($r=8/16/32/64$), Alpha ($\alpha$), learning rate, epochs, and GGUF quantization target (\`q4_k_m\`, \`q8_0\`, \`f16\`).
    - **Live Loss Convergence Graph**: Interactive canvas rendering loss decay curves and step logs.
@@ -49,9 +50,9 @@ We are thrilled to launch **AI Hub Studio** (\`/ai-hub\`), an all-in-one local L
    - **Side-by-Side Dual Model Comparator**: Run prompts on two models simultaneously.
    - **Automated Performance Metrics**: Compare latency ($ms$), throughput ($t/s$), and code quality.
 
-4. **⚡ n8n-Style Workflow Automation**:
-   - Visual step-based automation builder chaining triggers, data recipes, LLM inferences, and file exports.
-   - Pre-built automation templates for PDF summarization, synthetic dataset synthesis, and security audits.
+4. **⚡ Local AI Flow Studio (Workflow Automation)**:
+   - Interactive node flowchart builder chaining triggers, system prompt injectors, local LLM inferences, output formatters, and file exports.
+   - Custom node editing, reordering, node deletion, and live step-by-step pipeline execution.
 
 ---
 
