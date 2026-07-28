@@ -1,92 +1,92 @@
 [
   {
-    "hash": "42c6a83",
+    "hash": "1e2a9d2",
+    "date": "2026-07-28",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #56 from darknecrocities/feat/ai-hub-studio-finetune-docs-multi-format"
+  },
+  {
+    "hash": "3e3fb89",
     "date": "2026-07-28",
     "author": "darknecrocities",
-    "message": "merge: resolve sw.js cache conflict and finalize Python backend ML training integration"
+    "message": "style(ai-hub): replace white icon box with official DomoDomo panda logo component in AI Hub sidebar header"
   },
   {
-    "hash": "197a88d",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(backend): integrate Python FastAPI ML training endpoints for dataset synthesis and QLoRA fine-tuning"
-  },
-  {
-    "hash": "f43f267",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "7053e13",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): expand AI Hub Studio with Model Library Downloader and Docs Integration Code Generator"
-  },
-  {
-    "hash": "71fa284",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): expand AI Hub Studio with Model Library Downloader and Docs Integration Code Generator"
-  },
-  {
-    "hash": "56cb671",
+    "hash": "da017ba",
     "date": "2026-07-28",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "4a06c4d",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/appbar-hamburger-ai-hub-unsloth-studio'"
-  },
-  {
-    "hash": "9f47943",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(appbar): redesign appbar with responsive mobile hamburger drawer and add AI Hub Studio (Unsloth & n8n automation)"
-  },
-  {
-    "hash": "cc9acd8",
+    "hash": "73c300e",
     "date": "2026-07-28",
     "author": "RhonzKieee",
-    "message": "Merge pull request #53 from darknecrocities/feat/expanded-design-network-suites"
+    "message": "Merge pull request #55 from darknecrocities/feat/appbar-hamburger-ai-hub-unsloth-studio"
   },
   {
-    "hash": "810f285",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "4012736",
+    "hash": "bf5e379",
     "date": "2026-07-28",
     "author": "darknecrocities",
-    "message": "feat(library-api): add transparent domo_ladder.mp4 mascot video overlay to Library API Hub header card"
+    "message": "fix(ci): resolve TS2739 missing properties in ToolDocsData and remove unused icon imports in AIHubStudio"
   },
   {
-    "hash": "22e660f",
+    "hash": "4f83aba",
     "date": "2026-07-28",
     "author": "darknecrocities",
-    "message": "feat(library-api): add transparent domo_ladder.mp4 mascot video overlay to Library API Hub header card"
+    "message": "feat(ai-hub): expand Docs & Integration code (LangChain, LlamaIndex, Fine-Tune guide) and add 1-click model load & weights download"
   },
   {
-    "hash": "c820038",
-    "date": "2026-07-28",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #52 from darknecrocities/feat/expanded-design-network-suites"
-  },
-  {
-    "hash": "76a0ac0",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "bf031b2",
+    "hash": "0223a64",
     "date": "2026-07-28",
     "author": "darknecrocities",
-    "message": "docs(readme): merge updated agentic README from main"
+    "message": "feat(ai-hub): rename Unsloth to Fine-Tune and add multi-format document analysis (.json, .pdf, .csv, .txt, .md, .docx) with Q&A dataset extraction"
+  },
+  {
+    "hash": "bc00417",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(shell): resolve adjacent JSX elements closing tag error in Shell.tsx"
+  },
+  {
+    "hash": "07f30fb",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(ui): make AI Hub Studio 100% full-bleed edge-to-edge max-w-none layout without outer margins or padding"
+  },
+  {
+    "hash": "4fe9ab8",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): restore initial mount and 4s polling interval useEffect for checkOllama & checkFastApi"
+  },
+  {
+    "hash": "febbd8c",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): prioritize /ollama-proxy and /fastapi-proxy as first candidates with AbortController timeout to instantly load local models"
+  },
+  {
+    "hash": "ac4ffe3",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): add safe fallback nullish coalescing to all Settings modal controls to prevent Generation Defaults crash"
+  },
+  {
+    "hash": "e6d97a3",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add multi-candidate fallback URLs (127.0.0.1, localhost, and Vite dev proxies) to guarantee 100% Ollama and FastAPI connection"
+  },
+  {
+    "hash": "c165487",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add full multi-session chat system (New Chat button, session switching, title auto-naming, session deletion)"
+  },
+  {
+    "hash": "7d63289",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): remove duplicate chatBottomRef and fileInputRef declarations"
   }
 ]
