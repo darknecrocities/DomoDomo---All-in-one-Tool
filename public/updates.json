@@ -1,6 +1,30 @@
 [
   {
+    "hash": "42c6a83",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "merge: resolve sw.js cache conflict and finalize Python backend ML training integration"
+  },
+  {
+    "hash": "197a88d",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(backend): integrate Python FastAPI ML training endpoints for dataset synthesis and QLoRA fine-tuning"
+  },
+  {
+    "hash": "f43f267",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "7053e13",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): expand AI Hub Studio with Model Library Downloader and Docs Integration Code Generator"
+  },
+  {
+    "hash": "71fa284",
     "date": "2026-07-28",
     "author": "darknecrocities",
     "message": "feat(ai-hub): expand AI Hub Studio with Model Library Downloader and Docs Integration Code Generator"
@@ -64,29 +88,5 @@
     "date": "2026-07-28",
     "author": "darknecrocities",
     "message": "docs(readme): merge updated agentic README from main"
-  },
-  {
-    "hash": "b5e4565",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "docs(readme): focus README on agentic AI capabilities & fix release-manifest detached HEAD push"
-  },
-  {
-    "hash": "71202c3",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "docs(readme): focus README on agentic AI capabilities & fix release-manifest detached HEAD push"
-  },
-  {
-    "hash": "c388fbf",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "02522af",
-    "date": "2026-07-28",
-    "author": "RhonzKieee",
-    "message": "Update description to include 'Agentic'"
   }
 ]
