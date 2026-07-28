@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import {
   Bot,
   Sparkles,
-  Cpu,
   Play,
   Trash2,
   RefreshCw,
@@ -19,16 +18,13 @@ import {
   Workflow,
   Plus,
   X,
-  BookOpen,
   Code,
   Copy,
   Check,
-  HardDrive,
   Search,
   FolderOpen,
   Layers,
   ChevronRight,
-  Clock,
   Zap,
   Settings,
   PanelLeftClose,
@@ -49,7 +45,6 @@ import {
   MicOff,
   Paperclip,
   GitCommit,
-  Lock,
   EyeOff
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
@@ -2403,6 +2398,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       {[
                         { label: 'Base Model', type: 'text', val: baseModel, set: setBaseModel },
                         { label: 'LoRA Rank (r)', type: 'number', val: loraRank, set: (v: string) => setLoraRank(parseInt(v) || 16) },
+                        { label: 'LoRA Alpha (α)', type: 'number', val: loraAlpha, set: (v: string) => setLoraAlpha(parseInt(v) || 32) },
                         { label: 'Learning Rate', type: 'text', val: learningRate, set: setLearningRate },
                         { label: 'Epochs', type: 'number', val: epochs, set: (v: string) => setEpochs(parseInt(v) || 3) },
                         { label: 'Batch Size', type: 'number', val: batchSize, set: (v: string) => setBatchSize(parseInt(v) || 2) },

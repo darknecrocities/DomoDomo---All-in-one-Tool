@@ -1316,6 +1316,9 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         name: 'AI DevOps Command Architect',
         engine: 'Ollama SysAdmin Scripting Pipeline',
         details: 'Generates complex bash scripts, Docker commands, and crontab schedules from simple plain English.',
+        functionality: 'Generates bash scripts, Dockerfiles, docker-compose configs, and cron expressions.',
+        howItWorks: '1. Ingests user DevOps prompt. 2. Generates validated shell and container commands. 3. Formats as copyable code block.',
+        technicalSpecs: 'Supports POSIX Bash, Docker v24+, and crontab standards.'
       },
       {
         id: 'ai-hub-studio',
