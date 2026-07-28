@@ -253,7 +253,7 @@ export const Shell = () => {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#111213]">
       {/* Top Navbar */}
-      <header className="bg-[#18191B]/95 backdrop-blur-md border-b border-[#2A2D30] sticky top-0 z-50">
+      <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
 
           {/* Logo */}
@@ -268,14 +268,16 @@ export const Shell = () => {
               end
               className={({ isActive }) =>
                 `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
-                  isActive ? 'text-[#ECEBE9] bg-[#2A2D30]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  isActive
+                    ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                    : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`
               }
             >
               Tools
             </NavLink>
 
-            {/* AI Hub — highlighted pill */}
+            {/* AI Hub — always-on green pill */}
             <NavLink
               to="/ai-hub"
               className={({ isActive }) =>
@@ -288,52 +290,77 @@ export const Shell = () => {
             >
               <Bot size={13} />
               <span>AI Hub</span>
-              <span className="text-[9px] font-mono font-bold bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full leading-none">
+              <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full leading-none">
                 NEW
               </span>
             </NavLink>
 
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
-                  isActive ? 'text-[#ECEBE9] bg-[#2A2D30]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`
-              }
-            >
-              About
-            </NavLink>
-            <NavLink
-              to="/docs"
-              className={({ isActive }) =>
-                `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
-                  isActive ? 'text-[#ECEBE9] bg-[#2A2D30]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`
-              }
-            >
-              Docs
-            </NavLink>
-            <NavLink
-              to="/blog"
-              className={({ isActive }) =>
-                `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
-                  isActive ? 'text-[#ECEBE9] bg-[#2A2D30]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`
-              }
-            >
-              Blog
-            </NavLink>
+            {[
+              { to: '/about', label: 'About' },
+              { to: '/docs', label: 'Docs' },
+              { to: '/blog', label: 'Blog' },
+            ].map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
+                    isActive
+                      ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                      : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
           </nav>
 
           {/* Right-side actions */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
 
-            {/* GitHub stars — desktop only */}
+            {/* Feedback — desktop only */}
+            <a
+              href="https://forms.gle/ahQXtFoietABJZpg8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#E29E2D]/50 text-[#A3A09B] hover:text-[#E29E2D] transition-all hover:bg-[#E29E2D]/10"
+              title="Submit Feedback"
+            >
+              <MessageSquare size={15} />
+            </a>
+
+            {/* Facebook — desktop only */}
+            <a
+              href="https://www.facebook.com/profile.php?id=61590872807465"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#3C6B4D] transition-all hover:bg-[#3C6B4D]/10"
+              title="Follow on Facebook"
+            >
+              <FacebookIcon size={14} />
+            </a>
+
+            {/* Ko-fi — desktop only */}
+            <a
+              href="https://ko-fi.com/domodomoo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#FF5E5B]/50 text-[#A3A09B] hover:text-[#FF5E5B] transition-all hover:bg-[#FF5E5B]/10"
+              title="Support on Ko-fi"
+            >
+              <Coffee size={14} />
+            </a>
+
+            {/* Divider */}
+            <div className="hidden xl:block h-5 w-px bg-[#2A2D30] mx-0.5" />
+
+            {/* GitHub stars */}
             <a
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all text-[12px] font-semibold group"
+              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022] group"
               title="Star on GitHub"
             >
               <GithubIcon size={14} />
@@ -346,7 +373,7 @@ export const Shell = () => {
             {isInstallable && (
               <button
                 onClick={handleInstallClick}
-                className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 hover:bg-[#3C6B4D]/25 hover:border-[#3C6B4D]/60 text-[#3C6B4D] hover:text-[#4ade80] transition-all text-[12px] font-semibold"
+                className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 hover:bg-[#3C6B4D]/25 hover:border-[#3C6B4D]/60 text-[#3C6B4D] transition-all text-[12px] font-semibold"
                 title="Install as desktop app"
               >
                 <Download size={13} />
@@ -354,23 +381,26 @@ export const Shell = () => {
               </button>
             )}
 
+            {/* Divider */}
+            <div className="hidden md:block h-5 w-px bg-[#2A2D30] mx-0.5" />
+
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#72706C] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
+              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
             </button>
 
-            {/* Settings — desktop shortcut */}
+            {/* Settings shortcut */}
             <NavLink
               to="/settings"
               className={({ isActive }) =>
                 `hidden md:flex items-center justify-center h-8 w-8 rounded-lg border transition-all ${
                   isActive
                     ? 'border-[#3C6B4D]/50 text-[#3C6B4D] bg-[#3C6B4D]/10'
-                    : 'border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 hover:bg-[#1E2022]'
+                    : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 hover:bg-[#1E2022]'
                 }`
               }
               title="Settings"
@@ -378,16 +408,17 @@ export const Shell = () => {
               <Settings size={15} />
             </NavLink>
 
-            {/* Hamburger — mobile only */}
+            {/* Hamburger — mobile / tablet only */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#72706C] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
+              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
           </div>
         </div>
+
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
