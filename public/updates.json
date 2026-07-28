@@ -1,5 +1,29 @@
 [
   {
+    "hash": "d32354b",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-studio-finetune-docs-multi-format'"
+  },
+  {
+    "hash": "a2dc461",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "docs(about): add v2.0.0 release history & patch notes for AI Hub Studio and Fine-Tune Multi-Format Analysis"
+  },
+  {
+    "hash": "f56c839",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "docs(about): add v2.0.0 release history & patch notes for AI Hub Studio and Fine-Tune Multi-Format Analysis"
+  },
+  {
+    "hash": "5848c14",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "1e2a9d2",
     "date": "2026-07-28",
     "author": "RhonzKieee",
@@ -64,29 +88,5 @@
     "date": "2026-07-28",
     "author": "darknecrocities",
     "message": "fix(ai-hub): prioritize /ollama-proxy and /fastapi-proxy as first candidates with AbortController timeout to instantly load local models"
-  },
-  {
-    "hash": "ac4ffe3",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): add safe fallback nullish coalescing to all Settings modal controls to prevent Generation Defaults crash"
-  },
-  {
-    "hash": "e6d97a3",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add multi-candidate fallback URLs (127.0.0.1, localhost, and Vite dev proxies) to guarantee 100% Ollama and FastAPI connection"
-  },
-  {
-    "hash": "c165487",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add full multi-session chat system (New Chat button, session switching, title auto-naming, session deletion)"
-  },
-  {
-    "hash": "7d63289",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): remove duplicate chatBottomRef and fileInputRef declarations"
   }
 ]
