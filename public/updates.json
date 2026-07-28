@@ -1,5 +1,17 @@
 [
   {
+    "hash": "f81a59c",
+    "date": "2026-07-28",
+    "author": "darknecrocities",
+    "message": "feat: client-side visit counter starting at 7,876"
+  },
+  {
+    "hash": "344298d",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "b62a071",
     "date": "2026-07-28",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-28",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "1e2a9d2",
-    "date": "2026-07-28",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #56 from darknecrocities/feat/ai-hub-studio-finetune-docs-multi-format"
-  },
-  {
-    "hash": "3e3fb89",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "style(ai-hub): replace white icon box with official DomoDomo panda logo component in AI Hub sidebar header"
   }
 ]
