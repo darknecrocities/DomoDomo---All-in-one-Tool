@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -91,6 +91,8 @@ export const Shell = () => {
     return () => window.removeEventListener('domo-navigate' as any, handleDomoNavigate);
   }, [navigate]);
 
+  const location = useLocation();
+  const isAIHub = location.pathname === '/ai-hub';
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -610,69 +612,40 @@ export const Shell = () => {
       )}
 
       {/* Main Content Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className={isAIHub ? 'flex-1 w-full p-0 max-w-none' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8'}>
         <Outlet />
       </main>
 
       {/* Google AdSense Unit */}
-      <AdSenseUnit />
+      {!isAIHub && <AdSenseUnit />}
 
-      {/* Bottom Footer */}
-      <footer className="bg-[#111213] border-t border-[#2A2D30] pt-16 pb-8 px-6 sm:px-12 mt-12 w-full">
-        <div className="max-w-7xl mx-auto flex flex-col gap-12">
-          {/* Main Footer Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
-            {/* Left Tagline */}
-            <div className="lg:col-span-5 flex flex-col justify-between text-left gap-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Logo size={36} showText={false} />
-                  <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-[#ECEBE9] font-heading">
-                    DomoDomo
-                  </h2>
-                </div>
-                <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
-                  <span className="text-[#72706C] text-[10px] uppercase tracking-wider font-bold">Developed By</span>
-                  <div className="flex flex-wrap gap-x-2 gap-y-1 text-[#ECEBE9] text-[11px]">
-                    <a href="https://github.com/darknecrocities" target="_blank" rel="noopener noreferrer" className="hover:text-[#3C6B4D] transition-colors font-bold">Ram Achilles Guinto</a>
-                    <span className="text-[#72706C] font-normal">•</span>
-                    <span className="text-[#ECEBE9] font-bold">Arron Kian Parejas</span>
-                    <span className="text-[#72706C] font-normal">•</span>
-                    <span className="text-[#ECEBE9] font-bold">Rudy Miguel Calzita</span>
+      {/* Bottom Footer (Hidden on /ai-hub full-bleed layout) */}
+      {!isAIHub && (
+        <footer className="bg-[#111213] border-t border-[#2A2D30] pt-16 pb-8 px-6 sm:px-12 mt-12 w-full">
+          <div className="max-w-7xl mx-auto flex flex-col gap-12">
+            {/* Main Footer Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+              {/* Left Tagline */}
+              <div className="lg:col-span-5 flex flex-col justify-between text-left gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Logo size={36} showText={false} />
+                    <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-[#ECEBE9] font-heading">
+                      DomoDomo
+                    </h2>
+                  </div>
+                  <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
+                    <span className="text-[#72706C] text-[10px] uppercase tracking-wider font-bold">Developed By</span>
+                    <div className="flex flex-wrap gap-x-2 gap-y-1 text-[#ECEBE9] text-[11px]">
+                      <a href="https://github.com/darknecrocities" target="_blank" rel="noopener noreferrer" className="hover:text-[#3C6B4D] transition-colors font-bold">Ram Achilles Guinto</a>
+                      <span className="text-[#72706C] font-normal">•</span>
+                      <span className="text-[#ECEBE9] font-bold">Arron Kian Parejas</span>
+                      <span className="text-[#72706C] font-normal">•</span>
+                      <span className="text-[#ECEBE9] font-bold">Rudy Miguel Calzita</span>
+                    </div>
                   </div>
                 </div>
-                {/* Social Options */}
-                <div className="flex items-center gap-3 pt-2">
-                  <a
-                    href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all shadow-sm"
-                    title="GitHub Repository"
-                  >
-                    <GithubIcon size={16} />
-                  </a>
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all shadow-sm"
-                    title="Facebook"
-                  >
-                    <FacebookIcon size={16} />
-                  </a>
-                  <a
-                    href="https://ko-fi.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all shadow-sm flex items-center justify-center"
-                    title="Support us on Ko-Fi"
-                  >
-                    <Coffee size={16} />
-                  </a>
-                </div>
               </div>
-            </div>
 
             {/* Right Link Columns */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
