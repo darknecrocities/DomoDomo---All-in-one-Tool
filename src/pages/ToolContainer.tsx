@@ -38,7 +38,7 @@ export const ToolContainer = () => {
     if (requiresLocalAI) {
       checkOllamaConnection();
     }
-  }, [tool]);
+  }, [tool, requiresLocalAI]);
 
   useEffect(() => {
     if (tool) {
