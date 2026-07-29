@@ -1224,17 +1224,17 @@ User Question: ${incomingQuery}`;
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] min-h-[640px] max-h-[920px] w-full bg-[#111213] text-[#ECEBE9] font-sans rounded-3xl border border-[#2A2D30] overflow-hidden select-none relative">
       {/* ── TOP HEADER / NAVIGATION ── */}
-      <div className="flex items-center justify-between px-5 py-3 bg-[#18191B] border-b border-[#2A2D30] z-20 gap-4 shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="p-2 rounded-xl bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/30 shrink-0">
-            <Layers size={18} />
+      <div className="flex flex-wrap items-center justify-between px-3 md:px-5 py-2.5 bg-[#18191B] border-b border-[#2A2D30] z-20 gap-2 md:gap-4 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 min-w-0 flex-1">
+          <div className="p-1.5 md:p-2 rounded-xl bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/30 shrink-0">
+            <Layers size={16} />
           </div>
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-1.5 md:gap-2 min-w-0 flex-wrap">
             {/* Workflow Preset Selector */}
             <select
               value={activeWorkflowId}
               onChange={e => setActiveWorkflowId(e.target.value)}
-              className="bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-[#3C6B4D] truncate max-w-[240px] sm:max-w-[340px]"
+              className="bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1.5 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-[#3C6B4D] truncate max-w-[160px] sm:max-w-[240px] md:max-w-[340px]"
             >
               {workflows.map(w => (
                 <option key={w.id} value={w.id}>{w.name} ({w.nodes.length} nodes)</option>
@@ -1245,23 +1245,23 @@ User Question: ${incomingQuery}`;
               <Plus size={14} />
             </button>
 
-            <span className="hidden sm:inline-block text-[10px] font-bold text-[#A3A09B] bg-[#111213] px-2.5 py-1 rounded-full border border-[#2A2D30] shrink-0 font-mono uppercase">
+            <span className="hidden xl:inline-block text-[10px] font-bold text-[#A3A09B] bg-[#111213] px-2 py-0.5 rounded-full border border-[#2A2D30] shrink-0 font-mono uppercase">
               {activeWorkflow.tag}
             </span>
 
-            <span className="text-[10px] font-mono text-[#72706C] shrink-0">
+            <span className="hidden sm:inline-block text-[10px] font-mono text-[#72706C] shrink-0">
               {isSaved ? '• Saved' : '• Unsaved'}
             </span>
           </div>
         </div>
 
-        <div className="hidden lg:flex items-center gap-3">
-          <div className="flex items-center p-1 bg-[#111213] border border-[#2A2D30] rounded-xl text-xs font-bold">
+        <div className="flex items-center gap-1.5 md:gap-2 shrink-0 flex-wrap justify-end">
+          <div className="hidden sm:flex items-center p-0.5 bg-[#111213] border border-[#2A2D30] rounded-xl text-xs font-bold">
             {(['editor', 'executions', 'tests'] as const).map(tab => (
               <button
                 key={tab}
                 onClick={() => setMode(tab)}
-                className={`px-3 py-1 rounded-lg capitalize transition-all ${
+                className={`px-2.5 py-1 rounded-lg capitalize transition-all text-xs ${
                   mode === tab ? 'bg-[#18191B] text-[#ECEBE9] shadow-sm' : 'text-[#72706C] hover:text-[#ECEBE9]'
                 }`}
               >
@@ -1269,11 +1269,9 @@ User Question: ${incomingQuery}`;
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-2 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1 text-xs">
-            <span className="text-[10px] font-bold text-[#72706C]">Active</span>
+          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-2 py-1 text-xs">
+            <span className="text-[10px] font-bold text-[#72706C] hidden xs:inline">Active</span>
             <button
               onClick={() => updateActiveWorkflow(w => ({ ...w, active: !w.active }))}
               className={`w-7 h-4 rounded-full p-0.5 transition-colors ${activeWorkflow.active ? 'bg-[#3C6B4D]' : 'bg-[#2A2D30]'}`}
@@ -1282,7 +1280,7 @@ User Question: ${incomingQuery}`;
             </button>
           </div>
 
-          <button onClick={handleExportWorkflowJson} className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] hover:border-[#3C6B4D] text-xs font-bold rounded-xl transition-all">
+          <button onClick={handleExportWorkflowJson} className="hidden md:flex items-center gap-1 px-2.5 py-1.5 bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] hover:border-[#3C6B4D] text-xs font-bold rounded-xl transition-all">
             <Share2 size={13} />
             <span>Share</span>
           </button>
@@ -1290,16 +1288,16 @@ User Question: ${incomingQuery}`;
           <button
             onClick={handleExecuteWorkflow}
             disabled={isExecuting}
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-[#E05D52] hover:bg-[#c94d43] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-black rounded-xl transition-all shadow-md shadow-[#E05D52]/20"
+            className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 bg-[#E05D52] hover:bg-[#c94d43] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-black rounded-xl transition-all shadow-md shadow-[#E05D52]/20 shrink-0"
             title={isExecuting ? 'Locked: Executing flow...' : 'Test workflow'}
           >
             {isExecuting ? <Lock size={13} className="animate-spin text-white" /> : <Play size={13} />}
-            <span>{isExecuting ? 'Executing Flow (Locked)...' : 'Test workflow'}</span>
+            <span>{isExecuting ? 'Executing...' : 'Test workflow'}</span>
           </button>
 
           <button
             onClick={() => setShowBottomPanel(!showBottomPanel)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+            className={`px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 ${
               showBottomPanel ? 'bg-[#111213] border-[#3C6B4D] text-[#3C6B4D]' : 'bg-[#111213] border-[#2A2D30] text-[#72706C]'
             }`}
           >
