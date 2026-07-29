@@ -1,5 +1,17 @@
 [
   {
+    "hash": "86fb39f",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix: refactor automation flow toolbar for full mobile and desktop responsiveness"
+  },
+  {
+    "hash": "cc877e2",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "19ff67e",
     "date": "2026-07-29",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "feat: AI Hub responsive mobile drawer and locked button states"
-  },
-  {
-    "hash": "4109665",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "6ef2055",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix(flow-automation): resolve backend httpx timeout 500 error, improve flow canvas layout containment, and enhance chat console user message text contrast"
   }
 ]
