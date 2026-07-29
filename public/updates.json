@@ -1,6 +1,42 @@
 [
   {
+    "hash": "1291753",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
+  },
+  {
+    "hash": "6fecc90",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: add MCP Tool node with 7 server catalog, credential forms, LLM compat checker, and tutorial modal to Flow Automation Studio"
+  },
+  {
+    "hash": "4e3ee62",
+    "date": "2026-07-29",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #59 from darknecrocities/staging"
+  },
+  {
+    "hash": "307b735",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
+    "hash": "d5e0b7d",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "Merge branch 'main' into feat/ai-hub-tools-expansion"
+  },
+  {
     "hash": "9b47c25",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: add 5 new production workflow templates to Local AI Flow Studio"
+  },
+  {
+    "hash": "80c8e64",
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "feat: add 5 new production workflow templates to Local AI Flow Studio"
@@ -12,7 +48,19 @@
     "message": "chore: auto-generate public/updates.json [skip ci]"
   },
   {
+    "hash": "0cd523b",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "Merge branch 'main' into staging"
+  },
+  {
     "hash": "86fb39f",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix: refactor automation flow toolbar for full mobile and desktop responsiveness"
+  },
+  {
+    "hash": "6c21b03",
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "fix: refactor automation flow toolbar for full mobile and desktop responsiveness"
@@ -24,69 +72,21 @@
     "message": "chore: auto-generate public/updates.json [skip ci]"
   },
   {
+    "hash": "1de055d",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "Merge branch 'main' into feat/ai-hub-tools-expansion"
+  },
+  {
     "hash": "19ff67e",
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "fix: resolve flow automation SVG connector line cutoff bug by aligning port anchor offsets and enabling SVG overflow-visible"
   },
   {
-    "hash": "649dc57",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "5cbe7e6",
+    "hash": "81b667c",
     "date": "2026-07-29",
     "author": "darknecrocities",
-    "message": "fix: enforce strict mobile sidebar hiding and popup local run guide modal on locked online model downloads"
-  },
-  {
-    "hash": "4769aa3",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "d8e2ed5",
-    "date": "2026-07-29",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #58 from darknecrocities/feat/ai-hub-tools-expansion"
-  },
-  {
-    "hash": "90e365d",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix: make AI Hub sidebar scrollable and add Online Demo Lock banner with step-by-step Local Run Guide modal"
-  },
-  {
-    "hash": "a267973",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "60e1311",
-    "date": "2026-07-29",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #57 from darknecrocities/feat/ai-hub-tools-expansion"
-  },
-  {
-    "hash": "b033c5d",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "feat: integrate model selector dropdown and 1-click model downloader across all AI Hub tools"
-  },
-  {
-    "hash": "70c3062",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "docs: update AI Hub technical specs, release notes, sitemap, and blog announcement"
-  },
-  {
-    "hash": "efe0060",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "feat: expand AI Hub Studio with 10 interactive tools and vision model downloader"
+    "message": "fix: resolve flow automation SVG connector line cutoff bug by aligning port anchor offsets and enabling SVG overflow-visible"
   }
 ]
