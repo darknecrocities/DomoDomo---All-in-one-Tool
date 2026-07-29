@@ -176,7 +176,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
     if (queryTab && queryTab !== activeTab) {
       setActiveTab(queryTab);
     }
-  }, [queryTab]);
+  }, [queryTab, activeTab]);
 
   const handleTabChange = (tab: 'about' | 'categories' | 'updates' | 'docs') => {
     setActiveTab(tab);

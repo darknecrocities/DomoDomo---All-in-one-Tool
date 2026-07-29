@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { aiService } from '../utils/aiService';
 import { parseMarkdown } from '../utils/markdownParser';
@@ -25,7 +25,14 @@ export const FloatingDomo: React.FC = () => {
 
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
-  const loadPreferences = () => {
+  const setDefaultPosition = useCallback(() => {
+    setPosition({
+      x: window.innerWidth - 80,
+      y: window.innerHeight - 180
+    });
+  }, []);
+
+  const loadPreferences = useCallback(() => {
     const isOnlineProd = 
       window.location.hostname.endsWith('.vercel.app') || 
       window.location.hostname === 'domodomo.site' ||
@@ -64,14 +71,7 @@ export const FloatingDomo: React.FC = () => {
     } else {
       setDefaultPosition();
     }
-  };
-
-  const setDefaultPosition = () => {
-    setPosition({
-      x: window.innerWidth - 80,
-      y: window.innerHeight - 180
-    });
-  };
+  }, [setDefaultPosition]);
 
   useEffect(() => {
     loadPreferences();
@@ -81,7 +81,7 @@ export const FloatingDomo: React.FC = () => {
       window.removeEventListener('domodomo_settings_updated', loadPreferences);
       window.removeEventListener('resize', setDefaultPosition);
     };
-  }, []);
+  }, [loadPreferences, setDefaultPosition]);
 
   // Update tab naming on route change
   useEffect(() => {

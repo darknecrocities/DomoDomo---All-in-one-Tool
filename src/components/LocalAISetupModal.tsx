@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ShieldAlert, X, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { aiService } from '../utils/aiService';
 
@@ -23,9 +23,9 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
   const isLocal =
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === '';
+    window.location.hostname === '::1';
 
-  const checkConnection = async () => {
+  const checkConnection = useCallback(async () => {
     setIsChecking(true);
     try {
       const res = await aiService.checkOllama();
@@ -37,18 +37,18 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
           onClose();
         }, 1500);
       }
-    } catch (e) {
+    } catch {
       setIsOnline(false);
     } finally {
       setIsChecking(false);
     }
-  };
+  }, [onClose]);
 
   useEffect(() => {
     if (isOpen) {
       checkConnection();
     }
-  }, [isOpen]);
+  }, [isOpen, checkConnection]);
 
   if (!isOpen) return null;
 

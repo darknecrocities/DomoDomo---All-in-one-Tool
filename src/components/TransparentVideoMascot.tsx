@@ -4,6 +4,7 @@ interface TransparentVideoMascotProps {
   src: string;
   className?: string;
   clickable?: boolean;
+  isNativeTransparent?: boolean;
 }
 
 const CUTE_MESSAGES = [
@@ -33,6 +34,7 @@ export const TransparentVideoMascot = ({
   src,
   className = '',
   clickable = true,
+  isNativeTransparent = false,
 }: TransparentVideoMascotProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -132,9 +134,11 @@ export const TransparentVideoMascot = ({
 
         ctx.drawImage(video, 0, 0, vw, vh);
 
-        const frame = ctx.getImageData(0, 0, vw, vh);
-        removeConnectedBackground(frame.data, vw, vh);
-        ctx.putImageData(frame, 0, 0);
+        if (!isNativeTransparent) {
+          const frame = ctx.getImageData(0, 0, vw, vh);
+          removeConnectedBackground(frame.data, vw, vh);
+          ctx.putImageData(frame, 0, 0);
+        }
       }
       animFrameId = requestAnimationFrame(processFrame);
     };
@@ -144,7 +148,7 @@ export const TransparentVideoMascot = ({
     return () => {
       cancelAnimationFrame(animFrameId);
     };
-  }, [src]);
+  }, [src, isNativeTransparent]);
 
   const handleClick = useCallback(() => {
     if (!clickable) return;

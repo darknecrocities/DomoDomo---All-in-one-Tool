@@ -891,7 +891,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
           try {
             await callMcpTool('write_file', { path: fileName, content });
             addActivityLog('success', `[MCP Write] Wrote file successfully to host: "${fileName}"`);
-          } catch (e: any) {
+          } catch {
             addActivityLog('error', `[MCP Write Failed] falling back to workspace picker...`);
             if (dirHandle) await handleWriteArtifactToWorkspace(newArtifact, true);
           }
@@ -976,7 +976,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
         existingContent = await file.text();
         fileExists = true;
       }
-    } catch (e) {
+    } catch {
       // File not found or failed to read
     }
 
