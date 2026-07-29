@@ -13,8 +13,8 @@ import {
 	Star,
 	Copy,
 	Check,
-	Trophy,
-	Award,
+	Trophy as TrophyIcon,
+	Award as AwardIcon,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
@@ -2364,7 +2364,7 @@ export const Dashboard = () => {
 							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in Productivity Category"
 						>
-							<Trophy size={15} className="text-[#3C6B4D]" />
+							<TrophyIcon size={15} className="text-[#3C6B4D]" />
 							<span>#1 in Productivity</span>
 						</div>
 
@@ -2373,7 +2373,7 @@ export const Dashboard = () => {
 							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in Developer Tools Category"
 						>
-							<Award size={15} className="text-[#3C6B4D]" />
+							<AwardIcon size={15} className="text-[#3C6B4D]" />
 							<span>#1 in Developer Tools</span>
 						</div>
 
