@@ -27,12 +27,14 @@ const CUTE_MESSAGES = [
   "beep boop beep 🤖",
   "uwu what's this 👀",
   "Secret: I'm powered by love 💚",
+  "Stare long enough and I'll stare back 😏",
 ];
 
 export const TransparentVideoMascot = ({
   src,
   className = '',
   clickable = true,
+  isNativeTransparent = false,
 }: TransparentVideoMascotProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -41,13 +43,17 @@ export const TransparentVideoMascot = ({
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastMsgRef = useRef<string | null>(null);
 
+  const useNative = isNativeTransparent || (typeof src === 'string' && src.toLowerCase().includes('.webm'));
+
   useEffect(() => {
     const video = videoRef.current;
-    const canvas = canvasRef.current;
     if (!video) return;
 
-    video.play().catch(() => {});
+    video.play().catch(() => { });
 
+    if (useNative) return;
+
+    const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
@@ -244,12 +250,14 @@ export const TransparentVideoMascot = ({
         muted
         playsInline
         crossOrigin="anonymous"
-        className="hidden"
+        className={useNative ? "w-full h-full object-contain pointer-events-none" : "hidden"}
       />
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full object-contain pointer-events-none"
-      />
+      {!useNative && (
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full object-contain pointer-events-none"
+        />
+      )}
     </div>
   );
 };

@@ -20,6 +20,7 @@ import {
 import PUBLIC_APIS_DATA from '../assets/public-apis.json';
 import PH_APIS_DATA from '../assets/philippine-apis.json';
 import { TransparentVideoMascot } from '../components/TransparentVideoMascot';
+import domoReadingWebm from '../assets/domoreading.webm';
 
 
 interface APIEntry {
@@ -198,12 +199,13 @@ curl -X GET "${endpoint}" \\
           </p>
         </div>
 
-        {/* Right side animated mascot video (domo_ladder.mp4) with real-time white background removal */}
+        {/* Right side animated mascot video (domoreading.webm) */}
         <div className="relative z-20 shrink-0 flex items-center justify-center -my-4 md:-my-6">
           <TransparentVideoMascot
-            src="/domo_ladder.mp4"
-            className="w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+            src={domoReadingWebm}
+            className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
             clickable={true}
+            isNativeTransparent={true}
           />
         </div>
       </div>
