@@ -675,8 +675,11 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
     const ports = isOutput ? node.outputs : node.inputs;
     const idx = ports.findIndex(p => p.id === portId);
     const safeIdx = idx >= 0 ? idx : 0;
-    const x = isOutput ? node.x + 256 : node.x;
-    const y = node.y + 46 + safeIdx * 20 + 10;
+    // Output port is at right edge (+264px), Input port is at left edge (-8px)
+    const x = isOutput ? node.x + 264 : node.x - 8;
+    const hasDocUpload = node.type === 'document_upload' || node.type === 'trigger' || node.id.includes('doc') || node.title.toLowerCase().includes('document') || node.title.toLowerCase().includes('input');
+    const headerHeight = hasDocUpload ? 104 : 52;
+    const y = node.y + headerHeight + safeIdx * 24 + 10;
     return { x, y };
   }, [nodes]);
 
@@ -1327,8 +1330,9 @@ User Question: ${incomingQuery}`;
 
         {/* SVG Bezier Connection Lines Overlay */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-0"
+          className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
           style={{
+            overflow: 'visible',
             transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
             transformOrigin: '0 0'
           }}
