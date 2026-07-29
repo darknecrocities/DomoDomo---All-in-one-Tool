@@ -1322,12 +1322,12 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-hub-studio',
-        name: 'AI Hub Studio (n8n Flow Automation & Fine-Tune Studio)',
-        engine: 'n8n Visual Flow Graph Canvas Engine, Ollama REST Stream & QLoRA Builder',
-        details: 'Comprehensive local AI Hub Studio featuring an n8n-style visual graph flowchart canvas, multi-workflow manager, curved Bezier port wiring, live chat console, node execution logs JSON payload inspector, ChatGPT-style chat workspace, Fine-Tune QLoRA recipe builder, and side-by-side model benchmarks.',
-        functionality: 'Multi-tab local AI environment: n8n visual automation board with interactive drag-and-drop nodes, pan/zoom canvas viewport, port handle wiring, real-time node payload inspector, synthetic dataset recipe builder, QLoRA hyperparameter tuning, loss curve monitor, GGUF/Modelfile export, and dual-model comparison.',
-        howItWorks: '1. Drag and position nodes on an n8n-style grid canvas with Bezier wire connections. 2. Inspect real-time step execution timing and JSON payload inputs/outputs in the split bottom console. 3. Connects to local Ollama runtime port 11434 with zero server data transfer.',
-        technicalSpecs: '100% client-side offline execution. Features interactive zoom/pan controls, LocalStorage workflow persistence, and custom JSON import/export.'
+        name: 'AI Hub Studio (16-Tool Local AI Automation Suite)',
+        engine: 'n8n Visual Flow Graph Canvas Engine, Ollama REST Stream, Vector RAG Engine, & Llava Vision VQA',
+        details: 'Comprehensive local AI Hub Studio featuring 16 dynamic sub-studios: n8n-style visual graph flowchart canvas, Fine-Tune QLoRA builder, Side-by-Side Model Benchmarks, RAG Vector Search Studio, Prompt Engineering Lab, Structured JSON Extractor, Function Calling Studio, AI Guardrails Inspector, Code Refactoring & AI Patch, Multi-Model Router, Knowledge Graph Visualizer, Vision Inspection Studio with 1-Click Model Downloader, and GGUF VRAM Quantization Calculator.',
+        functionality: '16-tab local AI environment: n8n visual automation board, synthetic dataset recipe builder, QLoRA hyperparameter tuning, loss curve monitor, TF-IDF vector document chunker, {{variable}} prompt template parser, JSON schema validator, client-side function calling execution trace, 8-category PII redaction mask editor, AST code patch exporter, intent classification router, interactive SVG knowledge graph entity extractor, Llava multimodal vision inspector with 1-click model downloader, and GGUF --n-gpu-layers VRAM offload calculator.',
+        howItWorks: '1. Select any of the 16 dedicated AI Hub tools from the categorized sidebar or mobile drawer. 2. Processes all inputs, vector distances, canvas pixel data, and AST patches 100% client-side with optional local Ollama HTTP API streaming (port 11434). 3. Provides 1-click model downloads and zero cloud server dependencies.',
+        technicalSpecs: '100% client-side offline execution. Connects to Ollama REST endpoints (/api/generate, /api/pull, /api/tags), features SVG Canvas graphics, IndexedDB workflow persistence, and custom JSON/TS export.'
       }
     ]
   },
