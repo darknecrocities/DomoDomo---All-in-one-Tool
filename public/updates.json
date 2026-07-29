@@ -1,5 +1,23 @@
 [
   {
+    "hash": "bf3c4df",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix(ci): resolve merge conflict in Dashboard.tsx and alias TrophyIcon/AwardIcon"
+  },
+  {
+    "hash": "9572709",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix(ci): alias Trophy and Award imports as TrophyIcon and AwardIcon to resolve TS6133 unused import error in CI"
+  },
+  {
+    "hash": "11061da",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "09c152a",
     "date": "2026-07-29",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-29",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "1291753",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
-  },
-  {
-    "hash": "6fecc90",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "feat: add MCP Tool node with 7 server catalog, credential forms, LLM compat checker, and tutorial modal to Flow Automation Studio"
-  },
-  {
-    "hash": "4e3ee62",
-    "date": "2026-07-29",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #59 from darknecrocities/staging"
   }
 ]
