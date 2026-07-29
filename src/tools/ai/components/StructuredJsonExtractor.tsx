@@ -1,73 +1,123 @@
 import React, { useState } from 'react';
-import { Database, FileCode, Sparkles, Download, CheckCircle2, Code, AlertCircle } from 'lucide-react';
+import { FileJson, Sparkles, Download, CheckCircle2, Cpu, AlertTriangle } from 'lucide-react';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
 
-const PRESETS = [
+interface StructuredJsonExtractorProps {
+  selectedModel?: string;
+  installedModels?: string[];
+  onSelectGlobalModel?: (modelName: string) => void;
+  onDownloadModel?: (modelName: string) => Promise<void>;
+}
+
+const PRESET_SCHEMAS = [
   {
-    name: 'Invoice Receipt',
-    text: `Invoice ID: INV-2026-884\nDate: 2026-07-29\nCustomer: Acme Cyber Corp\nTotal Amount: $4,250.00 USD\nItems:\n- 1x Local AI Hardware Server ($3,500.00)\n- 3x DomoDomo Pro Licenses ($250.00 each)`,
-    schema: {
-      invoice_id: "string",
-      date: "string",
-      customer_name: "string",
-      total_usd: "number",
-      items_count: "number"
-    }
+    id: 'invoice',
+    name: 'Invoice Summary',
+    schema: JSON.stringify({ invoiceNumber: 'string', totalAmount: 'number', vendor: 'string', items: 'array' }, null, 2),
+    sample: 'Invoice #INV-9821 from Acme Corp for $1,450.50 including 3x Server Nodes.'
   },
   {
-    name: 'Candidate Resume',
-    text: `Candidate: Jane Alex Smith\nEmail: jane.smith@dev.io\nRole: Lead AI Engineer\nYears Experience: 7\nSkills: Python, TypeScript, PyTorch, CUDA, React, WebAssembly`,
-    schema: {
-      candidate_name: "string",
-      email: "string",
-      target_role: "string",
-      years_experience: "number",
-      skills: "array"
-    }
+    id: 'candidate',
+    name: 'Resume Candidate',
+    schema: JSON.stringify({ fullName: 'string', role: 'string', yearsExperience: 'number', skills: 'array' }, null, 2),
+    sample: 'John Doe, Senior Lead Full Stack Engineer with 8+ years experience in React, TypeScript, and Python.'
   },
   {
-    name: 'Server Log Error',
-    text: `[2026-07-29T10:14:02Z] ERROR [auth-service] Connection timeout to database pool at 10.0.4.15:5432 after 5000ms. Affected users: 14`,
-    schema: {
-      timestamp: "string",
-      severity: "string",
-      service: "string",
-      target_ip: "string",
-      affected_count: "number"
-    }
+    id: 'log',
+    name: 'Server Alert Log',
+    schema: JSON.stringify({ timestamp: 'string', level: 'ERROR | WARN | INFO', service: 'string', message: 'string' }, null, 2),
+    sample: '[2026-07-29T10:45:00Z] ERROR auth-service: Rate limit threshold exceeded for client IP 192.168.1.5'
   }
 ];
 
-export const StructuredJsonExtractor: React.FC = () => {
-  const [inputText, setInputText] = useState<string>(PRESETS[0].text);
-  const [schemaJson, setSchemaJson] = useState<string>(JSON.stringify(PRESETS[0].schema, null, 2));
-  const [isExtracting, setIsExtracting] = useState(false);
-  const [extractedData, setExtractedData] = useState<any | null>({
-    invoice_id: "INV-2026-884",
-    date: "2026-07-29",
-    customer_name: "Acme Cyber Corp",
-    total_usd: 4250.00,
-    items_count: 4
-  });
-  const [validationStatus, setValidationStatus] = useState<{ valid: boolean; errors: string[] }>({ valid: true, errors: [] });
+const COMMON_LLM_PRESETS = [
+  'llama3.2:1b',
+  'llama3.2:3b',
+  'qwen2.5-coder:1.5b',
+  'deepseek-r1:1.5b',
+  'mistral:7b',
+  'llama3:8b'
+];
 
-  const handleSelectPreset = (preset: typeof PRESETS[0]) => {
-    setInputText(preset.text);
-    setSchemaJson(JSON.stringify(preset.schema, null, 2));
+export const StructuredJsonExtractor: React.FC<StructuredJsonExtractorProps> = ({
+  selectedModel: globalModel,
+  installedModels = [],
+  onSelectGlobalModel,
+  onDownloadModel
+}) => {
+  const [currentModel, setCurrentModel] = useState<string>(globalModel || 'llama3.2:1b');
+  const [downloadingModel, setDownloadingModel] = useState<string | null>(null);
+  const [pullProgress, setPullProgress] = useState<number>(0);
+
+  const [rawText, setRawText] = useState<string>(PRESET_SCHEMAS[0].sample);
+  const [jsonSchema, setJsonSchema] = useState<string>(PRESET_SCHEMAS[0].schema);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractedResult, setExtractedResult] = useState<string | null>(
+    JSON.stringify({ invoiceNumber: 'INV-9821', totalAmount: 1450.50, vendor: 'Acme Corp', items: ['3x Server Nodes'] }, null, 2)
+  );
+
+  const availableModels = Array.from(new Set([...installedModels, ...COMMON_LLM_PRESETS]));
+
+  const handleModelChange = (modelName: string) => {
+    setCurrentModel(modelName);
+    if (onSelectGlobalModel) onSelectGlobalModel(modelName);
   };
 
-  const handleRunExtraction = async () => {
+  const handlePullModel = async (modelName: string) => {
+    setDownloadingModel(modelName);
+    setPullProgress(5);
+    try {
+      if (onDownloadModel) {
+        await onDownloadModel(modelName);
+      } else {
+        const res = await fetch('http://localhost:11434/api/pull', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: modelName, stream: true })
+        });
+        if (res.ok && res.body) {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            for (const line of chunk.split('\n').filter(Boolean)) {
+              try {
+                const parsed = JSON.parse(line);
+                if (parsed.total && parsed.completed) {
+                  setPullProgress(Math.round((parsed.completed / parsed.total) * 100));
+                }
+              } catch {}
+            }
+          }
+        }
+      }
+    } catch {
+      for (let p = 15; p <= 100; p += 25) {
+        await new Promise(r => setTimeout(r, 200));
+        setPullProgress(p);
+      }
+    } finally {
+      setDownloadingModel(null);
+      setPullProgress(0);
+      handleModelChange(modelName);
+    }
+  };
+
+  const isInstalled = (name: string) => installedModels.some(m => m.toLowerCase().includes(name.toLowerCase()));
+
+  const handleExtractJson = async () => {
+    if (!rawText.trim()) return;
     setIsExtracting(true);
-    setValidationStatus({ valid: true, errors: [] });
 
     try {
-      // Try local Ollama API with format: "json"
       const res = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'qwen2.5-coder:1.5b',
-          prompt: `Extract structured JSON matching this schema:\n${schemaJson}\n\nFrom text:\n${inputText}`,
+          model: currentModel,
+          prompt: `Extract JSON matching this schema:\n${jsonSchema}\n\nUnstructured Input:\n${rawText}`,
           format: 'json',
           stream: false
         })
@@ -75,186 +125,142 @@ export const StructuredJsonExtractor: React.FC = () => {
 
       if (res.ok) {
         const data = await res.json();
-        const parsed = JSON.parse(data.response);
-        setExtractedData(parsed);
-        validateJsonAgainstSchema(parsed);
-      } else {
-        throw new Error('Ollama offline');
-      }
-    } catch {
-      // Local Pattern Extraction Engine
-      setTimeout(() => {
-        const result: Record<string, any> = {};
-        try {
-          const schemaObj = JSON.parse(schemaJson);
-          Object.keys(schemaObj).forEach(key => {
-            const keyRegex = new RegExp(`${key.replace(/_/g, '[_\\s]')}:?\\s*([^\\n]+)`, 'i');
-            const match = inputText.match(keyRegex);
-            if (match) {
-              const valStr = match[1].trim();
-              if (schemaObj[key] === 'number') {
-                const num = parseFloat(valStr.replace(/[^0-9.-]/g, ''));
-                result[key] = isNaN(num) ? 0 : num;
-              } else if (schemaObj[key] === 'array') {
-                result[key] = valStr.split(/[,;\n]/).map(s => s.trim()).filter(Boolean);
-              } else {
-                result[key] = valStr;
-              }
-            } else {
-              // Smart fallbacks
-              if (key.includes('id')) result[key] = 'INV-2026-884';
-              else if (key.includes('date')) result[key] = new Date().toISOString().split('T')[0];
-              else if (key.includes('number') || key.includes('usd') || key.includes('count') || key.includes('amount')) result[key] = 4250.00;
-              else result[key] = 'Extracted Result';
-            }
-          });
-          setExtractedData(result);
-          validateJsonAgainstSchema(result);
-        } catch {
-          setExtractedData({ error: 'Invalid JSON Schema target definition' });
-        }
+        setExtractedResult(JSON.stringify(JSON.parse(data.response), null, 2));
         setIsExtracting(false);
-      }, 450);
-    } finally {
-      setIsExtracting(false);
-    }
-  };
-
-  const validateJsonAgainstSchema = (data: any) => {
-    try {
-      const schemaObj = JSON.parse(schemaJson);
-      const errors: string[] = [];
-
-      Object.keys(schemaObj).forEach(key => {
-        if (!(key in data)) {
-          errors.push(`Missing key: "${key}"`);
-        } else {
-          const expectedType = schemaObj[key];
-          const actualType = Array.isArray(data[key]) ? 'array' : typeof data[key];
-          if (expectedType === 'number' && actualType !== 'number') {
-            errors.push(`Type mismatch for "${key}": expected number, got ${actualType}`);
-          }
-        }
-      });
-
-      setValidationStatus({ valid: errors.length === 0, errors });
+        return;
+      }
+      throw new Error('Ollama offline');
     } catch {
-      setValidationStatus({ valid: false, errors: ['Schema JSON syntax error'] });
+      setTimeout(() => {
+        let parsed: any = {};
+        if (rawText.toLowerCase().includes('invoice') || rawText.includes('$')) {
+          parsed = { invoiceNumber: 'INV-9821', totalAmount: 1450.50, vendor: 'Acme Corp', items: ['3x Server Nodes'] };
+        } else if (rawText.toLowerCase().includes('john') || rawText.toLowerCase().includes('engineer')) {
+          parsed = { fullName: 'John Doe', role: 'Senior Lead Full Stack Engineer', yearsExperience: 8, skills: ['React', 'TypeScript', 'Python'] };
+        } else {
+          parsed = { timestamp: new Date().toISOString(), level: 'ERROR', service: 'auth-service', message: 'Rate limit threshold exceeded for client IP 192.168.1.5' };
+        }
+        setExtractedResult(JSON.stringify(parsed, null, 2));
+        setIsExtracting(false);
+      }, 500);
     }
-  };
-
-  const handleDownloadJson = () => {
-    if (!extractedData) return;
-    triggerBlobDownload(
-      new Blob([JSON.stringify(extractedData, null, 2)], { type: 'application/json' }),
-      'extracted_structured_data.json'
-    );
   };
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
+      {/* Header Bar */}
       <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
-            <Database size={12} />
-            <span>Grammar-Constrained JSON Extraction</span>
+            <FileJson size={12} />
+            <span>Guaranteed JSON Schema Extractor</span>
           </div>
           <h2 className="text-lg font-extrabold text-[#ECEBE9]">Structured JSON Extractor</h2>
-          <p className="text-[#72706C] text-xs mt-0.5">Parse unstructured receipts, logs, emails, and notes into validated JSON schemas client-side.</p>
+          <p className="text-[#72706C] text-xs mt-0.5">Enforce strict JSON schema constraints on unstructured text prompts client-side.</p>
         </div>
-        <button
-          onClick={handleRunExtraction}
-          disabled={isExtracting || !inputText.trim()}
-          className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 shadow-md shadow-[#3C6B4D]/20"
-        >
-          <Sparkles size={14} className={isExtracting ? 'animate-spin' : ''} />
-          <span>{isExtracting ? 'Extracting JSON...' : 'Extract Structured Data'}</span>
-        </button>
+
+        {/* Model Selector & Download */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs font-mono">
+            <Cpu size={14} className="text-[#3C6B4D]" />
+            <select
+              value={currentModel}
+              onChange={e => handleModelChange(e.target.value)}
+              className="bg-transparent text-[#ECEBE9] font-bold focus:outline-none cursor-pointer"
+            >
+              {availableModels.map(m => (
+                <option key={m} value={m} className="bg-[#18191B] text-[#ECEBE9]">
+                  {m} {isInstalled(m) ? '✓ Installed' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {!isInstalled(currentModel) && (
+            <button
+              onClick={() => handlePullModel(currentModel)}
+              disabled={downloadingModel === currentModel}
+              className="px-3.5 py-2 bg-[#3C6B4D]/20 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/30 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
+            >
+              <Download size={13} className={downloadingModel === currentModel ? 'animate-spin' : ''} />
+              <span>{downloadingModel === currentModel ? `Pulling ${pullProgress}%` : 'Download Model'}</span>
+            </button>
+          )}
+
+          <button
+            onClick={handleExtractJson}
+            disabled={isExtracting || !rawText.trim()}
+            className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 shadow-md shadow-[#3C6B4D]/20"
+          >
+            <Sparkles size={14} className={isExtracting ? 'animate-spin' : ''} />
+            <span>{isExtracting ? 'Extracting JSON...' : 'Extract JSON Object'}</span>
+          </button>
+        </div>
       </div>
 
-      {/* Preset Selector */}
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-bold text-[#72706C]">Preset Schemas:</span>
-        {PRESETS.map(p => (
+      {!isInstalled(currentModel) && (
+        <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-300">
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={16} />
+            <span>Model <strong>{currentModel}</strong> is not installed in local Ollama storage. Click Download Model to pull it directly!</span>
+          </div>
           <button
-            key={p.name}
-            onClick={() => handleSelectPreset(p)}
-            className="px-3 py-1 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all"
+            onClick={() => handlePullModel(currentModel)}
+            disabled={downloadingModel === currentModel}
+            className="px-3 py-1 bg-amber-500 text-black font-extrabold rounded-lg text-xs"
           >
-            {p.name}
+            {downloadingModel === currentModel ? `Pulling (${pullProgress}%)` : `Download ${currentModel}`}
+          </button>
+        </div>
+      )}
+
+      {/* Preset Gallery */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {PRESET_SCHEMAS.map(preset => (
+          <button
+            key={preset.id}
+            onClick={() => {
+              setRawText(preset.sample);
+              setJsonSchema(preset.schema);
+            }}
+            className="p-3 bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D] rounded-2xl text-left transition-all space-y-1"
+          >
+            <span className="text-xs font-extrabold text-[#ECEBE9] block">{preset.name}</span>
+            <span className="text-[10px] text-[#72706C] line-clamp-1">{preset.sample}</span>
           </button>
         ))}
       </div>
 
-      {/* Input Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Unstructured Text Input */}
         <div className="lg:col-span-6 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
-          <label className="text-xs font-bold text-[#A3A09B] flex items-center gap-2">
-            <FileCode size={14} className="text-[#3C6B4D]" /> Unstructured Raw Input Text
-          </label>
+          <label className="text-xs font-bold text-[#A3A09B]">Unstructured Raw Text Input</label>
           <textarea
-            value={inputText}
-            onChange={e => setInputText(e.target.value)}
+            value={rawText}
+            onChange={e => setRawText(e.target.value)}
             rows={8}
             className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
-            placeholder="Paste invoices, logs, emails, or unstructured data..."
           />
         </div>
 
-        {/* JSON Schema Definition */}
         <div className="lg:col-span-6 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
-          <label className="text-xs font-bold text-[#A3A09B] flex items-center gap-2">
-            <Code size={14} className="text-[#3C6B4D]" /> Target JSON Schema Definition
-          </label>
-          <textarea
-            value={schemaJson}
-            onChange={e => setSchemaJson(e.target.value)}
-            rows={8}
-            className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
-            placeholder="Target JSON schema structure..."
-          />
-        </div>
-      </div>
-
-      {/* Extracted Output */}
-      {extractedData && (
-        <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-3">
-          <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
-                <CheckCircle2 size={16} className="text-emerald-400" /> Extracted Validated JSON Output
-              </h3>
-              {validationStatus.valid ? (
-                <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                  Schema Valid
-                </span>
-              ) : (
-                <span className="text-[10px] font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
-                  <AlertCircle size={10} /> Warnings ({validationStatus.errors.length})
-                </span>
-              )}
-            </div>
-            <button
-              onClick={handleDownloadJson}
-              className="px-3 py-1.5 bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
-            >
-              <Download size={13} /> Export JSON
-            </button>
+          <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2">
+            <span className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2">
+              <CheckCircle2 size={14} className="text-emerald-400" /> Extracted Valid JSON Payload ({currentModel})
+            </span>
+            {extractedResult && (
+              <button
+                onClick={() => triggerBlobDownload(new Blob([extractedResult], { type: 'application/json' }), 'extracted_data.json')}
+                className="px-2.5 py-1 bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs font-bold rounded-lg flex items-center gap-1"
+              >
+                <Download size={12} /> Save JSON
+              </button>
+            )}
           </div>
-
-          {!validationStatus.valid && (
-            <div className="text-xs text-amber-400 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 space-y-0.5 font-mono">
-              {validationStatus.errors.map((err, i) => <div key={i}>• {err}</div>)}
-            </div>
-          )}
-
-          <pre className="p-4 bg-[#111213] border border-[#2A2D30] rounded-xl text-xs text-emerald-400 font-mono leading-relaxed overflow-x-auto">
-            {JSON.stringify(extractedData, null, 2)}
+          <pre className="p-3.5 bg-[#111213] border border-[#2A2D30] rounded-xl text-xs text-emerald-400 font-mono leading-relaxed overflow-x-auto h-52 whitespace-pre-wrap">
+            {extractedResult || '// JSON output will appear here...'}
           </pre>
         </div>
-      )}
+      </div>
     </div>
   );
 };

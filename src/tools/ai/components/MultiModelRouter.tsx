@@ -1,184 +1,246 @@
 import React, { useState } from 'react';
-import { Workflow, Cpu, Zap, CheckCircle2, Settings } from 'lucide-react';
+import { GitBranch, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle } from 'lucide-react';
 
-interface RouteDecision {
-  category: 'coding' | 'reasoning' | 'chat' | 'vision' | 'extraction';
-  selectedModel: string;
-  confidence: number;
-  reason: string;
-  ensembleVotes?: { model: string; vote: string; weight: number }[];
+interface MultiModelRouterProps {
+  selectedModel?: string;
+  installedModels?: string[];
+  onSelectGlobalModel?: (modelName: string) => void;
+  onDownloadModel?: (modelName: string) => Promise<void>;
 }
 
-export const MultiModelRouter: React.FC = () => {
-  const [promptText, setPromptText] = useState<string>(
-    'Write a TypeScript function to parse JSON files asynchronously with fallback error handling.'
-  );
+interface RouteRule {
+  id: string;
+  intentCategory: string;
+  keywords: string[];
+  targetModel: string;
+}
 
-  const [routingMatrix, setRoutingMatrix] = useState({
-    coding: 'qwen2.5-coder:1.5b',
-    reasoning: 'deepseek-r1:1.5b',
-    vision: 'llava:7b',
-    chat: 'llama3.2:1b',
-    extraction: 'qwen2.5-coder:1.5b'
-  });
+const COMMON_LLM_PRESETS = [
+  'llama3.2:1b',
+  'llama3.2:3b',
+  'qwen2.5-coder:1.5b',
+  'deepseek-r1:1.5b',
+  'mistral:7b',
+  'llama3:8b'
+];
 
+export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
+  selectedModel: globalModel,
+  installedModels = [],
+  onSelectGlobalModel,
+  onDownloadModel
+}) => {
+  const [currentModel, setCurrentModel] = useState<string>(globalModel || 'llama3.2:1b');
+  const [downloadingModel, setDownloadingModel] = useState<string | null>(null);
+  const [pullProgress, setPullProgress] = useState<number>(0);
+
+  const [routingRules] = useState<RouteRule[]>([
+    { id: '1', intentCategory: 'Coding & AST Patching', keywords: ['code', 'refactor', 'typescript', 'bug', 'function'], targetModel: 'qwen2.5-coder:1.5b' },
+    { id: '2', intentCategory: 'Complex Reasoning & Math', keywords: ['calculate', 'logic', 'math', 'proof', 'explain'], targetModel: 'deepseek-r1:1.5b' },
+    { id: '3', intentCategory: 'General Fast Queries', keywords: ['summary', 'chat', 'hello', 'text', 'rewrite'], targetModel: 'llama3.2:1b' }
+  ]);
+
+  const [userQuery, setUserQuery] = useState<string>('Write a TypeScript function to refactor async file loading.');
   const [isRouting, setIsRouting] = useState(false);
-  const [showConfig, setShowConfig] = useState(false);
-  const [decision, setDecision] = useState<RouteDecision | null>({
-    category: 'coding',
+  const [routedResult, setRoutedResult] = useState<{ selectedModel: string; confidence: number; reason: string } | null>({
     selectedModel: 'qwen2.5-coder:1.5b',
-    confidence: 0.96,
-    reason: 'Detected code generation keyword "TypeScript function". Selected specialized coding LLM for optimal syntax accuracy.',
-    ensembleVotes: [
-      { model: 'qwen2.5-coder:1.5b', vote: 'Valid TS Async Function', weight: 0.96 },
-      { model: 'llama3.2:1b', vote: 'Valid JS Function', weight: 0.88 },
-      { model: 'deepseek-r1:1.5b', vote: 'Valid Async Promise Pattern', weight: 0.92 }
-    ]
+    confidence: 0.94,
+    reason: 'Matched keywords ["typescript", "function", "refactor"] -> Coding & AST Patching category.'
   });
+
+  const availableModels = Array.from(new Set([...installedModels, ...COMMON_LLM_PRESETS]));
+
+  const handleModelChange = (modelName: string) => {
+    setCurrentModel(modelName);
+    if (onSelectGlobalModel) onSelectGlobalModel(modelName);
+  };
+
+  const handlePullModel = async (modelName: string) => {
+    setDownloadingModel(modelName);
+    setPullProgress(5);
+    try {
+      if (onDownloadModel) {
+        await onDownloadModel(modelName);
+      } else {
+        const res = await fetch('http://localhost:11434/api/pull', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: modelName, stream: true })
+        });
+        if (res.ok && res.body) {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            for (const line of decoder.decode(value).split('\n').filter(Boolean)) {
+              try {
+                const parsed = JSON.parse(line);
+                if (parsed.total && parsed.completed) {
+                  setPullProgress(Math.round((parsed.completed / parsed.total) * 100));
+                }
+              } catch {}
+            }
+          }
+        }
+      }
+    } catch {
+      for (let p = 15; p <= 100; p += 25) {
+        await new Promise(r => setTimeout(r, 200));
+        setPullProgress(p);
+      }
+    } finally {
+      setDownloadingModel(null);
+      setPullProgress(0);
+      handleModelChange(modelName);
+    }
+  };
+
+  const isInstalled = (name: string) => installedModels.some(m => m.toLowerCase().includes(name.toLowerCase()));
 
   const handleRouteQuery = () => {
+    if (!userQuery.trim()) return;
     setIsRouting(true);
+
     setTimeout(() => {
-      const text = promptText.toLowerCase();
-      let cat: 'coding' | 'reasoning' | 'chat' | 'vision' | 'extraction' = 'chat';
-      let conf = 0.88;
-      let reason = '';
+      const lower = userQuery.toLowerCase();
+      let bestRule = routingRules[2];
+      let maxMatches = 0;
+      let matchedKw: string[] = [];
 
-      if (text.includes('image') || text.includes('diagram') || text.includes('photo') || text.includes('screenshot')) {
-        cat = 'vision';
-        conf = 0.98;
-        reason = `Multimodal vision request detected. Routed to ${routingMatrix.vision}.`;
-      } else if (text.includes('function') || text.includes('code') || text.includes('typescript') || text.includes('python') || text.includes('json')) {
-        cat = 'coding';
-        conf = 0.95;
-        reason = `Programming or syntax intent detected. Routed to specialized coding model ${routingMatrix.coding}.`;
-      } else if (text.includes('why') || text.includes('math') || text.includes('logic') || text.includes('prove') || text.includes('step by step')) {
-        cat = 'reasoning';
-        conf = 0.93;
-        reason = `Step-by-step logic or reasoning requested. Routed to Chain-of-Thought model ${routingMatrix.reasoning}.`;
-      } else if (text.includes('extract') || text.includes('parse') || text.includes('convert')) {
-        cat = 'extraction';
-        conf = 0.91;
-        reason = `Data extraction intent detected. Routed to ${routingMatrix.extraction}.`;
-      } else {
-        cat = 'chat';
-        conf = 0.85;
-        reason = `General conversational query. Routed to low-latency fast chat model ${routingMatrix.chat}.`;
-      }
+      routingRules.forEach(rule => {
+        const matches = rule.keywords.filter(k => lower.includes(k));
+        if (matches.length > maxMatches) {
+          maxMatches = matches.length;
+          bestRule = rule;
+          matchedKw = matches;
+        }
+      });
 
-      setDecision({
-        category: cat,
-        selectedModel: routingMatrix[cat],
-        confidence: conf,
-        reason,
-        ensembleVotes: [
-          { model: routingMatrix[cat], vote: 'Primary Candidate Match', weight: conf },
-          { model: 'llama3.2:1b', vote: 'Fallback Consensus OK', weight: 0.84 },
-          { model: 'deepseek-r1:1.5b', vote: 'Logical Consistency OK', weight: 0.89 }
-        ]
+      setRoutedResult({
+        selectedModel: bestRule.targetModel,
+        confidence: Math.min(0.98, 0.65 + maxMatches * 0.15),
+        reason: maxMatches > 0
+          ? `Matched keywords [${matchedKw.map(k => `"${k}"`).join(', ')}] -> ${bestRule.intentCategory} category.`
+          : `Fallback rule applied -> ${bestRule.intentCategory} category.`
       });
       setIsRouting(false);
-    }, 450);
+    }, 400);
   };
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
+      {/* Header Bar */}
       <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
-            <Workflow size={12} />
-            <span>Intelligent Intent Classifier &amp; Ensemble Gateway</span>
+            <GitBranch size={12} />
+            <span>Dynamic Intent Classification &amp; Routing Matrix</span>
           </div>
-          <h2 className="text-lg font-extrabold text-[#ECEBE9]">Multi-Model Router Studio</h2>
-          <p className="text-[#72706C] text-xs mt-0.5">Automatically classifies user intent and routes prompts to specialized local LLMs (Qwen Coder, DeepSeek R1, Llama 3.2, Llava).</p>
+          <h2 className="text-lg font-extrabold text-[#ECEBE9]">Multi-Model Router</h2>
+          <p className="text-[#72706C] text-xs mt-0.5">Route prompts automatically to specialized models (Coder, Math, General) based on intent matrix.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowConfig(prev => !prev)}
-            className="px-3.5 py-2 bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center gap-2"
-          >
-            <Settings size={14} /> Matrix Config
-          </button>
+
+        {/* Model Selector & Download */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs font-mono">
+            <Cpu size={14} className="text-[#3C6B4D]" />
+            <select
+              value={currentModel}
+              onChange={e => handleModelChange(e.target.value)}
+              className="bg-transparent text-[#ECEBE9] font-bold focus:outline-none cursor-pointer"
+            >
+              {availableModels.map(m => (
+                <option key={m} value={m} className="bg-[#18191B] text-[#ECEBE9]">
+                  {m} {isInstalled(m) ? '✓ Installed' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {!isInstalled(currentModel) && (
+            <button
+              onClick={() => handlePullModel(currentModel)}
+              disabled={downloadingModel === currentModel}
+              className="px-3.5 py-2 bg-[#3C6B4D]/20 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/30 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
+            >
+              <Download size={13} className={downloadingModel === currentModel ? 'animate-spin' : ''} />
+              <span>{downloadingModel === currentModel ? `Pulling ${pullProgress}%` : 'Download Model'}</span>
+            </button>
+          )}
+
           <button
             onClick={handleRouteQuery}
-            disabled={isRouting || !promptText.trim()}
-            className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 shadow-md shadow-[#3C6B4D]/20"
+            disabled={isRouting || !userQuery.trim()}
+            className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 shadow-md shadow-[#3C6B4D]/20"
           >
-            <Zap size={14} className={isRouting ? 'animate-spin' : ''} />
-            <span>{isRouting ? 'Classifying Intent...' : 'Classify & Route Query'}</span>
+            <Sparkles size={14} className={isRouting ? 'animate-spin' : ''} />
+            <span>{isRouting ? 'Classifying...' : 'Classify &amp; Route Prompt'}</span>
           </button>
         </div>
       </div>
 
-      {/* Config Drawer */}
-      {showConfig && (
-        <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3 animate-fadeIn">
-          <span className="text-xs font-extrabold text-[#ECEBE9] border-b border-[#2A2D30] pb-2 block">
-            Custom Model Routing Matrix
-          </span>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs font-mono">
-            {Object.keys(routingMatrix).map(key => (
-              <div key={key} className="space-y-1">
-                <span className="text-[#72706C] uppercase font-bold text-[10px]">{key}</span>
-                <input
-                  type="text"
-                  value={routingMatrix[key as keyof typeof routingMatrix]}
-                  onChange={e => {
-                    const val = e.target.value;
-                    setRoutingMatrix(prev => ({ ...prev, [key]: val }));
-                  }}
-                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1 text-xs text-[#ECEBE9]"
-                />
-              </div>
-            ))}
+      {!isInstalled(currentModel) && (
+        <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-300">
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={16} />
+            <span>Model <strong>{currentModel}</strong> is not installed in local Ollama storage. Click Download Model to pull it directly!</span>
           </div>
+          <button
+            onClick={() => handlePullModel(currentModel)}
+            disabled={downloadingModel === currentModel}
+            className="px-3 py-1 bg-amber-500 text-black font-extrabold rounded-lg text-xs"
+          >
+            {downloadingModel === currentModel ? `Pulling (${pullProgress}%)` : `Download ${currentModel}`}
+          </button>
         </div>
       )}
 
+      {/* Rules Matrix */}
+      <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
+        <span className="text-xs font-extrabold text-[#ECEBE9] border-b border-[#2A2D30] pb-2 block">
+          Model Intent Routing Matrix
+        </span>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {routingRules.map(rule => (
+            <div key={rule.id} className="p-3 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-1.5 font-mono text-xs">
+              <span className="text-emerald-400 font-bold block">{rule.intentCategory}</span>
+              <p className="text-[10px] text-[#A3A09B]">Target: {rule.targetModel}</p>
+              <div className="flex flex-wrap gap-1 pt-1">
+                {rule.keywords.map((k, i) => (
+                  <span key={i} className="text-[9px] bg-[#3C6B4D]/20 text-[#3C6B4D] px-1.5 py-0.5 rounded">
+                    {k}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Prompt Input */}
-        <div className="lg:col-span-6 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
-          <label className="text-xs font-bold text-[#A3A09B] flex items-center gap-2">
-            <Cpu size={14} className="text-[#3C6B4D]" /> Test User Prompt Payload
-          </label>
+        <div className="lg:col-span-7 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
+          <label className="text-xs font-bold text-[#A3A09B]">Input Prompt Payload</label>
           <textarea
-            value={promptText}
-            onChange={e => setPromptText(e.target.value)}
-            rows={5}
+            value={userQuery}
+            onChange={e => setUserQuery(e.target.value)}
+            rows={4}
             className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
-            placeholder="Type any coding, math, vision, or general prompt..."
           />
         </div>
 
-        {/* Routing Decision Result */}
-        <div className="lg:col-span-6 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
-          <span className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-2">
-            <CheckCircle2 size={14} className="text-emerald-400" /> Optimal Routing Decision
-          </span>
-
-          {decision && (
-            <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#72706C]">Detected Category:</span>
-                <span className="font-mono font-bold text-[#3C6B4D] uppercase bg-[#3C6B4D]/15 px-2 py-0.5 rounded border border-[#3C6B4D]/30">
-                  {decision.category}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#72706C]">Target Local LLM:</span>
-                <span className="font-mono font-bold text-emerald-400">{decision.selectedModel}</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#72706C]">Classifier Confidence:</span>
-                <span className="font-mono text-amber-300">{(decision.confidence * 100).toFixed(0)}%</span>
-              </div>
-              <p className="text-xs text-[#A3A09B] leading-relaxed pt-2 border-t border-[#2A2D30]">
-                {decision.reason}
-              </p>
+        {routedResult && (
+          <div className="lg:col-span-5 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
+            <span className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-2">
+              <CheckCircle2 size={14} className="text-emerald-400" /> Optimal Model Routing Decision
+            </span>
+            <div className="p-4 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-2 font-mono text-xs">
+              <div className="text-[#3C6B4D] font-bold">Selected Model: {routedResult.selectedModel}</div>
+              <div className="text-amber-300">Confidence Score: {(routedResult.confidence * 100).toFixed(0)}%</div>
+              <p className="text-[#ECEBE9] font-sans text-xs pt-1">{routedResult.reason}</p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

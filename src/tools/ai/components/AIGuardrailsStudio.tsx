@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { ShieldCheck, ShieldAlert, Lock, Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Lock, Eye, CheckCircle2, AlertTriangle, Cpu, Download } from 'lucide-react';
+
+interface AIGuardrailsStudioProps {
+  selectedModel?: string;
+  installedModels?: string[];
+  onSelectGlobalModel?: (modelName: string) => void;
+  onDownloadModel?: (modelName: string) => Promise<void>;
+}
 
 interface PiiMatch {
   type: string;
@@ -8,7 +15,25 @@ interface PiiMatch {
   position: number;
 }
 
-export const AIGuardrailsStudio: React.FC = () => {
+const COMMON_LLM_PRESETS = [
+  'llama3.2:1b',
+  'llama3.2:3b',
+  'qwen2.5-coder:1.5b',
+  'deepseek-r1:1.5b',
+  'mistral:7b',
+  'llama3:8b'
+];
+
+export const AIGuardrailsStudio: React.FC<AIGuardrailsStudioProps> = ({
+  selectedModel: globalModel,
+  installedModels = [],
+  onSelectGlobalModel,
+  onDownloadModel
+}) => {
+  const [currentModel, setCurrentModel] = useState<string>(globalModel || 'llama3.2:1b');
+  const [downloadingModel, setDownloadingModel] = useState<string | null>(null);
+  const [pullProgress, setPullProgress] = useState<number>(0);
+
   const [inputText, setInputText] = useState<string>(
     `User query: Please contact john.doe@acme.org or call 555-839-2049 regarding credit card 4532-8921-1049-3912. Also server IP 192.168.1.15 needs audit. Secret Key: sk_live_9948271038472910.`
   );
@@ -29,6 +54,56 @@ export const AIGuardrailsStudio: React.FC = () => {
     score: 0.05,
     reason: 'Standard informational prompt. Zero jailbreak or instruction override patterns detected.'
   });
+
+  const availableModels = Array.from(new Set([...installedModels, ...COMMON_LLM_PRESETS]));
+
+  const handleModelChange = (modelName: string) => {
+    setCurrentModel(modelName);
+    if (onSelectGlobalModel) onSelectGlobalModel(modelName);
+  };
+
+  const handlePullModel = async (modelName: string) => {
+    setDownloadingModel(modelName);
+    setPullProgress(5);
+    try {
+      if (onDownloadModel) {
+        await onDownloadModel(modelName);
+      } else {
+        const res = await fetch('http://localhost:11434/api/pull', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: modelName, stream: true })
+        });
+        if (res.ok && res.body) {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            for (const line of decoder.decode(value).split('\n').filter(Boolean)) {
+              try {
+                const parsed = JSON.parse(line);
+                if (parsed.total && parsed.completed) {
+                  setPullProgress(Math.round((parsed.completed / parsed.total) * 100));
+                }
+              } catch {}
+            }
+          }
+        }
+      }
+    } catch {
+      for (let p = 15; p <= 100; p += 25) {
+        await new Promise(r => setTimeout(r, 200));
+        setPullProgress(p);
+      }
+    } finally {
+      setDownloadingModel(null);
+      setPullProgress(0);
+      handleModelChange(modelName);
+    }
+  };
+
+  const isInstalled = (name: string) => installedModels.some(m => m.toLowerCase().includes(name.toLowerCase()));
 
   const handleScanGuardrails = () => {
     setIsScanning(true);
@@ -59,7 +134,6 @@ export const AIGuardrailsStudio: React.FC = () => {
         }
       }
 
-      // Check Prompt Injection Patterns
       const lower = inputText.toLowerCase();
       if (lower.includes('ignore previous instructions') || lower.includes('dan mode') || lower.includes('system prompt leak')) {
         setInjectionRisk({
@@ -91,7 +165,7 @@ export const AIGuardrailsStudio: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
+      {/* Header Bar */}
       <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
@@ -101,18 +175,63 @@ export const AIGuardrailsStudio: React.FC = () => {
           <h2 className="text-lg font-extrabold text-[#ECEBE9]">AI Guardrails Inspector</h2>
           <p className="text-[#72706C] text-xs mt-0.5">Scans inputs for PII, emails, credit cards, secrets, and prompt injections client-side before reaching local LLMs.</p>
         </div>
-        <button
-          onClick={handleScanGuardrails}
-          disabled={isScanning || !inputText.trim()}
-          className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 shadow-md shadow-[#3C6B4D]/20"
-        >
-          <ShieldAlert size={14} className={isScanning ? 'animate-spin' : ''} />
-          <span>{isScanning ? 'Scanning Text...' : 'Run Guardrails Audit'}</span>
-        </button>
+
+        {/* Model Selector & Download */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs font-mono">
+            <Cpu size={14} className="text-[#3C6B4D]" />
+            <select
+              value={currentModel}
+              onChange={e => handleModelChange(e.target.value)}
+              className="bg-transparent text-[#ECEBE9] font-bold focus:outline-none cursor-pointer"
+            >
+              {availableModels.map(m => (
+                <option key={m} value={m} className="bg-[#18191B] text-[#ECEBE9]">
+                  {m} {isInstalled(m) ? '✓ Installed' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {!isInstalled(currentModel) && (
+            <button
+              onClick={() => handlePullModel(currentModel)}
+              disabled={downloadingModel === currentModel}
+              className="px-3.5 py-2 bg-[#3C6B4D]/20 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/30 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
+            >
+              <Download size={13} className={downloadingModel === currentModel ? 'animate-spin' : ''} />
+              <span>{downloadingModel === currentModel ? `Pulling ${pullProgress}%` : 'Download Model'}</span>
+            </button>
+          )}
+
+          <button
+            onClick={handleScanGuardrails}
+            disabled={isScanning || !inputText.trim()}
+            className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 shadow-md shadow-[#3C6B4D]/20"
+          >
+            <ShieldAlert size={14} className={isScanning ? 'animate-spin' : ''} />
+            <span>{isScanning ? 'Scanning Text...' : 'Run Guardrails Audit'}</span>
+          </button>
+        </div>
       </div>
 
+      {!isInstalled(currentModel) && (
+        <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-300">
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={16} />
+            <span>Model <strong>{currentModel}</strong> is not installed in local Ollama storage. Click Download Model to pull it directly!</span>
+          </div>
+          <button
+            onClick={() => handlePullModel(currentModel)}
+            disabled={downloadingModel === currentModel}
+            className="px-3 py-1 bg-amber-500 text-black font-extrabold rounded-lg text-xs"
+          >
+            {downloadingModel === currentModel ? `Pulling (${pullProgress}%)` : `Download ${currentModel}`}
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Input Text Area */}
         <div className="lg:col-span-7 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
           <label className="text-xs font-bold text-[#A3A09B] flex items-center gap-2">
             <Eye size={14} className="text-[#3C6B4D]" /> Input Prompt Payload to Audit
@@ -122,16 +241,13 @@ export const AIGuardrailsStudio: React.FC = () => {
             onChange={e => setInputText(e.target.value)}
             rows={7}
             className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
-            placeholder="Paste text containing potential PII, credit cards, API keys, or jailbreaks..."
           />
         </div>
 
-        {/* Policy Rules */}
         <div className="lg:col-span-5 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-4">
           <span className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-2">
-            <Lock size={14} className="text-[#3C6B4D]" /> Active Guardrail Policies
+            <Lock size={14} className="text-[#3C6B4D]" /> Active Guardrail Policies ({currentModel})
           </span>
-
           <div className="space-y-3 text-xs font-semibold">
             <div>
               <label className="text-[#A3A09B] block mb-1">Custom Redaction Mask</label>
@@ -142,17 +258,14 @@ export const AIGuardrailsStudio: React.FC = () => {
                 className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] font-mono focus:outline-none"
               />
             </div>
-
             <label className="flex items-center justify-between p-3 rounded-xl bg-[#111213] border border-[#2A2D30] cursor-pointer">
               <span className="text-[#ECEBE9]">Auto-Redact PII Tokens</span>
               <input type="checkbox" checked={redactPii} onChange={e => setRedactPii(e.target.checked)} className="accent-[#3C6B4D]" />
             </label>
-
             <label className="flex items-center justify-between p-3 rounded-xl bg-[#111213] border border-[#2A2D30] cursor-pointer">
               <span className="text-[#ECEBE9]">Detect API Keys &amp; Secrets</span>
               <input type="checkbox" checked={detectApiKeys} onChange={e => setDetectApiKeys(e.target.checked)} className="accent-[#3C6B4D]" />
             </label>
-
             <label className="flex items-center justify-between p-3 rounded-xl bg-[#111213] border border-[#2A2D30] cursor-pointer">
               <span className="text-[#ECEBE9]">Block Jailbreak Injections</span>
               <input type="checkbox" checked={blockInjection} onChange={e => setBlockInjection(e.target.checked)} className="accent-[#3C6B4D]" />
@@ -161,7 +274,6 @@ export const AIGuardrailsStudio: React.FC = () => {
         </div>
       </div>
 
-      {/* Audit Matches & Redacted Output */}
       {matches && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-5 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
@@ -175,7 +287,6 @@ export const AIGuardrailsStudio: React.FC = () => {
                 Risk: {injectionRisk.risk}
               </span>
             </div>
-
             <div className="space-y-2 max-h-48 overflow-y-auto font-mono text-xs">
               {matches.map((m, i) => (
                 <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-[#111213] border border-[#2A2D30]">

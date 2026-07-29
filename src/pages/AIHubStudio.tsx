@@ -2849,14 +2849,70 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             )}
 
             {/* ── 10 NEW AI HUB TOOLS ── */}
-            {activeTab === 'rag' && <RagSearchStudio />}
-            {activeTab === 'prompts' && <PromptEngineeringLab />}
-            {activeTab === 'extractor' && <StructuredJsonExtractor />}
-            {activeTab === 'function-calling' && <FunctionCallingStudio />}
-            {activeTab === 'guardrails' && <AIGuardrailsStudio />}
-            {activeTab === 'code-patch' && <CodePatchStudio />}
-            {activeTab === 'router' && <MultiModelRouter />}
-            {activeTab === 'knowledge-graph' && <KnowledgeGraphVisualizer />}
+            {activeTab === 'rag' && (
+              <RagSearchStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'prompts' && (
+              <PromptEngineeringLab
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'extractor' && (
+              <StructuredJsonExtractor
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'function-calling' && (
+              <FunctionCallingStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'guardrails' && (
+              <AIGuardrailsStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'code-patch' && (
+              <CodePatchStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'router' && (
+              <MultiModelRouter
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'knowledge-graph' && (
+              <KnowledgeGraphVisualizer
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
             {activeTab === 'vision-studio' && (
               <VisionInspectionStudio
                 selectedModel={selectedModel}
@@ -2865,7 +2921,14 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 onDownloadModel={handleDownloadModel}
               />
             )}
-            {activeTab === 'quant-calc' && <HardwareQuantCalculator />}
+            {activeTab === 'quant-calc' && (
+              <HardwareQuantCalculator
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
 
           </div>
         </main>
