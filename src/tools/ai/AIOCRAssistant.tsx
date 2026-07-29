@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Eye, FileText, Loader2, Copy, Check, Sparkles, RefreshCw, Layers, Code, Download } from 'lucide-react';
 import { handleTextCopy, triggerTextDownload } from '../../utils/sharedHelpers';
 import { LocalAIConfigPanel } from '../../components/LocalAIConfigPanel';
@@ -38,17 +38,7 @@ export const AIOCRAssistantTool = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Redraw processed canvas preview when filters change
-  useEffect(() => {
-    if (!imagePreview) return;
-    const img = new Image();
-    img.onload = () => {
-      drawCanvas(img);
-    };
-    img.src = imagePreview;
-  }, [imagePreview, rotation, binarize, contrast, invert]);
-
-  const drawCanvas = (img: HTMLImageElement) => {
+  const drawCanvas = useCallback((img: HTMLImageElement) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -101,7 +91,17 @@ export const AIOCRAssistantTool = () => {
     }
 
     ctx.putImageData(imgData, 0, 0);
-  };
+  }, [rotation, contrast, binarize, invert]);
+
+  // Redraw processed canvas preview when filters change
+  useEffect(() => {
+    if (!imagePreview) return;
+    const img = new Image();
+    img.onload = () => {
+      drawCanvas(img);
+    };
+    img.src = imagePreview;
+  }, [imagePreview, drawCanvas]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];

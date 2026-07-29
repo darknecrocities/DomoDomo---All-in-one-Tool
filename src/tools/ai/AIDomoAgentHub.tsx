@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Folder,
   FileCode,
@@ -1116,6 +1116,40 @@ When you are fully finished with your task (or if no tool calls are needed), out
     };
   }, [mcpServerUrl]);
 
+  const readDirectory = useCallback(async (handle: any, parentPath = ''): Promise<FileNode[]> => {
+    const list: FileNode[] = [];
+    for await (const entry of handle.values()) {
+      const entryPath = parentPath ? `${parentPath}/${entry.name}` : entry.name;
+      if (entry.kind === 'file') {
+        list.push({ name: entry.name, path: entryPath, kind: 'file', handle: entry });
+      } else if (entry.kind === 'directory') {
+        list.push({ name: entry.name, path: entryPath, kind: 'directory', handle: entry });
+      }
+    }
+    return list.sort((a, b) => {
+      if (a.kind !== b.kind) return a.kind === 'directory' ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+  }, []);
+
+  const refreshFileTree = useCallback(async (handle = dirHandle) => {
+    if (mcpConnected && mcpTools.some(t => t.name === 'list_directory')) {
+      try {
+        const result = await callMcpTool('list_directory', {});
+        if (result && result.content?.[0]?.text) {
+          const tree = JSON.parse(result.content[0].text);
+          setFileTree(tree);
+          return;
+        }
+      } catch (err) {
+        console.warn('Failed listing directory via MCP:', err);
+      }
+    }
+    if (!handle) return;
+    const tree = await readDirectory(handle);
+    setFileTree(tree);
+  }, [dirHandle, mcpConnected, mcpTools, readDirectory]);
+
   useEffect(() => {
     if (mcpConnected) {
       refreshFileTree();
@@ -1124,7 +1158,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
         { role: 'system', text: `🔌 Connected to local Domo MCP Server. Offline workspace auto-mounted.` }
       ]);
     }
-  }, [mcpConnected, mcpTools]);
+  }, [mcpConnected, mcpTools, refreshFileTree]);
 
   const handleMountDirectory = async () => {
     setErrorMsg(null);
@@ -1149,40 +1183,6 @@ When you are fully finished with your task (or if no tool calls are needed), out
         setErrorMsg('Workspace loading denied.');
       }
     }
-  };
-
-  const refreshFileTree = async (handle = dirHandle) => {
-    if (mcpConnected && mcpTools.some(t => t.name === 'list_directory')) {
-      try {
-        const result = await callMcpTool('list_directory', {});
-        if (result && result.content?.[0]?.text) {
-          const tree = JSON.parse(result.content[0].text);
-          setFileTree(tree);
-          return;
-        }
-      } catch (err) {
-        console.warn('Failed listing directory via MCP:', err);
-      }
-    }
-    if (!handle) return;
-    const tree = await readDirectory(handle);
-    setFileTree(tree);
-  };
-
-  const readDirectory = async (handle: any, parentPath = ''): Promise<FileNode[]> => {
-    const list: FileNode[] = [];
-    for await (const entry of handle.values()) {
-      const entryPath = parentPath ? `${parentPath}/${entry.name}` : entry.name;
-      if (entry.kind === 'file') {
-        list.push({ name: entry.name, path: entryPath, kind: 'file', handle: entry });
-      } else if (entry.kind === 'directory') {
-        list.push({ name: entry.name, path: entryPath, kind: 'directory', handle: entry });
-      }
-    }
-    return list.sort((a, b) => {
-      if (a.kind !== b.kind) return a.kind === 'directory' ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
   };
 
   const toggleFolder = async (node: FileNode) => {
@@ -1217,7 +1217,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
       const content = await file.text();
       setActiveFile({ path: node.path, handle: node.handle, content });
       setEditorContent(content);
-    } catch (err) {
+    } catch {
       setErrorMsg('Failed to open file.');
     }
   };
@@ -1243,7 +1243,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
         ...prev,
         { role: 'system', text: `💾 Saved changes to: ${activeFile.path}` }
       ]);
-    } catch (err) {
+    } catch {
       setErrorMsg('Failed to save file.');
     }
   };
@@ -1279,7 +1279,7 @@ When you are fully finished with your task (or if no tool calls are needed), out
       await refreshFileTree();
       setActiveFile({ path: filePath, handle: fileHandle, content: '' });
       setEditorContent('');
-    } catch (err) {
+    } catch {
       setErrorMsg('Failed to create file.');
     }
   };
@@ -1367,7 +1367,7 @@ file_content
           addActivityLog('success', `Completed write operation for: "${filePath}"`);
           await refreshFileTree();
         }
-      } catch (e: any) {
+      } catch {
         addActivityLog('error', `Failed writing file "${filePath}"`);
       }
     }
