@@ -1,5 +1,41 @@
 [
   {
+    "hash": "39d90c9",
+    "date": "2026-07-29",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #60 from darknecrocities/rewards-and-other-adjustments"
+  },
+  {
+    "hash": "a3df11c",
+    "date": "2026-07-29",
+    "author": "Ram-Gold",
+    "message": "feat: add featured award badges and partner links to Shell footer while updating service worker cache version."
+  },
+  {
+    "hash": "269b5f7",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "7e6b521",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
+  },
+  {
+    "hash": "4f6c18a",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: expand MCP server catalog from 7 to 27 providers (Notion, Linear, Discord, Twitter/X, YouTube, Shopify, Stripe, MongoDB, Redis, Elasticsearch, Airtable, Google Sheets, Google Drive, Dropbox, SendGrid, Twilio, Jira, Anthropic, OpenAI API, Weather, Supabase) with full simulated JSON-RPC responses for all tools"
+  },
+  {
+    "hash": "2fb89ac",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "1291753",
     "date": "2026-07-29",
     "author": "darknecrocities",
@@ -52,41 +88,5 @@
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "Merge branch 'main' into staging"
-  },
-  {
-    "hash": "86fb39f",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix: refactor automation flow toolbar for full mobile and desktop responsiveness"
-  },
-  {
-    "hash": "6c21b03",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix: refactor automation flow toolbar for full mobile and desktop responsiveness"
-  },
-  {
-    "hash": "cc877e2",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "1de055d",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "Merge branch 'main' into feat/ai-hub-tools-expansion"
-  },
-  {
-    "hash": "19ff67e",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix: resolve flow automation SVG connector line cutoff bug by aligning port anchor offsets and enabling SVG overflow-visible"
-  },
-  {
-    "hash": "81b667c",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix: resolve flow automation SVG connector line cutoff bug by aligning port anchor offsets and enabling SVG overflow-visible"
   }
 ]
