@@ -238,6 +238,7 @@ export const AIHubStudio = () => {
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<'endpoints' | 'generation' | 'hardware' | 'privacy'>('endpoints');
+  const [showLocalGuideModal, setShowLocalGuideModal] = useState(false);
 
   // Save settings to LocalStorage
   useEffect(() => {
@@ -1638,8 +1639,10 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             </div>
           )}
 
-          {/* Main nav */}
-          <nav className="flex flex-col gap-0.5 p-2 pt-2">
+          {/* Scrollable Nav Container */}
+          <div className="flex-1 overflow-y-auto min-h-0 space-y-2 py-1 scrollbar-thin scrollbar-thumb-[#2A2D30]">
+            {/* Main nav */}
+            <nav className="flex flex-col gap-0.5 p-2 pt-2">
             {/* New Chat */}
             <button
               onClick={handleNewChat}
@@ -1904,6 +1907,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               )}
             </div>
           )}
+          </div>
 
           {/* Bottom: model selector + settings */}
           <div className="mt-auto border-t border-[#2A2D30] p-2 space-y-1">
@@ -2088,6 +2092,78 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
           {/* TAB CONTENT — scrollable */}
           <div className="p-6">
+
+            {/* ── ONLINE DEMO / LOCAL OLLAMA LOCK BANNER ── */}
+            {(ollamaStatus !== 'connected' || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) && (
+              <div className="mb-6 bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xl animate-fadeIn">
+                <div className="flex items-center gap-2.5 text-[#ECEBE9]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-mono font-bold text-[10px] border border-amber-500/30 uppercase tracking-wider shrink-0 flex items-center gap-1">
+                    <Lock size={11} /> Online Demo Mode
+                  </span>
+                  <span className="text-[#A3A09B] text-xs">
+                    Running client-side simulation on web host. Connect local Ollama at <code className="text-[#3C6B4D] font-mono font-bold">http://localhost:11434</code> for live AI inference &amp; 1-click model downloads.
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowLocalGuideModal(true)}
+                  className="px-3.5 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-md shadow-[#3C6B4D]/20"
+                >
+                  <Terminal size={14} />
+                  <span>How to Run Locally</span>
+                </button>
+              </div>
+            )}
+
+            {/* ── HOW TO RUN LOCALLY MODAL ── */}
+            {showLocalGuideModal && (
+              <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4" onClick={() => setShowLocalGuideModal(false)}>
+                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl max-w-2xl w-full p-6 space-y-5 text-xs text-[#ECEBE9] max-h-[90vh] overflow-y-auto shadow-2xl animate-fadeIn" onClick={e => e.stopPropagation()}>
+                  <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
+                    <div className="flex items-center gap-2">
+                      <Terminal size={18} className="text-[#3C6B4D]" />
+                      <h3 className="text-base font-extrabold text-[#ECEBE9]">How to Run DomoDomo AI Hub Locally</h3>
+                    </div>
+                    <button onClick={() => setShowLocalGuideModal(false)} className="p-1 text-[#72706C] hover:text-[#ECEBE9] rounded-lg">
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 font-mono">
+                    <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                      <span className="text-[#3C6B4D] font-bold block">STEP 1: Install Ollama Engine (macOS, Windows, Linux)</span>
+                      <p className="text-[#A3A09B] text-[11px] font-sans">Run terminal command or download from ollama.com:</p>
+                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-emerald-400 select-all">curl -fsSL https://ollama.com/install.sh</pre>
+                    </div>
+
+                    <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                      <span className="text-[#3C6B4D] font-bold block">STEP 2: Start a Local LLM / Vision Model</span>
+                      <p className="text-[#A3A09B] text-[11px] font-sans">In your terminal, pull and start a local model:</p>
+                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-emerald-400 select-all">ollama run llama3.2:1b # Text &amp; Tool Calling&#10;ollama run llava:7b      # Vision &amp; OCR Inspection</pre>
+                    </div>
+
+                    <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                      <span className="text-[#3C6B4D] font-bold block">STEP 3: Clone &amp; Run DomoDomo Repository</span>
+                      <p className="text-[#A3A09B] text-[11px] font-sans">Clone the repository and launch dev server:</p>
+                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-emerald-400 select-all">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git&#10;cd DomoDomo---All-in-one-Tool&#10;npm install&#10;npm run dev</pre>
+                    </div>
+
+                    <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
+                      <span className="text-[#3C6B4D] font-bold block">STEP 4: Open Local AI Hub</span>
+                      <p className="text-[#A3A09B] text-[11px] font-sans">Open http://localhost:5173/ai-hub with zero server data transfer!</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex justify-end border-t border-[#2A2D30]">
+                    <button
+                      onClick={() => setShowLocalGuideModal(false)}
+                      className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white font-bold rounded-xl"
+                    >
+                      Got It, Let's Continue Demo
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ── CHAT TAB (Dynamic Model Selector, Voice & File Attachments) ── */}
             {activeTab === 'chat' && (
