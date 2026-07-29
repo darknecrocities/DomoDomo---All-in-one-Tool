@@ -10,7 +10,6 @@ import {
   MessageSquare,
   Wand2,
   Download,
-  Activity,
   BarChart2,
   FileCode,
   Sliders as SlidersIcon,
@@ -41,7 +40,8 @@ import {
   MicOff,
   Paperclip,
   GitCommit,
-  EyeOff
+  EyeOff,
+  Lock
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 import { Logo } from '../components/Logo';
@@ -209,6 +209,7 @@ const DEFAULT_SETTINGS: AISettings = {
 
 export const AIHubStudio = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs'>('chat');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // AI Hub Settings State (Persisted in LocalStorage)
   const [aiSettings, setAiSettings] = useState<AISettings>(() => {
@@ -1557,9 +1558,9 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
       {/* Full-height layout: sidebar + content */}
       <div className="flex h-[calc(100vh-56px)] overflow-hidden bg-[#111213]">
 
-        {/* ── LEFT SIDEBAR ── */}
+        {/* ── LEFT SIDEBAR (DESKTOP) ── */}
         <aside
-          className={`flex flex-col shrink-0 bg-[#18191B] border-r border-[#2A2D30] transition-all duration-300 ${
+          className={`hidden md:flex flex-col shrink-0 bg-[#18191B] border-r border-[#2A2D30] transition-all duration-300 ${
             sidebarCollapsed ? 'w-14' : 'w-56'
           }`}
         >
@@ -1792,15 +1793,82 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
           </div>
         </aside>
 
+        {/* ── MOBILE SIDEBAR OVERLAY DRAWER ── */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 bg-[#0A0B0C]/80 backdrop-blur-sm z-50 md:hidden flex" onClick={() => setMobileMenuOpen(false)}>
+            <div className="w-72 bg-[#18191B] h-full border-r border-[#2A2D30] flex flex-col p-4 shadow-2xl animate-fadeIn" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between pb-3 border-b border-[#2A2D30]">
+                <div className="flex items-center gap-2">
+                  <Logo size={24} showText={false} />
+                  <span className="text-sm font-extrabold text-[#ECEBE9]">AI Hub Menu</span>
+                </div>
+                <button onClick={() => setMobileMenuOpen(false)} className="p-1 rounded-lg text-[#72706C] hover:text-[#ECEBE9]">
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Status Pills */}
+              <div className="py-3 border-b border-[#2A2D30] space-y-1 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#A3A09B]">Ollama: {ollamaStatus}</span>
+                  <button onClick={checkOllama} className="text-[#3C6B4D] font-bold">Refresh</button>
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-[#72706C]">
+                  <span>Python ML: {fastApiStatus}</span>
+                  <button onClick={checkFastApi} className="text-[#3C6B4D]">Check</button>
+                </div>
+              </div>
+
+              {/* Mobile Navigation Links */}
+              <nav className="flex flex-col gap-1.5 mt-3">
+                <button onClick={() => { handleNewChat(); setMobileMenuOpen(false); }} className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40">
+                  <Plus size={15} /> <span>New Chat</span>
+                </button>
+                <button onClick={() => { setActiveTab('chat'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'chat' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <MessageSquare size={15} /> <span>Chat & Inference</span>
+                </button>
+                <button onClick={() => { setActiveTab('library'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'library' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <FolderOpen size={15} /> <span>Model Library</span>
+                </button>
+                <button onClick={() => { setActiveTab('train'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'train' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Wand2 size={15} /> <span>Fine-Tune QLoRA</span>
+                </button>
+                <button onClick={() => { setActiveTab('eval'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'eval' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <BarChart2 size={15} /> <span>Eval Benchmarks</span>
+                </button>
+                <button onClick={() => { setActiveTab('workflow'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'workflow' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Workflow size={15} /> <span>Flow Automation</span>
+                </button>
+                <button onClick={() => { setActiveTab('docs'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'docs' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Layers size={15} /> <span>Docs & Integration</span>
+                </button>
+              </nav>
+
+              <div className="mt-auto pt-3 border-t border-[#2A2D30]">
+                <button onClick={() => { setSettingsOpen(true); setMobileMenuOpen(false); }} className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-bold text-[#72706C] hover:text-[#ECEBE9]">
+                  <Settings size={15} /> <span>AI Hub Settings</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── MAIN CONTENT ── */}
-        <main ref={mainContainerRef} className="flex-1 overflow-y-auto">
+        <main ref={mainContainerRef} className="flex-1 overflow-y-auto min-w-0">
 
           {/* Topbar inside content */}
-          <div className="sticky top-0 z-30 bg-[#18191B] border-b border-[#2A2D30] px-6 h-11 flex items-center justify-between">
+          <div className="sticky top-0 z-30 bg-[#18191B] border-b border-[#2A2D30] px-4 md:px-6 h-11 flex items-center justify-between">
             <div className="flex items-center gap-2 text-[13px] font-semibold text-[#A3A09B]">
-              <span className="text-[#72706C]">AI Hub</span>
-              <ChevronRight size={14} className="text-[#2A2D30]" />
-              <span className="text-[#ECEBE9]">
+              <button
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+                className="md:hidden p-1.5 rounded-lg text-[#ECEBE9] bg-[#2A2D30] hover:bg-[#3C6B4D]/30 transition-all flex items-center gap-1 text-xs font-bold"
+                title="Toggle AI Hub Menu"
+              >
+                <PanelLeftOpen size={16} />
+              </button>
+              <span className="text-[#72706C] hidden sm:inline">AI Hub</span>
+              <ChevronRight size={14} className="text-[#2A2D30] hidden sm:inline" />
+              <span className="text-[#ECEBE9] truncate max-w-[140px] sm:max-w-none">
                 {activeTab === 'chat' && 'Chat & Inference'}
                 {activeTab === 'library' && 'Model Library & Downloader'}
                 {activeTab === 'train' && 'Fine-Tune QLoRA Studio'}
@@ -2099,10 +2167,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <button
                       onClick={() => handleDownloadModel(customPullInput)}
                       disabled={!customPullInput.trim() || downloadingModelId === customPullInput}
-                      className="px-3 py-1 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1"
+                      className="px-3 py-1 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1"
+                      title={!customPullInput.trim() ? 'Locked: Enter model name to pull' : downloadingModelId === customPullInput ? 'Locked: Download in progress' : 'Pull model'}
                     >
-                      <Download size={12} />
-                      <span>Pull</span>
+                      {downloadingModelId === customPullInput ? <Lock size={12} className="animate-spin text-amber-300" /> : !customPullInput.trim() ? <Lock size={12} className="text-gray-400" /> : <Download size={12} />}
+                      <span>{!customPullInput.trim() ? 'Pull (Locked)' : downloadingModelId === customPullInput ? 'Pulling...' : 'Pull'}</span>
                     </button>
                   </div>
                 </div>
@@ -2119,7 +2188,9 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                             <p className="text-[11px] text-[#72706C] font-mono">{model.id}</p>
                           </div>
                           {isInstalled && (
-                            <span className="text-[9px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0">INSTALLED</span>
+                            <span className="text-[9px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1">
+                              <Lock size={10} /> INSTALLED
+                            </span>
                           )}
                         </div>
                         <p className="text-[11px] text-[#A3A09B] leading-relaxed flex-1">{model.desc}</p>
@@ -2133,16 +2204,17 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                           <button
                             onClick={() => handleDownloadModel(model.id)}
                             disabled={isDownloading || isInstalled}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
                               isInstalled
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 cursor-default'
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 cursor-not-allowed'
                                 : isDownloading
                                 ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/30 cursor-wait'
                                 : 'bg-[#3C6B4D] hover:bg-[#2E533B] text-white border-0'
                             }`}
+                            title={isInstalled ? 'Locked: Model is already installed' : isDownloading ? 'Locked: Download in progress' : `Download ${model.name}`}
                           >
-                            {isInstalled ? <><Check size={12} /> Ready</> :
-                             isDownloading ? <><Activity size={12} className="animate-spin" /> {downloadProgress}%</> :
+                            {isInstalled ? <><Lock size={12} className="text-emerald-400" /> Ready (Locked)</> :
+                             isDownloading ? <><Lock size={12} className="animate-spin text-[#3C6B4D]" /> {downloadProgress}%</> :
                              <><Download size={12} /> Pull</>}
                           </button>
                         </div>
@@ -2241,11 +2313,12 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
                         <button
                           onClick={handleExtractPairsFromDoc}
-                          disabled={isExtractingDoc}
-                          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all disabled:opacity-50"
+                          disabled={isExtractingDoc || !uploadedDoc}
+                          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          title={isExtractingDoc ? 'Locked: Extracting instruction pairs' : !uploadedDoc ? 'Locked: Upload document first' : 'Extract Q&A Pairs from Document'}
                         >
-                          <Sparkles size={13} className={isExtractingDoc ? 'animate-spin' : ''} />
-                          {isExtractingDoc ? 'Extracting Instruction Pairs...' : 'Extract Q&A Pairs from Document'}
+                          {isExtractingDoc ? <Lock size={13} className="animate-spin text-amber-300" /> : !uploadedDoc ? <Lock size={13} className="text-gray-400" /> : <Sparkles size={13} />}
+                          {isExtractingDoc ? 'Extracting Instruction Pairs (Locked)...' : !uploadedDoc ? 'Upload Document to Extract (Locked)' : 'Extract Q&A Pairs from Document'}
                         </button>
                       </div>
                     ) : (
@@ -2290,11 +2363,12 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       <div className="flex gap-2">
                         <button
                           onClick={handleSynthesizeDataset}
-                          disabled={isSynthesizing}
-                          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] text-xs font-bold hover:bg-[#3C6B4D]/25 disabled:opacity-50 transition-all"
+                          disabled={isSynthesizing || !recipePrompt.trim()}
+                          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] text-xs font-bold hover:bg-[#3C6B4D]/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          title={isSynthesizing ? 'Locked: Synthesizing dataset' : !recipePrompt.trim() ? 'Locked: Enter prompt' : 'Synthesize dataset'}
                         >
-                          <Sparkles size={13} className={isSynthesizing ? 'animate-spin' : ''} />
-                          {isSynthesizing ? 'Synthesizing...' : 'Synthesize Dataset'}
+                          {isSynthesizing ? <Lock size={13} className="animate-spin" /> : !recipePrompt.trim() ? <Lock size={13} className="text-gray-400" /> : <Sparkles size={13} />}
+                          {isSynthesizing ? 'Synthesizing...' : !recipePrompt.trim() ? 'Prompt Required (Locked)' : 'Synthesize Dataset'}
                         </button>
                         {datasetPairs.length > 0 && (
                           <button onClick={handleExportJSONL} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-bold transition-all">
@@ -2351,10 +2425,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <button
                       onClick={handleStartTrainingSim}
                       disabled={isTrainingSim || datasetPairs.length === 0}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-black transition-all"
+                      title={isTrainingSim ? 'Locked: Training in progress' : datasetPairs.length === 0 ? 'Locked: Dataset pairs required' : 'Start QLoRA Fine-Tuning'}
                     >
-                      <Play size={14} className={isTrainingSim ? 'animate-pulse' : ''} />
-                      {isTrainingSim ? 'Training in Progress...' : 'Start QLoRA Fine-Tuning'}
+                      {isTrainingSim ? <Lock size={14} className="animate-pulse text-amber-300" /> : datasetPairs.length === 0 ? <Lock size={14} className="text-gray-400" /> : <Play size={14} />}
+                      {isTrainingSim ? 'Training in Progress (Locked)...' : datasetPairs.length === 0 ? 'Dataset Pairs Required (Locked)' : 'Start QLoRA Fine-Tuning'}
                     </button>
                     {/* Loss curve */}
                     {isTrainingSim && (
@@ -2393,10 +2468,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                         <button
                           onClick={handleRegisterFineTunedModel}
                           disabled={isRegisteringModel || datasetPairs.length === 0}
-                          className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0"
+                          className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0"
+                          title={isRegisteringModel ? 'Locked: Registering model in Ollama' : datasetPairs.length === 0 ? 'Locked: Dataset pairs required' : '1-Click Load Model into Ollama'}
                         >
-                          <Zap size={13} className={isRegisteringModel ? 'animate-spin text-amber-400' : 'text-amber-400'} />
-                          <span>{isRegisteringModel ? 'Registering in Ollama...' : '1-Click Load Model & Test in Chat'}</span>
+                          {isRegisteringModel ? <Lock size={13} className="animate-spin text-amber-400" /> : datasetPairs.length === 0 ? <Lock size={13} className="text-gray-400" /> : <Zap size={13} className="text-amber-400" />}
+                          <span>{isRegisteringModel ? 'Registering in Ollama (Locked)...' : datasetPairs.length === 0 ? 'Fine-Tune Required (Locked)' : '1-Click Load Model & Test in Chat'}</span>
                         </button>
                       </div>
                     </div>
@@ -2436,11 +2512,12 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   </div>
                   <button
                     onClick={handleRunEval}
-                    disabled={isEvalRunning}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-black transition-all"
+                    disabled={isEvalRunning || !evalPrompt.trim()}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-black transition-all"
+                    title={isEvalRunning ? 'Locked: Benchmark in progress' : !evalPrompt.trim() ? 'Locked: Prompt required' : 'Run Benchmark'}
                   >
-                    <BarChart2 size={14} className={isEvalRunning ? 'animate-pulse' : ''} />
-                    {isEvalRunning ? 'Running Benchmark...' : 'Run Side-by-Side Benchmark'}
+                    {isEvalRunning ? <Lock size={14} className="animate-pulse text-amber-300" /> : !evalPrompt.trim() ? <Lock size={14} className="text-gray-400" /> : <BarChart2 size={14} />}
+                    {isEvalRunning ? 'Running Benchmark (Locked)...' : !evalPrompt.trim() ? 'Prompt Required (Locked)' : 'Run Side-by-Side Benchmark'}
                   </button>
                   {(evalOutput1 || evalOutput2) && (
                     <div className="grid grid-cols-2 gap-4 mt-2">

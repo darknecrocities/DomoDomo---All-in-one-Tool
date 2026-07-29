@@ -24,7 +24,8 @@ import {
   Terminal,
   Search,
   FileText,
-  Upload
+  Upload,
+  Lock
 } from 'lucide-react';
 import { aiService } from '../../../utils/aiService';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
@@ -1286,10 +1287,11 @@ User Question: ${incomingQuery}`;
           <button
             onClick={handleExecuteWorkflow}
             disabled={isExecuting}
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-[#E05D52] hover:bg-[#c94d43] disabled:opacity-50 text-white text-xs font-black rounded-xl transition-all shadow-md shadow-[#E05D52]/20"
+            className="flex items-center gap-1.5 px-4 py-1.5 bg-[#E05D52] hover:bg-[#c94d43] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-black rounded-xl transition-all shadow-md shadow-[#E05D52]/20"
+            title={isExecuting ? 'Locked: Executing flow...' : 'Test workflow'}
           >
-            <Play size={13} className={isExecuting ? 'animate-spin' : ''} />
-            <span>{isExecuting ? 'Executing Flow...' : 'Test workflow'}</span>
+            {isExecuting ? <Lock size={13} className="animate-spin text-white" /> : <Play size={13} />}
+            <span>{isExecuting ? 'Executing Flow (Locked)...' : 'Test workflow'}</span>
           </button>
 
           <button
