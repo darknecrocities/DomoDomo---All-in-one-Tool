@@ -1,5 +1,59 @@
 [
   {
+    "hash": "60e1311",
+    "date": "2026-07-29",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #57 from darknecrocities/feat/ai-hub-tools-expansion"
+  },
+  {
+    "hash": "b033c5d",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: integrate model selector dropdown and 1-click model downloader across all AI Hub tools"
+  },
+  {
+    "hash": "70c3062",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "docs: update AI Hub technical specs, release notes, sitemap, and blog announcement"
+  },
+  {
+    "hash": "efe0060",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: expand AI Hub Studio with 10 interactive tools and vision model downloader"
+  },
+  {
+    "hash": "41177c8",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "097413d",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: AI Hub responsive mobile drawer and locked button states"
+  },
+  {
+    "hash": "4109665",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "6ef2055",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix(flow-automation): resolve backend httpx timeout 500 error, improve flow canvas layout containment, and enhance chat console user message text contrast"
+  },
+  {
+    "hash": "8eef9ea",
+    "date": "2026-07-28",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "f81a59c",
     "date": "2026-07-28",
     "author": "darknecrocities",
@@ -34,59 +88,5 @@
     "date": "2026-07-28",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "7be59a2",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): add PDF page-by-page text extraction and sanitize binary stream headers in RAG pipeline"
-  },
-  {
-    "hash": "74cefc9",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "c27125e",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-studio-finetune-docs-multi-format'"
-  },
-  {
-    "hash": "5f73a51",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add n8n visual flow automation, document data ingestion, and expanded integration docs"
-  },
-  {
-    "hash": "68a0f5d",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "d32354b",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-studio-finetune-docs-multi-format'"
-  },
-  {
-    "hash": "a2dc461",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "docs(about): add v2.0.0 release history & patch notes for AI Hub Studio and Fine-Tune Multi-Format Analysis"
-  },
-  {
-    "hash": "f56c839",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "docs(about): add v2.0.0 release history & patch notes for AI Hub Studio and Fine-Tune Multi-Format Analysis"
-  },
-  {
-    "hash": "5848c14",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
