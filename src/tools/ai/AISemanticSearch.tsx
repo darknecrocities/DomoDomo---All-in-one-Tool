@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, Loader2, Play, Sparkles, ChevronDown } from 'lucide-react';
 import { aiService } from '../../utils/aiService';
 import { LocalAIConfigPanel } from '../../components/LocalAIConfigPanel';
@@ -43,10 +43,34 @@ export const AISemanticSearchTool = () => {
 
   const heatmapCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Visual Heatmap drawer
+  const drawHeatmap = useCallback(() => {
+    const canvas = heatmapCanvasRef.current;
+    if (!canvas || results.length === 0) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Heatmap bar chart representing similarity levels
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const barWidth = canvas.width / results.length;
+    results.forEach((r, idx) => {
+      const h = canvas.height * r.score;
+      // Map score to color
+      const alpha = Math.max(0.1, r.score);
+      ctx.fillStyle = `rgba(20, 184, 166, ${alpha})`;
+      ctx.fillRect(idx * barWidth, canvas.height - h, barWidth - 4, h);
+      
+      // Text label
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '8px monospace';
+      ctx.fillText(`#${idx+1}`, idx * barWidth + 2, canvas.height - 4);
+    });
+  }, [results]);
+
   // Redraw canvas heatmap when results change
   useEffect(() => {
     drawHeatmap();
-  }, [results]);
+  }, [drawHeatmap]);
 
   const handleAddDoc = () => {
     if (!newDoc.trim()) return;
@@ -167,30 +191,6 @@ export const AISemanticSearchTool = () => {
     a.download = 'semantic-search-pool.json';
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  // Visual Heatmap drawer
-  const drawHeatmap = () => {
-    const canvas = heatmapCanvasRef.current;
-    if (!canvas || results.length === 0) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Heatmap bar chart representing similarity levels
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const barWidth = canvas.width / results.length;
-    results.forEach((r, idx) => {
-      const h = canvas.height * r.score;
-      // Map score to color
-      const alpha = Math.max(0.1, r.score);
-      ctx.fillStyle = `rgba(20, 184, 166, ${alpha})`;
-      ctx.fillRect(idx * barWidth, canvas.height - h, barWidth - 4, h);
-      
-      // Text label
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '8px monospace';
-      ctx.fillText(`#${idx+1}`, idx * barWidth + 2, canvas.height - 4);
-    });
   };
 
   const uniqueTags = ['All', ...Array.from(new Set(documents.map(d => d.tag)))];
