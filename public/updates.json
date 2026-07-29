@@ -1,5 +1,17 @@
 [
   {
+    "hash": "ff0bd44",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix(ci): add missing logo imports in Dashboard.tsx to pass typescript typecheck"
+  },
+  {
+    "hash": "79d40a2",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "bf3c4df",
     "date": "2026-07-29",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-tools-expansion'"
-  },
-  {
-    "hash": "4f6c18a",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "feat: expand MCP server catalog from 7 to 27 providers (Notion, Linear, Discord, Twitter/X, YouTube, Shopify, Stripe, MongoDB, Redis, Elasticsearch, Airtable, Google Sheets, Google Drive, Dropbox, SendGrid, Twilio, Jira, Anthropic, OpenAI API, Weather, Supabase) with full simulated JSON-RPC responses for all tools"
-  },
-  {
-    "hash": "2fb89ac",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
