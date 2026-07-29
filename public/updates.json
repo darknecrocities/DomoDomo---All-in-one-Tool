@@ -1,5 +1,23 @@
 [
   {
+    "hash": "0fe9c0e",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
+  },
+  {
+    "hash": "959ffb5",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix(ci): resolve TypeScript type error for isNativeTransparent, restore Trophy/Award icon imports, and fix unused vars/hook deps"
+  },
+  {
+    "hash": "fd954c2",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "39d90c9",
     "date": "2026-07-29",
     "author": "RhonzKieee",
@@ -70,23 +88,5 @@
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "feat: add 5 new production workflow templates to Local AI Flow Studio"
-  },
-  {
-    "hash": "80c8e64",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "feat: add 5 new production workflow templates to Local AI Flow Studio"
-  },
-  {
-    "hash": "0abdf63",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "0cd523b",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "Merge branch 'main' into staging"
   }
 ]
