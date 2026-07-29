@@ -1,5 +1,35 @@
 [
   {
+    "hash": "5cbe7e6",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix: enforce strict mobile sidebar hiding and popup local run guide modal on locked online model downloads"
+  },
+  {
+    "hash": "4769aa3",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "d8e2ed5",
+    "date": "2026-07-29",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #58 from darknecrocities/feat/ai-hub-tools-expansion"
+  },
+  {
+    "hash": "90e365d",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "fix: make AI Hub sidebar scrollable and add Online Demo Lock banner with step-by-step Local Run Guide modal"
+  },
+  {
+    "hash": "a267973",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "60e1311",
     "date": "2026-07-29",
     "author": "RhonzKieee",
@@ -58,35 +88,5 @@
     "date": "2026-07-28",
     "author": "darknecrocities",
     "message": "feat: client-side visit counter starting at 7,876"
-  },
-  {
-    "hash": "344298d",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "b62a071",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): add rich Markdown bullet and bold formatting parser to Chat Console"
-  },
-  {
-    "hash": "0b7af40",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "6e7188c",
-    "date": "2026-07-28",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): add file upload dropzone to trigger and document nodes, plus canvas drag-and-drop ingestion"
-  },
-  {
-    "hash": "99a9dee",
-    "date": "2026-07-28",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
