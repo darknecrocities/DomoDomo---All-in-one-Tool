@@ -83,7 +83,7 @@ export const BlogPost = () => {
       // Blockquote / Tip / Warning
       if (trimmed.startsWith('> ')) {
         return (
-          <blockquote key={idx} className="border-l-4 border-[#3C6B4D] bg-[#111213] p-4 rounded-r-2xl italic text-sm text-[#A3A09B] my-5 shadow-inner">
+          <blockquote key={idx} className="border-l-4 border-[#52565A] bg-[#111213] p-4 rounded-r-2xl italic text-sm text-[#A3A09B] my-5 shadow-inner">
             {parseInlineMarkup(trimmed.slice(2))}
           </blockquote>
         );
@@ -135,18 +135,18 @@ export const BlogPost = () => {
       if (first.type === 'bold') {
         tokens.push(<strong key={key++} className="font-extrabold text-[#ECEBE9]">{first.content}</strong>);
       } else if (first.type === 'code') {
-        tokens.push(<code key={key++} className="bg-[#1D2022] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-emerald-400">{first.content}</code>);
+        tokens.push(<code key={key++} className="bg-[#1D2022] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-[#ECEBE9]">{first.content}</code>);
       } else if (first.type === 'link') {
         const isExternal = first.url!.startsWith('http');
         if (isExternal) {
           tokens.push(
-            <a key={key++} href={first.url} target="_blank" rel="noopener noreferrer" className="text-[#4E8E5E] hover:underline font-bold">
+            <a key={key++} href={first.url} target="_blank" rel="noopener noreferrer" className="text-[#ECEBE9] hover:underline font-bold">
               {first.content}
             </a>
           );
         } else {
           tokens.push(
-            <Link key={key++} to={first.url!} className="text-[#4E8E5E] hover:underline font-bold">
+            <Link key={key++} to={first.url!} className="text-[#ECEBE9] hover:underline font-bold">
               {first.content}
             </Link>
           );
@@ -203,12 +203,12 @@ export const BlogPost = () => {
 
         <button
           onClick={handleShare}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 hover:bg-[#3C6B4D]/10 text-xs font-bold text-[#ECEBE9] transition-all shadow-sm"
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#18191B] border border-[#2A2D30] hover:border-[#52565A] hover:bg-[#222426] text-xs font-bold text-[#ECEBE9] transition-all shadow-sm"
         >
           {copied ? (
             <>
-              <Check size={14} className="text-[#4E8E5E]" />
-              <span className="text-[#4E8E5E]">Link Copied!</span>
+              <Check size={14} className="text-[#ECEBE9]" />
+              <span className="text-[#ECEBE9]">Link Copied!</span>
             </>
           ) : (
             <>
@@ -224,10 +224,10 @@ export const BlogPost = () => {
         {/* Info header */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#4E8E5E]">
+            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-[#222426] border border-[#3C3F44] text-[#ECEBE9]">
               {post.category}
             </span>
-            <span className="text-[9px] font-bold px-2.5 py-0.5 rounded-md bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E] uppercase tracking-wide flex items-center gap-1">
+            <span className="text-[9px] font-bold px-2.5 py-0.5 rounded-md bg-[#222426] border border-[#3C3F44] text-[#A3A09B] uppercase tracking-wide flex items-center gap-1">
               <UserCheck size={12} />
               By {post.author || "Arron Parejas"}
             </span>
@@ -254,7 +254,7 @@ export const BlogPost = () => {
         {/* Author Bio Box */}
         <div className="mt-6 p-5 rounded-2xl bg-[#111213] border border-[#2A2D30] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#3C6B4D] to-emerald-700 flex items-center justify-center text-white font-black text-xs shadow-inner">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2A2D30] to-[#18191B] border border-[#3C3F44] flex items-center justify-center text-white font-black text-xs shadow-inner">
               AP
             </div>
             <div className="flex flex-col leading-tight">
@@ -262,7 +262,7 @@ export const BlogPost = () => {
               <span className="text-[10px] text-[#72706C]">Maker &amp; Lead Engineer @ DomoDomo</span>
             </div>
           </div>
-          <span className="text-[10px] text-[#3C6B4D] bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 px-2.5 py-1 rounded-full font-bold">
+          <span className="text-[10px] text-[#ECEBE9] bg-[#222426] border border-[#3C3F44] px-2.5 py-1 rounded-full font-bold">
             Verified Author
           </span>
         </div>
@@ -286,10 +286,10 @@ export const BlogPost = () => {
         <div className="flex flex-col gap-4 mt-2">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-extrabold text-[#ECEBE9] flex items-center gap-2">
-              <Sparkles size={16} className="text-[#3C6B4D]" />
+              <Sparkles size={16} className="text-[#A3A09B]" />
               <span>More Technical Guides &amp; Updates</span>
             </h3>
-            <Link to="/blog" className="text-xs font-bold text-[#4E8E5E] hover:underline">
+            <Link to="/blog" className="text-xs font-bold text-[#ECEBE9] hover:underline">
               View All Guides →
             </Link>
           </div>
@@ -299,19 +299,19 @@ export const BlogPost = () => {
               <Link
                 key={rPost.slug}
                 to={`/blog/${rPost.slug}`}
-                className="group flex flex-col justify-between p-5 rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/40 transition-all duration-300 shadow-md"
+                className="group flex flex-col justify-between p-5 rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#52565A] transition-all duration-300 shadow-md"
               >
                 <div className="flex flex-col gap-2">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#4E8E5E]">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#A3A09B]">
                     {rPost.category}
                   </span>
-                  <h4 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#4E8E5E] transition-colors leading-snug line-clamp-2">
+                  <h4 className="text-sm font-bold text-[#ECEBE9] group-hover:text-white transition-colors leading-snug line-clamp-2">
                     {rPost.title}
                   </h4>
                 </div>
                 <div className="flex items-center justify-between text-[10px] text-[#72706C] mt-4 pt-3 border-t border-[#2A2D30]">
                   <span>{rPost.readTime}</span>
-                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-[#4E8E5E]" />
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-[#A3A09B] group-hover:text-white" />
                 </div>
               </Link>
             ))}
@@ -320,7 +320,7 @@ export const BlogPost = () => {
       )}
 
       {/* Internal link CTA Banner */}
-      <div className="rounded-3xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-lg">
+      <div className="rounded-3xl border border-[#2A2D30] bg-[#18191B] p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-lg">
         <div className="text-left space-y-1">
           <h4 className="text-base font-bold text-[#ECEBE9]">Run Utility Tools Directly Offline</h4>
           <p className="text-xs text-[#A3A09B] max-w-xl">

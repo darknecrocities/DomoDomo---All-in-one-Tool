@@ -52,8 +52,8 @@ export const BlogContainer = () => {
         {/* Hero Left Column: Intro Text */}
         <div className="lg:col-span-6 flex flex-col gap-4 z-10">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#4E8E5E] flex items-center gap-1.5">
-              <Sparkles size={12} className="text-[#3C6B4D]" />
+            <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-[#222426] border border-[#3C3F44] text-[#ECEBE9] flex items-center gap-1.5">
+              <Sparkles size={12} className="text-[#A3A09B]" />
               Official Knowledge Hub
             </span>
           </div>
@@ -90,36 +90,36 @@ export const BlogContainer = () => {
 
             {/* #1 in AI Category Badge */}
             <div
-              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-sm hover:border-[#3C6B4D]/70 transition-colors"
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#222426] border border-[#3C3F44] text-[#A3A09B] shadow-sm hover:border-[#52565A] transition-colors"
               title="#1 Product in AI & Local LLM Category"
             >
-              <Cpu size={18} className="text-[#3C6B4D] shrink-0" />
+              <Cpu size={18} className="text-[#ECEBE9] shrink-0" />
               <div className="flex flex-col text-left leading-tight min-w-0">
-                <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80 truncate">Rank Badge</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#72706C] truncate">Rank Badge</span>
                 <span className="text-xs font-extrabold text-[#ECEBE9] truncate">#1 in AI</span>
               </div>
             </div>
 
             {/* #1 in Productivity Badge */}
             <div
-              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-sm hover:border-[#3C6B4D]/70 transition-colors"
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#222426] border border-[#3C3F44] text-[#A3A09B] shadow-sm hover:border-[#52565A] transition-colors"
               title="#1 Product in Productivity Category"
             >
-              <Trophy size={18} className="text-[#3C6B4D] shrink-0" />
+              <Trophy size={18} className="text-[#ECEBE9] shrink-0" />
               <div className="flex flex-col text-left leading-tight min-w-0">
-                <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80 truncate">Rank Badge</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#72706C] truncate">Rank Badge</span>
                 <span className="text-xs font-extrabold text-[#ECEBE9] truncate">#1 Productivity</span>
               </div>
             </div>
 
             {/* #1 in Developer Tools Badge */}
             <div
-              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/40 text-[#4E8E5E] shadow-sm hover:border-[#3C6B4D]/70 transition-colors"
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#222426] border border-[#3C3F44] text-[#A3A09B] shadow-sm hover:border-[#52565A] transition-colors"
               title="#1 Product in Developer Tools Category"
             >
-              <Award size={18} className="text-[#3C6B4D] shrink-0" />
+              <Award size={18} className="text-[#ECEBE9] shrink-0" />
               <div className="flex flex-col text-left leading-tight min-w-0">
-                <span className="text-[8px] font-bold uppercase tracking-widest text-[#3C6B4D]/80 truncate">Rank Badge</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest text-[#72706C] truncate">Rank Badge</span>
                 <span className="text-xs font-extrabold text-[#ECEBE9] truncate">#1 Dev Tools</span>
               </div>
             </div>
@@ -131,42 +131,42 @@ export const BlogContainer = () => {
               href="https://web.facebook.com/share/p/17HgfjZoPk/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group/bgov flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 transition-all duration-300 shadow-sm"
+              className="group/bgov flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#52565A] transition-all duration-300 shadow-sm"
               title="Featured on BetterGov.ph"
             >
               <div className="flex items-center gap-2 min-w-0">
                 <img src={betterGovLogo} alt="BetterGov.ph" className="w-6 h-6 object-contain rounded shrink-0" />
-                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/bgov:text-[#4E8E5E] transition-colors truncate">BetterGov</span>
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/bgov:text-white transition-colors truncate">BetterGov</span>
               </div>
-              <ExternalLink size={12} className="text-[#72706C] group-hover/bgov:text-[#4E8E5E] shrink-0 ml-1" />
+              <ExternalLink size={12} className="text-[#72706C] group-hover/bgov:text-[#ECEBE9] shrink-0 ml-1" />
             </a>
 
             <a
               href="https://www.facebook.com/share/p/1G5PGJFuYE/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group/upamate flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 transition-all duration-300 shadow-sm"
+              className="group/upamate flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#52565A] transition-all duration-300 shadow-sm"
               title="Featured on Upamate"
             >
               <div className="flex items-center gap-2 min-w-0">
                 <img src={upamateLogo} alt="Upamate" className="w-6 h-6 object-contain rounded shrink-0" />
-                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/upamate:text-[#4E8E5E] transition-colors truncate">Upamate</span>
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/upamate:text-white transition-colors truncate">Upamate</span>
               </div>
-              <ExternalLink size={12} className="text-[#72706C] group-hover/upamate:text-[#4E8E5E] shrink-0 ml-1" />
+              <ExternalLink size={12} className="text-[#72706C] group-hover/upamate:text-[#ECEBE9] shrink-0 ml-1" />
             </a>
 
             <a
               href="https://stage.byant.dev/p/domodomo"
               target="_blank"
               rel="noopener noreferrer"
-              className="group/stagebyant flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 transition-all duration-300 shadow-sm"
+              className="group/stagebyant flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#52565A] transition-all duration-300 shadow-sm"
               title="Featured Pick on Stage by Ant"
             >
               <div className="flex items-center gap-2 min-w-0">
                 <img src={stageByAntLogo} alt="Stage by Ant" className="w-6 h-6 object-contain rounded shrink-0" />
-                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/stagebyant:text-[#4E8E5E] transition-colors truncate">Stage by Ant</span>
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/stagebyant:text-white transition-colors truncate">Stage by Ant</span>
               </div>
-              <ExternalLink size={12} className="text-[#72706C] group-hover/stagebyant:text-[#4E8E5E] shrink-0 ml-1" />
+              <ExternalLink size={12} className="text-[#72706C] group-hover/stagebyant:text-[#ECEBE9] shrink-0 ml-1" />
             </a>
           </div>
         </div>
@@ -174,20 +174,20 @@ export const BlogContainer = () => {
 
       {/* Spotlight Featured Article Banner */}
       {featuredPost && selectedCategory === 'All' && !search && (
-        <div className="relative overflow-hidden rounded-3xl bg-[#18191B] border border-[#3C6B4D]/40 p-6 md:p-8 shadow-xl group/spotlight">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 shadow-xl group/spotlight">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/[0.03] rounded-full blur-3xl pointer-events-none" />
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 z-10 relative">
             <div className="flex flex-col gap-3 max-w-3xl">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-md bg-[#3C6B4D] text-white text-[10px] font-black uppercase tracking-wider">
+                <span className="px-2.5 py-0.5 rounded-md bg-[#2A2D30] text-[#ECEBE9] border border-[#3C3F44] text-[10px] font-black uppercase tracking-wider">
                   Featured Announcement
                 </span>
-                <span className="text-[11px] font-bold text-[#4E8E5E]">
+                <span className="text-[11px] font-bold text-[#A3A09B]">
                   {featuredPost.category}
                 </span>
               </div>
               <Link to={`/blog/${featuredPost.slug}`}>
-                <h2 className="text-xl md:text-3xl font-black text-[#ECEBE9] group-hover/spotlight:text-[#4E8E5E] transition-colors leading-tight">
+                <h2 className="text-xl md:text-3xl font-black text-[#ECEBE9] group-hover/spotlight:text-white transition-colors leading-tight">
                   {featuredPost.title}
                 </h2>
               </Link>
@@ -196,7 +196,7 @@ export const BlogContainer = () => {
               </p>
               <div className="flex items-center gap-4 text-[11px] font-bold text-[#72706C] pt-1">
                 <span className="flex items-center gap-1">
-                  <User size={12} className="text-[#3C6B4D]" />
+                  <User size={12} className="text-[#A3A09B]" />
                   {featuredPost.author || "Arron Parejas"}
                 </span>
                 <span className="flex items-center gap-1">
@@ -212,7 +212,7 @@ export const BlogContainer = () => {
 
             <Link
               to={`/blog/${featuredPost.slug}`}
-              className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#3C6B4D] hover:bg-[#4E8E5E] text-white text-xs font-black transition-all shadow-md group-hover/spotlight:scale-105"
+              className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#2A2D30] hover:bg-[#3C3F44] border border-[#3C3F44] text-white text-xs font-black transition-all shadow-md group-hover/spotlight:scale-105"
             >
               <span>Read Spotlight Article</span>
               <ChevronRight size={16} />
@@ -231,7 +231,7 @@ export const BlogContainer = () => {
             placeholder="Search guides, keywords, or features..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#18191B] border border-[#2A2D30] focus:border-[#3C6B4D]/60 text-xs text-[#ECEBE9] focus:outline-none focus:ring-1 focus:ring-[#3C6B4D]/40 transition-all font-semibold"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#18191B] border border-[#2A2D30] focus:border-[#52565A] text-xs text-[#ECEBE9] focus:outline-none focus:ring-1 focus:ring-[#52565A]/40 transition-all font-semibold"
           />
         </div>
 
@@ -245,8 +245,8 @@ export const BlogContainer = () => {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
                   selectedCategory === cat
-                    ? 'bg-[#3C6B4D]/20 border-[#3C6B4D]/50 text-[#4E8E5E]'
-                    : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/30'
+                    ? 'bg-[#2A2D30] border-[#52565A] text-[#ECEBE9]'
+                    : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C3F44]'
                 }`}
               >
                 <span>{cat}</span>
@@ -265,20 +265,20 @@ export const BlogContainer = () => {
           {filteredPosts.map((post) => (
             <article
               key={post.slug}
-              className="group flex flex-col justify-between rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 p-6 transition-all duration-300 shadow-md relative overflow-hidden"
+              className="group flex flex-col justify-between rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#52565A] p-6 transition-all duration-300 shadow-md relative overflow-hidden"
             >
               <div className="flex flex-col gap-3 text-left">
                 <div className="flex justify-between items-center w-full">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#4E8E5E] flex items-center gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#A3A09B] flex items-center gap-1">
                     <Tag size={10} />
                     {post.category}
                   </span>
-                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#4E8E5E] uppercase tracking-wide">
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-[#222426] border border-[#3C3F44] text-[#A3A09B] uppercase tracking-wide">
                     By {post.author || "Arron Parejas"}
                   </span>
                 </div>
                 <Link to={`/blog/${post.slug}`} className="hover:underline">
-                  <h2 className="text-lg font-extrabold text-[#ECEBE9] leading-snug group-hover:text-[#4E8E5E] transition-colors">
+                  <h2 className="text-lg font-extrabold text-[#ECEBE9] leading-snug group-hover:text-white transition-colors">
                     {post.title}
                   </h2>
                 </Link>
@@ -300,12 +300,12 @@ export const BlogContainer = () => {
                 </div>
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="flex items-center justify-between text-xs font-bold text-[#4E8E5E] group-hover:text-[#3C6B4D] transition-colors"
+                  className="flex items-center justify-between text-xs font-bold text-[#ECEBE9] group-hover:text-white transition-colors"
                 >
                   <span className="flex items-center gap-1">
                     <BookOpen size={13} /> Read Guide
                   </span>
-                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-[#A3A09B] group-hover:text-white" />
                 </Link>
               </div>
             </article>
