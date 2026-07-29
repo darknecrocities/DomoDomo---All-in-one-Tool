@@ -25,7 +25,18 @@ import {
   Search,
   FileText,
   Upload,
-  Lock
+  Lock,
+  Shield,
+  Globe,
+  Mail,
+  Workflow,
+  ExternalLink,
+  AlertTriangle,
+  Eye,
+  EyeOff,
+  ChevronRight,
+  Info,
+  Server
 } from 'lucide-react';
 import { aiService } from '../../../utils/aiService';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
@@ -39,7 +50,7 @@ export interface FlowNodePort {
 
 export interface FlowNode {
   id: string;
-  type: 'trigger' | 'document_upload' | 'agent' | 'llm' | 'memory' | 'vector_store' | 'tool' | 'formatter' | 'script' | 'webhook' | 'export';
+  type: 'trigger' | 'document_upload' | 'agent' | 'llm' | 'memory' | 'vector_store' | 'tool' | 'mcp_tool' | 'formatter' | 'script' | 'webhook' | 'export';
   title: string;
   subtitle?: string;
   category: string;
@@ -74,6 +85,152 @@ export interface WorkflowPreset {
   nodes: FlowNode[];
   connections: FlowConnection[];
 }
+
+// ── MCP SERVER CATALOG ─────────────────────────────────────────────────────
+const MCP_SERVER_CATALOG = {
+  gmail: {
+    label: 'Gmail',
+    icon: 'Mail',
+    color: '#EA4335',
+    description: 'Send, read, and search Gmail messages via the Gmail MCP server.',
+    credentialFields: [
+      { key: 'gmail_token', label: 'Gmail OAuth Token', placeholder: 'ya29.a0AfH6SMBxxx...', type: 'password', hint: 'Get from Google Cloud Console → OAuth2 Credentials' },
+      { key: 'email_address', label: 'Email Address', placeholder: 'you@gmail.com', type: 'text', hint: 'Your connected Gmail address' }
+    ],
+    tools: ['send_email', 'list_inbox', 'search_emails', 'get_message', 'create_draft'],
+    setupSteps: [
+      'Go to console.cloud.google.com and create a new project',
+      'Enable the Gmail API under APIs & Services',
+      'Create OAuth 2.0 credentials (Web Application type)',
+      'Copy the access token and paste it above',
+      'Run: npx @modelcontextprotocol/server-gmail'
+    ],
+    docsUrl: 'https://modelcontextprotocol.io/docs'
+  },
+  github: {
+    label: 'GitHub',
+    icon: 'Code',
+    color: '#E8E8E8',
+    description: 'Create issues, manage PRs, and push files to GitHub repositories.',
+    credentialFields: [
+      { key: 'github_token', label: 'GitHub Personal Access Token', placeholder: 'ghp_xxxxxxxxxxxxxxxxx...', type: 'password', hint: 'Settings → Developer settings → Personal access tokens → Fine-grained' },
+      { key: 'repo_name', label: 'Repository (owner/repo)', placeholder: 'myuser/my-repo', type: 'text', hint: 'owner/repo format, e.g. darknecrocities/DomoDomo' }
+    ],
+    tools: ['create_issue', 'list_prs', 'push_file', 'get_repo_info', 'create_branch', 'merge_pr'],
+    setupSteps: [
+      'Go to github.com → Settings → Developer settings → Personal access tokens',
+      'Click "Generate new token (fine-grained)"',
+      'Select your target repository and enable read/write permissions',
+      'Copy the token and paste above',
+      'Run: npx @modelcontextprotocol/server-github'
+    ],
+    docsUrl: 'https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens'
+  },
+  slack: {
+    label: 'Slack',
+    icon: 'MessageSquare',
+    color: '#4A154B',
+    description: 'Send messages, list channels, and interact with Slack workspaces.',
+    credentialFields: [
+      { key: 'slack_bot_token', label: 'Slack Bot Token', placeholder: 'xoxb-xxxxxxxxxx-xxxxxxxxxx...', type: 'password', hint: 'Create a Slack App at api.slack.com/apps, add Bot Token Scopes' },
+      { key: 'channel', label: 'Default Channel', placeholder: '#general', type: 'text', hint: 'Channel to post messages to by default' }
+    ],
+    tools: ['send_message', 'list_channels', 'upload_file', 'post_reaction', 'list_members'],
+    setupSteps: [
+      'Go to api.slack.com/apps and click "Create New App"',
+      'Under "OAuth & Permissions", add scopes: chat:write, channels:read, files:write',
+      'Install the app to your workspace and copy the Bot User OAuth Token',
+      'Invite the bot to the channel: /invite @your-bot',
+      'Run: npx @modelcontextprotocol/server-slack'
+    ],
+    docsUrl: 'https://api.slack.com/authentication/token-types'
+  },
+  filesystem: {
+    label: 'Filesystem',
+    icon: 'FileText',
+    color: '#D97706',
+    description: 'Securely read and write local files within an allowed base path.',
+    credentialFields: [
+      { key: 'base_path', label: 'Allowed Base Path', placeholder: '/home/user/documents', type: 'text', hint: 'MCP server will sandbox all file operations within this path' }
+    ],
+    tools: ['read_file', 'write_file', 'list_directory', 'create_directory', 'delete_file', 'move_file'],
+    setupSteps: [
+      'Install the MCP filesystem server: npx @modelcontextprotocol/server-filesystem /your/path',
+      'The server will only expose files within the specified base path',
+      'No credentials needed — path restriction is the security boundary',
+      'Connect your Agent node to this MCP Tool node to enable file operations',
+      'Test with a read_file tool call in the chat console'
+    ],
+    docsUrl: 'https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem'
+  },
+  postgres: {
+    label: 'Postgres',
+    icon: 'Database',
+    color: '#336791',
+    description: 'Query and mutate rows in a local or remote PostgreSQL database.',
+    credentialFields: [
+      { key: 'connection_string', label: 'Connection String', placeholder: 'postgresql://user:pass@localhost:5432/mydb', type: 'password', hint: 'Full postgres URI format' }
+    ],
+    tools: ['query', 'insert_row', 'update_row', 'delete_row', 'list_tables', 'describe_table'],
+    setupSteps: [
+      'Ensure PostgreSQL is running locally or remotely',
+      'Format your connection string: postgresql://user:password@host:port/database',
+      'Run: npx @modelcontextprotocol/server-postgres postgresql://...',
+      'Your agent can now SELECT, INSERT, UPDATE via natural language',
+      'Use read-only credentials for safety in production'
+    ],
+    docsUrl: 'https://github.com/modelcontextprotocol/servers/tree/main/src/postgres'
+  },
+  huggingface: {
+    label: 'HuggingFace',
+    icon: 'Sparkles',
+    color: '#FFD21E',
+    description: 'Run inference and embeddings on HuggingFace hosted models.',
+    credentialFields: [
+      { key: 'hf_api_key', label: 'HuggingFace API Token', placeholder: 'hf_xxxxxxxxxxxxxxx...', type: 'password', hint: 'Get from huggingface.co/settings/tokens' }
+    ],
+    tools: ['run_inference', 'list_models', 'get_model_info', 'run_embedding', 'text_classification'],
+    setupSteps: [
+      'Create a HuggingFace account at huggingface.co',
+      'Go to huggingface.co/settings/tokens and create a new token',
+      'Select "Read" access for basic inference',
+      'Paste the token above and save',
+      'Run: npx @modelcontextprotocol/server-huggingface'
+    ],
+    docsUrl: 'https://huggingface.co/docs/api-inference'
+  },
+  custom: {
+    label: 'Custom MCP Server',
+    icon: 'Server',
+    color: '#3C6B4D',
+    description: 'Connect to any custom MCP-compatible HTTP server endpoint.',
+    credentialFields: [
+      { key: 'url', label: 'MCP Server URL', placeholder: 'http://localhost:3001/mcp', type: 'text', hint: 'HTTP or HTTPS URL of your MCP server' },
+      { key: 'token', label: 'Auth Bearer Token (optional)', placeholder: 'Bearer eyJhbGc...', type: 'password', hint: 'Leave blank for unauthenticated servers' }
+    ],
+    tools: ['call_tool', 'list_tools', 'get_schema', 'ping'],
+    setupSteps: [
+      'Build or deploy any MCP-compatible HTTP server',
+      'Implement the JSON-RPC 2.0 MCP protocol endpoints',
+      'Enter the server URL above (e.g. http://localhost:3001/mcp)',
+      'Add a bearer token if your server requires authentication',
+      'Check modelcontextprotocol.io/docs for the full server SDK'
+    ],
+    docsUrl: 'https://modelcontextprotocol.io/docs'
+  }
+};
+type McpServerKey = keyof typeof MCP_SERVER_CATALOG;
+
+// LLM models confirmed to support JSON-schema tool calling (function calling)
+const MCP_TOOL_CALL_COMPATIBLE_MODELS = [
+  'llama3.2:3b', 'llama3.2:8b', 'llama3.3:70b', 'llama3.1:8b', 'llama3.1:70b',
+  'mistral:7b', 'mistral-nemo:12b', 'mixtral:8x7b', 'mistral-small:22b',
+  'qwen2.5-coder:7b', 'qwen2.5-coder:14b', 'qwen2.5-coder:32b',
+  'qwen2.5:7b', 'qwen2.5:14b', 'qwen2.5:32b', 'qwen2.5:72b',
+  'gemma2:9b', 'gemma2:27b', 'gemma3:4b', 'gemma3:12b', 'gemma3:27b',
+  'deepseek-coder:6.7b', 'deepseek-r1:7b', 'deepseek-r1:14b',
+  'command-r:35b', 'command-r-plus:104b', 'smollm2:1.7b', 'phi4:14b'
+];
 
 const PRESET_WORKFLOWS: WorkflowPreset[] = [
   {
@@ -686,11 +843,18 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
     }
   }, [availableModels]);
 
-  // Workflows state
+  // Workflows state — always merge fresh PRESET_WORKFLOWS so new templates always appear
   const [workflows, setWorkflows] = useState<WorkflowPreset[]>(() => {
     try {
       const saved = localStorage.getItem('domodomo_n8n_workflows');
-      return saved ? JSON.parse(saved) : PRESET_WORKFLOWS;
+      if (saved) {
+        const parsedSaved: WorkflowPreset[] = JSON.parse(saved);
+        // Merge: keep user-created workflows + ensure all built-in presets exist
+        const savedIds = new Set(parsedSaved.map(w => w.id));
+        const missingPresets = PRESET_WORKFLOWS.filter(p => !savedIds.has(p.id));
+        return [...parsedSaved, ...missingPresets];
+      }
+      return PRESET_WORKFLOWS;
     } catch {
       return PRESET_WORKFLOWS;
     }
@@ -742,6 +906,12 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
   // Quick Add Node Modal Search Palette
   const [showAddNodeModal, setShowAddNodeModal] = useState(false);
   const [nodeSearchQuery, setNodeSearchQuery] = useState('');
+
+  // MCP Tool State
+  const [showMcpTutorial, setShowMcpTutorial] = useState(false);
+  const [mcpTutorialServer, setMcpTutorialServer] = useState<McpServerKey>('gmail');
+  const [mcpCompatWarning, setMcpCompatWarning] = useState<string | null>(null);
+  const [showMcpCredPasswords, setShowMcpCredPasswords] = useState<Record<string, boolean>>({});
 
   // Execution & Chat State
   const [isExecuting, setIsExecuting] = useState(false);
@@ -1090,6 +1260,14 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
         inputs = [{ id: 'embedding', name: 'Embedding', type: 'embedding' }];
         outputs = [{ id: 'out', name: 'Vector Store', type: 'vector_store' }];
         break;
+      case 'mcp_tool':
+        title = 'MCP Tool';
+        category = 'MCP Tools';
+        iconName = 'Shield';
+        color = '#3C6B4D';
+        inputs = [{ id: 'in', name: 'Input', type: 'input' }];
+        outputs = [{ id: 'out', name: 'Tool', type: 'tool' }];
+        break;
       case 'tool':
         title = 'Web Search Tool';
         category = 'Tools';
@@ -1283,6 +1461,61 @@ User Question: ${incomingQuery}`;
             confidenceScore: 0.98,
             tokensGenerated: Math.round(generatedText.length / 4)
           };
+        } else if (node.type === 'mcp_tool') {
+          const serverKey = (node.config.mcpServer || 'filesystem') as McpServerKey;
+          const serverDef = MCP_SERVER_CATALOG[serverKey] || MCP_SERVER_CATALOG.custom;
+          const selectedTool = node.config.selectedTool || serverDef.tools[0];
+          const creds = node.config.credentials || {};
+          const incomingText = inputPayload.in?.response || inputPayload.in?.text || chatInput || 'Perform the requested operation.';
+
+          // Check if connected LLM supports tool calling
+          const connectedLlmModel = inputPayload.model?.model || localModels[0] || '';
+          const isCompatible = MCP_TOOL_CALL_COMPATIBLE_MODELS.some(m => connectedLlmModel.toLowerCase().startsWith(m.split(':')[0]));
+
+          if (!isCompatible && connectedLlmModel) {
+            setMcpCompatWarning(`⚠️ Model '${connectedLlmModel}' may not support MCP tool calling. For best results use: mistral:7b, llama3.2:3b, qwen2.5-coder:7b, or gemma2:9b.`);
+          } else {
+            setMcpCompatWarning(null);
+          }
+
+          // Simulated MCP JSON-RPC 2.0 tool call & response
+          const mcpRequest = {
+            jsonrpc: '2.0',
+            id: Date.now(),
+            method: 'tools/call',
+            params: { name: selectedTool, arguments: { input: incomingText, ...creds } }
+          };
+
+          const mcpResult: Record<string, any> = {
+            send_email: { status: 'sent', messageId: `msg-${Date.now()}`, to: creds.email_address || 'recipient@example.com', subject: 'AI Generated Summary', bodyPreview: incomingText.slice(0, 120) },
+            list_inbox: { messages: [{ id: 'msg-001', from: 'noreply@github.com', subject: 'PR #42 merged', snippet: 'Your PR was merged...' }, { id: 'msg-002', from: 'team@slack.com', subject: 'Daily digest', snippet: 'You have 5 new messages...' }], totalCount: 2 },
+            search_emails: { results: [{ id: 'msg-003', from: 'alerts@example.com', subject: 'System alert', snippet: 'CPU usage at 90%...' }], query: incomingText.slice(0, 50) },
+            create_issue: { issueUrl: `https://github.com/${creds.repo_name || 'owner/repo'}/issues/99`, number: 99, title: incomingText.slice(0, 60), state: 'open' },
+            list_prs: { pullRequests: [{ number: 42, title: 'feat: add MCP tool integration', state: 'merged', author: 'contributor' }] },
+            push_file: { sha: 'a1b2c3d', path: 'src/mcp_output.txt', url: `https://github.com/${creds.repo_name || 'owner/repo'}/blob/main/src/mcp_output.txt` },
+            send_message: { ok: true, channel: creds.channel || '#general', timestamp: String(Date.now()), text: incomingText.slice(0, 200) },
+            list_channels: { channels: [{ id: 'C001', name: 'general' }, { id: 'C002', name: 'dev' }, { id: 'C003', name: 'ai-hub' }] },
+            read_file: { content: incomingText.slice(0, 400), path: `${creds.base_path || '/docs'}/output.txt`, size: incomingText.length, encoding: 'utf-8' },
+            write_file: { success: true, path: `${creds.base_path || '/docs'}/mcp_result.txt`, bytesWritten: incomingText.length },
+            list_directory: { entries: [{ name: 'documents', type: 'directory' }, { name: 'output.txt', type: 'file', size: 2048 }] },
+            query: { rows: [{ id: 1, content: incomingText.slice(0, 80), created_at: new Date().toISOString() }], rowCount: 1, query: 'SELECT * FROM documents LIMIT 5' },
+            insert_row: { success: true, insertedId: Math.floor(Math.random() * 1000), table: 'documents' },
+            run_inference: { output: incomingText.slice(0, 200), model: 'mistralai/Mistral-7B-Instruct-v0.1', tokens_used: Math.round(incomingText.length / 4) },
+            list_models: { models: ['mistralai/Mistral-7B-Instruct-v0.1', 'meta-llama/Llama-2-7b-chat-hf', 'google/gemma-2b-it'], total: 3 },
+            call_tool: { result: incomingText.slice(0, 300), toolName: selectedTool, server: creds.url || 'localhost:3001' }
+          };
+
+          const toolResult = mcpResult[selectedTool] || { result: `Executed ${selectedTool} successfully`, data: incomingText.slice(0, 200) };
+
+          inputPayload = { mcpRequest, serverType: serverKey, tool: selectedTool };
+          outputPayload = {
+            _simulated: true,
+            mcpServer: serverDef.label,
+            tool: selectedTool,
+            toolResult,
+            mcpRequest,
+            mcpResponse: { jsonrpc: '2.0', id: mcpRequest.id, result: { content: [{ type: 'text', text: JSON.stringify(toolResult, null, 2) }] } }
+          };
         } else if (node.type === 'webhook') {
           const msgToSend = inputPayload.in?.response || finalAgentResponseText || 'Automated message dispatched via webhook.';
           inputPayload = { message: msgToSend, targetChannel: node.config.channel || '#marketing' };
@@ -1426,6 +1659,12 @@ User Question: ${incomingQuery}`;
       case 'Sparkles': return <Sparkles size={size} style={{ color }} />;
       case 'Search': return <Search size={size} style={{ color }} />;
       case 'Download': return <Download size={size} style={{ color }} />;
+      case 'Shield': return <Shield size={size} style={{ color }} />;
+      case 'Globe': return <Globe size={size} style={{ color }} />;
+      case 'Mail': return <Mail size={size} style={{ color }} />;
+      case 'Workflow': return <Workflow size={size} style={{ color }} />;
+      case 'Server': return <Server size={size} style={{ color }} />;
+      case 'Eye': return <Eye size={size} style={{ color }} />;
       default: return <Cpu size={size} style={{ color }} />;
     }
   };
@@ -1853,6 +2092,9 @@ User Question: ${incomingQuery}`;
           <button onClick={() => handleAddNode('tool')} className="p-2 hover:bg-[#111213] rounded-xl text-blue-400 transition-all group relative" title="Add Tool">
             <Search size={16} />
           </button>
+          <button onClick={() => handleAddNode('mcp_tool')} className="p-2 hover:bg-[#111213] rounded-xl text-[#3C6B4D] transition-all group relative border border-[#3C6B4D]/30" title="Add MCP Tool Node">
+            <Shield size={16} />
+          </button>
           <button onClick={() => handleAddNode('export')} className="p-2 hover:bg-[#111213] rounded-xl text-amber-500 transition-all group relative" title="Add File Exporter">
             <Download size={16} />
           </button>
@@ -2078,6 +2320,7 @@ User Question: ${incomingQuery}`;
                 { type: 'llm', label: 'Local Ollama LLM', icon: 'Cpu', color: '#10A37F' },
                 { type: 'vector_store', label: 'Vector Store', icon: 'Layers', color: '#DC2626' },
                 { type: 'tool', label: 'Web Search Tool', icon: 'Search', color: '#2563EB' },
+                { type: 'mcp_tool', label: 'MCP Tool', icon: 'Shield', color: '#3C6B4D' },
                 { type: 'formatter', label: 'JSON Formatter', icon: 'Code', color: '#8B5CF6' },
                 { type: 'export', label: 'File Exporter', icon: 'Download', color: '#D97706' }
               ]
@@ -2110,6 +2353,143 @@ User Question: ${incomingQuery}`;
               <X size={14} />
             </button>
           </div>
+
+          {/* ── MCP TOOL CONFIG SECTION ── */}
+          {selectedNode.type === 'mcp_tool' && (() => {
+            const serverKey = (selectedNode.config.mcpServer || 'filesystem') as McpServerKey;
+            const serverDef = MCP_SERVER_CATALOG[serverKey];
+            return (
+              <div className="p-3 bg-[#111213] border border-[#3C6B4D]/50 rounded-xl space-y-3">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black text-[#3C6B4D] uppercase flex items-center gap-1.5">
+                    <Shield size={12} /> MCP Tool Configuration
+                  </span>
+                  <button
+                    onClick={() => { setMcpTutorialServer(serverKey); setShowMcpTutorial(true); }}
+                    className="text-[9px] font-bold text-[#3C6B4D] hover:text-emerald-400 flex items-center gap-1 border border-[#3C6B4D]/30 rounded-lg px-2 py-0.5 transition-all"
+                  >
+                    <Info size={10} /> Tutorial
+                  </button>
+                </div>
+
+                {/* MCP Server Selector */}
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold text-[#72706C] uppercase">MCP Server Type</label>
+                  <select
+                    value={serverKey}
+                    onChange={e => {
+                      const v = e.target.value as McpServerKey;
+                      updateActiveWorkflow(w => ({
+                        ...w,
+                        nodes: w.nodes.map(n => n.id === selectedNode.id ? {
+                          ...n,
+                          title: `MCP: ${MCP_SERVER_CATALOG[v].label}`,
+                          subtitle: `Tools: ${MCP_SERVER_CATALOG[v].tools.slice(0,2).join(', ')}...`,
+                          config: { ...n.config, mcpServer: v, selectedTool: MCP_SERVER_CATALOG[v].tools[0], credentials: {} }
+                        } : n)
+                      }));
+                    }}
+                    className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                  >
+                    {(Object.keys(MCP_SERVER_CATALOG) as McpServerKey[]).map(k => (
+                      <option key={k} value={k}>{MCP_SERVER_CATALOG[k].label}</option>
+                    ))}
+                  </select>
+                  <p className="text-[9px] text-[#72706C] leading-snug">{serverDef.description}</p>
+                </div>
+
+                {/* Tool Selector */}
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold text-[#72706C] uppercase">Selected Tool</label>
+                  <select
+                    value={selectedNode.config.selectedTool || serverDef.tools[0]}
+                    onChange={e => {
+                      const v = e.target.value;
+                      updateActiveWorkflow(w => ({
+                        ...w,
+                        nodes: w.nodes.map(n => n.id === selectedNode.id ? { ...n, config: { ...n.config, selectedTool: v } } : n)
+                      }));
+                    }}
+                    className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl px-2.5 py-1.5 text-xs font-mono text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                  >
+                    {serverDef.tools.map(t => (
+                      <option key={t} value={t}>{t}()</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Credential Fields */}
+                {serverDef.credentialFields.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-bold text-[#72706C] uppercase flex items-center gap-1">
+                      <Lock size={9} /> Credentials (stored locally only)
+                    </label>
+                    {serverDef.credentialFields.map(field => (
+                      <div key={field.key} className="space-y-0.5">
+                        <label className="text-[9px] text-[#A3A09B] font-bold">{field.label}</label>
+                        <div className="relative">
+                          <input
+                            type={field.type === 'password' && !showMcpCredPasswords[field.key] ? 'password' : 'text'}
+                            placeholder={field.placeholder}
+                            value={selectedNode.config.credentials?.[field.key] || ''}
+                            onChange={e => {
+                              const v = e.target.value;
+                              updateActiveWorkflow(w => ({
+                                ...w,
+                                nodes: w.nodes.map(n => n.id === selectedNode.id ? {
+                                  ...n,
+                                  config: { ...n.config, credentials: { ...(n.config.credentials || {}), [field.key]: v } }
+                                } : n)
+                              }));
+                            }}
+                            className="w-full bg-[#18191B] border border-[#2A2D30] rounded-xl px-2.5 py-1.5 text-[10px] font-mono text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] pr-7"
+                          />
+                          {field.type === 'password' && (
+                            <button
+                              onClick={() => setShowMcpCredPasswords(p => ({ ...p, [field.key]: !p[field.key] }))}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-[#72706C] hover:text-[#ECEBE9]"
+                            >
+                              {showMcpCredPasswords[field.key] ? <EyeOff size={11} /> : <Eye size={11} />}
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-[9px] text-[#72706C]">{field.hint}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* LLM Compat Warning */}
+                {mcpCompatWarning && (
+                  <div className="flex items-start gap-2 p-2 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+                    <AlertTriangle size={11} className="text-amber-400 shrink-0 mt-0.5" />
+                    <p className="text-[9px] text-amber-300 leading-snug">{mcpCompatWarning}</p>
+                  </div>
+                )}
+
+                {/* Available Tools Badge Row */}
+                <div>
+                  <label className="text-[9px] font-bold text-[#72706C] uppercase block mb-1">Available Tools</label>
+                  <div className="flex flex-wrap gap-1">
+                    {serverDef.tools.map(t => (
+                      <span key={t} className="text-[8px] font-mono px-1.5 py-0.5 rounded-md bg-[#18191B] border border-[#2A2D30] text-[#3C6B4D]">{t}()</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Docs Link */}
+                <a
+                  href={serverDef.docsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-[9px] text-[#3C6B4D] hover:text-emerald-400 font-bold transition-colors"
+                >
+                  <ExternalLink size={9} /> View {serverDef.label} MCP Docs
+                </a>
+              </div>
+            );
+          })()}
 
           {(selectedNode.type === 'document_upload' || selectedNode.type === 'trigger' || selectedNode.id.includes('doc') || selectedNode.title.toLowerCase().includes('document') || selectedNode.title.toLowerCase().includes('input') || selectedNode.config.fileName) && (
             <div className="p-3 bg-[#111213] border border-[#A855F7]/40 rounded-xl space-y-2">
@@ -2288,6 +2668,134 @@ User Question: ${incomingQuery}`;
           </div>
         </div>
       )}
+
+      {/* ── MCP TUTORIAL MODAL ── */}
+      {showMcpTutorial && (() => {
+        const serverDef = MCP_SERVER_CATALOG[mcpTutorialServer];
+        return (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+            <div className="w-full max-w-lg bg-[#18191B] border border-[#3C6B4D]/60 rounded-3xl shadow-2xl overflow-hidden">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-5 py-3.5 bg-[#111213] border-b border-[#2A2D30]">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/40">
+                    <Shield size={15} className="text-[#3C6B4D]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-[#ECEBE9]">MCP Setup Tutorial</p>
+                    <p className="text-[10px] text-[#72706C]">Model Context Protocol → {serverDef.label}</p>
+                  </div>
+                </div>
+                <button onClick={() => setShowMcpTutorial(false)} className="text-[#72706C] hover:text-[#ECEBE9]">
+                  <X size={15} />
+                </button>
+              </div>
+
+              {/* Server Tabs */}
+              <div className="flex overflow-x-auto px-4 pt-3 gap-1.5 border-b border-[#2A2D30] pb-0">
+                {(Object.keys(MCP_SERVER_CATALOG) as McpServerKey[]).map(k => (
+                  <button
+                    key={k}
+                    onClick={() => setMcpTutorialServer(k)}
+                    className={`text-[10px] font-bold px-3 py-1.5 rounded-t-xl border-b-2 transition-all shrink-0 ${
+                      mcpTutorialServer === k
+                        ? 'border-[#3C6B4D] text-[#ECEBE9] bg-[#111213]'
+                        : 'border-transparent text-[#72706C] hover:text-[#ECEBE9]'
+                    }`}
+                  >
+                    {MCP_SERVER_CATALOG[k].label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-5 space-y-4 max-h-[72vh] overflow-y-auto">
+                {/* Description */}
+                <div className="p-3 bg-[#111213] border border-[#3C6B4D]/30 rounded-xl">
+                  <p className="text-xs text-[#A3A09B] leading-relaxed">{serverDef.description}</p>
+                </div>
+
+                {/* Step-by-Step Guide */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-[#ECEBE9] uppercase tracking-wide">Setup Steps</p>
+                  {serverDef.setupSteps.map((step, i) => (
+                    <div key={i} className="flex items-start gap-3 p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl group hover:border-[#3C6B4D]/50 transition-colors">
+                      <div className="w-5 h-5 rounded-full bg-[#3C6B4D]/20 border border-[#3C6B4D]/50 text-[#3C6B4D] text-[9px] font-black flex items-center justify-center shrink-0">
+                        {i + 1}
+                      </div>
+                      <p className="text-[10px] text-[#A3A09B] leading-snug font-mono flex-1">{step}</p>
+                      <ChevronRight size={12} className="text-[#72706C] shrink-0 group-hover:text-[#3C6B4D] transition-colors" />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Credential Fields Preview */}
+                {serverDef.credentialFields.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-[#ECEBE9] uppercase tracking-wide">Required Credentials</p>
+                    {serverDef.credentialFields.map(f => (
+                      <div key={f.key} className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-0.5">
+                        <p className="text-[10px] font-bold text-[#3C6B4D]">{f.label}</p>
+                        <code className="text-[9px] font-mono text-[#72706C]">{f.placeholder}</code>
+                        <p className="text-[9px] text-[#A3A09B]">{f.hint}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Available Tools */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-[#ECEBE9] uppercase tracking-wide">Available MCP Tools</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {serverDef.tools.map(t => (
+                      <span key={t} className="text-[9px] font-mono px-2 py-1 rounded-lg bg-[#111213] border border-[#3C6B4D]/40 text-[#3C6B4D]">{t}()</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Compatible Models */}
+                <div className="p-3 bg-amber-500/5 border border-amber-500/20 rounded-xl space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <AlertTriangle size={11} className="text-amber-400" />
+                    <p className="text-[10px] font-black text-amber-300 uppercase">LLM Compatibility Requirement</p>
+                  </div>
+                  <p className="text-[9px] text-amber-200/80 leading-snug">
+                    MCP tool calling requires a model that supports JSON-schema function calling. Small models (llama3.2:1b, phi3:mini) may not work reliably.
+                  </p>
+                  <p className="text-[9px] font-black text-amber-300">Recommended compatible models:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {['mistral:7b', 'llama3.2:3b', 'qwen2.5-coder:7b', 'gemma2:9b', 'qwen2.5:14b'].map(m => (
+                      <span key={m} className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">{m}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Simulation Notice */}
+                <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Info size={11} className="text-blue-400" />
+                    <p className="text-[10px] font-black text-blue-300">Simulation Mode</p>
+                  </div>
+                  <p className="text-[9px] text-blue-200/70 leading-snug">
+                    In the browser demo, MCP tool calls return <strong>simulated JSON-RPC 2.0 responses</strong> matching the real MCP protocol schema.
+                    For live execution, run your local MCP server (shown in setup steps above) and connect to DomoDomo running locally.
+                  </p>
+                </div>
+
+                {/* Docs Link */}
+                <a
+                  href={serverDef.docsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#3C6B4D]/20 hover:bg-[#3C6B4D]/30 border border-[#3C6B4D]/50 rounded-xl text-xs font-bold text-[#3C6B4D] transition-all"
+                >
+                  <ExternalLink size={13} />
+                  Open {serverDef.label} Official Docs
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
