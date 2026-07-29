@@ -862,9 +862,15 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
     ctx.fill();
   }, [activeTab, trainingStep]);
 
+  const isOnlineWebHost = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
   // Handle Model Pull / Download
   const handleDownloadModel = async (modelName: string) => {
     if (!modelName.trim()) return;
+    if (isOnlineWebHost || ollamaStatus !== 'connected') {
+      setShowLocalGuideModal(true);
+      return;
+    }
     setDownloadingModelId(modelName);
     setDownloadProgress(5);
 
@@ -1577,7 +1583,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
         {/* ── LEFT SIDEBAR (DESKTOP) ── */}
         <aside
-          className={`hidden md:flex flex-col shrink-0 bg-[#18191B] border-r border-[#2A2D30] transition-all duration-300 ${
+          className={`max-md:!hidden md:flex flex-col shrink-0 bg-[#18191B] border-r border-[#2A2D30] transition-all duration-300 ${
             sidebarCollapsed ? 'w-14' : 'w-56'
           }`}
         >
@@ -2038,7 +2044,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
         )}
 
         {/* ── MAIN CONTENT ── */}
-        <main ref={mainContainerRef} className="flex-1 overflow-y-auto min-w-0">
+        <main ref={mainContainerRef} className="flex-1 overflow-y-auto min-w-0 w-full max-w-full">
 
           {/* Topbar inside content */}
           <div className="sticky top-0 z-30 bg-[#18191B] border-b border-[#2A2D30] px-4 md:px-6 h-11 flex items-center justify-between">
