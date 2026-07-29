@@ -22,6 +22,9 @@ import { aiService } from "../utils/aiService";
 import { LocalAISetupModal } from "../components/LocalAISetupModal";
 import { TransparentVideoMascot } from "../components/TransparentVideoMascot";
 import domoLaptopWebm from "../assets/domolaptop.webm";
+import betterGovLogo from "../assets/bettergovph.jpg";
+import upamateLogo from "../assets/upamate.png";
+import stageByAntLogo from "../assets/stagebyant.png";
 
 interface PlannedTool {
 	id: string;
