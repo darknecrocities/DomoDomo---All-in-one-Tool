@@ -41,11 +41,23 @@ import {
   Paperclip,
   GitCommit,
   EyeOff,
-  Lock
+  Lock,
+  Code,
+  Eye
 } from 'lucide-react';
 import { triggerBlobDownload } from '../utils/sharedHelpers';
 import { Logo } from '../components/Logo';
 import { N8nFlowCanvas } from '../tools/ai/components/N8nFlowCanvas';
+import { RagSearchStudio } from '../tools/ai/components/RagSearchStudio';
+import { PromptEngineeringLab } from '../tools/ai/components/PromptEngineeringLab';
+import { StructuredJsonExtractor } from '../tools/ai/components/StructuredJsonExtractor';
+import { FunctionCallingStudio } from '../tools/ai/components/FunctionCallingStudio';
+import { AIGuardrailsStudio } from '../tools/ai/components/AIGuardrailsStudio';
+import { CodePatchStudio } from '../tools/ai/components/CodePatchStudio';
+import { MultiModelRouter } from '../tools/ai/components/MultiModelRouter';
+import { KnowledgeGraphVisualizer } from '../tools/ai/components/KnowledgeGraphVisualizer';
+import { VisionInspectionStudio } from '../tools/ai/components/VisionInspectionStudio';
+import { HardwareQuantCalculator } from '../tools/ai/components/HardwareQuantCalculator';
 
 interface OllamaModel {
   name: string;
@@ -208,7 +220,11 @@ const DEFAULT_SETTINGS: AISettings = {
 };
 
 export const AIHubStudio = () => {
-  const [activeTab, setActiveTab] = useState<'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs'>('chat');
+  const [activeTab, setActiveTab] = useState<
+    'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs' |
+    'rag' | 'prompts' | 'extractor' | 'function-calling' | 'guardrails' |
+    'code-patch' | 'router' | 'knowledge-graph' | 'vision-studio' | 'quant-calc'
+  >('chat');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // AI Hub Settings State (Persisted in LocalStorage)
@@ -1667,49 +1683,183 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             </button>
           </nav>
 
-          {/* Divider + Train section */}
+          {/* Section: Train & Flow */}
           <div className="px-2 mt-1">
             {!sidebarCollapsed && (
-              <p className="text-[10px] font-bold text-[#2A2D30] uppercase tracking-widest px-1 mb-1">Train & Flow</p>
+              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Train &amp; Flow</p>
             )}
             <div className="flex flex-col gap-0.5">
               <button
                 onClick={() => setActiveTab('train')}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'train'
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
-                title="Fine-Tune"
+                title="Fine-Tune QLoRA Studio"
               >
-                <Wand2 size={15} className="shrink-0" />
-                {!sidebarCollapsed && <span>Fine-Tune</span>}
+                <Wand2 size={14} className="shrink-0" />
+                {!sidebarCollapsed && <span>Fine-Tune Studio</span>}
               </button>
 
               <button
                 onClick={() => setActiveTab('eval')}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'eval'
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
                 title="Eval Benchmarks"
               >
-                <BarChart2 size={15} className="shrink-0" />
+                <BarChart2 size={14} className="shrink-0" />
                 {!sidebarCollapsed && <span>Eval Benchmarks</span>}
               </button>
 
               <button
                 onClick={() => setActiveTab('workflow')}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'workflow'
                     ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
                     : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`}
                 title="Flow Automation"
               >
-                <Workflow size={15} className="shrink-0" />
+                <Workflow size={14} className="shrink-0" />
                 {!sidebarCollapsed && <span>Flow Automation</span>}
+              </button>
+            </div>
+          </div>
+
+          {/* Section: Data & Vectors */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Vector &amp; Data</p>
+            )}
+            <div className="flex flex-col gap-0.5">
+              <button
+                onClick={() => setActiveTab('rag')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'rag' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="RAG Vector Search Studio"
+              >
+                <Database size={14} className="shrink-0 text-purple-400" />
+                {!sidebarCollapsed && <span>RAG Search Studio</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('extractor')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'extractor' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Structured JSON Extractor"
+              >
+                <FileCode size={14} className="shrink-0 text-blue-400" />
+                {!sidebarCollapsed && <span>JSON Extractor</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('knowledge-graph')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'knowledge-graph' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Knowledge Graph Visualizer"
+              >
+                <Layers size={14} className="shrink-0 text-amber-400" />
+                {!sidebarCollapsed && <span>Knowledge Graph</span>}
+              </button>
+            </div>
+          </div>
+
+          {/* Section: Agent & Developer */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Agent &amp; Dev</p>
+            )}
+            <div className="flex flex-col gap-0.5">
+              <button
+                onClick={() => setActiveTab('prompts')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'prompts' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Prompt Engineering Lab"
+              >
+                <Wand2 size={14} className="shrink-0 text-emerald-400" />
+                {!sidebarCollapsed && <span>Prompt Lab</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('function-calling')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'function-calling' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Function Calling Studio"
+              >
+                <Zap size={14} className="shrink-0 text-amber-400" />
+                {!sidebarCollapsed && <span>Function Calling</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('code-patch')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'code-patch' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Code Refactoring & AI Patch"
+              >
+                <Code size={14} className="shrink-0 text-cyan-400" />
+                {!sidebarCollapsed && <span>Code AI Patch</span>}
+              </button>
+            </div>
+          </div>
+
+          {/* Section: Safety & System */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Safety &amp; Hardware</p>
+            )}
+            <div className="flex flex-col gap-0.5">
+              <button
+                onClick={() => setActiveTab('guardrails')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'guardrails' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="AI Guardrails Inspector"
+              >
+                <ShieldCheck size={14} className="shrink-0 text-rose-400" />
+                {!sidebarCollapsed && <span>AI Guardrails</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('router')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'router' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Multi-Model Router"
+              >
+                <Workflow size={14} className="shrink-0 text-teal-400" />
+                {!sidebarCollapsed && <span>Model Router</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('vision-studio')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'vision-studio' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Vision & Multimodal Studio"
+              >
+                <Eye size={14} className="shrink-0 text-indigo-400" />
+                {!sidebarCollapsed && <span>Vision Studio</span>}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('quant-calc')}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === 'quant-calc' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                title="Quantization & VRAM Calculator"
+              >
+                <Gauge size={14} className="shrink-0 text-[#3C6B4D]" />
+                {!sidebarCollapsed && <span>VRAM Calculator</span>}
               </button>
             </div>
           </div>
@@ -1820,27 +1970,57 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               </div>
 
               {/* Mobile Navigation Links */}
-              <nav className="flex flex-col gap-1.5 mt-3">
-                <button onClick={() => { handleNewChat(); setMobileMenuOpen(false); }} className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40">
-                  <Plus size={15} /> <span>New Chat</span>
+              <nav className="flex flex-col gap-1 mt-2 overflow-y-auto max-h-[70vh] pr-1">
+                <button onClick={() => { handleNewChat(); setMobileMenuOpen(false); }} className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40">
+                  <Plus size={14} /> <span>New Chat</span>
                 </button>
-                <button onClick={() => { setActiveTab('chat'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'chat' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <MessageSquare size={15} /> <span>Chat & Inference</span>
+                <button onClick={() => { setActiveTab('chat'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'chat' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <MessageSquare size={14} /> <span>Chat &amp; Inference</span>
                 </button>
-                <button onClick={() => { setActiveTab('library'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'library' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <FolderOpen size={15} /> <span>Model Library</span>
+                <button onClick={() => { setActiveTab('library'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'library' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <FolderOpen size={14} /> <span>Model Library</span>
                 </button>
-                <button onClick={() => { setActiveTab('train'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'train' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <Wand2 size={15} /> <span>Fine-Tune QLoRA</span>
+                <button onClick={() => { setActiveTab('train'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'train' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Wand2 size={14} /> <span>Fine-Tune QLoRA</span>
                 </button>
-                <button onClick={() => { setActiveTab('eval'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'eval' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <BarChart2 size={15} /> <span>Eval Benchmarks</span>
+                <button onClick={() => { setActiveTab('eval'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'eval' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <BarChart2 size={14} /> <span>Eval Benchmarks</span>
                 </button>
-                <button onClick={() => { setActiveTab('workflow'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'workflow' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <Workflow size={15} /> <span>Flow Automation</span>
+                <button onClick={() => { setActiveTab('workflow'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'workflow' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Workflow size={14} /> <span>Flow Automation</span>
                 </button>
-                <button onClick={() => { setActiveTab('docs'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'docs' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <Layers size={15} /> <span>Docs & Integration</span>
+                <button onClick={() => { setActiveTab('rag'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'rag' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Database size={14} className="text-purple-400" /> <span>RAG Search Studio</span>
+                </button>
+                <button onClick={() => { setActiveTab('extractor'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'extractor' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <FileCode size={14} className="text-blue-400" /> <span>JSON Extractor</span>
+                </button>
+                <button onClick={() => { setActiveTab('knowledge-graph'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'knowledge-graph' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Layers size={14} className="text-amber-400" /> <span>Knowledge Graph</span>
+                </button>
+                <button onClick={() => { setActiveTab('prompts'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'prompts' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Wand2 size={14} className="text-emerald-400" /> <span>Prompt Lab</span>
+                </button>
+                <button onClick={() => { setActiveTab('function-calling'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'function-calling' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Zap size={14} className="text-amber-400" /> <span>Function Calling</span>
+                </button>
+                <button onClick={() => { setActiveTab('code-patch'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold ${activeTab === 'code-patch' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Code size={14} className="text-cyan-400" /> <span>Code AI Patch</span>
+                </button>
+                <button onClick={() => { setActiveTab('guardrails'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'guardrails' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <ShieldCheck size={14} className="text-rose-400" /> <span>AI Guardrails</span>
+                </button>
+                <button onClick={() => { setActiveTab('router'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'router' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Workflow size={14} className="text-teal-400" /> <span>Model Router</span>
+                </button>
+                <button onClick={() => { setActiveTab('vision-studio'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'vision-studio' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Eye size={14} className="text-indigo-400" /> <span>Vision Studio</span>
+                </button>
+                <button onClick={() => { setActiveTab('quant-calc'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'quant-calc' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Gauge size={14} className="text-[#3C6B4D]" /> <span>VRAM Calculator</span>
+                </button>
+                <button onClick={() => { setActiveTab('docs'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'docs' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
+                  <Layers size={14} /> <span>Docs &amp; Integration</span>
                 </button>
               </nav>
 
@@ -1875,6 +2055,16 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 {activeTab === 'eval' && 'Test & Eval Benchmarks'}
                 {activeTab === 'workflow' && 'Local AI Flow Studio'}
                 {activeTab === 'docs' && 'Docs & Integration'}
+                {activeTab === 'rag' && 'RAG Vector Search Studio'}
+                {activeTab === 'prompts' && 'Prompt Engineering Lab'}
+                {activeTab === 'extractor' && 'Structured JSON Extractor'}
+                {activeTab === 'function-calling' && 'Function Calling Studio'}
+                {activeTab === 'guardrails' && 'AI Guardrails Inspector'}
+                {activeTab === 'code-patch' && 'Code Refactoring & AI Patch'}
+                {activeTab === 'router' && 'Multi-Model Router'}
+                {activeTab === 'knowledge-graph' && 'Knowledge Graph Visualizer'}
+                {activeTab === 'vision-studio' && 'Vision Inspection Studio'}
+                {activeTab === 'quant-calc' && 'Quantization & VRAM Calculator'}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -2658,6 +2848,87 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               </div>
             )}
 
+            {/* ── 10 NEW AI HUB TOOLS ── */}
+            {activeTab === 'rag' && (
+              <RagSearchStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'prompts' && (
+              <PromptEngineeringLab
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'extractor' && (
+              <StructuredJsonExtractor
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'function-calling' && (
+              <FunctionCallingStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'guardrails' && (
+              <AIGuardrailsStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'code-patch' && (
+              <CodePatchStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'router' && (
+              <MultiModelRouter
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'knowledge-graph' && (
+              <KnowledgeGraphVisualizer
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'vision-studio' && (
+              <VisionInspectionStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'quant-calc' && (
+              <HardwareQuantCalculator
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onDownloadModel={handleDownloadModel}
+              />
+            )}
 
           </div>
         </main>

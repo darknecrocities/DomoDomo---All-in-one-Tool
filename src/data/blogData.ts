@@ -13,6 +13,36 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ai-hub-16-tools-expansion-vision-downloader',
+    title: 'Announcing 16-Tool AI Hub Studio Expansion & Multimodal Vision Downloader',
+    excerpt: 'DomoDomo expands AI Hub Studio to 16 dynamic utilities featuring RAG Vector Search, Prompt Engineering Lab, Structured JSON Extractor, Function Calling Studio, AI Guardrails, Code Patch Refactoring, Multi-Model Router, Knowledge Graph Visualizer, Vision Inspection Studio with 1-Click Model Downloader, and VRAM Quantization Calculator.',
+    date: 'July 29, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'ai hub studio, local vision model downloader, llava vqa, rag vector search, prompt engineering lab, ai guardrails pii, function calling studio, code patch ast, domodomo',
+    content: `# Announcing 16-Tool AI Hub Studio Expansion & Multimodal Vision Downloader
+
+DomoDomo is excited to announce the **16-Tool AI Hub Studio Expansion** (\`/ai-hub\`), bringing 10 brand-new, 100% dynamic local AI utilities, an interactive Multimodal Vision Gallery with 1-click model downloading (\`/api/pull\`), and real-time HTML Canvas pixel image analytics!
+
+---
+
+## 🚀 10 New Interactive Local AI Tools Introduced
+
+Each new AI Hub tool operates 100% client-side with optional local Ollama HTTP API streaming:
+
+1. **RAG Vector Search Studio**: Upload documents (.txt, .md, .csv, .json), configure TF-IDF vector chunking strategies, inspect cosine distance matrix rankings, and export chunk stores.
+2. **Prompt Engineering Lab**: Design system personas, parse dynamic \`{{variable}}\` template tags on-the-fly, manage few-shot example pairs, and stream local Ollama executions.
+3. **Structured JSON Extractor**: Convert unstructured text into verified JSON using 3 schema presets, custom field type validators, and local Ollama \`format: "json"\` mode.
+4. **Function Calling Studio**: Register custom agent tools, simulate multi-step tool invocation loops, execute sandbox math/timestamp functions, and inspect execution trace timelines.
+5. **AI Guardrails Inspector**: Audit text for 8 PII categories (Emails, Phones, Credit Cards, IP addresses, API Secret Keys), apply custom redaction masks (\`[REDACTED]\`), and detect jailbreak prompt injection risks.
+6. **Code Refactoring & AI Patch**: Apply 5 refactor modes (ES6+, Security, TypeScript, Unit Tests, Optimization) using client-side AST transformation, view git diffs, and export \`.ts\` code patches.
+7. **Multi-Model Router**: Classify user intent with keyword weight matrices, configure custom routing rules, and simulate multi-model ensemble voting.
+8. **Knowledge Graph Visualizer**: Extract entity-relationship triples from text logs, view interactive SVG node-link graphs, filter categories, and create custom nodes.
+9. **Vision Inspection Studio & 1-Click Model Downloader**: Inspect screenshots, wireframes, and photos with local Llava models. Features a built-in Vision Model Gallery with 1-click model pulling (\`/api/pull\`) and dynamic HTML Canvas pixel analytics (resolution, aspect ratio, luminance theme, dominant hex palette).
+10. **Quantization & VRAM Calculator**: Profile model RAM/VRAM requirements across 7 model families and 6 hardware setups (Apple Silicon M1-M4, NVIDIA RTX), with recommended \`--n-gpu-layers\` offload calculations.`
+  },
+  {
     slug: 'ai-hub-studio-unsloth-flow-release',
     title: 'Introducing AI Hub Studio: n8n Flow Automation, Fine-Tune Studio & Local LLM Workspace',
     excerpt: 'DomoDomo releases AI Hub Studio with n8n-style visual node graph automation, curved Bezier port wiring, multi-workflow management, live chat console, node execution logs JSON inspector, ChatGPT-style chat, Fine-Tune QLoRA recipe builder, and dual-model benchmarks.',

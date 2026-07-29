@@ -629,7 +629,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.0.0 (Latest)",
+                    version: "v2.2.0 (Latest)",
+                    date: "July 29, 2026",
+                    title: "16-Tool AI Hub Studio Expansion & Multimodal Vision Downloader",
+                    changes: [
+                      "10 New Dynamic AI Hub Tools: Added RAG Vector Search Studio (TF-IDF vector matching), Prompt Engineering Lab (live {{variable}} parser), Structured JSON Extractor, Function Calling Studio (sandbox trace execution), AI Guardrails Inspector (8 PII categories & jailbreak blocker), Code Patch Studio (5 refactor modes & git patch exporter), Multi-Model Router (intent classification matrix), Knowledge Graph Visualizer (text-to-triple SVG graph), Vision Inspection Studio, and Quantization VRAM Calculator.",
+                      "Multimodal Vision Models Gallery & Downloader: Integrated 1-click model pulling (/api/pull) directly inside Vision Studio featuring Llava, Llama 3.2 Vision, BakLlava, and Moondream with real-time download progress tracking.",
+                      "Real HTML Canvas Image Analytics: Vision Studio computes dynamic image dimensions, aspect ratio, theme luminance score (Dark vs Light UI), layout complexity rating, and dominant hex pixel color palettes 100% client-side."
+                    ]
+                  },
+                  {
+                    version: "v2.0.0",
                     date: "July 28, 2026",
                     title: "n8n Visual Flow Automation, AI Hub Expansion & Fine-Tune Studio",
                     changes: [
