@@ -1,5 +1,17 @@
 [
   {
+    "hash": "9b47c25",
+    "date": "2026-07-29",
+    "author": "darknecrocities",
+    "message": "feat: add 5 new production workflow templates to Local AI Flow Studio"
+  },
+  {
+    "hash": "0abdf63",
+    "date": "2026-07-29",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "86fb39f",
     "date": "2026-07-29",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-29",
     "author": "darknecrocities",
     "message": "feat: expand AI Hub Studio with 10 interactive tools and vision model downloader"
-  },
-  {
-    "hash": "41177c8",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "097413d",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "feat: AI Hub responsive mobile drawer and locked button states"
   }
 ]
