@@ -318,7 +318,334 @@ const PRESET_WORKFLOWS: WorkflowPreset[] = [
       { id: 'c6', fromNodeId: 'n-vectortool', fromPortId: 'out', toNodeId: 'n-agent', toPortId: 'tool', label: 'Tool' },
       { id: 'c7', fromNodeId: 'n-qdrant', fromPortId: 'out', toNodeId: 'n-vectortool', toPortId: 'vector_store', label: 'Vector Store' },
       { id: 'c8', fromNodeId: 'n-embeddings', fromPortId: 'out', toNodeId: 'n-qdrant', toPortId: 'embedding', label: 'Embeddings' },
-      { id: 'c9', fromNodeId: 'n-llm2', fromPortId: 'out', toNodeId: 'n-vectortool', toPortId: 'in', label: 'Model' }
+      { id: 'c9', fromNodeId: 'n-llm2', fromPortId: 'out', toNodeId: 'n-qdrant', toPortId: 'embedding', label: 'Model' }
+    ]
+  },
+  {
+    id: 'code-review-agent',
+    name: 'AI Code Review & AST Audit Agent',
+    tag: 'developer',
+    description: 'Automated GitHub PR scanner that analyzes code syntax, detects security vulnerabilities, and generates refactoring patches.',
+    active: true,
+    nodes: [
+      {
+        id: 'cr-trig',
+        type: 'trigger',
+        title: 'GitHub PR Webhook',
+        subtitle: 'event: pull_request.opened',
+        category: 'Triggers',
+        iconName: 'Zap',
+        color: '#E05D52',
+        x: 80,
+        y: 200,
+        status: 'completed',
+        config: { repository: 'main-repo', event: 'pr_opened' },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'PR Payload', type: 'output', label: '1 diff' }]
+      },
+      {
+        id: 'cr-agent',
+        type: 'agent',
+        title: 'AST Refactor & Security Guard',
+        subtitle: 'Code Auditor Agent',
+        category: 'Agents',
+        iconName: 'Bot',
+        color: '#3C6B4D',
+        x: 420,
+        y: 200,
+        status: 'completed',
+        config: { systemPrompt: 'Scan pull request diffs for security bugs, memory leaks, and missing TypeScript types.', temperature: 0.2 },
+        inputs: [
+          { id: 'in', name: 'PR Payload', type: 'input', label: '1 diff' },
+          { id: 'model', name: 'Coder Model', type: 'model', label: 'Model' }
+        ],
+        outputs: [{ id: 'out', name: 'Audit Report', type: 'output', label: '1 report' }]
+      },
+      {
+        id: 'cr-model',
+        type: 'llm',
+        title: 'Qwen 2.5 Coder Model',
+        subtitle: 'qwen2.5-coder:1.5b',
+        category: 'Models',
+        iconName: 'Cpu',
+        color: '#10A37F',
+        x: 340,
+        y: 420,
+        status: 'completed',
+        config: { model: 'qwen2.5-coder:1.5b', temperature: 0.1 },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Coder Model', type: 'model', label: 'Model' }]
+      },
+      {
+        id: 'cr-comment',
+        type: 'webhook',
+        title: 'GitHub PR Commenter',
+        subtitle: 'post: issue_comment',
+        category: 'Integrations',
+        iconName: 'Code',
+        color: '#059669',
+        x: 760,
+        y: 200,
+        status: 'completed',
+        config: { target: 'github_comments' },
+        inputs: [{ id: 'in', name: 'Audit Report', type: 'input', label: '1 report' }],
+        outputs: []
+      }
+    ],
+    connections: [
+      { id: 'crc1', fromNodeId: 'cr-trig', fromPortId: 'out', toNodeId: 'cr-agent', toPortId: 'in', label: '1 diff' },
+      { id: 'crc2', fromNodeId: 'cr-model', fromPortId: 'out', toNodeId: 'cr-agent', toPortId: 'model', label: 'Model' },
+      { id: 'crc3', fromNodeId: 'cr-agent', fromPortId: 'out', toNodeId: 'cr-comment', toPortId: 'in', label: '1 report' }
+    ]
+  },
+  {
+    id: 'pii-guardrail-pipeline',
+    name: 'Real-Time PII & Secret Redaction Guard',
+    tag: 'security',
+    description: 'Intercepts user prompts, redacts emails, secret API keys, and credit cards before passing payloads to local LLMs.',
+    active: true,
+    nodes: [
+      {
+        id: 'pii-trig',
+        type: 'trigger',
+        title: 'Client Prompt Interceptor',
+        subtitle: 'HTTP REST / WebSocket',
+        category: 'Triggers',
+        iconName: 'Zap',
+        color: '#E05D52',
+        x: 80,
+        y: 180,
+        status: 'completed',
+        config: { endpoint: '/api/chat/intercept' },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Raw Prompt', type: 'output', label: 'Text' }]
+      },
+      {
+        id: 'pii-guard',
+        type: 'tool',
+        title: 'PII & Secret Sanitizer',
+        subtitle: '8 Category Regex Scanner',
+        category: 'Tools',
+        iconName: 'Shield',
+        color: '#E11D48',
+        x: 400,
+        y: 180,
+        status: 'completed',
+        config: { mask: '[REDACTED]', categories: ['Email', 'API_Key', 'Credit_Card'] },
+        inputs: [{ id: 'in', name: 'Raw Prompt', type: 'input', label: 'Text' }],
+        outputs: [{ id: 'out', name: 'Sanitized Text', type: 'output', label: 'Clean Text' }]
+      },
+      {
+        id: 'pii-llm',
+        type: 'llm',
+        title: 'Local Llama 3.2 Model',
+        subtitle: 'llama3.2:1b',
+        category: 'Models',
+        iconName: 'Cpu',
+        color: '#10A37F',
+        x: 740,
+        y: 180,
+        status: 'completed',
+        config: { model: 'llama3.2:1b', temperature: 0.5 },
+        inputs: [{ id: 'in', name: 'Sanitized Text', type: 'input', label: 'Clean Text' }],
+        outputs: [{ id: 'out', name: 'Safe AI Response', type: 'output', label: 'Output' }]
+      }
+    ],
+    connections: [
+      { id: 'piic1', fromNodeId: 'pii-trig', fromPortId: 'out', toNodeId: 'pii-guard', toPortId: 'in', label: 'Text' },
+      { id: 'piic2', fromNodeId: 'pii-guard', fromPortId: 'out', toNodeId: 'pii-llm', toPortId: 'in', label: 'Clean Text' }
+    ]
+  },
+  {
+    id: 'vision-ocr-inspection',
+    name: 'Multimodal Vision OCR & UI Inspector',
+    tag: 'vision',
+    description: 'Ingests UI screenshots, extracts text via local Llava models, and computes Canvas pixel color palettes & layout theme metrics.',
+    active: true,
+    nodes: [
+      {
+        id: 'vis-doc',
+        type: 'document_upload',
+        title: 'UI Screenshot Ingestion',
+        subtitle: 'Image Dropzone (.png, .jpg)',
+        category: 'Data Ingestion',
+        iconName: 'Eye',
+        color: '#A855F7',
+        x: 80,
+        y: 190,
+        status: 'completed',
+        config: { fileName: 'dashboard_screenshot.png' },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Image Canvas Payload', type: 'output', label: 'Image' }]
+      },
+      {
+        id: 'vis-analyzer',
+        type: 'agent',
+        title: 'Canvas Metric Extractor',
+        subtitle: 'Llava 7B VQA Engine',
+        category: 'Agents',
+        iconName: 'Bot',
+        color: '#3C6B4D',
+        x: 440,
+        y: 190,
+        status: 'completed',
+        config: { systemPrompt: 'Analyze layout structure, luminance contrast, and OCR text in the provided UI screenshot.' },
+        inputs: [
+          { id: 'in', name: 'Image Canvas Payload', type: 'input', label: 'Image' },
+          { id: 'model', name: 'Vision Model', type: 'model', label: 'Model' }
+        ],
+        outputs: [{ id: 'out', name: 'UI Metric Report', type: 'output', label: 'JSON' }]
+      },
+      {
+        id: 'vis-model',
+        type: 'llm',
+        title: 'Llava 7B Multimodal Model',
+        subtitle: 'llava:7b',
+        category: 'Models',
+        iconName: 'Cpu',
+        color: '#10A37F',
+        x: 360,
+        y: 410,
+        status: 'completed',
+        config: { model: 'llava:7b', temperature: 0.2 },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Vision Model', type: 'model', label: 'Model' }]
+      },
+      {
+        id: 'vis-export',
+        type: 'export',
+        title: 'Theme JSON Exporter',
+        subtitle: 'export: ui_metrics.json',
+        category: 'Export',
+        iconName: 'Download',
+        color: '#059669',
+        x: 780,
+        y: 190,
+        status: 'completed',
+        config: { format: 'json' },
+        inputs: [{ id: 'in', name: 'UI Metric Report', type: 'input', label: 'JSON' }],
+        outputs: []
+      }
+    ],
+    connections: [
+      { id: 'visc1', fromNodeId: 'vis-doc', fromPortId: 'out', toNodeId: 'vis-analyzer', toPortId: 'in', label: 'Image' },
+      { id: 'visc2', fromNodeId: 'vis-model', fromPortId: 'out', toNodeId: 'vis-analyzer', toPortId: 'model', label: 'Model' },
+      { id: 'visc3', fromNodeId: 'vis-analyzer', fromPortId: 'out', toNodeId: 'vis-export', toPortId: 'in', label: 'JSON' }
+    ]
+  },
+  {
+    id: 'multi-model-router-flow',
+    name: 'Multi-Model Intent Router & Ensemble',
+    tag: 'router',
+    description: 'Evaluates input intent and routes coding prompts to Qwen Coder, logic prompts to DeepSeek Reasoner, and chat to Llama 3.2.',
+    active: true,
+    nodes: [
+      {
+        id: 'rt-in',
+        type: 'trigger',
+        title: 'User Prompt Payload',
+        subtitle: 'API Payload Trigger',
+        category: 'Triggers',
+        iconName: 'Zap',
+        color: '#E05D52',
+        x: 80,
+        y: 200,
+        status: 'completed',
+        config: { prompt: 'Write a TypeScript function to calculate cosine similarity.' },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Raw Query', type: 'output', label: 'Prompt' }]
+      },
+      {
+        id: 'rt-[#classifier]',
+        type: 'tool',
+        title: 'Intent Classifier Matrix',
+        subtitle: 'Keyword & Category Router',
+        category: 'Tools',
+        iconName: 'Workflow',
+        color: '#0D9488',
+        x: 400,
+        y: 200,
+        status: 'completed',
+        config: { rules: ['Coding -> Qwen', 'Math -> DeepSeek', 'General -> Llama'] },
+        inputs: [{ id: 'in', name: 'Raw Query', type: 'input', label: 'Prompt' }],
+        outputs: [{ id: 'out', name: 'Routed Query', type: 'output', label: 'Routed Prompt' }]
+      },
+      {
+        id: 'rt-exec',
+        type: 'agent',
+        title: 'Specialized LLM Executor',
+        subtitle: 'Ensemble AI Runner',
+        category: 'Agents',
+        iconName: 'Bot',
+        color: '#3C6B4D',
+        x: 740,
+        y: 200,
+        status: 'completed',
+        config: { selectedModel: 'qwen2.5-coder:1.5b' },
+        inputs: [{ id: 'in', name: 'Routed Query', type: 'input', label: 'Routed Prompt' }],
+        outputs: [{ id: 'out', name: 'Final Answer', type: 'output', label: 'Response' }]
+      }
+    ],
+    connections: [
+      { id: 'rtc1', fromNodeId: 'rt-in', fromPortId: 'out', toNodeId: 'rt-[#classifier]', toPortId: 'in', label: 'Prompt' },
+      { id: 'rtc2', fromNodeId: 'rt-[#classifier]', fromPortId: 'out', toNodeId: 'rt-exec', toPortId: 'in', label: 'Routed Prompt' }
+    ]
+  },
+  {
+    id: 'knowledge-graph-extractor-flow',
+    name: 'Knowledge Graph Triple Extraction Flow',
+    tag: 'knowledge',
+    description: 'Parses unstructured technical text into subject-predicate-object triples and renders interactive SVG entity-relationship graphs.',
+    active: true,
+    nodes: [
+      {
+        id: 'kg-doc',
+        type: 'document_upload',
+        title: 'Document Reader Node',
+        subtitle: 'Text Ingestion (.txt, .md)',
+        category: 'Data Ingestion',
+        iconName: 'FileText',
+        color: '#A855F7',
+        x: 80,
+        y: 190,
+        status: 'completed',
+        config: { fileName: 'architecture_specs.txt' },
+        inputs: [],
+        outputs: [{ id: 'out', name: 'Document Text', type: 'output', label: 'Text' }]
+      },
+      {
+        id: 'kg-extractor',
+        type: 'agent',
+        title: 'Entity-Relation Extractor',
+        subtitle: 'Triple Generation Agent',
+        category: 'Agents',
+        iconName: 'Bot',
+        color: '#3C6B4D',
+        x: 420,
+        y: 190,
+        status: 'completed',
+        config: { systemPrompt: 'Extract entity-relationship triples in format: Subject -> Relation -> Object.' },
+        inputs: [{ id: 'in', name: 'Document Text', type: 'input', label: 'Text' }],
+        outputs: [{ id: 'out', name: 'Graph Triples', type: 'output', label: 'Triples' }]
+      },
+      {
+        id: 'kg-render',
+        type: 'tool',
+        title: 'SVG Graph Visualizer',
+        subtitle: 'Node-Link Renderer',
+        category: 'Tools',
+        iconName: 'Layers',
+        color: '#D97706',
+        x: 760,
+        y: 190,
+        status: 'completed',
+        config: { renderMode: 'svg_canvas' },
+        inputs: [{ id: 'in', name: 'Graph Triples', type: 'input', label: 'Triples' }],
+        outputs: []
+      }
+    ],
+    connections: [
+      { id: 'kgc1', fromNodeId: 'kg-doc', fromPortId: 'out', toNodeId: 'kg-extractor', toPortId: 'in', label: 'Text' },
     ]
   }
 ];
