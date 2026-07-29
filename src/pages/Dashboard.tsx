@@ -20,10 +20,8 @@ import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
 import { aiService } from "../utils/aiService";
 import { LocalAISetupModal } from "../components/LocalAISetupModal";
-import betterGovLogo from "../assets/bettergovph.jpg";
-import upamateLogo from "../assets/upamate.png";
-import stageByAntLogo from "../assets/stagebyant.png";
 import { TransparentVideoMascot } from "../components/TransparentVideoMascot";
+import domoLaptopWebm from "../assets/domolaptop.webm";
 
 interface PlannedTool {
 	id: string;
@@ -2264,195 +2262,6 @@ export const Dashboard = () => {
 				<div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
 
 				<div className="lg:col-span-7 flex flex-col gap-4 text-left z-10 justify-center">
-					<div className="flex flex-wrap gap-3 items-center">
-						{/* App Builders PH #1 All Time Overall Badge */}
-						<a
-							href="https://www.appbuildersph.com/apps/domodomo"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="gold-shining-border inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/badge w-fit"
-							title="#1 All Time Overall on App Builders PH"
-						>
-							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
-								<svg
-									width="32"
-									height="32"
-									viewBox="0 0 32 32"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="drop-shadow"
-								>
-									{/* Ribbons */}
-									<path d="M10 18L6 28L12 26L15 20" fill="#d4af37" />
-									<path d="M22 18L26 28L20 26L17 20" fill="#aa7c11" />
-									{/* Medal Outer Circle */}
-									<circle
-										cx="16"
-										cy="14"
-										r="10"
-										fill="url(#goldGradient)"
-										stroke="#d4af37"
-										strokeWidth="0.5"
-									/>
-									{/* Medal Inner Circle */}
-									<circle
-										cx="16"
-										cy="14"
-										r="7.5"
-										fill="url(#goldInnerGradient)"
-									/>
-									{/* Number 1 */}
-									<text
-										x="16"
-										y="17.5"
-										fontFamily="system-ui, -apple-system, sans-serif"
-										fontSize="10.5"
-										fontWeight="800"
-										fill="#ffffff"
-										textAnchor="middle"
-									>
-										1
-									</text>
-									<defs>
-										<linearGradient
-											id="goldGradient"
-											x1="6"
-											y1="4"
-											x2="26"
-											y2="24"
-											gradientUnits="userSpaceOnUse"
-										>
-											<stop offset="0%" stopColor="#ffe066" />
-											<stop offset="50%" stopColor="#d4af37" />
-											<stop offset="100%" stopColor="#aa7c11" />
-										</linearGradient>
-										<linearGradient
-											id="goldInnerGradient"
-											x1="9"
-											y1="7"
-											x2="23"
-											y2="21"
-											gradientUnits="userSpaceOnUse"
-										>
-											<stop offset="0%" stopColor="#fff2a3" />
-											<stop offset="100%" stopColor="#b8860b" />
-										</linearGradient>
-									</defs>
-								</svg>
-							</div>
-							<div className="flex flex-col text-left leading-tight">
-								<span className="text-[9px] tracking-wider text-[#d4af37]/80 font-bold uppercase">
-									AppBuilders PH
-								</span>
-								<span className="text-xs font-extrabold text-[#d4af37] group-hover/badge:text-[#ECEBE9] transition-colors">
-									#1 All Time Overall
-								</span>
-							</div>
-						</a>
-
-						{/* #1 in AI Category Badge */}
-						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
-							title="#1 Product in AI & Local LLM Category"
-						>
-							<Cpu size={15} className="text-[#3C6B4D]" />
-							<span>#1 in AI Category</span>
-						</div>
-
-						{/* #1 in Productivity Badge */}
-						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
-							title="#1 Product in Productivity Category"
-						>
-							<Trophy size={15} className="text-[#3C6B4D]" />
-							<span>#1 in Productivity</span>
-						</div>
-
-						{/* #1 in Developer Tools Badge */}
-						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
-							title="#1 Product in Developer Tools Category"
-						>
-							<Award size={15} className="text-[#3C6B4D]" />
-							<span>#1 in Developer Tools</span>
-						</div>
-
-						{/* BetterGov PH */}
-						<a
-							href="https://bettergov.ph"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
-							title="Featured on BetterGov PH"
-						>
-							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
-								<img
-									src={betterGovLogo}
-									alt="BetterGov PH Logo"
-									className="w-8 h-8 object-contain rounded-md"
-								/>
-							</div>
-							<div className="flex flex-col text-left leading-tight">
-								<span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
-									As Featured on
-								</span>
-								<span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-[#4E8E5E] transition-colors">
-									BetterGov.ph
-								</span>
-							</div>
-						</a>
-
-						{/* Upamate Featured Badge */}
-						<a
-							href="https://www.facebook.com/share/p/1G5PGJFuYE/"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/upamate w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
-							title="As Featured on Upamate"
-						>
-							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
-								<img
-									src={upamateLogo}
-									alt="Upamate Logo"
-									className="w-8 h-8 object-contain rounded-md"
-								/>
-							</div>
-							<div className="flex flex-col text-left leading-tight">
-								<span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
-									As Featured on
-								</span>
-								<span className="text-xs font-extrabold text-[#ECEBE9] group-hover/upamate:text-[#4E8E5E] transition-colors">
-									Upamate
-								</span>
-							</div>
-						</a>
-
-						{/* Stage by Ant Featured Badge */}
-						<a
-							href="https://stage.byant.dev/p/domodomo"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl transition-all shadow-md group/stagebyant w-fit border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 hover:bg-[#18191B]"
-							title="Featured Pick on Stage by Ant"
-						>
-							<div className="relative flex items-center justify-center shrink-0 w-8 h-8">
-								<img
-									src={stageByAntLogo}
-									alt="Stage by Ant Logo"
-									className="w-8 h-8 object-contain rounded-md"
-								/>
-							</div>
-							<div className="flex flex-col text-left leading-tight">
-								<span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
-									Featured Pick on
-								</span>
-								<span className="text-xs font-extrabold text-[#ECEBE9] group-hover/stagebyant:text-[#4E8E5E] transition-colors">
-									Stage by Ant
-								</span>
-							</div>
-						</a>
-					</div>
-
 					<div className="flex flex-wrap gap-2">
 						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
 							<Globe size={12} />
@@ -2603,13 +2412,14 @@ export const Dashboard = () => {
 
 					{/* Animated Mascot Video Overlay — upper body overlaps bottom-right corner, clickable for cute popup */}
 					<div
-						className="absolute right-0 z-30"
-						style={{ bottom: '-60px' }}
+						className="absolute -right-4 md:-right-6 z-30 pointer-events-auto"
+						style={{ bottom: '-55px' }}
 					>
 						<TransparentVideoMascot
-							src="/domotap2.mp4"
-							className="w-44 h-44 md:w-56 md:h-56 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+							src={domoLaptopWebm}
+							className="w-48 h-48 md:w-60 md:h-60 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
 							clickable={true}
+							isNativeTransparent={true}
 						/>
 					</div>
 				</div>
