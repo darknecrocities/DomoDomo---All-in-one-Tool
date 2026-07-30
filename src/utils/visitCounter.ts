@@ -66,41 +66,18 @@ export function useVisitCounter(trackClicks: boolean = true) {
     return getStoredVisitCount();
   });
 
-  // Real-time API counter sync function (supports Upstash Redis REST or Counter API)
+  // Real-time API counter sync function connecting to CounterAPI.dev
   const syncGlobalCounter = useCallback(async (isNewSession: boolean) => {
-    const upstashUrl = import.meta.env.VITE_UPSTASH_REDIS_REST_URL;
-    const upstashToken = import.meta.env.VITE_UPSTASH_REDIS_REST_TOKEN;
+    const counterApiKey = import.meta.env.VITE_COUNTER_API_KEY || 'ut_Ck0B5fOlx0MTc3zvK0M79QJNfPwInkNcEsjjcvZ7';
 
-    // 1. Try Upstash Redis REST API if URL and Token are configured
-    if (upstashUrl && upstashToken && !upstashUrl.includes('your-database-id')) {
-      try {
-        const endpoint = isNewSession ? `${upstashUrl}/incr/domodomo_visits` : `${upstashUrl}/get/domodomo_visits`;
-        const res = await fetch(endpoint, {
-          headers: { Authorization: `Bearer ${upstashToken}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const rawResult = typeof data.result === 'number' ? data.result : parseInt(data.result, 10);
-          if (!isNaN(rawResult)) {
-            const baseOffset = INITIAL_BASE_COUNT - 1;
-            const liveTotal = baseOffset + rawResult;
-            const updated = setStoredVisitCount(liveTotal);
-            setCount(updated);
-            return;
-          }
-        }
-      } catch (err) {
-        console.warn('Upstash Redis sync error, trying secondary Counter API:', err);
-      }
-    }
-
-    // 2. Secondary default Counter API
     try {
-      const url = isNewSession ? COUNTER_API_UP : COUNTER_API_READ;
+      const baseUrl = isNewSession ? COUNTER_API_UP : COUNTER_API_READ;
+      const url = `${baseUrl}?token=${encodeURIComponent(counterApiKey)}`;
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         if (data && typeof data.count === 'number') {
+          // Add API remote count to base count (starting at 8,172)
           const baseOffset = INITIAL_BASE_COUNT - 1;
           const liveTotal = baseOffset + data.count;
           const updated = setStoredVisitCount(liveTotal);
@@ -109,10 +86,10 @@ export function useVisitCounter(trackClicks: boolean = true) {
         }
       }
     } catch (err) {
-      console.warn('Counter API sync offline or unreachable, using local fallback:', err);
+      console.warn('CounterAPI sync offline or unreachable, using local fallback:', err);
     }
 
-    // 3. Fallback if network requests fail
+    // Fallback if network requests fail
     if (isNewSession) {
       const updated = incrementVisitCount(1);
       setCount(updated);
