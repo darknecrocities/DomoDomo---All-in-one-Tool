@@ -5,6 +5,7 @@ interface TransparentVideoMascotProps {
   className?: string;
   clickable?: boolean;
   isNativeTransparent?: boolean;
+  objectFit?: 'contain' | 'cover' | 'fill';
 }
 
 const CUTE_MESSAGES = [
@@ -36,6 +37,7 @@ export const TransparentVideoMascot = ({
   className = '',
   clickable = true,
   isNativeTransparent = false,
+  objectFit = 'contain',
 }: TransparentVideoMascotProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -253,12 +255,12 @@ export const TransparentVideoMascot = ({
         muted
         playsInline
         crossOrigin="anonymous"
-        className={useNative ? "w-full h-full object-contain pointer-events-none" : "hidden"}
+        className={useNative ? `w-full h-full object-${objectFit} pointer-events-none` : "hidden"}
       />
       {!useNative && (
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-contain pointer-events-none"
+          className={`w-full h-full object-${objectFit} pointer-events-none`}
         />
       )}
     </div>

@@ -1,84 +1,61 @@
 import { useState, useEffect } from 'react';
-import { PixelDomo } from './PixelDomo';
+import { TransparentVideoMascot } from './TransparentVideoMascot';
+import welcomeDomo from '../assets/welcome_domo.mp4';
 
 export const DoorSplash = () => {
-  const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'gone'>('walk');
-  const [walkOffset, setWalkOffset] = useState(-20); // starts off-screen left
-  const [frameToggle, setFrameToggle] = useState(false);
-  const [knockCount, setKnockCount] = useState(0);
+  const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>('walk');
 
   useEffect(() => {
-    // 1. Walk movement ticker
-    const walkInterval = setInterval(() => {
-      setWalkOffset(prev => {
-        if (prev >= 50) {
-          clearInterval(walkInterval);
-          return 50;
-        }
-        return prev + 1.5; // smooth walk increment
-      });
-    }, 40);
+    let fadeStartTimeout: NodeJS.Timeout;
+    let openStartTimeout: NodeJS.Timeout;
+    let revealStartTimeout: NodeJS.Timeout;
+    let goneTimeout: NodeJS.Timeout;
 
-    // 2. Animation sprite toggler (frame-by-frame)
-    const animInterval = setInterval(() => {
-      setFrameToggle(prev => !prev);
-    }, 150);
-
-    // 3. Stage transition timers
-    const knockStartTimeout = setTimeout(() => {
-      setAnimStage('knock');
-    }, 2000);
-
-    // Knock counter timer to show visual knock hits
-    const knockHitInterval = setInterval(() => {
-      setKnockCount(prev => (prev < 3 ? prev + 1 : 3));
-    }, 450);
-
-    const waveStartTimeout = setTimeout(() => {
-      clearInterval(knockHitInterval);
-      setAnimStage('wave');
-    }, 3800);
-
-    const fadeStartTimeout = setTimeout(() => {
+    // Start video animation triggers
+    // 1. Fade out mascot starts at 5.5s (after walk-in and wave are complete in video)
+    fadeStartTimeout = setTimeout(() => {
       setAnimStage('fade-out');
-    }, 5600);
+    }, 5500);
 
-    const openStartTimeout = setTimeout(() => {
+    // 2. Door opens at 6.0s (0.5s after mascot starts fading)
+    openStartTimeout = setTimeout(() => {
       setAnimStage('door-open');
-    }, 6100);
+    }, 6000);
 
-    const goneTimeout = setTimeout(() => {
+    // 3. Reveal starts at 6.7s (doors almost fully open)
+    revealStartTimeout = setTimeout(() => {
+      setAnimStage('reveal');
+    }, 6700);
+
+    // 4. Splash gone at 7.5s (total 7.5s animation duration)
+    goneTimeout = setTimeout(() => {
       setAnimStage('gone');
-    }, 7300);
+    }, 7500);
 
     return () => {
-      clearInterval(walkInterval);
-      clearInterval(animInterval);
-      clearInterval(knockHitInterval);
-      clearTimeout(knockStartTimeout);
-      clearTimeout(waveStartTimeout);
-      clearTimeout(fadeStartTimeout);
-      clearTimeout(openStartTimeout);
-      clearTimeout(goneTimeout);
+      if (fadeStartTimeout) clearTimeout(fadeStartTimeout);
+      if (openStartTimeout) clearTimeout(openStartTimeout);
+      if (revealStartTimeout) clearTimeout(revealStartTimeout);
+      if (goneTimeout) clearTimeout(goneTimeout);
     };
   }, []);
 
   if (animStage === 'gone') return null;
 
-  const areDoorsOpen = animStage === 'door-open';
-
-  // Determine current active sprite frame based on state & toggles
-  let currentFrame: 'walk1' | 'walk2' | 'knock1' | 'knock2' | 'wave1' | 'wave2' = 'walk1';
-  if (animStage === 'walk') {
-    currentFrame = frameToggle ? 'walk1' : 'walk2';
-  } else if (animStage === 'knock') {
-    currentFrame = frameToggle ? 'knock1' : 'knock2';
-  } else if (animStage === 'wave' || animStage === 'fade-out') {
-    currentFrame = frameToggle ? 'wave1' : 'wave2';
-  }
+  const areDoorsOpen = animStage === 'door-open' || animStage === 'reveal';
 
   return (
-    <div className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none bg-[#0d0e0f]">
+    <div 
+      className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none"
+      style={{
+        backgroundColor: '#0d0e0f',
+        opacity: animStage === 'reveal' ? 0 : 1,
+        transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+    >
+      {/* White background revealed when doors open */}
+      <div className="absolute inset-0 bg-white" />
+
       {/* Left Door */}
       <div
         className="absolute top-0 left-0 w-1/2 h-full border-r-2 transition-transform pointer-events-auto flex items-center justify-end"
@@ -184,35 +161,21 @@ export const DoorSplash = () => {
         </div>
       </div>
 
-      {/* Animated Pixel Mascot Domo Walk-Knock-Wave Sequence Overlay */}
-      {animStage !== 'gone' && (
+      {/* Animated Welcome Domo Video Overlay */}
+      {animStage !== 'reveal' && (
         <div
-          className="absolute bottom-20 sm:bottom-32 z-30 flex flex-col items-center"
+          className="absolute inset-0 z-30 pointer-events-none"
           style={{
-            left: `${walkOffset}%`,
-            transform: 'translateX(-50%)',
             opacity: animStage === 'fade-out' || animStage === 'door-open' ? 0 : 1,
             transition: 'opacity 400ms ease-out',
           }}
         >
-          {/* Dialogue / Speech Bubble */}
-          {animStage === 'wave' && (
-            <div className="mb-4 bg-[#18191B] border border-[#3C6B4D] text-[#ECEBE9] px-4 py-2 rounded-2xl text-[11px] font-bold shadow-lg animate-bounce relative">
-              Welcome to DomoDomo! 🐼✨
-              {/* Triangle pointer */}
-              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[#18191B] border-r border-b border-[#3C6B4D] rotate-45" />
-            </div>
-          )}
-
-          {/* Knock Sound Effect Visualizer */}
-          {animStage === 'knock' && (
-            <div className="absolute -top-10 text-amber-400 font-mono text-[10px] font-extrabold tracking-widest bg-[#18191B] border border-amber-500/35 px-2 py-0.5 rounded-lg shadow animate-pulse">
-              *KNOCK KNOCK*
-            </div>
-          )}
-
-          {/* Pixel Domo Sprite */}
-          <PixelDomo frame={currentFrame} size={96} />
+          <TransparentVideoMascot
+            src={welcomeDomo}
+            clickable={false}
+            objectFit="cover"
+            className="w-full h-full"
+          />
         </div>
       )}
 
@@ -224,8 +187,7 @@ export const DoorSplash = () => {
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-ping" />
           <span className="text-[9px] font-mono uppercase font-bold tracking-wider text-[#A3A09B]">
-            {animStage === 'walk' ? 'Locating Workshop Bay...' : 
-             animStage === 'knock' ? 'Gaining Entrance Authorization...' : 
+            {animStage === 'walk' ? 'Gaining Entrance Authorization...' : 
              'Unlocking Sandbox secure shield...'}
           </span>
         </div>
