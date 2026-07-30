@@ -23,6 +23,7 @@ import {
   FolderOpen,
   Layers,
   ChevronRight,
+  ChevronDown,
   Zap,
   Settings,
   PanelLeftClose,
@@ -489,6 +490,19 @@ export const AIHubStudio = () => {
 
     setDatasetPairs(prev => [...fallbackPairs, ...prev]);
     setIsExtractingDoc(false);
+  };
+
+  // Accordion Collapsible Sections State (Emil Kowalski Design Engineering)
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+    train: false,
+    vector: false,
+    agent: false,
+    safety: false,
+    recents: false,
+  });
+
+  const toggleSection = (section: string) => {
+    setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   // Fine-Tune State
@@ -1695,222 +1709,289 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
           {/* Section: Train & Flow */}
           <div className="px-2 mt-1">
             {!sidebarCollapsed && (
-              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Train &amp; Flow</p>
+              <button
+                onClick={() => toggleSection('train')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <span>Train &amp; Flow</span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] ${
+                    collapsedSections.train ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
             )}
-            <div className="flex flex-col gap-0.5">
-              <button
-                onClick={() => setActiveTab('train')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'train'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
-                    : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Fine-Tune QLoRA Studio"
-              >
-                <Wand2 size={14} className="shrink-0" />
-                {!sidebarCollapsed && <span>Fine-Tune Studio</span>}
-              </button>
+            <div className={`emil-accordion-grid ${collapsedSections.train && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                <button
+                  onClick={() => setActiveTab('train')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'train'
+                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Fine-Tune QLoRA Studio"
+                >
+                  <Wand2 size={14} className="shrink-0" />
+                  {!sidebarCollapsed && <span>Fine-Tune Studio</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('eval')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'eval'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
-                    : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Eval Benchmarks"
-              >
-                <BarChart2 size={14} className="shrink-0" />
-                {!sidebarCollapsed && <span>Eval Benchmarks</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('eval')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'eval'
+                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Eval Benchmarks"
+                >
+                  <BarChart2 size={14} className="shrink-0" />
+                  {!sidebarCollapsed && <span>Eval Benchmarks</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('workflow')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'workflow'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
-                    : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Flow Automation"
-              >
-                <Workflow size={14} className="shrink-0" />
-                {!sidebarCollapsed && <span>Flow Automation</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('workflow')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'workflow'
+                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Flow Automation"
+                >
+                  <Workflow size={14} className="shrink-0" />
+                  {!sidebarCollapsed && <span>Flow Automation</span>}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Section: Data & Vectors */}
           <div className="px-2 mt-2">
             {!sidebarCollapsed && (
-              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Vector &amp; Data</p>
+              <button
+                onClick={() => toggleSection('vector')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <span>Vector &amp; Data</span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] ${
+                    collapsedSections.vector ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
             )}
-            <div className="flex flex-col gap-0.5">
-              <button
-                onClick={() => setActiveTab('rag')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'rag' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="RAG Vector Search Studio"
-              >
-                <Database size={14} className="shrink-0 text-purple-400" />
-                {!sidebarCollapsed && <span>RAG Search Studio</span>}
-              </button>
+            <div className={`emil-accordion-grid ${collapsedSections.vector && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                <button
+                  onClick={() => setActiveTab('rag')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'rag' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="RAG Vector Search Studio"
+                >
+                  <Database size={14} className="shrink-0 text-purple-400" />
+                  {!sidebarCollapsed && <span>RAG Search Studio</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('extractor')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'extractor' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Structured JSON Extractor"
-              >
-                <FileCode size={14} className="shrink-0 text-blue-400" />
-                {!sidebarCollapsed && <span>JSON Extractor</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('extractor')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'extractor' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Structured JSON Extractor"
+                >
+                  <FileCode size={14} className="shrink-0 text-blue-400" />
+                  {!sidebarCollapsed && <span>JSON Extractor</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('knowledge-graph')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'knowledge-graph' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Knowledge Graph Visualizer"
-              >
-                <Layers size={14} className="shrink-0 text-amber-400" />
-                {!sidebarCollapsed && <span>Knowledge Graph</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('knowledge-graph')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'knowledge-graph' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Knowledge Graph Visualizer"
+                >
+                  <Layers size={14} className="shrink-0 text-amber-400" />
+                  {!sidebarCollapsed && <span>Knowledge Graph</span>}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Section: Agent & Developer */}
           <div className="px-2 mt-2">
             {!sidebarCollapsed && (
-              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Agent &amp; Dev</p>
+              <button
+                onClick={() => toggleSection('agent')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <span>Agent &amp; Dev</span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] ${
+                    collapsedSections.agent ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
             )}
-            <div className="flex flex-col gap-0.5">
-              <button
-                onClick={() => setActiveTab('prompts')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'prompts' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Prompt Engineering Lab"
-              >
-                <Wand2 size={14} className="shrink-0 text-emerald-400" />
-                {!sidebarCollapsed && <span>Prompt Lab</span>}
-              </button>
+            <div className={`emil-accordion-grid ${collapsedSections.agent && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                <button
+                  onClick={() => setActiveTab('prompts')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'prompts' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Prompt Engineering Lab"
+                >
+                  <Wand2 size={14} className="shrink-0 text-emerald-400" />
+                  {!sidebarCollapsed && <span>Prompt Lab</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('function-calling')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'function-calling' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Function Calling Studio"
-              >
-                <Zap size={14} className="shrink-0 text-amber-400" />
-                {!sidebarCollapsed && <span>Function Calling</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('function-calling')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'function-calling' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Function Calling Studio"
+                >
+                  <Zap size={14} className="shrink-0 text-amber-400" />
+                  {!sidebarCollapsed && <span>Function Calling</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('code-patch')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'code-patch' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Code Refactoring & AI Patch"
-              >
-                <Code size={14} className="shrink-0 text-cyan-400" />
-                {!sidebarCollapsed && <span>Code AI Patch</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('code-patch')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'code-patch' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Code Refactoring & AI Patch"
+                >
+                  <Code size={14} className="shrink-0 text-cyan-400" />
+                  {!sidebarCollapsed && <span>Code AI Patch</span>}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Section: Safety & System */}
           <div className="px-2 mt-2">
             {!sidebarCollapsed && (
-              <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest px-1 mb-1">Safety &amp; Hardware</p>
+              <button
+                onClick={() => toggleSection('safety')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <span>Safety &amp; Hardware</span>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] ${
+                    collapsedSections.safety ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
             )}
-            <div className="flex flex-col gap-0.5">
-              <button
-                onClick={() => setActiveTab('guardrails')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'guardrails' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="AI Guardrails Inspector"
-              >
-                <ShieldCheck size={14} className="shrink-0 text-rose-400" />
-                {!sidebarCollapsed && <span>AI Guardrails</span>}
-              </button>
+            <div className={`emil-accordion-grid ${collapsedSections.safety && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                <button
+                  onClick={() => setActiveTab('guardrails')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'guardrails' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="AI Guardrails Inspector"
+                >
+                  <ShieldCheck size={14} className="shrink-0 text-rose-400" />
+                  {!sidebarCollapsed && <span>AI Guardrails</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('router')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'router' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Multi-Model Router"
-              >
-                <Workflow size={14} className="shrink-0 text-teal-400" />
-                {!sidebarCollapsed && <span>Model Router</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('router')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'router' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Multi-Model Router"
+                >
+                  <Workflow size={14} className="shrink-0 text-teal-400" />
+                  {!sidebarCollapsed && <span>Model Router</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('vision-studio')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'vision-studio' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Vision & Multimodal Studio"
-              >
-                <Eye size={14} className="shrink-0 text-indigo-400" />
-                {!sidebarCollapsed && <span>Vision Studio</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('vision-studio')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'vision-studio' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Vision & Multimodal Studio"
+                >
+                  <Eye size={14} className="shrink-0 text-indigo-400" />
+                  {!sidebarCollapsed && <span>Vision Studio</span>}
+                </button>
 
-              <button
-                onClick={() => setActiveTab('quant-calc')}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === 'quant-calc' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                }`}
-                title="Quantization & VRAM Calculator"
-              >
-                <Gauge size={14} className="shrink-0 text-[#3C6B4D]" />
-                {!sidebarCollapsed && <span>VRAM Calculator</span>}
-              </button>
+                <button
+                  onClick={() => setActiveTab('quant-calc')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'quant-calc' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Quantization & VRAM Calculator"
+                >
+                  <Gauge size={14} className="shrink-0 text-[#3C6B4D]" />
+                  {!sidebarCollapsed && <span>VRAM Calculator</span>}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Recents Sessions */}
           {!sidebarCollapsed && (
             <div className="px-2 mt-3 flex-1 overflow-y-auto">
-              <div className="flex items-center justify-between px-1 mb-1">
-                <p className="text-[10px] font-bold text-[#72706C] uppercase tracking-widest">Recents</p>
-                <button onClick={handleNewChat} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="New Chat">
-                  <Plus size={11} />
-                </button>
-              </div>
-              {sessions.length === 0 ? (
-                <p className="text-[11px] text-[#72706C] px-1">No saved sessions</p>
-              ) : (
-                <div className="flex flex-col gap-0.5">
-                  {sessions.map((session) => (
-                    <div
-                      key={session.id}
-                      onClick={() => handleSelectSession(session.id)}
-                      className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] cursor-pointer transition-all ${
-                        activeSessionId === session.id && activeTab === 'chat'
-                          ? 'bg-[#2A2D30] text-[#ECEBE9] font-bold'
-                          : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        <MessageSquare size={12} className="shrink-0 text-[#3C6B4D]" />
-                        <span className="truncate">{session.title}</span>
-                      </div>
-                      <button
-                        onClick={(e) => handleDeleteSession(session.id, e)}
-                        className="opacity-0 group-hover:opacity-100 p-0.5 text-[#72706C] hover:text-red-400 transition-opacity"
-                        title="Delete chat"
-                      >
-                        <X size={12} />
-                      </button>
-                    </div>
-                  ))}
+              <button
+                onClick={() => toggleSection('recents')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-2">
+                  <span>Recents</span>
+                  <button onClick={(e) => { e.stopPropagation(); handleNewChat(); }} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="New Chat">
+                    <Plus size={11} />
+                  </button>
                 </div>
-              )}
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] ${
+                    collapsedSections.recents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
+              <div className={`emil-accordion-grid ${collapsedSections.recents ? 'collapsed' : ''}`}>
+                <div className="emil-accordion-content">
+                  {sessions.length === 0 ? (
+                    <p className="text-[11px] text-[#72706C] px-1 py-1">No saved sessions</p>
+                  ) : (
+                    <div className="flex flex-col gap-0.5">
+                      {sessions.map((session) => (
+                        <div
+                          key={session.id}
+                          onClick={() => handleSelectSession(session.id)}
+                          className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] cursor-pointer transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                            activeSessionId === session.id && activeTab === 'chat'
+                              ? 'bg-[#2A2D30] text-[#ECEBE9] font-bold'
+                              : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 truncate">
+                            <MessageSquare size={12} className="shrink-0 text-[#3C6B4D]" />
+                            <span className="truncate">{session.title}</span>
+                          </div>
+                          <button
+                            onClick={(e) => handleDeleteSession(session.id, e)}
+                            className="opacity-0 group-hover:opacity-100 p-0.5 text-[#72706C] hover:text-red-400 transition-opacity"
+                            title="Delete chat"
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
           </div>

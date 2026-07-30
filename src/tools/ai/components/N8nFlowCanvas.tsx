@@ -1150,12 +1150,24 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
     }
   };
 
-  // Wheel Zooming
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-    setScale(s => Math.min(Math.max(s * zoomFactor, 0.3), 2.5));
-  };
+  // Non-passive wheel event listener attached directly to the canvas element
+  // This ensures e.preventDefault() and e.stopPropagation() stop the outer page window from scrolling when zooming on canvas.
+  useEffect(() => {
+    const canvasEl = canvasRef.current;
+    if (!canvasEl) return;
+
+    const handleNativeWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
+      setScale(s => Math.min(Math.max(s * zoomFactor, 0.3), 2.5));
+    };
+
+    canvasEl.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => {
+      canvasEl.removeEventListener('wheel', handleNativeWheel);
+    };
+  }, []);
 
   const handleZoomIn = () => setScale(s => Math.min(s + 0.15, 2.5));
   const handleZoomOut = () => setScale(s => Math.max(s - 0.15, 0.3));
@@ -2067,7 +2079,6 @@ User Question: ${incomingQuery}`;
       {/* ── CANVAS WORKSPACE AREA ── */}
       <div
         ref={canvasRef}
-        onWheel={handleWheel}
         onMouseDown={handleCanvasMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}

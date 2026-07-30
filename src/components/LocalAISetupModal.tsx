@@ -59,8 +59,8 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl max-w-2xl w-full p-6 flex flex-col gap-6 text-left shadow-2xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm emil-backdrop">
+      <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl max-w-2xl w-full p-6 flex flex-col gap-6 text-left shadow-2xl relative max-h-[90vh] overflow-y-auto emil-modal-container">
         {/* Header */}
         <div className="flex items-start justify-between border-b border-[#2A2D30] pb-4">
           <div className="flex items-center gap-3">

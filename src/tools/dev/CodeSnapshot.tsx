@@ -303,7 +303,7 @@ export const CodeSnapshotTool = () => {
 								<button
 									key={t.id}
 									onClick={() => setTheme(t)}
-									className={`h-12 rounded-lg border-2 transition-all ${t.class} ${theme.id === t.id ? "border-white shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent hover:scale-105"}`}
+									className={`h-12 rounded-lg border-2 transition-transform duration-160 ease-[var(--ease-out)] ${t.class} ${theme.id === t.id ? "border-white shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent hover:scale-105"}`}
 									title={t.name}
 								/>
 							))}
