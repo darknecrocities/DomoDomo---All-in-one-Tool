@@ -950,6 +950,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
       setCustomPullInput('');
     } catch (err: any) {
       console.error('Error downloading model:', err);
+      throw err;
     } finally {
       setDownloadingModelId(null);
       setDownloadProgress(0);

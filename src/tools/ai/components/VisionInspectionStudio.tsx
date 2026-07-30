@@ -22,7 +22,7 @@ const KNOWN_MODELS: VisionModelSpecs[] = [
   { name: 'llama3.2-vision:11b', params: '11B', size: '7.9 GB', supportsVision: true, desc: 'Meta Llama 3.2 Vision for high-accuracy document & chart analysis.' },
   { name: 'bakllava:latest', params: '7B', size: '4.7 GB', supportsVision: true, desc: 'Llava fine-tune based on Mistral architecture for fast visual inference.' },
   { name: 'moondream:latest', params: '1.6B', size: '1.7 GB', supportsVision: true, desc: 'Ultra-compact vision model designed for fast low-memory devices.' },
-  { name: 'llava-phi3:mini', params: '3.8B', size: '2.9 GB', supportsVision: true, desc: 'Phi-3 based compact multimodal model for quick visual queries.' },
+  { name: 'llava-phi3', params: '3.8B', size: '2.9 GB', supportsVision: true, desc: 'Phi-3 based compact multimodal model for quick visual queries.' },
   { name: 'gemma2:2b', params: '2B', size: '1.6 GB', supportsVision: false, desc: 'Google Gemma 2 text-only language model (Vision not supported).' },
   { name: 'qwen2.5-coder:1.5b', params: '1.5B', size: '986 MB', supportsVision: false, desc: 'Specialized coding LLM (Vision not supported).' }
 ];
@@ -38,6 +38,7 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
   );
   const [downloadingModel, setDownloadingModel] = useState<string | null>(null);
   const [pullProgress, setPullProgress] = useState<number>(0);
+  const [pullError, setPullError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [visionPrompt, setVisionPrompt] = useState<string>(
     'Describe this image, identify key UI elements, and extract visible text.'
@@ -68,6 +69,7 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
   const handlePullVisionModel = async (modelName: string) => {
     setDownloadingModel(modelName);
     setPullProgress(5);
+    setPullError(null);
 
     try {
       if (onDownloadModel) {
@@ -77,15 +79,13 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
           setPullProgress(pct);
         });
       }
-    } catch {
-      for (let p = 15; p <= 100; p += 20) {
-        await new Promise(r => setTimeout(r, 200));
-        setPullProgress(p);
-      }
+      handleModelChange(modelName);
+    } catch (err: any) {
+      console.error(`Failed to download ${modelName}:`, err);
+      setPullError(err?.message || `Failed to download ${modelName}`);
     } finally {
       setDownloadingModel(null);
       setPullProgress(0);
-      handleModelChange(modelName);
     }
   };
 
