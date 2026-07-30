@@ -1,5 +1,23 @@
 [
   {
+    "hash": "3ffb9f3",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "9146fbc",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(analytics): disable click-to-increment listener on visit counter"
+  },
+  {
+    "hash": "11c0602",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "352a757",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "0ee93ef",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(analytics): update initial visit counter base to 8,172 with real-time Counter API sync"
-  },
-  {
-    "hash": "6894076",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "fde1b54",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'main' of https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
   }
 ]
