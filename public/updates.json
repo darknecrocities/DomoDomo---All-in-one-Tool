@@ -1,5 +1,17 @@
 [
   {
+    "hash": "c9c80b4",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add hardware-aware model recommender system and interactive recommendation banners"
+  },
+  {
+    "hash": "867d3d5",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "0c82130",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-30",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "ca5aa2a",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
-  },
-  {
-    "hash": "e0ca7a0",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat: integrate live App Builders PH vote widget iframe"
   }
 ]
