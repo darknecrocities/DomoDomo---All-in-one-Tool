@@ -7,6 +7,8 @@ import { unifiedMemory } from '../utils/unifiedMemory';
 import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
+import { AppBuildersWidget } from './AppBuildersWidget';
+
 
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
@@ -641,6 +643,9 @@ export const Shell = () => {
 
                   {/* Awards & Featured Badges */}
                   <div className="flex flex-wrap gap-2.5 items-center pt-1 pb-2">
+                    {/* Live AppBuilders PH Vote Widget */}
+                    <AppBuildersWidget />
+
                     {/* AppBuilders PH Badge */}
                     <a
                       href="https://www.appbuildersph.com/apps/domodomo"
