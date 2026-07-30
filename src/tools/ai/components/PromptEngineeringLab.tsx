@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Wand2, Copy, Check, Plus, Trash2, Sparkles, Layers, Play, Bot, Cpu, Download, BookOpen, Award, ShieldCheck, Share2, Save, Archive } from 'lucide-react';
+import { Terminal, Wand2, Copy, Check, Plus, Trash2, Sparkles, Layers, Play, Bot, Cpu, Download, BookOpen, Award, ShieldCheck, Share2, Save, Archive, Search, Filter } from 'lucide-react';
 import JSZip from 'jszip';
 import { aiService } from '../../../utils/aiService';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
 import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
+import { PREMADE_SKILLS, type SkillDef } from '../data/premadeSkills';
 
 interface PromptEngineeringLabProps {
   selectedModel?: string;
@@ -128,6 +129,28 @@ const BUILTIN_AGENT_SKILLS: AgentSkillPreset[] = [
   }
 ];
 
+// Convert PremadeSkills dataset into AgentSkillPreset format
+const PREMADE_LAB_SKILLS: AgentSkillPreset[] = PREMADE_SKILLS.map((sk: SkillDef) => ({
+  id: sk.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+  name: sk.name,
+  category: sk.name.includes('Security') ? 'Security Audit' :
+            sk.name.includes('React') || sk.name.includes('UI/UX') ? 'Frontend Engineering' :
+            sk.name.includes('Python') || sk.name.includes('Backend') || sk.name.includes('SQL') ? 'Backend Engineering' :
+            sk.name.includes('DevOps') || sk.name.includes('Performance') ? 'Systems & Infrastructure' :
+            sk.name.includes('Data') ? 'Data & Analytics' : 'Core Architecture',
+  description: sk.description,
+  systemPersona: `${sk.systemInstructions}\n\n### MANDATORY RULES & CONSTRAINTS\n${sk.rules.map(r => `- ${r}`).join('\n')}`,
+  userTemplate: `TASK OBJECTIVE: {{task_objective}}\nCONTEXT & CONSTRAINTS: {{context_constraints}}\nOUTPUT FORMAT: {{output_format}}`,
+  variables: {
+    task_objective: `Execute high-precision ${sk.name} workflow on target module`,
+    context_constraints: `Strict compliance with project architectural standards and non-breaking changes`,
+    output_format: `Clean, fully documented production-ready response`
+  },
+  fewShot: []
+}));
+
+const ALL_BUILTIN_SKILLS = [...BUILTIN_AGENT_SKILLS, ...PREMADE_LAB_SKILLS];
+
 const COMMON_LLM_PRESETS = [
   'llama3.2:1b',
   'llama3.2:3b',
@@ -149,20 +172,41 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
 
   const [activeTab, setActiveTab] = useState<'workspace' | 'frameworks' | 'skills' | 'exporter' | 'audit'>('workspace');
 
-  // Custom User-Saved Skills state (persisted in LocalStorage)
+  // Custom User-Saved Skills state (persisted across DomoSkillCreator & PromptLab)
   const [customSkills, setCustomSkills] = useState<AgentSkillPreset[]>(() => {
     try {
-      const saved = localStorage.getItem('domodomo_custom_agent_skills');
-      return saved ? JSON.parse(saved) : [];
+      const savedAgentSkills = localStorage.getItem('domodomo_custom_agent_skills');
+      const savedDomoSkills = localStorage.getItem('domodomo_custom_skills');
+      
+      const parsedAgent = savedAgentSkills ? JSON.parse(savedAgentSkills) : [];
+      const parsedDomo = savedDomoSkills ? JSON.parse(savedDomoSkills).map((s: SkillDef) => ({
+        id: s.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+        name: s.name,
+        category: 'Custom Developer Skill',
+        description: s.description,
+        systemPersona: `${s.systemInstructions}\n\n### RULES\n${(s.rules || []).map(r => `- ${r}`).join('\n')}`,
+        userTemplate: `TASK: {{task}}\nFORMAT: {{format}}`,
+        variables: { task: 'Develop modular component', format: 'TypeScript ES6' },
+        fewShot: [],
+        isCustom: true
+      })) : [];
+
+      const combined = [...parsedAgent, ...parsedDomo];
+      const unique = Array.from(new Map(combined.map(item => [item.id, item])).values());
+      return unique;
     } catch {
       return [];
     }
   });
 
-  const [systemPersona, setSystemPersona] = useState(BUILTIN_AGENT_SKILLS[0].systemPersona);
-  const [userTemplate, setUserTemplate] = useState(BUILTIN_AGENT_SKILLS[0].userTemplate);
-  const [variableValues, setVariableValues] = useState<Record<string, string>>(BUILTIN_AGENT_SKILLS[0].variables);
-  const [fewShotExamples, setFewShotExamples] = useState<FewShotExample[]>(BUILTIN_AGENT_SKILLS[0].fewShot);
+  // Search & Filter state for Skills Library
+  const [skillSearchQuery, setSkillSearchQuery] = useState('');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
+
+  const [systemPersona, setSystemPersona] = useState(ALL_BUILTIN_SKILLS[0].systemPersona);
+  const [userTemplate, setUserTemplate] = useState(ALL_BUILTIN_SKILLS[0].userTemplate);
+  const [variableValues, setVariableValues] = useState<Record<string, string>>(ALL_BUILTIN_SKILLS[0].variables);
+  const [fewShotExamples, setFewShotExamples] = useState<FewShotExample[]>(ALL_BUILTIN_SKILLS[0].fewShot);
 
   const [skillName, setSkillName] = useState('custom-prompt-agent');
   const [skillDescription, setSkillDescription] = useState('Custom prompt template created in DomoDomo Prompt Engineering Lab');
@@ -174,9 +218,9 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
 
   const availableModels = Array.from(new Set([...installedModels, ...COMMON_LLM_PRESETS]));
 
-  const allSkills = [...customSkills, ...BUILTIN_AGENT_SKILLS];
+  const allSkills = [...customSkills, ...ALL_BUILTIN_SKILLS];
 
-  // Save custom skills to LocalStorage
+  // Save custom skills to LocalStorage (synced with DomoSkillCreator)
   useEffect(() => {
     try {
       localStorage.setItem('domodomo_custom_agent_skills', JSON.stringify(customSkills));
@@ -184,6 +228,16 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
       // Ignore write errors
     }
   }, [customSkills]);
+
+  const categoriesList = ['All', 'User Custom Skill', ...Array.from(new Set(ALL_BUILTIN_SKILLS.map(s => s.category)))];
+
+  const filteredSkills = allSkills.filter(skill => {
+    const matchesSearch = skill.name.toLowerCase().includes(skillSearchQuery.toLowerCase()) ||
+                          skill.description.toLowerCase().includes(skillSearchQuery.toLowerCase()) ||
+                          skill.category.toLowerCase().includes(skillSearchQuery.toLowerCase());
+    const matchesCategory = selectedCategoryFilter === 'All' || skill.category === selectedCategoryFilter;
+    return matchesSearch && matchesCategory;
+  });
 
   const handleModelChange = (modelName: string) => {
     setCurrentModel(modelName);
@@ -442,7 +496,7 @@ Generated by **DomoDomo Prompt Engineering Lab**.
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
             <Wand2 size={12} />
-            <span>Prompt Framework Architect &amp; Agent Skill Creator</span>
+            <span>Prompt Framework Architect &amp; Agent Skill Creator ({allSkills.length} Skills)</span>
           </div>
           <h2 className="text-lg font-extrabold text-[#ECEBE9]">Prompt Engineering Lab</h2>
           <p className="text-[#72706C] text-xs mt-0.5">Design system personas, save &amp; activate custom agent skills in DomoDomo, and download .agents ZIP bundles.</p>
@@ -597,7 +651,7 @@ Generated by **DomoDomo Prompt Engineering Lab**.
                 <textarea
                   value={systemPersona}
                   onChange={e => setSystemPersona(e.target.value)}
-                  rows={4}
+                  rows={5}
                   className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
                 />
               </div>
@@ -715,71 +769,82 @@ Generated by **DomoDomo Prompt Engineering Lab**.
       {/* ── TAB 3: AGENT SKILL LIBRARY & SAVED PROMPTS ── */}
       {activeTab === 'skills' && (
         <div className="space-y-6">
-          {/* Custom Saved Skills */}
-          {customSkills.length > 0 && (
-            <div className="space-y-3">
+          {/* Search & Category Filter Toolbar */}
+          <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="relative flex-1 w-full">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C]" />
+              <input
+                type="text"
+                value={skillSearchQuery}
+                onChange={e => setSkillSearchQuery(e.target.value)}
+                placeholder="Search across all agent skills by role, description, or keyword..."
+                className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-3 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+              <Filter size={13} className="text-[#3C6B4D]" />
+              <select
+                value={selectedCategoryFilter}
+                onChange={e => setSelectedCategoryFilter(e.target.value)}
+                className="bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs font-bold rounded-xl px-3 py-2 focus:outline-none cursor-pointer w-full sm:w-auto"
+              >
+                {categoriesList.map(cat => (
+                  <option key={cat} value={cat} className="bg-[#18191B]">
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Filtered Skills Grid */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
               <h3 className="text-xs font-extrabold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-2">
-                <Save size={14} className="text-[#3C6B4D]" /> My Saved Custom Prompts ({customSkills.length})
+                <Award size={14} className="text-amber-400" /> Integrated Agent Skills Catalog ({filteredSkills.length})
               </h3>
+              <span className="text-[11px] text-[#72706C]">Synced with Domo Skill Creator</span>
+            </div>
+
+            {filteredSkills.length === 0 ? (
+              <div className="p-8 text-center bg-[#18191B] border border-[#2A2D30] rounded-2xl text-xs text-[#72706C]">
+                No agent skills found matching "{skillSearchQuery}". Try adjusting your search query or category filter.
+              </div>
+            ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {customSkills.map(skill => (
-                  <div key={skill.id} className="bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
+                {filteredSkills.map(skill => (
+                  <div key={skill.id} className="bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 p-5 rounded-2xl space-y-3 flex flex-col justify-between transition-all">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-extrabold text-[#ECEBE9]">{skill.name}</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/20 text-[#3C6B4D]">
-                            Custom
+                          <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                            skill.isCustom ? 'bg-amber-500/20 text-amber-400' : 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                          }`}>
+                            {skill.category}
                           </span>
-                          <button onClick={() => handleDeleteCustomSkill(skill.id)} className="text-[#72706C] hover:text-red-400 p-0.5">
-                            <Trash2 size={13} />
-                          </button>
+                          {skill.isCustom && (
+                            <button onClick={() => handleDeleteCustomSkill(skill.id)} className="text-[#72706C] hover:text-red-400 p-0.5">
+                              <Trash2 size={13} />
+                            </button>
+                          )}
                         </div>
                       </div>
-                      <p className="text-xs text-[#72706C]">{skill.description}</p>
+                      <p className="text-xs text-[#72706C] line-clamp-2">{skill.description}</p>
                     </div>
 
                     <button
                       onClick={() => handleInjectSkill(skill)}
-                      className="w-full py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+                      className="w-full py-2 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] hover:bg-[#3C6B4D]/20 text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2"
                     >
-                      <Sparkles size={14} />
-                      <span>Load into Workspace</span>
+                      <Sparkles size={14} className="text-amber-400" />
+                      <span>Inject Skill into Workspace</span>
                     </button>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Built-in Agent Skill Library */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-extrabold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-2">
-              <Award size={14} className="text-amber-400" /> Built-in Agent Skill Library ({BUILTIN_AGENT_SKILLS.length})
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {BUILTIN_AGENT_SKILLS.map(skill => (
-                <div key={skill.id} className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-extrabold text-[#ECEBE9]">{skill.name}</span>
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/20 text-[#3C6B4D]">
-                        {skill.category}
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#72706C]">{skill.description}</p>
-                  </div>
-
-                  <button
-                    onClick={() => handleInjectSkill(skill)}
-                    className="w-full py-2 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                  >
-                    <Sparkles size={14} className="text-amber-400" />
-                    <span>Inject Skill into Prompt Lab</span>
-                  </button>
-                </div>
-              ))}
-            </div>
+            )}
           </div>
         </div>
       )}
