@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { GitBranch, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle } from 'lucide-react';
+import { aiService } from '../../../utils/aiService';
 
 interface MultiModelRouterProps {
   selectedModel?: string;
   installedModels?: string[];
   onSelectGlobalModel?: (modelName: string) => void;
-  onDownloadModel?: (modelName: string) => Promise<void>;
+  onDownloadModel?: (modelName: string, onProgress?: (pct: number) => void) => Promise<void>;
 }
 
 interface RouteRule {
@@ -60,29 +61,11 @@ export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
     setPullProgress(5);
     try {
       if (onDownloadModel) {
-        await onDownloadModel(modelName);
+        await onDownloadModel(modelName, (pct) => setPullProgress(pct));
       } else {
-        const res = await fetch('http://localhost:11434/api/pull', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: modelName, stream: true })
+        await aiService.pullOllamaModel(modelName, (_status, pct) => {
+          setPullProgress(pct);
         });
-        if (res.ok && res.body) {
-          const reader = res.body.getReader();
-          const decoder = new TextDecoder();
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            for (const line of decoder.decode(value).split('\n').filter(Boolean)) {
-              try {
-                const parsed = JSON.parse(line);
-                if (parsed.total && parsed.completed) {
-                  setPullProgress(Math.round((parsed.completed / parsed.total) * 100));
-                }
-              } catch {}
-            }
-          }
-        }
       }
     } catch {
       for (let p = 15; p <= 100; p += 25) {

@@ -879,7 +879,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
   const isOnlineWebHost = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
   // Handle Model Pull / Download
-  const handleDownloadModel = async (modelName: string) => {
+  const handleDownloadModel = async (modelName: string, onProgress?: (pct: number) => void) => {
     if (!modelName.trim()) return;
     if (isOnlineWebHost || ollamaStatus !== 'connected') {
       setShowLocalGuideModal(true);
@@ -887,6 +887,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
     }
     setDownloadingModelId(modelName);
     setDownloadProgress(5);
+    if (onProgress) onProgress(5);
 
     try {
       if (ollamaStatus === 'connected') {
@@ -896,26 +897,55 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
           body: JSON.stringify({ name: modelName, stream: true })
         });
 
-        if (response.ok && response.body) {
+        if (!response.ok) {
+          throw new Error(`Failed to pull model: ${response.statusText}`);
+        }
+
+        if (response.body) {
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
+          let buffer = '';
+          const layers: Record<string, { completed: number; total: number }> = {};
 
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
 
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n').filter(Boolean);
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
 
             for (const line of lines) {
+              if (!line.trim()) continue;
               try {
                 const parsed = JSON.parse(line);
-                if (parsed.total && parsed.completed) {
-                  const pct = Math.round((parsed.completed / parsed.total) * 100);
-                  setDownloadProgress(pct);
+                if (parsed.error) {
+                  throw new Error(parsed.error);
                 }
-              } catch {
-                // Ignore chunk parse error
+                if (parsed.digest && parsed.total) {
+                  layers[parsed.digest] = {
+                    completed: parsed.completed || 0,
+                    total: parsed.total || 0
+                  };
+                  const totalBytes = Object.values(layers).reduce((acc, l) => acc + l.total, 0);
+                  const completedBytes = Object.values(layers).reduce((acc, l) => acc + l.completed, 0);
+                  if (totalBytes > 0) {
+                    const pct = Math.min(99, Math.max(1, Math.round((completedBytes / totalBytes) * 100)));
+                    setDownloadProgress(pct);
+                    if (onProgress) onProgress(pct);
+                  }
+                } else if (parsed.total && parsed.completed) {
+                  const pct = Math.min(99, Math.max(1, Math.round((parsed.completed / parsed.total) * 100)));
+                  setDownloadProgress(pct);
+                  if (onProgress) onProgress(pct);
+                } else if (parsed.status === 'success') {
+                  setDownloadProgress(100);
+                  if (onProgress) onProgress(100);
+                }
+              } catch (e: any) {
+                if (e.message && !e.message.includes('JSON')) {
+                  throw e;
+                }
               }
             }
           }
@@ -925,17 +955,20 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
         for (let p = 10; p <= 100; p += 15) {
           await new Promise(r => setTimeout(r, 250));
           setDownloadProgress(p);
+          if (onProgress) onProgress(p);
         }
       }
 
       await checkOllama();
       setSelectedModel(modelName);
       setCustomPullInput('');
-    } catch {
-      // Fallback
+    } catch (err: any) {
+      console.error('Error downloading model:', err);
+      throw err;
     } finally {
       setDownloadingModelId(null);
       setDownloadProgress(0);
+      if (onProgress) onProgress(0);
     }
   };
 

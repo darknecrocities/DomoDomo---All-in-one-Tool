@@ -139,7 +139,7 @@ export const Shell = () => {
         const res = await fetch(`/api/git-check-updates?t=${Date.now()}`, {
           headers: { 'X-Domo-Local-Request': 'true' }
         });
-        if (res.ok) {
+        if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
           const data = await res.json();
           if (data.updateAvailable) {
             setSimulatedCommit({
