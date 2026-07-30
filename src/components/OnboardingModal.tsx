@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Shield, Sparkles, User, Brain, ArrowRight, ArrowLeft, Cpu } from 'lucide-react';
 import { unifiedMemory } from '../utils/unifiedMemory';
+import pandaOnboarding from '../assets/panda_onboarding.gif';
 
 interface OnboardingModalProps {
   onComplete: () => void;
@@ -84,26 +85,43 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
 
         {step === 1 && (
           <div className="flex flex-col gap-5 py-2">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-2xl text-[#3C6B4D]">
-                <Shield size={24} />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="relative">
+                <img 
+                  src={pandaOnboarding} 
+                  alt="Domo Panda Mascot" 
+                  className="w-32 h-32 object-contain rounded-2xl border border-[#2A2D30] bg-[#111213]/40 p-2 shadow-lg"
+                />
+                <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3C6B4D] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-[#3C6B4D]"></span>
+                </span>
               </div>
               <div>
-                <h2 className="text-lg font-bold text-[#ECEBE9]">100% Secure & Offline</h2>
-                <span className="text-xs text-[#3C6B4D] font-semibold">Privacy Pledge</span>
+                <h2 className="text-xl font-bold text-[#ECEBE9] flex items-center justify-center gap-2">
+                  Meet Domo! 🐼✨
+                </h2>
+                <p className="text-xs text-[#A3A09B] max-w-sm mt-1">
+                  Your offline, secure AI companion for software engineering, auditing, and document processing.
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-[#2A2D30]/60 my-1" />
+
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-xl text-[#3C6B4D]">
+                <Shield size={20} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[#ECEBE9]">100% Offline & Local-First</h3>
+                <span className="text-[10px] text-[#3C6B4D] font-semibold">Privacy Pledge</span>
               </div>
             </div>
 
             <p className="text-[#A3A09B] text-xs leading-relaxed">
-              DomoDomo operates strictly in your browser sandbox. Any information, files, habits, or answers you provide here are <strong>saved locally on your machine (IndexedDB)</strong>.
+              DomoDomo operates strictly inside your browser sandbox. Any profile data, files, habits, or answers you provide here are <strong>saved locally on your machine (IndexedDB)</strong> and never sent to external servers.
             </p>
-            
-            <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] text-[11px] text-[#A3A09B] leading-relaxed flex flex-col gap-2">
-              <span className="text-[#3C6B4D] font-bold">Safe Sandbox Shield</span>
-              <span>• No external servers will ever receive your profile data.</span>
-              <span>• It operates as context for local LLMs (like Ollama) running locally.</span>
-              <span>• You can purge or modify this data at any time under settings.</span>
-            </div>
 
             <div className="flex gap-3 justify-end mt-4">
               <button

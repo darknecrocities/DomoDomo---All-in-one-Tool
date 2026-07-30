@@ -1,46 +1,67 @@
 import { useState, useEffect } from 'react';
-import { Logo } from './Logo';
+import { TransparentVideoMascot } from './TransparentVideoMascot';
+import welcomeDomo from '../assets/welcome_domo.mp4';
 
 export const DoorSplash = () => {
-  const [stage, setStage] = useState<'visible' | 'logo-fade' | 'door-open' | 'gone'>('visible');
+  const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>('walk');
 
   useEffect(() => {
-    // Timeline configuration
-    // Stage 1: Logo fades out
-    const logoFadeTimer = setTimeout(() => {
-      setStage('logo-fade');
-    }, 1500);
+    let fadeStartTimeout: NodeJS.Timeout;
+    let openStartTimeout: NodeJS.Timeout;
+    let revealStartTimeout: NodeJS.Timeout;
+    let goneTimeout: NodeJS.Timeout;
 
-    // Stage 2: Doors begin to open
-    const doorOpenTimer = setTimeout(() => {
-      setStage('door-open');
-    }, 1900);
+    // Start video animation triggers
+    // 1. Fade out mascot starts at 5.5s (after walk-in and wave are complete in video)
+    fadeStartTimeout = setTimeout(() => {
+      setAnimStage('fade-out');
+    }, 5500);
 
-    // Stage 3: Splash is fully removed from DOM
-    const completeTimer = setTimeout(() => {
-      setStage('gone');
-    }, 3100);
+    // 2. Door opens at 6.0s (0.5s after mascot starts fading)
+    openStartTimeout = setTimeout(() => {
+      setAnimStage('door-open');
+    }, 6000);
+
+    // 3. Reveal starts at 6.7s (doors almost fully open)
+    revealStartTimeout = setTimeout(() => {
+      setAnimStage('reveal');
+    }, 6700);
+
+    // 4. Splash gone at 7.5s (total 7.5s animation duration)
+    goneTimeout = setTimeout(() => {
+      setAnimStage('gone');
+    }, 7500);
 
     return () => {
-      clearTimeout(logoFadeTimer);
-      clearTimeout(doorOpenTimer);
-      clearTimeout(completeTimer);
+      if (fadeStartTimeout) clearTimeout(fadeStartTimeout);
+      if (openStartTimeout) clearTimeout(openStartTimeout);
+      if (revealStartTimeout) clearTimeout(revealStartTimeout);
+      if (goneTimeout) clearTimeout(goneTimeout);
     };
   }, []);
 
-  if (stage === 'gone') return null;
+  if (animStage === 'gone') return null;
 
-  const isLogoVisible = stage === 'visible';
-  const areDoorsOpen = stage === 'door-open';
+  const areDoorsOpen = animStage === 'door-open' || animStage === 'reveal';
 
   return (
-    <div className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none">
+    <div 
+      className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none"
+      style={{
+        backgroundColor: '#0d0e0f',
+        opacity: animStage === 'reveal' ? 0 : 1,
+        transition: 'opacity 800ms cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+    >
+      {/* White background revealed when doors open */}
+      <div className="absolute inset-0 bg-white" />
+
       {/* Left Door */}
       <div
         className="absolute top-0 left-0 w-1/2 h-full border-r-2 transition-transform pointer-events-auto flex items-center justify-end"
         style={{
           transform: areDoorsOpen ? 'translateX(-100%)' : 'translateX(0)',
-          transitionDuration: '1200ms',
+          transitionDuration: '1000ms',
           transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',
           backgroundColor: 'var(--card)',
           borderColor: 'var(--border)',
@@ -91,7 +112,7 @@ export const DoorSplash = () => {
         className="absolute top-0 right-0 w-1/2 h-full border-l-2 transition-transform pointer-events-auto flex items-center justify-start"
         style={{
           transform: areDoorsOpen ? 'translateX(100%)' : 'translateX(0)',
-          transitionDuration: '1200ms',
+          transitionDuration: '1000ms',
           transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',
           backgroundColor: 'var(--card)',
           borderColor: 'var(--border)',
@@ -140,41 +161,35 @@ export const DoorSplash = () => {
         </div>
       </div>
 
-      {/* Center Mascot Emblem */}
-      <div
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all"
-        style={{
-          opacity: isLogoVisible ? 1 : 0,
-          transform: isLogoVisible ? 'scale(1)' : 'scale(0.92)',
-          transitionDuration: '400ms',
-          transitionTimingFunction: 'cubic-bezier(0.25, 1, 0.5, 1)',
-        }}
-      >
-        <div 
-          className="relative flex flex-col items-center gap-6 p-10 rounded-3xl border shadow-2xl backdrop-blur-md"
-          style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+      {/* Animated Welcome Domo Video Overlay */}
+      {animStage !== 'reveal' && (
+        <div
+          className="absolute inset-0 z-30 pointer-events-none"
+          style={{
+            opacity: animStage === 'fade-out' || animStage === 'door-open' ? 0 : 1,
+            transition: 'opacity 400ms ease-out',
+          }}
         >
-          {/* Logo container with pulse ring */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute -inset-4 rounded-3xl animate-ping opacity-60" style={{ animationDuration: '3s', backgroundColor: 'rgba(var(--primary-rgb), 0.05)', border: '1px solid rgba(var(--primary-rgb), 0.15)' }} />
-            <Logo size={140} showText={false} className="relative z-10 scale-105" />
-          </div>
+          <TransparentVideoMascot
+            src={welcomeDomo}
+            clickable={false}
+            objectFit="cover"
+            className="w-full h-full"
+          />
+        </div>
+      )}
 
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <span className="font-extrabold text-3xl tracking-tight leading-none font-heading" style={{ color: 'var(--text)' }}>
-              Domo<span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>Domo</span>
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold" style={{ color: 'var(--text-tertiary)' }}>
-              All-in-One Tool Hub
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--primary)' }}></span>
-            <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: 'var(--text-secondary)' }}>
-              Unlocking Sandbox...
-            </span>
-          </div>
+      {/* Progress Unlocking Bar at bottom */}
+      <div 
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1.5 transition-opacity duration-300"
+        style={{ opacity: areDoorsOpen ? 0 : 1 }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-ping" />
+          <span className="text-[9px] font-mono uppercase font-bold tracking-wider text-[#A3A09B]">
+            {animStage === 'walk' ? 'Gaining Entrance Authorization...' : 
+             'Unlocking Sandbox secure shield...'}
+          </span>
         </div>
       </div>
     </div>

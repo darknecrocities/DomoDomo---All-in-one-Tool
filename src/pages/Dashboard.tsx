@@ -26,6 +26,7 @@ import betterGovLogo from "../assets/bettergovph.jpg";
 import upamateLogo from "../assets/upamate.png";
 import stageByAntLogo from "../assets/stagebyant.png";
 import { AppBuildersWidget } from "../components/AppBuildersWidget";
+import { TiltContainer } from "../components/TiltContainer";
 
 
 interface PlannedTool {
@@ -2384,50 +2385,58 @@ export const Dashboard = () => {
 
 				<div className="lg:col-span-7 flex flex-col gap-3 md:gap-4 text-left z-10 justify-center">
 					{/* App Builders PH Primary Vote Widget */}
-					<div>
+					<TiltContainer maxTilt={8} scale={1.02} className="w-fit">
 						<AppBuildersWidget compact />
-					</div>
+					</TiltContainer>
 
 					{/* Category Rankings Strip — all 4 badges together below App Builders PH */}
 					<div className="flex flex-wrap items-center gap-2">
 						{/* App Builders PH #1 All Time Overall Badge */}
-						<a
-							href="https://www.appbuildersph.com/apps/domodomo"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:border-amber-500/60 transition-all text-xs font-bold shadow-sm"
-							title="#1 All Time Overall on App Builders PH"
-						>
-							<TrophyIcon size={14} className="text-amber-400 shrink-0" />
-							<span>#1 All Time</span>
-						</a>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<a
+								href="https://www.appbuildersph.com/apps/domodomo"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:border-amber-500/60 transition-all text-xs font-bold shadow-sm"
+								title="#1 All Time Overall on App Builders PH"
+							>
+								<TrophyIcon size={14} className="text-amber-400 shrink-0" />
+								<span>#1 All Time</span>
+							</a>
+						</TiltContainer>
 
 						{/* #1 in AI Category Badge */}
-						<div
-							className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
-							title="#1 Product in AI & Local LLM Category"
-						>
-							<Cpu size={13} className="text-[#3C6B4D] shrink-0" />
-							<span>#1 in AI</span>
-						</div>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<div
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
+								title="#1 Product in AI & Local LLM Category"
+							>
+								<Cpu size={13} className="text-[#3C6B4D] shrink-0" />
+								<span>#1 in AI</span>
+							</div>
+						</TiltContainer>
 
 						{/* #1 in Productivity Badge */}
-						<div
-							className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
-							title="#1 Product in Productivity Category"
-						>
-							<TrophyIcon size={13} className="text-[#3C6B4D] shrink-0" />
-							<span>#1 Productivity</span>
-						</div>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<div
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
+								title="#1 Product in Productivity Category"
+							>
+								<TrophyIcon size={13} className="text-[#3C6B4D] shrink-0" />
+								<span>#1 Productivity</span>
+							</div>
+						</TiltContainer>
 
 						{/* #1 in Developer Tools Badge */}
-						<div
-							className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
-							title="#1 Product in Developer Tools Category"
-						>
-							<AwardIcon size={13} className="text-[#3C6B4D] shrink-0" />
-							<span>#1 Dev Tools</span>
-						</div>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<div
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
+								title="#1 Product in Developer Tools Category"
+							>
+								<AwardIcon size={13} className="text-[#3C6B4D] shrink-0" />
+								<span>#1 Dev Tools</span>
+							</div>
+						</TiltContainer>
 					</div>
 
 					{/* Group 2: Press & Platform Features */}
@@ -2435,40 +2444,46 @@ export const Dashboard = () => {
 						<span className="text-[10px] font-bold uppercase tracking-wider text-[#72706C] mr-1">Featured On:</span>
 						
 						{/* BetterGov PH */}
-						<a
-							href="https://bettergov.ph"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
-							title="Featured on BetterGov PH"
-						>
-							<img src={betterGovLogo} alt="BetterGov PH" className="w-4 h-4 object-contain rounded-sm" />
-							<span>BetterGov.ph</span>
-						</a>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<a
+								href="https://bettergov.ph"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								title="Featured on BetterGov PH"
+							>
+								<img src={betterGovLogo} alt="BetterGov PH" className="w-4 h-4 object-contain rounded-sm" />
+								<span>BetterGov.ph</span>
+							</a>
+						</TiltContainer>
 
 						{/* Upamate */}
-						<a
-							href="https://www.facebook.com/share/p/1G5PGJFuYE/"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
-							title="Featured on Upamate"
-						>
-							<img src={upamateLogo} alt="Upamate" className="w-4 h-4 object-contain rounded-sm" />
-							<span>Upamate</span>
-						</a>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<a
+								href="https://www.facebook.com/share/p/1G5PGJFuYE/"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								title="Featured on Upamate"
+							>
+								<img src={upamateLogo} alt="Upamate" className="w-4 h-4 object-contain rounded-sm" />
+								<span>Upamate</span>
+							</a>
+						</TiltContainer>
 
 						{/* Stage by Ant */}
-						<a
-							href="https://stage.byant.dev/p/domodomo"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
-							title="Featured Pick on Stage by Ant"
-						>
-							<img src={stageByAntLogo} alt="Stage by Ant" className="w-4 h-4 object-contain rounded-sm" />
-							<span>Stage by Ant</span>
-						</a>
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<a
+								href="https://stage.byant.dev/p/domodomo"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								title="Featured Pick on Stage by Ant"
+							>
+								<img src={stageByAntLogo} alt="Stage by Ant" className="w-4 h-4 object-contain rounded-sm" />
+								<span>Stage by Ant</span>
+							</a>
+						</TiltContainer>
 					</div>
 
 					{/* Group 3: Core Privacy & Open Source Guarantees */}
@@ -2494,144 +2509,148 @@ export const Dashboard = () => {
 					</p>
 				</div>
 
-				{/* Right side mock status console — hidden on mobile to keep hero compact */}
-				<div className="hidden lg:flex lg:col-span-5 w-full z-10 flex-col relative group/terminal">
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative">
-						{/* Header console bar */}
-						<div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
-							<div className="flex items-center gap-1.5">
-								<span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-								<span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-								<span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+				{/* Right side mock status console */}
+				<div className="flex lg:col-span-5 w-full z-10 flex-col relative group/terminal min-h-[300px] lg:min-h-0">
+					<TiltContainer className="h-full w-full relative" maxTilt={6} scale={1.015}>
+						<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative">
+							{/* Header console bar */}
+							<div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
+								<div className="flex items-center gap-1.5">
+									<span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+									<span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+									<span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+								</div>
+								<span className="text-[10px] font-mono text-[#72706C] font-semibold">
+									domodomo-terminal v1.0.0
+								</span>
+								<div className="w-12" /> {/* spacer */}
 							</div>
-							<span className="text-[10px] font-mono text-[#72706C] font-semibold">
-								domodomo-terminal v1.0.0
-							</span>
-							<div className="w-12" /> {/* spacer */}
+
+							{/* Console terminal instructions */}
+							<div className="p-5 flex flex-col gap-3 text-left font-mono text-[10px] text-[#A3A09B] overflow-y-auto flex-1">
+								<div className="flex flex-col gap-1">
+									<span className="text-[#72706C] font-semibold">
+										# 1. Clone the project and install dependencies
+									</span>
+									<div className="flex justify-between items-center group/line">
+										<span className="text-[#ECEBE9] flex items-center gap-1">
+											<span className="text-[#3C6B4D] font-bold">$</span> git
+											clone
+											https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+										</span>
+										<button
+											onClick={() =>
+												handleCopyTerminalCommand(
+													"git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git",
+													0,
+												)
+											}
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											title="Copy command"
+										>
+											{copiedTerminalIndex === 0 ? (
+												<Check size={10} className="text-[#3C6B4D]" />
+											) : (
+												<Copy size={10} />
+											)}
+										</button>
+									</div>
+									<div className="flex justify-between items-center group/line">
+										<span className="text-[#ECEBE9] flex items-center gap-1">
+											<span className="text-[#3C6B4D] font-bold">$</span> cd
+											DomoDomo---All-in-one-Tool && npm install
+										</span>
+										<button
+											onClick={() =>
+												handleCopyTerminalCommand(
+													"cd DomoDomo---All-in-one-Tool && npm install",
+													1,
+												)
+											}
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											title="Copy command"
+										>
+											{copiedTerminalIndex === 1 ? (
+												<Check size={10} className="text-[#3C6B4D]" />
+											) : (
+												<Copy size={10} />
+											)}
+										</button>
+									</div>
+								</div>
+
+								<div className="flex flex-col gap-1">
+									<span className="text-[#72706C] font-semibold">
+										# 2. Start developer workshop server
+									</span>
+									<div className="flex justify-between items-center group/line">
+										<span className="text-[#ECEBE9] flex items-center gap-1">
+											<span className="text-[#3C6B4D] font-bold">$</span> npm
+											run dev
+										</span>
+										<button
+											onClick={() =>
+												handleCopyTerminalCommand("npm run dev", 2)
+											}
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											title="Copy command"
+										>
+											{copiedTerminalIndex === 2 ? (
+												<Check size={10} className="text-[#3C6B4D]" />
+											) : (
+												<Copy size={10} />
+											)}
+										</button>
+									</div>
+									<div className="flex flex-col gap-0.5 text-[#72706C] pl-4">
+										<span>➔ Local: http://localhost:5173/</span>
+										<span>➔ mcp: http://localhost:3001/</span>
+									</div>
+								</div>
+
+								<div className="flex flex-col gap-1">
+									<span className="text-[#72706C] font-semibold">
+										# 3. Setup and pull local AI tools (via Ollama)
+									</span>
+									<div className="flex justify-between items-center group/line">
+										<span className="text-[#ECEBE9] flex items-center gap-1">
+											<span className="text-[#3C6B4D] font-bold">$</span> ollama
+											run llama3.2:3b
+										</span>
+										<button
+											onClick={() =>
+												handleCopyTerminalCommand("ollama run llama3.2:3b", 3)
+											}
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											title="Copy command"
+										>
+											{copiedTerminalIndex === 3 ? (
+												<Check size={10} className="text-[#3C6B4D]" />
+											) : (
+												<Copy size={10} />
+											)}
+										</button>
+									</div>
+									<span className="text-[#3C6B4D] text-[9px] pl-4">
+										✓ Local AI bridge connected and secure!
+									</span>
+								</div>
+							</div>
 						</div>
 
-						{/* Console terminal instructions */}
-						<div className="p-5 flex flex-col gap-3 text-left font-mono text-[10px] text-[#A3A09B] overflow-y-auto flex-1">
-							<div className="flex flex-col gap-1">
-								<span className="text-[#72706C] font-semibold">
-									# 1. Clone the project and install dependencies
-								</span>
-								<div className="flex justify-between items-center group/line">
-									<span className="text-[#ECEBE9] flex items-center gap-1">
-										<span className="text-[#3C6B4D] font-bold">$</span> git
-										clone
-										https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
-									</span>
-									<button
-										onClick={() =>
-											handleCopyTerminalCommand(
-												"git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git",
-												0,
-											)
-										}
-										className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
-										title="Copy command"
-									>
-										{copiedTerminalIndex === 0 ? (
-											<Check size={10} className="text-[#3C6B4D]" />
-										) : (
-											<Copy size={10} />
-										)}
-									</button>
-								</div>
-								<div className="flex justify-between items-center group/line">
-									<span className="text-[#ECEBE9] flex items-center gap-1">
-										<span className="text-[#3C6B4D] font-bold">$</span> cd
-										DomoDomo---All-in-one-Tool && npm install
-									</span>
-									<button
-										onClick={() =>
-											handleCopyTerminalCommand(
-												"cd DomoDomo---All-in-one-Tool && npm install",
-												1,
-											)
-										}
-										className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
-										title="Copy command"
-									>
-										{copiedTerminalIndex === 1 ? (
-											<Check size={10} className="text-[#3C6B4D]" />
-										) : (
-											<Copy size={10} />
-										)}
-									</button>
-								</div>
-							</div>
-							<div className="flex flex-col gap-1 mt-1 border-t border-[#2A2D30]/60 pt-2.5">
-								<span className="text-[#72706C] font-semibold">
-									# 2. Start developer workshop server
-								</span>
-								<div className="flex justify-between items-center group/line">
-									<span className="text-[#ECEBE9] flex items-center gap-1">
-										<span className="text-[#3C6B4D] font-bold">$</span> npm run
-										dev
-									</span>
-									<button
-										onClick={() => handleCopyTerminalCommand("npm run dev", 2)}
-										className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
-										title="Copy command"
-									>
-										{copiedTerminalIndex === 2 ? (
-											<Check size={10} className="text-[#3C6B4D]" />
-										) : (
-											<Copy size={10} />
-										)}
-									</button>
-								</div>
-								<span className="text-[#72706C] text-[9px] pl-4">
-									➜ Local: http://localhost:5173/
-								</span>
-								<span className="text-[#72706C] text-[9px] pl-4">
-									➜ mcp: http://localhost:3001/
-								</span>
-							</div>
-							<div className="flex flex-col gap-1 mt-1 border-t border-[#2A2D30]/60 pt-2.5">
-								<span className="text-[#72706C] font-semibold">
-									# 3. Setup and pull local AI tools (via Ollama)
-								</span>
-								<div className="flex justify-between items-center group/line">
-									<span className="text-[#ECEBE9] flex items-center gap-1">
-										<span className="text-[#3C6B4D] font-bold">$</span> ollama
-										run llama3.2:3b
-									</span>
-									<button
-										onClick={() =>
-											handleCopyTerminalCommand("ollama run llama3.2:3b", 3)
-										}
-										className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
-										title="Copy command"
-									>
-										{copiedTerminalIndex === 3 ? (
-											<Check size={10} className="text-[#3C6B4D]" />
-										) : (
-											<Copy size={10} />
-										)}
-									</button>
-								</div>
-								<span className="text-[#3C6B4D] text-[9px] pl-4">
-									✓ Local AI bridge connected and secure!
-								</span>
-							</div>
+						{/* Animated Mascot Video Overlay */}
+						<div
+							className="absolute -right-4 md:-right-6 z-30 pointer-events-auto"
+							style={{ bottom: '-40px', transform: 'translateZ(40px)', transformStyle: 'preserve-3d' }}
+						>
+							<TransparentVideoMascot
+								src={domoLaptopWebm}
+								className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 lg:w-60 lg:h-60 drop-shadow-2xl transition-transform duration-200 ease-[var(--ease-out)] hover:scale-105"
+								clickable={true}
+								isNativeTransparent={true}
+							/>
 						</div>
-					</div>
-
-					{/* Animated Mascot Video Overlay — hidden on mobile to save vertical space */}
-					<div
-						className="hidden lg:block absolute -right-4 md:-right-6 z-30 pointer-events-auto"
-						style={{ bottom: '-55px' }}
-					>
-						<TransparentVideoMascot
-							src={domoLaptopWebm}
-							className="w-48 h-48 md:w-60 md:h-60 drop-shadow-2xl transition-transform duration-200 ease-[var(--ease-out)] hover:scale-105"
-							clickable={true}
-							isNativeTransparent={true}
-						/>
-					</div>
+					</TiltContainer>
 				</div>
 			</div>
 
