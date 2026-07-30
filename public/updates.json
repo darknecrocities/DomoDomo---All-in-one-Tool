@@ -1,5 +1,23 @@
 [
   {
+    "hash": "8af5f08",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "0cb142b",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(responsive): comprehensive mobile-first responsive design improvements"
+  },
+  {
+    "hash": "f2bcb12",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "3ffb9f3",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -67,24 +85,6 @@
   },
   {
     "hash": "ead4536",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "9052dbe",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(config): add Upstash Redis environment variables for realtime visit counter"
-  },
-  {
-    "hash": "3c7fba9",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "a9be7e5",
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
