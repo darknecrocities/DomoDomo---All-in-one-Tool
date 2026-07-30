@@ -20,7 +20,7 @@ import { AppBuildersWidget } from '../components/AppBuildersWidget';
 
 const getStats = (activeUsersCount: string) => [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
-  { label: 'Active Users', value: activeUsersCount, detail: 'Developers & creators running DomoDomo offline globally.', icon: Users },
+  { label: 'Total Visitors & Users', value: activeUsersCount, detail: 'Visitors & creators who accessed and used DomoDomo utilities globally.', icon: Users },
   { label: 'Categories', value: `${CATEGORIES.length - 2}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and security.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
