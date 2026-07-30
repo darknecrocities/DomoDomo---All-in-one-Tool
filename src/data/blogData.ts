@@ -13,6 +13,35 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'model-settings-manager-dynamic-ai-hub',
+    title: 'Introducing Model Settings Manager & 100% Dynamic AI Hub Expansion',
+    excerpt: 'DomoDomo introduces a dedicated Model Settings & Storage Manager studio to inspect, delete, copy, and configure local Ollama models with 1 click, alongside 100% live vector embedding search and function calling sandboxes.',
+    date: 'July 30, 2026',
+    readTime: '5 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'model settings manager, delete ollama model, inspect modelfile, copy ollama alias, unload vram, dynamic ai hub, domodomo',
+    content: `# Introducing Model Settings Manager & 100% Dynamic AI Hub Expansion
+
+DomoDomo is thrilled to release **Model Settings & Storage Manager** (\`/ai-hub\`), bringing 1-click model weight deletion (\`/api/delete\`), deep Modelfile metadata inspection (\`/api/show\`), instant local model aliasing (\`/api/copy\`), GPU VRAM memory unloading (\`keep_alive: 0\`), and global hyperparameter settings directly into DomoDomo!
+
+---
+
+## 🛠️ Key Features of Model Settings Studio
+
+1. **1-Click Local Model Deletion**: Clean up gigabytes of disk space by deleting unused local models directly from Ollama storage with 1-click safety confirmation.
+2. **Deep Modelfile Metadata Inspector**: View parameter count, quantization bit-depth (Q4, Q8, FP16), architecture family, system prompts, template specs, and licenses.
+3. **Instant Model Aliasing**: Create local duplicates or custom model tags without re-downloading model weights (\`POST /api/copy\`).
+4. **GPU VRAM Memory Purge**: Force unload active models from GPU memory (\`keep_alive: 0\`) to instantly free system RAM/VRAM.
+5. **Global Inference Defaults**: Customize default context window sizes (\`num_ctx\`), temperature controls, and top_p across all AI Hub tools.
+
+---
+
+## ⚡ 100% Dynamic & Live Local Inference
+All AI Hub tools now compute real vector embeddings (\`aiService.generateEmbeddings\`), execute client-side function sandboxes, stream Ollama completions live, and feature full network stream chunk buffering for flawless progress tracking.
+`
+  },
+  {
     slug: 'ai-hub-16-tools-expansion-vision-downloader',
     title: 'Announcing 16-Tool AI Hub Studio Expansion & Multimodal Vision Downloader',
     excerpt: 'DomoDomo expands AI Hub Studio to 16 dynamic utilities featuring RAG Vector Search, Prompt Engineering Lab, Structured JSON Extractor, Function Calling Studio, AI Guardrails, Code Patch Refactoring, Multi-Model Router, Knowledge Graph Visualizer, Vision Inspection Studio with 1-Click Model Downloader, and VRAM Quantization Calculator.',

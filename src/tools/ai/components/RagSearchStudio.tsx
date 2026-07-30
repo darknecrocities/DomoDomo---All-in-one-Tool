@@ -90,29 +90,51 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
     }
   };
 
-  const handleChunkAndSearch = () => {
+  const [ragAnswer, setRagAnswer] = useState<string | null>(null);
+
+  const handleExecuteSearch = async () => {
     if (!searchQuery.trim() || !documentContent.trim()) return;
     setIsSearching(true);
+    setRagAnswer(null);
 
-    setTimeout(() => {
-      let rawChunks: string[] = [];
-      if (chunkStrategy === 'paragraph') rawChunks = documentContent.split(/\n\s*\n/).filter(Boolean);
-      else if (chunkStrategy === 'sentence') rawChunks = documentContent.split(/(?<=[.!?])\s+/).filter(Boolean);
-      else rawChunks = documentContent.match(/.{1,120}/g) || [documentContent];
+    let rawChunks: string[] = [];
+    if (chunkStrategy === 'paragraph') rawChunks = documentContent.split(/\n\s*\n/).filter(Boolean);
+    else if (chunkStrategy === 'sentence') rawChunks = documentContent.split(/(?<=[.!?])\s+/).filter(Boolean);
+    else rawChunks = documentContent.match(/.{1,150}/g) || [documentContent];
 
-      const queryTokens = searchQuery.toLowerCase().split(/\W+/).filter(b => b.length > 2);
-      const scored: DocumentChunk[] = rawChunks.map((c, i) => {
-        const chunkLower = c.toLowerCase();
-        let matchCount = 0;
-        queryTokens.forEach(t => { if (chunkLower.includes(t)) matchCount += 1; });
-        const similarity = queryTokens.length ? Math.min(0.99, Number((matchCount / queryTokens.length).toFixed(2)) + 0.15) : 0.45;
-        return { id: i + 1, content: c.trim(), source: fileName, similarity };
-      });
+    try {
+      const queryEmbedding = await aiService.generateEmbeddings(searchQuery, currentModel);
+      
+      const scored: DocumentChunk[] = await Promise.all(rawChunks.map(async (c, i) => {
+        const chunkEmbedding = await aiService.generateEmbeddings(c, currentModel);
+        let dotProduct = 0;
+        let normA = 0;
+        let normB = 0;
+        for (let k = 0; k < queryEmbedding.length; k++) {
+          dotProduct += queryEmbedding[k] * (chunkEmbedding[k] || 0);
+          normA += queryEmbedding[k] * queryEmbedding[k];
+          normB += (chunkEmbedding[k] || 0) * (chunkEmbedding[k] || 0);
+        }
+        const similarity = (Math.sqrt(normA) * Math.sqrt(normB)) > 0
+          ? Number((dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))).toFixed(3))
+          : 0.5;
+        const normalizedSim = Math.min(0.99, Math.max(0.15, similarity));
+        return { id: i + 1, content: c.trim(), source: fileName, similarity: normalizedSim };
+      }));
 
       scored.sort((a, b) => b.similarity - a.similarity);
       setChunks(scored);
+
+      // Synthesize answer using top context chunk
+      if (scored.length > 0) {
+        const topContext = scored.slice(0, 3).map(s => s.content).join('\n---\n');
+        setRagAnswer(`[Retrieval-Augmented Context Match]:\n${topContext}`);
+      }
+    } catch (err: any) {
+      console.warn('Vector embedding search fallback:', err);
+    } finally {
       setIsSearching(false);
-    }, 400);
+    }
   };
 
   const handleExportChunks = () => {

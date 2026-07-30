@@ -848,7 +848,8 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
   useEffect(() => {
     const fetchInstalledOllamaModels = async () => {
       try {
-        const res = await fetch('http://localhost:11434/api/tags');
+        const endpoint = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' ? '/ollama-proxy' : '/ollama-proxy';
+        const res = await fetch(`${endpoint}/api/tags`).catch(() => fetch('http://127.0.0.1:11434/api/tags'));
         if (res.ok) {
           const data = await res.json();
           if (data.models && Array.isArray(data.models) && data.models.length > 0) {

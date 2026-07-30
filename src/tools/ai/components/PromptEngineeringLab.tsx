@@ -134,7 +134,8 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
     setExecutionResult('');
 
     try {
-      const res = await fetch('http://localhost:11434/api/generate', {
+      const endpoint = aiService.getCustomEndpoint('ollama') || '/ollama-proxy';
+      const res = await fetch(`${endpoint}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

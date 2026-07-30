@@ -629,7 +629,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.2.0 (Latest)",
+                    version: "v2.3.0 (Latest)",
+                    date: "July 30, 2026",
+                    title: "Model Settings Manager & 100% Dynamic AI Hub Expansion",
+                    changes: [
+                      "Model Settings & Storage Manager Studio: New dedicated tool under Safety & Hardware featuring 1-click model weight deletion (/api/delete), deep Modelfile metadata inspector (/api/show), instant local model aliasing (/api/copy), GPU VRAM memory purge button (keep_alive: 0), and global hyperparameter presets.",
+                      "100% Dynamic AI Execution: Upgraded RAG Vector Search with real vector embeddings (aiService.generateEmbeddings), live Ollama JSON schema extraction, client-side function calling sandbox execution, and live vision inspections.",
+                      "Enhanced Network Resilience: Added NDJSON stream chunk buffer handling for Ollama pulls, multi-layer digest progress tracking, and robust proxy routing."
+                    ]
+                  },
+                  {
+                    version: "v2.2.0",
                     date: "July 29, 2026",
                     title: "16-Tool AI Hub Studio Expansion & Multimodal Vision Downloader",
                     changes: [

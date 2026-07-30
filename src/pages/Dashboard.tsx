@@ -1205,6 +1205,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		popular: true,
 		requiresOllama: true,
 	},
+	{
+		id: "ai-model-manager",
+		name: "Model Settings & Storage Manager",
+		categories: ["AI & Local Models"],
+		description: "Manage local Ollama model weights, delete unused models, inspect Modelfiles, copy aliases, and control VRAM.",
+		icon: "Settings",
+		status: "functional",
+		popular: true,
+		requiresOllama: true,
+	},
 
 	// Data & Visualizer (10)
 	{

@@ -183,7 +183,8 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
 
     try {
       const base64Data = imageSrc.split(',')[1];
-      const res = await fetch('http://localhost:11434/api/generate', {
+      const endpoint = aiService.getCustomEndpoint('ollama') || '/ollama-proxy';
+      const res = await fetch(`${endpoint}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

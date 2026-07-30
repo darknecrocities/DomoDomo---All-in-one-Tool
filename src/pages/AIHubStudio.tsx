@@ -59,6 +59,7 @@ import { MultiModelRouter } from '../tools/ai/components/MultiModelRouter';
 import { KnowledgeGraphVisualizer } from '../tools/ai/components/KnowledgeGraphVisualizer';
 import { VisionInspectionStudio } from '../tools/ai/components/VisionInspectionStudio';
 import { HardwareQuantCalculator } from '../tools/ai/components/HardwareQuantCalculator';
+import { ModelManagerStudio } from '../tools/ai/components/ModelManagerStudio';
 
 interface OllamaModel {
   name: string;
@@ -1968,6 +1969,17 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <Gauge size={14} className="shrink-0 text-[#3C6B4D]" />
                   {!sidebarCollapsed && <span>VRAM Calculator</span>}
                 </button>
+
+                <button
+                  onClick={() => setActiveTab('model-settings')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'model-settings' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Model Settings & Storage Manager"
+                >
+                  <Settings size={14} className="shrink-0 text-amber-400" />
+                  {!sidebarCollapsed && <span>Model Settings</span>}
+                </button>
               </div>
             </div>
           </div>
@@ -3123,6 +3135,14 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 installedModels={models.map(m => m.name)}
                 onSelectGlobalModel={setSelectedModel}
                 onDownloadModel={handleDownloadModel}
+              />
+            )}
+            {activeTab === 'model-settings' && (
+              <ModelManagerStudio
+                selectedModel={selectedModel}
+                installedModels={models.map(m => m.name)}
+                onSelectGlobalModel={setSelectedModel}
+                onRefreshModels={checkOllama}
               />
             )}
 

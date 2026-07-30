@@ -1322,12 +1322,21 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-hub-studio',
-        name: 'AI Hub Studio (16-Tool Local AI Automation Suite)',
-        engine: 'n8n Visual Flow Graph Canvas Engine, Ollama REST Stream, Vector RAG Engine, & Llava Vision VQA',
-        details: 'Comprehensive local AI Hub Studio featuring 16 dynamic sub-studios: n8n-style visual graph flowchart canvas, Fine-Tune QLoRA builder, Side-by-Side Model Benchmarks, RAG Vector Search Studio, Prompt Engineering Lab, Structured JSON Extractor, Function Calling Studio, AI Guardrails Inspector, Code Refactoring & AI Patch, Multi-Model Router, Knowledge Graph Visualizer, Vision Inspection Studio with 1-Click Model Downloader, and GGUF VRAM Quantization Calculator.',
-        functionality: '16-tab local AI environment: n8n visual automation board, synthetic dataset recipe builder, QLoRA hyperparameter tuning, loss curve monitor, TF-IDF vector document chunker, {{variable}} prompt template parser, JSON schema validator, client-side function calling execution trace, 8-category PII redaction mask editor, AST code patch exporter, intent classification router, interactive SVG knowledge graph entity extractor, Llava multimodal vision inspector with 1-click model downloader, and GGUF --n-gpu-layers VRAM offload calculator.',
-        howItWorks: '1. Select any of the 16 dedicated AI Hub tools from the categorized sidebar or mobile drawer. 2. Processes all inputs, vector distances, canvas pixel data, and AST patches 100% client-side with optional local Ollama HTTP API streaming (port 11434). 3. Provides 1-click model downloads and zero cloud server dependencies.',
-        technicalSpecs: '100% client-side offline execution. Connects to Ollama REST endpoints (/api/generate, /api/pull, /api/tags), features SVG Canvas graphics, IndexedDB workflow persistence, and custom JSON/TS export.'
+        name: 'AI Hub Studio (17-Tool Local AI Automation Suite)',
+        engine: 'n8n Visual Flow Graph Canvas Engine, Ollama REST Stream, Vector RAG Engine, & Model Settings Manager',
+        details: 'Comprehensive local AI Hub Studio featuring 17 dynamic sub-studios: Model Settings & Storage Manager, n8n-style visual graph flowchart canvas, Fine-Tune QLoRA builder, Side-by-Side Model Benchmarks, RAG Vector Search Studio, Prompt Engineering Lab, Structured JSON Extractor, Function Calling Studio, AI Guardrails Inspector, Code Refactoring & AI Patch, Multi-Model Router, Knowledge Graph Visualizer, Vision Inspection Studio with 1-Click Model Downloader, and GGUF VRAM Quantization Calculator.',
+        functionality: '17-tab local AI environment: model settings manager for deleting models, Modelfile inspection, model aliasing, VRAM unloading, n8n visual automation board, synthetic dataset recipe builder, QLoRA hyperparameter tuning, loss curve monitor, TF-IDF vector document chunker, {{variable}} prompt template parser, JSON schema validator, client-side function calling execution trace, 8-category PII redaction mask editor, AST code patch exporter, intent classification router, interactive SVG knowledge graph entity extractor, Llava multimodal vision inspector with 1-click model downloader, and GGUF --n-gpu-layers VRAM offload calculator.',
+        howItWorks: '1. Select any of the 17 dedicated AI Hub tools from the categorized sidebar or mobile drawer. 2. Processes all inputs, vector distances, canvas pixel data, and AST patches 100% client-side with optional local Ollama HTTP API streaming (port 11434). 3. Provides 1-click model downloads, model deletion, and zero cloud server dependencies.',
+        technicalSpecs: '100% client-side offline execution. Connects to Ollama REST endpoints (/api/generate, /api/pull, /api/delete, /api/show, /api/copy, /api/tags), features SVG Canvas graphics, IndexedDB workflow persistence, and custom JSON/TS export.'
+      },
+      {
+        id: 'ai-model-manager',
+        name: 'Model Settings & Storage Manager',
+        engine: 'Ollama REST Management API (/api/tags, /api/delete, /api/show, /api/copy)',
+        details: 'Local Ollama model weight management studio. Delete unused model files from disk, inspect detailed Modelfile metadata, copy/alias models, force GPU VRAM unloads, and configure default inference hyperparameters.',
+        functionality: '1-click model deletion, deep JSON Modelfile inspector, instant local model aliasing without re-downloading, VRAM purge button (keep_alive: 0), and global context window, temperature, and top_p settings.',
+        howItWorks: '1. Lists all installed models fetched from Ollama. 2. Inspects architecture metadata and parameter specs via /api/show. 3. Delete weights permanently with /api/delete or force GPU VRAM release.',
+        technicalSpecs: 'Connects directly to local Ollama daemon REST management endpoints.'
       }
     ]
   },
