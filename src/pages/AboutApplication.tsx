@@ -15,6 +15,8 @@ import { TOOLS } from '../engine/registry';
 import { CATEGORIES } from './Dashboard';
 import { CommunityTestimonials } from '../components/CommunityTestimonials';
 import { useVisitCounter } from '../utils/visitCounter';
+import { AppBuildersWidget } from '../components/AppBuildersWidget';
+
 
 const getStats = (activeUsersCount: string) => [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
@@ -225,10 +227,8 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.12] pointer-events-none" />
         <div className="lg:col-span-8 z-10 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
-              <Shield size={12} />
-              <span>About DomoDomo</span>
-            </div>
+            {/* Live App Builders PH Vote Widget */}
+            <AppBuildersWidget />
 
             <div
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/10 text-[#d4af37] shadow-sm font-extrabold text-xs"

@@ -25,6 +25,8 @@ import domoLaptopWebm from "../assets/domolaptop.webm";
 import betterGovLogo from "../assets/bettergovph.jpg";
 import upamateLogo from "../assets/upamate.png";
 import stageByAntLogo from "../assets/stagebyant.png";
+import { AppBuildersWidget } from "../components/AppBuildersWidget";
+
 
 interface PlannedTool {
 	id: string;
@@ -2266,6 +2268,9 @@ export const Dashboard = () => {
 
 				<div className="lg:col-span-7 flex flex-col gap-4 text-left z-10 justify-center">
 					<div className="flex flex-wrap gap-3 items-center">
+						{/* Live App Builders PH Vote Widget */}
+						<AppBuildersWidget />
+
 						{/* App Builders PH #1 All Time Overall Badge */}
 						<a
 							href="https://www.appbuildersph.com/apps/domodomo"
