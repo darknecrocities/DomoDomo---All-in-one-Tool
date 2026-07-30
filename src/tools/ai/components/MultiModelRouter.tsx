@@ -114,19 +114,19 @@ export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Header Bar */}
-      <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
-            <GitBranch size={12} />
-            <span>Dynamic Intent Classification &amp; Routing Matrix</span>
+      <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/30 text-[11px] font-bold uppercase tracking-wider w-fit max-w-full">
+              <GitBranch size={13} className="shrink-0 text-[#3C6B4D]" />
+              <span className="truncate">Dynamic Intent Classification &amp; Routing Matrix</span>
+            </div>
+            <h2 className="text-xl font-black text-[#ECEBE9] tracking-tight">Multi-Model Router</h2>
+            <p className="text-[#72706C] text-xs leading-relaxed max-w-xl">Route prompts automatically to specialized models (Coder, Math, General) based on intent matrix.</p>
           </div>
-          <h2 className="text-lg font-extrabold text-[#ECEBE9]">Multi-Model Router</h2>
-          <p className="text-[#72706C] text-xs mt-0.5">Route prompts automatically to specialized models (Coder, Math, General) based on intent matrix.</p>
-        </div>
 
-        {/* Model Selector & Download */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs font-mono">
+          {/* Model Selector Pill */}
+          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs font-mono w-fit shrink-0">
             <Cpu size={14} className="text-[#3C6B4D]" />
             <select
               value={currentModel}
@@ -140,8 +140,11 @@ export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
               ))}
             </select>
           </div>
+        </div>
 
-          {!isInstalled(currentModel) && (
+        {/* Action Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-[#2A2D30]/60">
+          {!isInstalled(currentModel) ? (
             <button
               onClick={() => handlePullModel(currentModel)}
               disabled={downloadingModel === currentModel}
@@ -150,7 +153,7 @@ export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
               <Download size={13} className={downloadingModel === currentModel ? 'animate-spin' : ''} />
               <span>{downloadingModel === currentModel ? `Pulling ${pullProgress}%` : 'Download Model'}</span>
             </button>
-          )}
+          ) : <div />}
 
           <button
             onClick={handleRouteQuery}
@@ -158,7 +161,7 @@ export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
             className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 shadow-md shadow-[#3C6B4D]/20"
           >
             <Sparkles size={14} className={isRouting ? 'animate-spin' : ''} />
-            <span>{isRouting ? 'Classifying...' : 'Classify &amp; Route Prompt'}</span>
+            <span>{isRouting ? 'Classifying...' : 'Classify & Route Prompt'}</span>
           </button>
         </div>
       </div>
@@ -184,7 +187,7 @@ export const MultiModelRouter: React.FC<MultiModelRouterProps> = ({
         <span className="text-xs font-extrabold text-[#ECEBE9] border-b border-[#2A2D30] pb-2 block">
           Model Intent Routing Matrix
         </span>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {routingRules.map(rule => (
             <div key={rule.id} className="p-3 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-1.5 font-mono text-xs">
               <span className="text-emerald-400 font-bold block">{rule.intentCategory}</span>

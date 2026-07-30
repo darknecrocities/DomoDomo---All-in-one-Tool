@@ -2,40 +2,63 @@
  * Simple client-side Markdown to HTML converter.
  * Extracted from Markdown.tsx for global usage across the toolbox, including AI chats.
  */
+/**
+ * Simple client-side Markdown to HTML converter.
+ * Extracted from Markdown.tsx for global usage across the toolbox, including AI chats.
+ */
 export const parseMarkdown = (md: string): string => {
-  let html = md
+  if (!md) return '';
+
+  // Auto-close code blocks if odd count of ``` during streaming
+  let processedMd = md;
+  const backtickMatches = processedMd.match(/```/g);
+  if (backtickMatches && backtickMatches.length % 2 !== 0) {
+    processedMd += '\n```';
+  }
+
+  let html = processedMd
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // Code blocks
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-slate-950/70 p-3 rounded-lg border border-slate-800 font-mono text-[11px] text-indigo-300 overflow-x-auto my-3"><code>$2</code></pre>');
-  
+  // Code blocks with syntax badge and dark background
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const languageLabel = lang ? lang.toUpperCase() : 'CODE';
+    return `<div class="my-3 rounded-xl bg-[#111213] border border-[#2A2D30] overflow-hidden text-xs font-mono shadow-md">
+      <div class="flex items-center justify-between px-3.5 py-1.5 bg-[#18191B] border-b border-[#2A2D30] text-[11px] text-[#A3A09B]">
+        <span class="font-bold text-[#3C6B4D] tracking-wider">${languageLabel}</span>
+        <span class="text-[10px] text-[#72706C]">Snippet</span>
+      </div>
+      <pre class="p-3.5 overflow-x-auto text-[#4E8E5E] text-[12px] leading-relaxed whitespace-pre font-mono"><code>${code}</code></pre>
+    </div>`;
+  });
+
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-slate-900 px-1.5 py-0.5 rounded font-mono text-emerald-400">$1</code>');
-  
+  html = html.replace(/`([^`]+)`/g, '<code class="bg-[#18191B] border border-[#2A2D30] px-1.5 py-0.5 rounded text-[#4E8E5E] font-mono text-[12px] font-semibold">$1</code>');
+
   // Headers
-  html = html.replace(/^### (.*$)/gim, '<h4 class="text-sm font-bold text-slate-100 mt-4 mb-2">$1</h4>');
-  html = html.replace(/^## (.*$)/gim, '<h3 class="text-base font-bold text-slate-100 mt-5 mb-2 border-b border-slate-850 pb-1">$1</h3>');
-  html = html.replace(/^# (.*$)/gim, '<h2 class="text-lg font-bold text-white mt-2 mb-3">$1</h2>');
+  html = html.replace(/^### (.*$)/gim, '<h4 class="text-sm font-bold text-[#ECEBE9] mt-4 mb-2">$1</h4>');
+  html = html.replace(/^## (.*$)/gim, '<h3 class="text-base font-bold text-[#ECEBE9] mt-5 mb-2 border-b border-[#2A2D30] pb-1">$1</h3>');
+  html = html.replace(/^# (.*$)/gim, '<h2 class="text-lg font-bold text-white mt-3 mb-3 border-b border-[#2A2D30] pb-1">$1</h2>');
 
   // Horizontal Rule
-  html = html.replace(/^\s*---\s*$/gim, '<hr class="border-slate-800 my-4" />');
+  html = html.replace(/^\s*---\s*$/gim, '<hr class="border-[#2A2D30] my-4" />');
 
   // Bold and Italics
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  html = html.replace(/~~([^~]+)~~/g, '<del class="line-through text-slate-500">$1</del>');
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+  html = html.replace(/\*([^*]+)\*/g, '<em class="italic text-[#D4D2CD]">$1</em>');
+  html = html.replace(/~~([^~]+)~~/g, '<del class="line-through text-[#72706C]">$1</del>');
 
   // Blockquotes
-  html = html.replace(/^\s*>\s+(.*$)/gim, '<blockquote class="border-l-4 border-[#4E8E5E] bg-slate-900/50 pl-3 py-1.5 my-3 text-slate-400 italic font-medium">$1</blockquote>');
+  html = html.replace(/^\s*>\s+(.*$)/gim, '<blockquote class="border-l-4 border-[#3C6B4D] bg-[#18191B]/80 pl-3 py-1.5 my-3 text-[#A3A09B] italic rounded-r-lg">$1</blockquote>');
 
   // Task lists / checkboxes
-  html = html.replace(/^\s*-\s+\[\s*\]\s+(.*$)/gim, '<li class="ml-4 list-none text-slate-300 flex items-center gap-2 my-1"><input type="checkbox" disabled class="rounded border-slate-800 bg-slate-900 accent-[#4E8E5E]" /> <span>$1</span></li>');
-  html = html.replace(/^\s*-\s+\[x\]\s+(.*$)/gim, '<li class="ml-4 list-none text-slate-455 line-through flex items-center gap-2 my-1"><input type="checkbox" checked disabled class="rounded border-slate-800 bg-slate-900 accent-[#4E8E5E]" /> <span>$1</span></li>');
+  html = html.replace(/^\s*-\s+\[\s*\]\s+(.*$)/gim, '<li class="ml-4 list-none text-[#ECEBE9] flex items-center gap-2 my-1"><input type="checkbox" disabled class="rounded border-[#2A2D30] bg-[#111213] accent-[#3C6B4D]" /> <span>$1</span></li>');
+  html = html.replace(/^\s*-\s+\[x\]\s+(.*$)/gim, '<li class="ml-4 list-none text-[#72706C] line-through flex items-center gap-2 my-1"><input type="checkbox" checked disabled class="rounded border-[#2A2D30] bg-[#111213] accent-[#3C6B4D]" /> <span>$1</span></li>');
 
-  // Lists
-  html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-4 list-disc text-slate-300 my-1">$1</li>');
+  // Unordered Lists
+  html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-4 list-disc text-[#ECEBE9] my-1">$1</li>');
+  html = html.replace(/^\s*\*\s+(.*$)/gim, '<li class="ml-4 list-disc text-[#ECEBE9] my-1">$1</li>');
 
   // Images
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
@@ -47,7 +70,7 @@ export const parseMarkdown = (md: string): string => {
       (!trimmedUrl.includes(':') && !trimmedUrl.startsWith('//')) ||
       trimmedUrl.startsWith('#');
     const safeUrl = isSafe ? url : '';
-    return `<img src="${safeUrl}" alt="${alt}" class="max-w-full h-auto rounded-lg border border-slate-800 my-3 shadow-md mx-auto" />`;
+    return `<img src="${safeUrl}" alt="${alt}" class="max-w-full h-auto rounded-xl border border-[#2A2D30] my-3 shadow-md mx-auto" />`;
   });
 
   // Links
@@ -61,7 +84,7 @@ export const parseMarkdown = (md: string): string => {
       trimmedUrl.startsWith('#') ||
       (!trimmedUrl.includes(':') && !trimmedUrl.startsWith('//'));
     const safeUrl = isSafe ? url : '#';
-    return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 underline font-semibold transition-colors">${text}</a>`;
+    return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-[#3C6B4D] hover:text-[#4E8E5E] underline font-semibold transition-colors">${text}</a>`;
   });
 
   // Paragraphs and Tables Parser
@@ -85,15 +108,15 @@ export const parseMarkdown = (md: string): string => {
       if (!inTable) {
         inTable = true;
         tableHeader = true;
-        rowHtml += '<div class="overflow-x-auto my-3"><table class="w-full border-collapse border border-slate-800 text-xs text-left">';
+        rowHtml += '<div class="overflow-x-auto my-3"><table class="w-full border-collapse border border-[#2A2D30] text-xs text-left rounded-lg overflow-hidden">';
       }
 
-      rowHtml += '<tr class="border-b border-slate-800 hover:bg-slate-900/40 transition-colors">';
+      rowHtml += '<tr class="border-b border-[#2A2D30] hover:bg-[#18191B]/60 transition-colors">';
       cells.forEach(cell => {
         if (tableHeader) {
-          rowHtml += `<th class="px-3 py-2 bg-slate-900/90 font-bold border border-slate-800 text-slate-100">${cell}</th>`;
+          rowHtml += `<th class="px-3 py-2 bg-[#18191B] font-bold border border-[#2A2D30] text-[#ECEBE9]">${cell}</th>`;
         } else {
-          rowHtml += `<td class="px-3 py-2 border border-slate-800 text-slate-300">${cell}</td>`;
+          rowHtml += `<td class="px-3 py-2 border border-[#2A2D30] text-[#ECEBE9]">${cell}</td>`;
         }
       });
       rowHtml += '</tr>';
@@ -102,7 +125,7 @@ export const parseMarkdown = (md: string): string => {
     } else {
       if (inTable) {
         inTable = false;
-        return '</table></div>' + (trimmed ? `<p class="my-2 text-slate-350 leading-relaxed text-xs">${line}</p>` : '');
+        return '</table></div>' + (trimmed ? `<p class="my-1.5 text-[#ECEBE9] leading-relaxed text-xs">${line}</p>` : '');
       }
     }
 
@@ -115,13 +138,15 @@ export const parseMarkdown = (md: string): string => {
     } else {
       if (inList) {
         inList = false;
-        return '</ul>' + (trimmed ? `<p class="my-2 text-slate-355 leading-relaxed text-xs">${line}</p>` : '');
+        return '</ul>' + (trimmed ? `<p class="my-1.5 text-[#ECEBE9] leading-relaxed text-xs">${line}</p>` : '');
       }
     }
 
     if (trimmed && 
         !trimmed.startsWith('<h') && 
         !trimmed.startsWith('<hr') && 
+        !trimmed.startsWith('<div') &&
+        !trimmed.startsWith('</div>') &&
         !trimmed.startsWith('<pre') && 
         !trimmed.startsWith('<code') && 
         !trimmed.startsWith('</pre') && 
@@ -129,7 +154,7 @@ export const parseMarkdown = (md: string): string => {
         !trimmed.startsWith('</ul') && 
         !trimmed.startsWith('<blockquote') && 
         !trimmed.startsWith('<img')) {
-      return `<p class="my-2 text-slate-350 leading-relaxed text-xs">${line}</p>`;
+      return `<p class="my-1.5 text-[#ECEBE9] leading-relaxed text-xs">${line}</p>`;
     }
     return line;
   });

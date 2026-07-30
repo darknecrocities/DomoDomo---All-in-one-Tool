@@ -24,6 +24,7 @@ import {
   Layers,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   Zap,
   Settings,
   PanelLeftClose,
@@ -60,7 +61,7 @@ import { KnowledgeGraphVisualizer } from '../tools/ai/components/KnowledgeGraphV
 import { VisionInspectionStudio } from '../tools/ai/components/VisionInspectionStudio';
 import { HardwareQuantCalculator } from '../tools/ai/components/HardwareQuantCalculator';
 import { ModelManagerStudio } from '../tools/ai/components/ModelManagerStudio';
-import { HardwareRecommendationBanner } from '../tools/ai/components/HardwareRecommendationBanner';
+import { parseMarkdown } from '../utils/markdownParser';
 
 interface OllamaModel {
   name: string;
@@ -297,6 +298,8 @@ export const AIHubStudio = () => {
 
   const [chatInput, setChatInput] = useState('');
   const [attachedFile, setAttachedFile] = useState<{ name: string; content: string } | null>(null);
+  const [isChatHeaderMinimized, setIsChatHeaderMinimized] = useState<boolean>(false);
+  const [showChatConfig, setShowChatConfig] = useState<boolean>(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isListeningVoice, setIsListeningVoice] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
@@ -306,6 +309,7 @@ export const AIHubStudio = () => {
   const [maxTokens, setMaxTokens] = useState<number>(aiSettings.maxTokens);
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
 
   // Save sessions to LocalStorage
   useEffect(() => {
@@ -316,6 +320,7 @@ export const AIHubStudio = () => {
 
   // Sync messages with active session
   useEffect(() => {
+    if (isStreaming) return; // Do not thrash localStorage/sessions during token streaming
     setSessions(prev =>
       prev.map(s => {
         if (s.id === activeSessionId) {
@@ -326,7 +331,7 @@ export const AIHubStudio = () => {
         return s;
       })
     );
-  }, [messages, activeSessionId, selectedModel]);
+  }, [messages, activeSessionId, selectedModel, isStreaming]);
 
   // Handle New Chat Action
   const handleNewChat = () => {
@@ -335,19 +340,12 @@ export const AIHubStudio = () => {
       id: newId,
       title: 'New Conversation',
       model: selectedModel,
-      messages: [
-        {
-          id: `welcome-${Date.now()}`,
-          sender: 'assistant',
-          content: `Hello! Started a new chat session using ${selectedModel}. Ask me anything!`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ],
+      messages: [],
       updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setSessions(prev => [newSession, ...prev]);
     setActiveSessionId(newId);
-    setMessages(newSession.messages);
+    setMessages([]);
     setActiveTab('chat');
     setChatInput('');
     setAttachedFile(null);
@@ -1036,12 +1034,23 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
             stream: true
           })
         });
-
         if (!response.body) throw new Error('No stream body');
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let fullText = '';
         let tokenCount = 0;
+        let lastStateUpdate = 0;
+
+        const flushThrottledState = (force = false) => {
+          const now = performance.now();
+          if (force || now - lastStateUpdate > 33) {
+            lastStateUpdate = now;
+            const currentSnapshot = fullText;
+            setMessages(prev =>
+              prev.map(m => (m.id === assistantMsgId ? { ...m, content: currentSnapshot } : m))
+            );
+          }
+        };
 
         while (true) {
           const { done, value } = await reader.read();
@@ -1056,15 +1065,14 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
               if (parsed.response) {
                 fullText += parsed.response;
                 tokenCount++;
-                setMessages(prev =>
-                  prev.map(m => (m.id === assistantMsgId ? { ...m, content: fullText } : m))
-                );
+                flushThrottledState(false);
               }
             } catch {
               // Ignore partial JSON chunks
             }
           }
         }
+        flushThrottledState(true);
 
         const endTime = performance.now();
         const totalSec = (endTime - startTime) / 1000;
@@ -1072,7 +1080,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
         const lat = Math.round(endTime - startTime);
 
         setMessages(prev =>
-          prev.map(m => (m.id === assistantMsgId ? { ...m, tokensPerSec: tps, latencyMs: lat } : m))
+          prev.map(m => (m.id === assistantMsgId ? { ...m, content: fullText, tokensPerSec: tps, latencyMs: lat } : m))
         );
 
         if (aiSettings.autoSpeakResponse && fullText) {
@@ -1084,7 +1092,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
         let currentText = '';
 
         for (let i = 0; i < simulatedResp.length; i += 3) {
-          await new Promise(r => setTimeout(r, 25));
+          await new Promise(r => setTimeout(r, 20));
           currentText = simulatedResp.slice(0, i + 3);
           setMessages(prev =>
             prev.map(m => (m.id === assistantMsgId ? { ...m, content: currentText } : m))
@@ -2193,7 +2201,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
         <main ref={mainContainerRef} className="flex-1 overflow-y-auto min-w-0 w-full max-w-full">
 
           {/* Topbar inside content */}
-          <div className="sticky top-0 z-30 bg-[#18191B] border-b border-[#2A2D30] px-4 md:px-6 h-11 flex items-center justify-between">
+          <div className="sticky top-0 z-30 bg-[#18191B] border-b border-[#2A2D30] px-3 sm:px-4 md:px-6 h-11 flex items-center justify-between">
             <div className="flex items-center gap-2 text-[13px] font-semibold text-[#A3A09B]">
               <button
                 onClick={() => setMobileMenuOpen(prev => !prev)}
@@ -2224,13 +2232,15 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border ${
+              <span className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border max-w-[140px] xs:max-w-[180px] sm:max-w-none ${
                 ollamaStatus === 'connected'
                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                   : 'bg-[#1E2022] border-[#2A2D30] text-[#72706C]'
               }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${ollamaStatus === 'connected' ? 'bg-emerald-500' : 'bg-[#2A2D30]'}`} />
-                {ollamaStatus === 'connected' ? `Ollama · ${selectedModel}` : 'Ollama Offline'}
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${ollamaStatus === 'connected' ? 'bg-emerald-500' : 'bg-[#2A2D30]'}`} />
+                <span className="truncate">
+                  {ollamaStatus === 'connected' ? `Ollama · ${selectedModel}` : 'Ollama Offline'}
+                </span>
               </span>
               <button
                 onClick={() => setSettingsOpen(true)}
@@ -2242,17 +2252,45 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             </div>
           </div>
 
-          {/* TAB CONTENT — scrollable */}
-          <div className="p-6 space-y-6">
+          {/* Mobile Quick Tab Switcher Strip */}
+          <div className="md:hidden flex items-center gap-1.5 px-3 py-2 bg-[#111213] border-b border-[#2A2D30] overflow-x-auto scrollbar-none shrink-0">
+            {[
+              { id: 'chat', label: 'Chat', icon: MessageSquare },
+              { id: 'prompts', label: 'Prompt Lab', icon: Wand2 },
+              { id: 'rag', label: 'RAG Search', icon: Database },
+              { id: 'library', label: 'Models', icon: Download },
+              { id: 'train', label: 'Fine-Tune', icon: Sparkles },
+              { id: 'guardrails', label: 'Guardrails', icon: ShieldCheck },
+              { id: 'code-patch', label: 'Code Patch', icon: Code },
+              { id: 'vision-studio', label: 'Vision', icon: Eye },
+              { id: 'workflow', label: 'Flow Studio', icon: Workflow },
+              { id: 'extractor', label: 'JSON', icon: FileCode },
+              { id: 'function-calling', label: 'Functions', icon: Zap },
+              { id: 'quant-calc', label: 'VRAM Calc', icon: Gauge },
+            ].map(item => {
+              const IconComp = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id as any)}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all ${
+                    isActive
+                      ? 'bg-[#3C6B4D] text-white shadow-sm'
+                      : 'bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9]'
+                  }`}
+                >
+                  <IconComp size={12} />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-            {/* ── HARDWARE-AWARE MODEL RECOMMENDER BANNER ── */}
-            <HardwareRecommendationBanner
-              activeTab={activeTab}
-              selectedModel={selectedModel}
-              installedModels={models.map(m => m.name)}
-              onSelectGlobalModel={setSelectedModel}
-              onDownloadModel={handleDownloadModel}
-            />
+          {/* TAB CONTENT — scrollable */}
+          <div className="p-3 sm:p-5 md:p-6 space-y-4 sm:space-y-6">
+
+
 
             {/* ── ONLINE DEMO / LOCAL OLLAMA LOCK BANNER ── */}
             {(ollamaStatus !== 'connected' || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) && (
@@ -2328,16 +2366,23 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
             {/* ── CHAT TAB (Dynamic Model Selector, Voice & File Attachments) ── */}
             {activeTab === 'chat' && (
-              <div className="flex flex-col h-[calc(100vh-56px-44px-48px)] gap-4">
+              <div className="flex flex-col h-[calc(100dvh-130px)] md:h-[calc(100vh-148px)] min-h-[480px] gap-3 sm:gap-4">
                 {/* Header Model Selection Bar for New Chat */}
-                <div className="flex flex-wrap items-center justify-between gap-3 bg-[#18191B] border border-[#2A2D30] px-4 py-2.5 rounded-2xl shrink-0">
-                  <div className="flex items-center gap-2">
-                    <Bot size={16} className="text-[#3C6B4D]" />
-                    <span className="text-xs font-extrabold text-[#ECEBE9]">Local LLM Model:</span>
+                <div className="flex items-center justify-between gap-2 bg-[#18191B] border border-[#2A2D30] px-3 sm:px-4 py-2 rounded-2xl shrink-0 animate-fadeIn">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <button
+                      onClick={handleNewChat}
+                      className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all shadow-md shrink-0"
+                    >
+                      <Plus size={14} />
+                      <span className="hidden xs:inline">New Chat</span>
+                      <span className="xs:hidden">New</span>
+                    </button>
+                    <div className="h-4 w-px bg-[#2A2D30] shrink-0" />
                     <select
                       value={selectedModel}
                       onChange={e => setSelectedModel(e.target.value)}
-                      className="bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-[#3C6B4D]"
+                      className="bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-[#3C6B4D] truncate flex-1 max-w-[170px] sm:max-w-[260px]"
                     >
                       {models.length > 0 ? (
                         models.map(m => (
@@ -2355,11 +2400,10 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     </select>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    {/* Quick Git Commit Generator Template */}
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       onClick={() => setChatInput('Generate a conventional git commit message for these changes:\n- Add dynamic Ollama model selector\n- Add PII redaction guardrail\n- Add voice dictation and file drop context')}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs text-[#A3A09B] hover:text-[#ECEBE9] font-bold transition-all"
+                      className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs text-[#A3A09B] hover:text-[#ECEBE9] font-bold transition-all"
                       title="Git Commit Template"
                     >
                       <GitCommit size={13} className="text-[#3C6B4D]" />
@@ -2368,10 +2412,18 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
                     <button
                       onClick={() => setActiveTab('library')}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all"
+                      className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all"
                     >
                       <Download size={12} />
-                      <span>Pull New Model</span>
+                      <span>Pull Model</span>
+                    </button>
+
+                    <button
+                      onClick={() => setIsChatHeaderMinimized(p => !p)}
+                      className="p-1.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#72706C] hover:text-[#ECEBE9] transition-all"
+                      title={isChatHeaderMinimized ? 'Expand Header' : 'Minimize Header'}
+                    >
+                      {isChatHeaderMinimized ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
                     </button>
                   </div>
                 </div>
@@ -2379,26 +2431,74 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 {/* Chat Message List */}
                 <div ref={chatListRef} className="flex-1 overflow-y-auto space-y-4 pr-1">
                   {messages.length === 0 && (
-                    <div className="flex flex-col items-center justify-center h-full text-center gap-4 py-16">
-                      <div className="w-16 h-16 rounded-2xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 flex items-center justify-center">
-                        <Bot size={28} className="text-[#3C6B4D]" />
+                    <div className="flex flex-col items-center justify-center min-h-[320px] h-full text-center gap-4 py-4 px-2 my-auto">
+                      <div className="relative flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full bg-[#3C6B4D]/20 blur-xl animate-pulse-slow" />
+                        <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#3C6B4D]/25 to-[#18191B] border border-[#3C6B4D]/40 flex items-center justify-center shadow-xl">
+                          <Bot size={28} className="sm:hidden text-[#3C6B4D]" />
+                          <Bot size={38} className="hidden sm:block text-[#3C6B4D]" />
+                          <div className="absolute -top-1 -right-1 p-1 bg-[#18191B] border border-[#3C6B4D]/40 rounded-full">
+                            <Sparkles size={11} className="text-amber-400" />
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[#ECEBE9] font-bold text-lg">Start a conversation</p>
-                        <p className="text-[#72706C] text-sm mt-1">
-                          Connected model: <span className="text-[#3C6B4D] font-mono font-bold">{selectedModel}</span>
+
+                      <div className="max-w-md px-2">
+                        <h2 className="text-[#ECEBE9] font-black text-lg sm:text-xl tracking-tight leading-snug">What would you like to build today?</h2>
+                        <p className="text-[#72706C] text-[11px] sm:text-xs mt-1 leading-relaxed">
+                          Connected model: <span className="text-[#3C6B4D] font-mono font-bold">{selectedModel}</span> · 100% Client-Side Local Execution
                         </p>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 max-w-sm w-full mt-2">
-                        {['Explain LoRA fine-tuning', 'Write a Python data pipeline', 'Summarize this code', 'What is RAG?'].map(s => (
-                          <button
-                            key={s}
-                            onClick={() => { setChatInput(s); }}
-                            className="px-3 py-2.5 rounded-xl bg-[#18191B] border border-[#2A2D30] text-xs text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 transition-all text-left"
-                          >
-                            {s}
-                          </button>
-                        ))}
+
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-xl w-full mt-1">
+                        {[
+                          {
+                            category: 'Engineering',
+                            icon: Code,
+                            title: 'Python Web Scraper',
+                            prompt: 'Write an asynchronous Python script using Playwright for scraping with rate limiting & error retries.'
+                          },
+                          {
+                            category: 'AI Architecture',
+                            icon: Workflow,
+                            title: 'LoRA vs RAG Guide',
+                            prompt: 'Explain the technical differences between LoRA fine-tuning and RAG vector retrieval step-by-step.'
+                          },
+                          {
+                            category: 'Security',
+                            icon: ShieldCheck,
+                            title: 'Code Security Audit',
+                            prompt: 'Audit JavaScript code for common vulnerability patterns including XSS, prototype pollution, and SQL injection.'
+                          },
+                          {
+                            category: 'Data Science',
+                            icon: Database,
+                            title: 'Pandas Data Cleaning',
+                            prompt: 'Write a Pandas data pipeline to handle missing values, normalize timestamps, and detect outliers.'
+                          }
+                        ].map((card, idx) => {
+                          const IconComp = card.icon;
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => {
+                                setChatInput(card.prompt);
+                              }}
+                              className="group p-3.5 rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/60 hover:bg-[#1E2022] transition-all text-left flex flex-col justify-between gap-2 shadow-sm hover:shadow-md"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-mono font-bold text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded-full border border-[#3C6B4D]/20">
+                                  {card.category}
+                                </span>
+                                <IconComp size={14} className="text-[#72706C] group-hover:text-[#3C6B4D] transition-colors" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-bold text-[#ECEBE9] group-hover:text-white transition-colors">{card.title}</p>
+                                <p className="text-[11px] text-[#72706C] line-clamp-2 mt-0.5 leading-snug">{card.prompt}</p>
+                              </div>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -2409,12 +2509,19 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                           <Bot size={15} className="text-[#3C6B4D]" />
                         </div>
                       )}
-                      <div className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                      <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                         msg.sender === 'user'
                           ? 'bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 text-[#ECEBE9] rounded-tr-sm'
                           : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] rounded-tl-sm'
                       }`}>
-                        <pre className="whitespace-pre-wrap font-sans">{msg.content}</pre>
+                        {msg.sender === 'user' ? (
+                          <p className="whitespace-pre-wrap font-sans">{msg.content}</p>
+                        ) : (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }}
+                            className="markdown-chat-content"
+                          />
+                        )}
                         {msg.sender === 'assistant' && (
                           <div className="mt-2 text-[10px] font-mono text-[#72706C] flex items-center justify-between border-t border-[#2A2D30]/60 pt-1.5">
                             <div className="flex items-center gap-3">
@@ -2422,13 +2529,26 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                               {msg.tokensPerSec !== undefined && <span>Speed: {msg.tokensPerSec} tok/s</span>}
                               {msg.latencyMs !== undefined && <span>Latency: {msg.latencyMs}ms</span>}
                             </div>
-                            <button
-                              onClick={() => toggleSpeech(msg.id, msg.content)}
-                              className="p-1 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
-                              title="Read out loud"
-                            >
-                              {speakingMsgId === msg.id ? <VolumeX size={12} className="text-[#3C6B4D]" /> : <Volume2 size={12} />}
-                            </button>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(msg.content);
+                                  setCopiedMsgId(msg.id);
+                                  setTimeout(() => setCopiedMsgId(null), 2000);
+                                }}
+                                className="p-1 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                                title="Copy message content"
+                              >
+                                {copiedMsgId === msg.id ? <Check size={12} className="text-[#3C6B4D]" /> : <Copy size={12} />}
+                              </button>
+                              <button
+                                onClick={() => toggleSpeech(msg.id, msg.content)}
+                                className="p-1 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                                title="Read out loud"
+                              >
+                                {speakingMsgId === msg.id ? <VolumeX size={12} className="text-[#3C6B4D]" /> : <Volume2 size={12} />}
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -2463,7 +2583,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 )}
 
                 {/* Input row with voice & file attachment */}
-                <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-3 flex gap-3 items-end">
+                <div className="bg-[#18191B] border border-[#2A2D30] focus-within:border-[#3C6B4D]/70 focus-within:shadow-[0_0_20px_rgba(60,107,77,0.12)] rounded-2xl p-3 flex gap-3 items-end transition-all">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -2489,6 +2609,16 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   />
 
                   <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => setShowChatConfig(prev => !prev)}
+                      className={`p-2 rounded-xl transition-all ${
+                        showChatConfig ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30]'
+                      }`}
+                      title="Toggle Inference Options (Temperature, Tokens, PII)"
+                    >
+                      <SlidersIcon size={15} />
+                    </button>
+
                     <button
                       onClick={toggleVoiceInput}
                       className={`p-2 rounded-xl transition-all ${
@@ -2516,33 +2646,35 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 </div>
 
                 {/* Config strip */}
-                <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] text-[#72706C] px-1">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
-                      <SlidersIcon size={11} />
-                      <span>Temp:</span>
-                      <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-[#3C6B4D]" />
-                      <span className="font-mono text-[#3C6B4D]">{temperature}</span>
+                {showChatConfig && (
+                  <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] text-[#72706C] px-3 py-2 bg-[#18191B] border border-[#2A2D30] rounded-xl animate-fadeIn shrink-0">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1.5">
+                        <SlidersIcon size={11} />
+                        <span>Temp:</span>
+                        <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-[#3C6B4D]" />
+                        <span className="font-mono text-[#3C6B4D]">{temperature}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span>Max tokens:</span>
+                        <input type="number" value={maxTokens} onChange={e => setMaxTokens(parseInt(e.target.value) || 2048)} className="w-16 bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] font-mono focus:outline-none" />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span>Max tokens:</span>
-                      <input type="number" value={maxTokens} onChange={e => setMaxTokens(parseInt(e.target.value) || 2048)} className="w-16 bg-[#111213] border border-[#2A2D30] rounded px-1.5 py-0.5 text-[#ECEBE9] font-mono focus:outline-none" />
-                    </div>
-                  </div>
 
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-1.5 cursor-pointer text-[10px]">
-                      <input
-                        type="checkbox"
-                        checked={aiSettings.piiRedaction}
-                        onChange={e => setAiSettings(prev => ({ ...prev, piiRedaction: e.target.checked }))}
-                        className="w-3 h-3 accent-[#3C6B4D]"
-                      />
-                      <span>PII Masking</span>
-                    </label>
-                    <span>Endpoint: <code className="text-[#ECEBE9] font-mono">{aiSettings.ollamaEndpoint}</code></span>
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-1.5 cursor-pointer text-[10px]">
+                        <input
+                          type="checkbox"
+                          checked={aiSettings.piiRedaction}
+                          onChange={e => setAiSettings(prev => ({ ...prev, piiRedaction: e.target.checked }))}
+                          className="w-3 h-3 accent-[#3C6B4D]"
+                        />
+                        <span>PII Masking</span>
+                      </label>
+                      <span>Endpoint: <code className="text-[#ECEBE9] font-mono">{aiSettings.ollamaEndpoint}</code></span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
 

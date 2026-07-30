@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Eye, Upload, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle, Check, Layers, ChevronDown, ChevronUp } from 'lucide-react';
 import { aiService } from '../../../utils/aiService';
-import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
 
 interface VisionInspectionStudioProps {
   selectedModel?: string;
@@ -229,26 +228,26 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
           setVqaOutput(`Uploaded image ready for analysis with ${selectedVisionModel}.`);
         }
         setIsAnalyzing(false);
-      }, 550);
+  }, 550);
     }
   };
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
-      <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
-            <Eye size={12} />
-            <span>Multimodal Vision VQA &amp; OCR Engine</span>
+      {/* Header Bar */}
+      <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/30 text-[11px] font-bold uppercase tracking-wider w-fit max-w-full">
+              <Eye size={13} className="shrink-0 text-[#3C6B4D]" />
+              <span className="truncate">Multimodal Vision VQA &amp; OCR Engine</span>
+            </div>
+            <h2 className="text-xl font-black text-[#ECEBE9] tracking-tight">Vision &amp; Multimodal Inspection Studio</h2>
+            <p className="text-[#72706C] text-xs leading-relaxed max-w-xl">Analyze diagrams, screenshots, wireframes, and photos locally using Llava and custom vision models.</p>
           </div>
-          <h2 className="text-lg font-extrabold text-[#ECEBE9]">Vision &amp; Multimodal Inspection Studio</h2>
-          <p className="text-[#72706C] text-xs mt-0.5">Analyze diagrams, screenshots, wireframes, and photos locally using Llava and custom vision models.</p>
-        </div>
 
-        {/* Dynamic Model Selector Dropdown & Pull Button */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs font-mono">
+          {/* Model Selector Pill */}
+          <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs font-mono w-fit shrink-0">
             <Cpu size={14} className="text-[#3C6B4D]" />
             <select
               value={selectedVisionModel}
@@ -262,8 +261,11 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
               ))}
             </select>
           </div>
+        </div>
 
-          {!isModelInstalled(selectedVisionModel) && (
+        {/* Action Controls Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-[#2A2D30]/60">
+          {!isModelInstalled(selectedVisionModel) ? (
             <button
               onClick={() => handlePullVisionModel(selectedVisionModel)}
               disabled={downloadingModel === selectedVisionModel}
@@ -272,27 +274,18 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
               <Download size={13} className={downloadingModel === selectedVisionModel ? 'animate-spin' : ''} />
               <span>{downloadingModel === selectedVisionModel ? `Pulling ${pullProgress}%` : 'Download Model'}</span>
             </button>
-          )}
+          ) : <div />}
 
           <button
             onClick={handleAnalyzeVision}
             disabled={isAnalyzing || !imageSrc}
-            className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 shadow-md shadow-[#3C6B4D]/20"
+            className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-[#3C6B4D]/20"
           >
             <Sparkles size={14} className={isAnalyzing ? 'animate-spin' : ''} />
             <span>{isAnalyzing ? 'Analyzing Image...' : 'Analyze Image with Vision Model'}</span>
           </button>
         </div>
       </div>
-
-      <HardwareRecommendationBanner
-        compact
-        activeTab="vision-studio"
-        selectedModel={selectedVisionModel}
-        installedModels={installedModels}
-        onSelectGlobalModel={(m) => { setSelectedVisionModel(m); if (onSelectGlobalModel) onSelectGlobalModel(m); }}
-        onDownloadModel={onDownloadModel}
-      />
 
       {pullError && (
         <div className="bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs text-rose-300">
