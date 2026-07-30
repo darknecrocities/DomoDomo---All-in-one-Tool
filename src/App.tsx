@@ -19,7 +19,7 @@ import { AIHubStudio } from './pages/AIHubStudio';
 import { useVisitCounter } from './utils/visitCounter';
 
 function App() {
-  useVisitCounter(true);
+  useVisitCounter(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {

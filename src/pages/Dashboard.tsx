@@ -2378,14 +2378,14 @@ export const Dashboard = () => {
 				<link rel="canonical" href="https://domodomo.site" />
 			</Helmet>
 			{/* Hero Welcome banner */}
-			<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch rounded-3xl bg-[#18191B] border border-[#2A2D30] p-8 md:p-12 relative overflow-hidden">
+			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch rounded-2xl lg:rounded-3xl bg-[#18191B] border border-[#2A2D30] p-5 sm:p-7 md:p-8 lg:p-12 relative overflow-hidden">
 				{/* Subtle grid backdrop decoration */}
 				<div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
 
-				<div className="lg:col-span-7 flex flex-col gap-4 text-left z-10 justify-center">
-					<div className="flex flex-wrap gap-3 items-center">
-						{/* Live App Builders PH Vote Widget */}
-						<AppBuildersWidget />
+				<div className="lg:col-span-7 flex flex-col gap-3 md:gap-4 text-left z-10 justify-center">
+					<div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+						{/* Live App Builders PH Vote Widget — compact on mobile */}
+						<AppBuildersWidget compact />
 
 						{/* App Builders PH #1 All Time Overall Badge */}
 						<a
@@ -2474,29 +2474,29 @@ export const Dashboard = () => {
 
 						{/* #1 in AI Category Badge */}
 						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+							className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-[11px] transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in AI & Local LLM Category"
 						>
-							<Cpu size={15} className="text-[#3C6B4D]" />
-							<span>#1 in AI Category</span>
+							<Cpu size={13} className="text-[#3C6B4D] shrink-0" />
+							<span>#1 in AI</span>
 						</div>
 
 						{/* #1 in Productivity Badge */}
 						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+							className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-[11px] transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in Productivity Category"
 						>
-							<TrophyIcon size={15} className="text-[#3C6B4D]" />
-							<span>#1 in Productivity</span>
+							<TrophyIcon size={13} className="text-[#3C6B4D] shrink-0" />
+							<span>#1 Productivity</span>
 						</div>
 
 						{/* #1 in Developer Tools Badge */}
 						<div
-							className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+							className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-[11px] transition-all hover:border-[#3C6B4D]/70"
 							title="#1 Product in Developer Tools Category"
 						>
-							<AwardIcon size={15} className="text-[#3C6B4D]" />
-							<span>#1 in Developer Tools</span>
+							<AwardIcon size={13} className="text-[#3C6B4D] shrink-0" />
+							<span>#1 Dev Tools</span>
 						</div>
 
 						{/* BetterGov PH */}
@@ -2584,11 +2584,11 @@ export const Dashboard = () => {
 							<span>100% Free & Open Source</span>
 						</div>
 					</div>
-					<h1 className="text-3xl md:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
-						Your Local-First <br />
+					<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
+						Your Local-First{' '}<br className="hidden sm:inline" />
 						<span className="text-[#3C6B4D]">Productivity Workshop.</span>
 					</h1>
-					<p className="text-[#A3A09B] text-sm md:text-base leading-relaxed max-w-xl">
+					<p className="text-[#A3A09B] text-xs sm:text-sm md:text-base leading-relaxed max-w-xl">
 						DomoDomo is an open-source productivity workshop running entirely in
 						your browser sandbox. Edit files, compress media, compile PDF
 						modifications, and run local AI models. Your files never touch the
@@ -2596,8 +2596,8 @@ export const Dashboard = () => {
 					</p>
 				</div>
 
-				{/* Right side mock status console */}
-				<div className="lg:col-span-5 w-full z-10 flex flex-col relative group/terminal">
+				{/* Right side mock status console — hidden on mobile to keep hero compact */}
+				<div className="hidden lg:flex lg:col-span-5 w-full z-10 flex-col relative group/terminal">
 					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl overflow-hidden shadow-xl shadow-black/30 h-full flex flex-col relative">
 						{/* Header console bar */}
 						<div className="bg-[#18191B] border-b border-[#2A2D30] px-4 py-2.5 flex items-center justify-between">
@@ -2722,9 +2722,9 @@ export const Dashboard = () => {
 						</div>
 					</div>
 
-					{/* Animated Mascot Video Overlay — upper body overlaps bottom-right corner, clickable for cute popup */}
+					{/* Animated Mascot Video Overlay — hidden on mobile to save vertical space */}
 					<div
-						className="absolute -right-4 md:-right-6 z-30 pointer-events-auto"
+						className="hidden lg:block absolute -right-4 md:-right-6 z-30 pointer-events-auto"
 						style={{ bottom: '-55px' }}
 					>
 						<TransparentVideoMascot
@@ -2738,7 +2738,7 @@ export const Dashboard = () => {
 			</div>
 
 			{/* Unified Command Bar Panel */}
-			<div className="sticky top-[80px] z-30 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl shadow-2xl shadow-black/50">
+			<div className="sticky top-[56px] sm:top-[60px] z-30 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-between items-stretch sm:items-center bg-[#18191B] border border-[#2A2D30] p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl shadow-black/50">
 				{/* Categories Tabs */}
 				<div className="flex items-center gap-1.5 min-w-0 flex-1 relative overflow-hidden">
 					<button
@@ -2805,8 +2805,8 @@ export const Dashboard = () => {
 				</div>
 
 				{/* Search Field with keybind hint */}
-				<div className="flex items-center gap-3 w-full md:w-auto">
-					<div className="relative shrink-0 w-full md:w-80 group">
+				<div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+					<div className="relative shrink-0 w-full sm:w-60 md:w-80 group">
 						<Search
 							size={14}
 							className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors"
@@ -3299,7 +3299,7 @@ ollama run llama3.2`}
 					</div>
 				)}
 
-				<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+				<div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 					{filteredTools
 						.slice(0, activeCategory === "all" ? visibleCount : undefined)
 						.map((tool, index) => {
@@ -3328,7 +3328,7 @@ ollama run llama3.2`}
 											navigate(`/tool/${tool.id}`);
 										}
 									}}
-									className={`glass-card emil-card-enter p-6 flex flex-col justify-between text-left relative overflow-hidden group ${isReady && !isTeased
+									className={`glass-card emil-card-enter p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${isReady && !isTeased
 											? tool.popular
 												? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]"
 												: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50"
@@ -3345,7 +3345,7 @@ ollama run llama3.2`}
 														: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
 													}`}
 											>
-												<DynamicIcon name={tool.icon} size={22} />
+												<DynamicIcon name={tool.icon} size={18} />
 											</div>
 											{isTeased ? (
 												<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
@@ -3373,7 +3373,7 @@ ollama run llama3.2`}
 
 										<div className="flex flex-col gap-1.5">
 											<h3
-												className={`font-bold text-lg text-[#ECEBE9] ${isTeased
+												className={`font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9] ${isTeased
 														? "group-hover:text-[#E29E2D]"
 														: tool.popular
 															? "group-hover:text-[#D4AF37]"
