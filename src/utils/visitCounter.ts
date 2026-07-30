@@ -56,15 +56,15 @@ export function formatCount(count: number): string {
 }
 
 /**
- * React hook to manage visit count locally starting at 8,180.
- * Automatically updates across tabs & user visits with zero external API calls.
+ * React hook to manage visit count starting at 8,180.
+ * Zero clickListeners, zero external API calls.
  */
-export function useVisitCounter(trackClicks: boolean = false) {
+export function useVisitCounter(_trackClicks?: boolean) {
   const [count, setCount] = useState<number>(() => {
     return getStoredVisitCount();
   });
 
-  // Increment visit count on initial session mount
+  // Increment visit count once on initial session mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -111,30 +111,6 @@ export function useVisitCounter(trackClicks: boolean = false) {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
-
-  // Optional user click interaction listener
-  useEffect(() => {
-    if (!trackClicks || typeof window === 'undefined') return;
-
-    let clickThrottleTimeout: ReturnType<typeof setTimeout> | null = null;
-
-    const handleUserClick = () => {
-      if (clickThrottleTimeout) return;
-      clickThrottleTimeout = setTimeout(() => {
-        clickThrottleTimeout = null;
-      }, 1000);
-
-      const next = incrementVisitCount(1);
-      setCount(next);
-    };
-
-    window.addEventListener('click', handleUserClick, { passive: true });
-
-    return () => {
-      window.removeEventListener('click', handleUserClick);
-      if (clickThrottleTimeout) clearTimeout(clickThrottleTimeout);
-    };
-  }, [trackClicks]);
 
   const manuallyIncrement = useCallback((step: number = 1) => {
     const next = incrementVisitCount(step);
