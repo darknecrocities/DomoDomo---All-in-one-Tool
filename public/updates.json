@@ -1,5 +1,17 @@
 [
   {
+    "hash": "fea7df7",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "perf(ai-hub): eliminate state mutation flickering by implementing silent background status polling"
+  },
+  {
+    "hash": "7ddc1f8",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "d4c200c",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-30",
     "author": "RhonzKieee",
     "message": "Merge pull request #61 from darknecrocities/improved-frontend-design"
-  },
-  {
-    "hash": "9b9e96c",
-    "date": "2026-07-30",
-    "author": "Ram-Gold",
-    "message": "refactor: standardize theme variables in CSS, update BlogContainer text color, and refresh PWA cache version"
-  },
-  {
-    "hash": "ec401bf",
-    "date": "2026-07-30",
-    "author": "Ram-Gold",
-    "message": "Merge main into improved-frontend-design"
   }
 ]
