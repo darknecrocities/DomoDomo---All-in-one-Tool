@@ -1988,23 +1988,35 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
           {/* Recents Sessions */}
           {!sidebarCollapsed && (
             <div className="px-2 mt-3 flex-1 overflow-y-auto">
-              <button
-                onClick={() => toggleSection('recents')}
-                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
-              >
-                <div className="flex items-center gap-2">
+              <div className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors">
+                <div
+                  onClick={() => toggleSection('recents')}
+                  className="flex items-center gap-2 cursor-pointer flex-1"
+                >
                   <span>Recents</span>
-                  <button onClick={(e) => { e.stopPropagation(); handleNewChat(); }} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="New Chat">
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleNewChat(); }}
+                    className="p-0.5 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                    title="New Chat"
+                  >
                     <Plus size={11} />
                   </button>
+                  <button
+                    onClick={() => toggleSection('recents')}
+                    className="p-0.5 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+                    title="Toggle Recents"
+                  >
+                    <ChevronDown
+                      size={12}
+                      className={`transition-transform duration-200 ease-[var(--ease-out)] ${
+                        collapsedSections.recents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                      }`}
+                    />
+                  </button>
                 </div>
-                <ChevronDown
-                  size={12}
-                  className={`transition-transform duration-200 ease-[var(--ease-out)] ${
-                    collapsedSections.recents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
-                  }`}
-                />
-              </button>
+              </div>
               <div className={`emil-accordion-grid ${collapsedSections.recents ? 'collapsed' : ''}`}>
                 <div className="emil-accordion-content">
                   {sessions.length === 0 ? (
