@@ -1,5 +1,17 @@
 [
   {
+    "hash": "c8ebc32",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "refactor(about): rename Active Users metric card to Total Visitors & Users"
+  },
+  {
+    "hash": "e4f8e9d",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "04aa156",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-tools-expansion' into main"
-  },
-  {
-    "hash": "705b21e",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): correct model tag to llava-phi3, rethrow pull errors, and add content-type check in Shell"
-  },
-  {
-    "hash": "ea47237",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): resolve Ollama stream chunk parsing and sub-component model pull progress"
   }
 ]
