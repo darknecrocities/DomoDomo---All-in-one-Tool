@@ -11,7 +11,7 @@ We are incredibly grateful to everyone who has contributed to the growth and dev
         <sub><b>darknecrocities</b></sub>
       </a>
       <br />
-      <sub>543 commits</sub>
+      <sub>550 commits</sub>
     </td>
     <td align="center" valign="top" width="20%">
       <a href="https://github.com/kuraigu" target="_blank">
