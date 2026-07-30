@@ -1,92 +1,92 @@
 [
   {
-    "hash": "ff0bd44",
-    "date": "2026-07-29",
+    "hash": "bc02256",
+    "date": "2026-07-30",
     "author": "darknecrocities",
-    "message": "fix(ci): add missing logo imports in Dashboard.tsx to pass typescript typecheck"
+    "message": "feat(ai-hub): add Model Settings & Storage Manager studio and synchronize 8-step workflow"
   },
   {
-    "hash": "79d40a2",
-    "date": "2026-07-29",
+    "hash": "672accf",
+    "date": "2026-07-30",
     "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "bf3c4df",
-    "date": "2026-07-29",
+    "hash": "f1c99dd",
+    "date": "2026-07-30",
     "author": "darknecrocities",
-    "message": "fix(ci): resolve merge conflict in Dashboard.tsx and alias TrophyIcon/AwardIcon"
+    "message": "Merge branch 'feat/ai-hub-tools-expansion' into main"
   },
   {
-    "hash": "9572709",
-    "date": "2026-07-29",
+    "hash": "705b21e",
+    "date": "2026-07-30",
     "author": "darknecrocities",
-    "message": "fix(ci): alias Trophy and Award imports as TrophyIcon and AwardIcon to resolve TS6133 unused import error in CI"
+    "message": "fix(ai-hub): correct model tag to llava-phi3, rethrow pull errors, and add content-type check in Shell"
   },
   {
-    "hash": "11061da",
-    "date": "2026-07-29",
+    "hash": "ea47237",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): resolve Ollama stream chunk parsing and sub-component model pull progress"
+  },
+  {
+    "hash": "99ecec6",
+    "date": "2026-07-30",
     "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "09c152a",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
-  },
-  {
-    "hash": "3212ca3",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix(ci): reorder function definitions before useEffect, add missing useCallback imports, and resolve all remaining linter & typecheck warnings"
-  },
-  {
-    "hash": "9be4e88",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "0fe9c0e",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
-  },
-  {
-    "hash": "959ffb5",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "fix(ci): resolve TypeScript type error for isNativeTransparent, restore Trophy/Award icon imports, and fix unused vars/hook deps"
-  },
-  {
-    "hash": "fd954c2",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "39d90c9",
-    "date": "2026-07-29",
+    "hash": "d2f0401",
+    "date": "2026-07-30",
     "author": "RhonzKieee",
-    "message": "Merge pull request #60 from darknecrocities/rewards-and-other-adjustments"
+    "message": "Merge pull request #61 from darknecrocities/improved-frontend-design"
   },
   {
-    "hash": "a3df11c",
-    "date": "2026-07-29",
+    "hash": "9b9e96c",
+    "date": "2026-07-30",
     "author": "Ram-Gold",
-    "message": "feat: add featured award badges and partner links to Shell footer while updating service worker cache version."
+    "message": "refactor: standardize theme variables in CSS, update BlogContainer text color, and refresh PWA cache version"
   },
   {
-    "hash": "269b5f7",
+    "hash": "ec401bf",
+    "date": "2026-07-30",
+    "author": "Ram-Gold",
+    "message": "Merge main into improved-frontend-design"
+  },
+  {
+    "hash": "4691f39",
+    "date": "2026-07-30",
+    "author": "Ram-Gold",
+    "message": "refactor: optimize mascot and modal animations while standardizing transition performance across the UI."
+  },
+  {
+    "hash": "17d5d0c",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "ca5aa2a",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
+  },
+  {
+    "hash": "e0ca7a0",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat: integrate live App Builders PH vote widget iframe"
+  },
+  {
+    "hash": "2962660",
     "date": "2026-07-29",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "7e6b521",
+    "hash": "164cf12",
     "date": "2026-07-29",
     "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-tools-expansion'"
+    "message": "Merge branch 'main' of https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
   }
 ]
