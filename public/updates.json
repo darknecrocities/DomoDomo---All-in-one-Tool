@@ -1,5 +1,41 @@
 [
   {
+    "hash": "ead4536",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "9052dbe",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(config): add Upstash Redis environment variables for realtime visit counter"
+  },
+  {
+    "hash": "3c7fba9",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "a9be7e5",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "0ee93ef",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(analytics): update initial visit counter base to 8,172 with real-time Counter API sync"
+  },
+  {
+    "hash": "6894076",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "fde1b54",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -52,41 +88,5 @@
     "date": "2026-07-30",
     "author": "RhonzKieee",
     "message": "Merge pull request #63 from darknecrocities/feat/ai-hub-prompt-lab-expansion"
-  },
-  {
-    "hash": "ed5c3ff",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add LocalStorage skill saving & activation, and 1-click .agents ZIP bundle exporter in Prompt Lab"
-  },
-  {
-    "hash": "53187a9",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "c8ebc32",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "refactor(about): rename Active Users metric card to Total Visitors & Users"
-  },
-  {
-    "hash": "e4f8e9d",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "04aa156",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): expand Prompt Engineering Lab with Framework Builder, Skill Library, and SKILL.md Exporter"
-  },
-  {
-    "hash": "c32852b",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
