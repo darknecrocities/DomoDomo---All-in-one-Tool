@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Eye, Upload, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle, Check, Layers } from 'lucide-react';
+import { Eye, Upload, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle, Check, Layers, ChevronDown, ChevronUp } from 'lucide-react';
 import { aiService } from '../../../utils/aiService';
 import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
 
@@ -40,6 +40,7 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
   const [downloadingModel, setDownloadingModel] = useState<string | null>(null);
   const [pullProgress, setPullProgress] = useState<number>(0);
   const [pullError, setPullError] = useState<string | null>(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(true);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [visionPrompt, setVisionPrompt] = useState<string>(
     'Describe this image, identify key UI elements, and extract visible text.'
@@ -324,74 +325,92 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
       )}
 
       {/* Vision Model Library Cards */}
-      <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
-        <span className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-2">
-          <Layers size={14} className="text-[#3C6B4D]" /> Multimodal Vision Models Gallery &amp; Downloader
-        </span>
+      <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3 transition-all shadow-md">
+        <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <Layers size={14} className="text-[#3C6B4D]" />
+            <span className="text-xs font-extrabold text-[#ECEBE9]">
+              Multimodal Vision Models Gallery &amp; Downloader ({KNOWN_MODELS.length} Models)
+            </span>
+            <span className="text-[10px] font-mono font-bold bg-[#3C6B4D]/15 text-[#3C6B4D] px-2 py-0.5 rounded border border-[#3C6B4D]/30">
+              Active: {selectedVisionModel}
+            </span>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {KNOWN_MODELS.map(m => {
-            const installed = isModelInstalled(m.name);
-            const isSelected = selectedVisionModel.toLowerCase() === m.name.toLowerCase();
-            const isPulling = downloadingModel === m.name;
+          <button
+            onClick={() => setIsGalleryOpen(!isGalleryOpen)}
+            className="text-[11px] font-bold text-[#72706C] hover:text-[#ECEBE9] flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#111213] border border-[#2A2D30] transition-colors cursor-pointer"
+          >
+            <span>{isGalleryOpen ? 'Minimize Gallery' : 'Expand Gallery'}</span>
+            {isGalleryOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          </button>
+        </div>
 
-            return (
-              <div
-                key={m.name}
-                onClick={() => handleModelChange(m.name)}
-                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-2.5 ${
-                  isSelected
-                    ? 'bg-[#3C6B4D]/15 border-[#3C6B4D] text-[#ECEBE9]'
-                    : 'bg-[#111213] border-[#2A2D30] text-[#72706C] hover:border-[#3C6B4D]/50'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-extrabold text-[#ECEBE9]">{m.name}</span>
-                  <div className="flex items-center gap-1">
-                    {m.supportsVision ? (
-                      <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                        VISION
-                      </span>
-                    ) : (
-                      <span className="text-[9px] font-mono font-bold bg-[#2A2D30] text-[#72706C] px-1.5 py-0.5 rounded">
-                        TEXT
-                      </span>
-                    )}
+        {isGalleryOpen && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1 animate-fadeIn">
+            {KNOWN_MODELS.map(m => {
+              const installed = isModelInstalled(m.name);
+              const isSelected = selectedVisionModel.toLowerCase() === m.name.toLowerCase();
+              const isPulling = downloadingModel === m.name;
 
-                    {installed ? (
-                      <span className="text-[9px] font-mono font-bold bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20 flex items-center gap-0.5">
-                        <Check size={9} /> INSTALLED
-                      </span>
-                    ) : (
-                      <span className="text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/20">
-                        NOT PULLED
-                      </span>
+              return (
+                <div
+                  key={m.name}
+                  onClick={() => handleModelChange(m.name)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-2.5 ${
+                    isSelected
+                      ? 'bg-[#3C6B4D]/15 border-[#3C6B4D] text-[#ECEBE9]'
+                      : 'bg-[#111213] border-[#2A2D30] text-[#72706C] hover:border-[#3C6B4D]/50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-extrabold text-[#ECEBE9]">{m.name}</span>
+                    <div className="flex items-center gap-1">
+                      {m.supportsVision ? (
+                        <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                          VISION
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-mono font-bold bg-[#2A2D30] text-[#72706C] px-1.5 py-0.5 rounded">
+                          TEXT
+                        </span>
+                      )}
+
+                      {installed ? (
+                        <span className="text-[9px] font-mono font-bold bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded border border-blue-500/20 flex items-center gap-0.5">
+                          <Check size={9} /> INSTALLED
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/20">
+                          NOT PULLED
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-[#A3A09B] line-clamp-2">{m.desc}</p>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-[#2A2D30]">
+                    <span className="text-[10px] font-mono text-[#72706C]">{m.size} · {m.params}</span>
+                    {!installed && (
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          handlePullVisionModel(m.name);
+                        }}
+                        disabled={isPulling}
+                        className="px-2 py-0.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-[10px] font-bold rounded-md transition-all flex items-center gap-1"
+                      >
+                        <Download size={10} className={isPulling ? 'animate-spin' : ''} />
+                        <span>{isPulling ? `${pullProgress}%` : 'Pull'}</span>
+                      </button>
                     )}
                   </div>
                 </div>
-
-                <p className="text-[11px] text-[#A3A09B] line-clamp-2">{m.desc}</p>
-
-                <div className="flex items-center justify-between pt-1 border-t border-[#2A2D30]">
-                  <span className="text-[10px] font-mono text-[#72706C]">{m.size} · {m.params}</span>
-                  {!installed && (
-                    <button
-                      onClick={e => {
-                        e.stopPropagation();
-                        handlePullVisionModel(m.name);
-                      }}
-                      disabled={isPulling}
-                      className="px-2 py-0.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-[10px] font-bold rounded-md transition-all flex items-center gap-1"
-                    >
-                      <Download size={10} className={isPulling ? 'animate-spin' : ''} />
-                      <span>{isPulling ? `${pullProgress}%` : 'Pull'}</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
