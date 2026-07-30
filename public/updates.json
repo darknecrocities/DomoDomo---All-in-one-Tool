@@ -1,5 +1,23 @@
 [
   {
+    "hash": "bb4bf5d",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "02e444a",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "chore: sync profile and service worker"
+  },
+  {
+    "hash": "83930d8",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "8af5f08",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -67,24 +85,6 @@
   },
   {
     "hash": "2206d32",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "dc2cd18",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(analytics): configure CounterAPI.dev user token VITE_COUNTER_API_KEY"
-  },
-  {
-    "hash": "eb2a4fa",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "ead4536",
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
