@@ -1,5 +1,17 @@
 [
   {
+    "hash": "0c82130",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(ci): resolve TypeScript compilation errors in AIHubStudio, RagSearchStudio, and VisionInspectionStudio"
+  },
+  {
+    "hash": "139f5db",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "bc02256",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "feat: integrate live App Builders PH vote widget iframe"
-  },
-  {
-    "hash": "2962660",
-    "date": "2026-07-29",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "164cf12",
-    "date": "2026-07-29",
-    "author": "darknecrocities",
-    "message": "Merge branch 'main' of https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
   }
 ]
