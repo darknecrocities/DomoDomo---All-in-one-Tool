@@ -1,46 +1,90 @@
 import { useState, useEffect } from 'react';
-import { Logo } from './Logo';
+import { PixelDomo } from './PixelDomo';
 
 export const DoorSplash = () => {
-  const [stage, setStage] = useState<'visible' | 'logo-fade' | 'door-open' | 'gone'>('visible');
+  const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'gone'>('walk');
+  const [walkOffset, setWalkOffset] = useState(-20); // starts off-screen left
+  const [frameToggle, setFrameToggle] = useState(false);
+  const [knockCount, setKnockCount] = useState(0);
 
   useEffect(() => {
-    // Timeline configuration
-    // Stage 1: Logo fades out
-    const logoFadeTimer = setTimeout(() => {
-      setStage('logo-fade');
-    }, 1500);
+    // 1. Walk movement ticker
+    const walkInterval = setInterval(() => {
+      setWalkOffset(prev => {
+        if (prev >= 50) {
+          clearInterval(walkInterval);
+          return 50;
+        }
+        return prev + 1.5; // smooth walk increment
+      });
+    }, 40);
 
-    // Stage 2: Doors begin to open
-    const doorOpenTimer = setTimeout(() => {
-      setStage('door-open');
-    }, 1900);
+    // 2. Animation sprite toggler (frame-by-frame)
+    const animInterval = setInterval(() => {
+      setFrameToggle(prev => !prev);
+    }, 150);
 
-    // Stage 3: Splash is fully removed from DOM
-    const completeTimer = setTimeout(() => {
-      setStage('gone');
-    }, 3100);
+    // 3. Stage transition timers
+    const knockStartTimeout = setTimeout(() => {
+      setAnimStage('knock');
+    }, 2000);
+
+    // Knock counter timer to show visual knock hits
+    const knockHitInterval = setInterval(() => {
+      setKnockCount(prev => (prev < 3 ? prev + 1 : 3));
+    }, 450);
+
+    const waveStartTimeout = setTimeout(() => {
+      clearInterval(knockHitInterval);
+      setAnimStage('wave');
+    }, 3800);
+
+    const fadeStartTimeout = setTimeout(() => {
+      setAnimStage('fade-out');
+    }, 5600);
+
+    const openStartTimeout = setTimeout(() => {
+      setAnimStage('door-open');
+    }, 6100);
+
+    const goneTimeout = setTimeout(() => {
+      setAnimStage('gone');
+    }, 7300);
 
     return () => {
-      clearTimeout(logoFadeTimer);
-      clearTimeout(doorOpenTimer);
-      clearTimeout(completeTimer);
+      clearInterval(walkInterval);
+      clearInterval(animInterval);
+      clearInterval(knockHitInterval);
+      clearTimeout(knockStartTimeout);
+      clearTimeout(waveStartTimeout);
+      clearTimeout(fadeStartTimeout);
+      clearTimeout(openStartTimeout);
+      clearTimeout(goneTimeout);
     };
   }, []);
 
-  if (stage === 'gone') return null;
+  if (animStage === 'gone') return null;
 
-  const isLogoVisible = stage === 'visible';
-  const areDoorsOpen = stage === 'door-open';
+  const areDoorsOpen = animStage === 'door-open';
+
+  // Determine current active sprite frame based on state & toggles
+  let currentFrame: 'walk1' | 'walk2' | 'knock1' | 'knock2' | 'wave1' | 'wave2' = 'walk1';
+  if (animStage === 'walk') {
+    currentFrame = frameToggle ? 'walk1' : 'walk2';
+  } else if (animStage === 'knock') {
+    currentFrame = frameToggle ? 'knock1' : 'knock2';
+  } else if (animStage === 'wave' || animStage === 'fade-out') {
+    currentFrame = frameToggle ? 'wave1' : 'wave2';
+  }
 
   return (
-    <div className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none">
+    <div className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none bg-[#0d0e0f]">
       {/* Left Door */}
       <div
         className="absolute top-0 left-0 w-1/2 h-full border-r-2 transition-transform pointer-events-auto flex items-center justify-end"
         style={{
           transform: areDoorsOpen ? 'translateX(-100%)' : 'translateX(0)',
-          transitionDuration: '1200ms',
+          transitionDuration: '1000ms',
           transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',
           backgroundColor: 'var(--card)',
           borderColor: 'var(--border)',
@@ -91,7 +135,7 @@ export const DoorSplash = () => {
         className="absolute top-0 right-0 w-1/2 h-full border-l-2 transition-transform pointer-events-auto flex items-center justify-start"
         style={{
           transform: areDoorsOpen ? 'translateX(100%)' : 'translateX(0)',
-          transitionDuration: '1200ms',
+          transitionDuration: '1000ms',
           transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',
           backgroundColor: 'var(--card)',
           borderColor: 'var(--border)',
@@ -140,41 +184,50 @@ export const DoorSplash = () => {
         </div>
       </div>
 
-      {/* Center Mascot Emblem */}
-      <div
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-all"
-        style={{
-          opacity: isLogoVisible ? 1 : 0,
-          transform: isLogoVisible ? 'scale(1)' : 'scale(0.92)',
-          transitionDuration: '400ms',
-          transitionTimingFunction: 'cubic-bezier(0.25, 1, 0.5, 1)',
-        }}
-      >
-        <div 
-          className="relative flex flex-col items-center gap-6 p-10 rounded-3xl border shadow-2xl backdrop-blur-md"
-          style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
+      {/* Animated Pixel Mascot Domo Walk-Knock-Wave Sequence Overlay */}
+      {animStage !== 'gone' && (
+        <div
+          className="absolute bottom-20 sm:bottom-32 z-30 flex flex-col items-center"
+          style={{
+            left: `${walkOffset}%`,
+            transform: 'translateX(-50%)',
+            opacity: animStage === 'fade-out' || animStage === 'door-open' ? 0 : 1,
+            transition: 'opacity 400ms ease-out',
+          }}
         >
-          {/* Logo container with pulse ring */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute -inset-4 rounded-3xl animate-ping opacity-60" style={{ animationDuration: '3s', backgroundColor: 'rgba(var(--primary-rgb), 0.05)', border: '1px solid rgba(var(--primary-rgb), 0.15)' }} />
-            <Logo size={140} showText={false} className="relative z-10 scale-105" />
-          </div>
+          {/* Dialogue / Speech Bubble */}
+          {animStage === 'wave' && (
+            <div className="mb-4 bg-[#18191B] border border-[#3C6B4D] text-[#ECEBE9] px-4 py-2 rounded-2xl text-[11px] font-bold shadow-lg animate-bounce relative">
+              Welcome to DomoDomo! 🐼✨
+              {/* Triangle pointer */}
+              <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[#18191B] border-r border-b border-[#3C6B4D] rotate-45" />
+            </div>
+          )}
 
-          <div className="flex flex-col items-center gap-2 mt-2">
-            <span className="font-extrabold text-3xl tracking-tight leading-none font-heading" style={{ color: 'var(--text)' }}>
-              Domo<span className="font-semibold" style={{ color: 'var(--text-secondary)' }}>Domo</span>
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold" style={{ color: 'var(--text-tertiary)' }}>
-              All-in-One Tool Hub
-            </span>
-          </div>
+          {/* Knock Sound Effect Visualizer */}
+          {animStage === 'knock' && (
+            <div className="absolute -top-10 text-amber-400 font-mono text-[10px] font-extrabold tracking-widest bg-[#18191B] border border-amber-500/35 px-2 py-0.5 rounded-lg shadow animate-pulse">
+              *KNOCK KNOCK*
+            </div>
+          )}
 
-          <div className="flex items-center gap-2 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--primary)' }}></span>
-            <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: 'var(--text-secondary)' }}>
-              Unlocking Sandbox...
-            </span>
-          </div>
+          {/* Pixel Domo Sprite */}
+          <PixelDomo frame={currentFrame} size={96} />
+        </div>
+      )}
+
+      {/* Progress Unlocking Bar at bottom */}
+      <div 
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1.5 transition-opacity duration-300"
+        style={{ opacity: areDoorsOpen ? 0 : 1 }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-ping" />
+          <span className="text-[9px] font-mono uppercase font-bold tracking-wider text-[#A3A09B]">
+            {animStage === 'walk' ? 'Locating Workshop Bay...' : 
+             animStage === 'knock' ? 'Gaining Entrance Authorization...' : 
+             'Unlocking Sandbox secure shield...'}
+          </span>
         </div>
       </div>
     </div>
