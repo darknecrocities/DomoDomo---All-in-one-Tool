@@ -1,5 +1,35 @@
 [
   {
+    "hash": "3a1bae4",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "fix(ui): separate product spec guarantees from Featured On press row"
+  },
+  {
+    "hash": "2410b6b",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "fix(ui): position rank badges directly underneath App Builders PH widget"
+  },
+  {
+    "hash": "4801374",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "b30db64",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "fix(ui): unify hero badging design and optimize mobile AI Hub chat viewport"
+  },
+  {
+    "hash": "da8e682",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "bb4bf5d",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -55,36 +85,6 @@
   },
   {
     "hash": "352a757",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "740f7a3",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(analytics): set fixed visitor base count to 8,180 and remove external counter API calls"
-  },
-  {
-    "hash": "c6fd20e",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "bdf016e",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(analytics): add 1-hour cache and CORS-safe handling to visit counter"
-  },
-  {
-    "hash": "621ac48",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "2206d32",
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
