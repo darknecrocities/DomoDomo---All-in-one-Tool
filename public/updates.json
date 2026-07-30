@@ -1,5 +1,23 @@
 [
   {
+    "hash": "e8fea4a",
+    "date": "2026-07-30",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #63 from darknecrocities/feat/ai-hub-prompt-lab-expansion"
+  },
+  {
+    "hash": "ed5c3ff",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add LocalStorage skill saving & activation, and 1-click .agents ZIP bundle exporter in Prompt Lab"
+  },
+  {
+    "hash": "53187a9",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "c8ebc32",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-30",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "bc02256",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add Model Settings & Storage Manager studio and synchronize 8-step workflow"
-  },
-  {
-    "hash": "672accf",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "f1c99dd",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-tools-expansion' into main"
   }
 ]
