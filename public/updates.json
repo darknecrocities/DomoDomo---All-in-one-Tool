@@ -1,5 +1,23 @@
 [
   {
+    "hash": "352a757",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "740f7a3",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(analytics): set fixed visitor base count to 8,180 and remove external counter API calls"
+  },
+  {
+    "hash": "c6fd20e",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "bdf016e",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'main' of https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
-  },
-  {
-    "hash": "ba1a43c",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "7da1526",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(dashboard): restore all tools in 'All' category and register missing dev tools"
-  },
-  {
-    "hash": "be910e2",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
