@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { Database, Upload, Download, Sparkles, FileText, Search, Cpu, AlertTriangle } from 'lucide-react';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
+import { aiService } from '../../../utils/aiService';
 
 interface RagSearchStudioProps {
   selectedModel?: string;
   installedModels?: string[];
   onSelectGlobalModel?: (modelName: string) => void;
-  onDownloadModel?: (modelName: string) => Promise<void>;
+  onDownloadModel?: (modelName: string, onProgress?: (pct: number) => void) => Promise<void>;
 }
 
 interface DocumentChunk {
@@ -57,30 +58,11 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
     setPullProgress(5);
     try {
       if (onDownloadModel) {
-        await onDownloadModel(modelName);
+        await onDownloadModel(modelName, (pct) => setPullProgress(pct));
       } else {
-        const res = await fetch('http://localhost:11434/api/pull', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: modelName, stream: true })
+        await aiService.pullOllamaModel(modelName, (_status, pct) => {
+          setPullProgress(pct);
         });
-        if (res.ok && res.body) {
-          const reader = res.body.getReader();
-          const decoder = new TextDecoder();
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            for (const line of chunk.split('\n').filter(Boolean)) {
-              try {
-                const parsed = JSON.parse(line);
-                if (parsed.total && parsed.completed) {
-                  setPullProgress(Math.round((parsed.completed / parsed.total) * 100));
-                }
-              } catch {}
-            }
-          }
-        }
       }
     } catch {
       for (let p = 15; p <= 100; p += 25) {

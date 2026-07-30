@@ -277,6 +277,7 @@ export const aiService = {
 
     const decoder = new TextDecoder();
     let buffer = '';
+    const layers: Record<string, { completed: number; total: number }> = {};
 
     while (true) {
       const { done, value } = await reader.read();
@@ -290,14 +291,30 @@ export const aiService = {
         if (!line.trim()) continue;
         try {
           const data = JSON.parse(line);
-          if (data.status) {
-            let progress = 0;
-            if (data.total && data.completed) {
-              progress = Math.round((data.completed / data.total) * 100);
-            }
-            onProgress(data.status, progress);
+          if (data.error) {
+            throw new Error(data.error);
           }
-        } catch (e) {
+          let progress = 0;
+          if (data.digest && data.total) {
+            layers[data.digest] = {
+              completed: data.completed || 0,
+              total: data.total || 0
+            };
+            const totalBytes = Object.values(layers).reduce((acc, l) => acc + l.total, 0);
+            const completedBytes = Object.values(layers).reduce((acc, l) => acc + l.completed, 0);
+            if (totalBytes > 0) {
+              progress = Math.min(99, Math.max(1, Math.round((completedBytes / totalBytes) * 100)));
+            }
+          } else if (data.total && data.completed) {
+            progress = Math.min(99, Math.max(1, Math.round((data.completed / data.total) * 100)));
+          } else if (data.status === 'success') {
+            progress = 100;
+          }
+          onProgress(data.status || 'downloading', progress);
+        } catch (e: any) {
+          if (e.message && !e.message.includes('JSON')) {
+            throw e;
+          }
           console.warn('Error parsing JSON from Ollama pull stream:', e);
         }
       }

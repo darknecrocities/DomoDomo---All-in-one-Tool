@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Eye, Upload, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle, Check, Layers } from 'lucide-react';
+import { aiService } from '../../../utils/aiService';
 
 interface VisionInspectionStudioProps {
   selectedModel?: string;
   installedModels?: string[];
   onSelectGlobalModel?: (modelName: string) => void;
-  onDownloadModel?: (modelName: string) => Promise<void>;
+  onDownloadModel?: (modelName: string, onProgress?: (pct: number) => void) => Promise<void>;
 }
 
 interface VisionModelSpecs {
@@ -70,34 +71,11 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
 
     try {
       if (onDownloadModel) {
-        await onDownloadModel(modelName);
+        await onDownloadModel(modelName, (pct) => setPullProgress(pct));
       } else {
-        const res = await fetch('http://localhost:11434/api/pull', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: modelName, stream: true })
+        await aiService.pullOllamaModel(modelName, (_status, pct) => {
+          setPullProgress(pct);
         });
-
-        if (res.ok && res.body) {
-          const reader = res.body.getReader();
-          const decoder = new TextDecoder();
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n').filter(Boolean);
-            for (const line of lines) {
-              try {
-                const parsed = JSON.parse(line);
-                if (parsed.total && parsed.completed) {
-                  setPullProgress(Math.round((parsed.completed / parsed.total) * 100));
-                }
-              } catch {
-                // Ignore chunk parse error
-              }
-            }
-          }
-        }
       }
     } catch {
       for (let p = 15; p <= 100; p += 20) {
