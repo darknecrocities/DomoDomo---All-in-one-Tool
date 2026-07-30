@@ -283,6 +283,16 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
         </div>
       </div>
 
+      {pullError && (
+        <div className="bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs text-rose-300">
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={16} className="shrink-0" />
+            <span>{pullError}</span>
+          </div>
+          <button onClick={() => setPullError(null)} className="text-rose-400 hover:text-white font-bold">Dismiss</button>
+        </div>
+      )}
+
       {/* Model Status & Download Banner if Selected Model Not Installed */}
       {!isModelInstalled(selectedVisionModel) && (
         <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">

@@ -92,7 +92,7 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
 
   const [ragAnswer, setRagAnswer] = useState<string | null>(null);
 
-  const handleExecuteSearch = async () => {
+  const handleChunkAndSearch = async () => {
     if (!searchQuery.trim() || !documentContent.trim()) return;
     setIsSearching(true);
     setRagAnswer(null);
@@ -203,40 +203,39 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
         </div>
       )}
 
-      {/* RAG Configuration Grid */}
+      {/* Main Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
-          <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2">
-            <span className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2">
-              <FileText size={14} className="text-[#3C6B4D]" /> Knowledge Document Source ({fileName})
-            </span>
+        <div className="lg:col-span-7 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2">
+              <FileText size={14} className="text-[#3C6B4D]" /> Document Knowledge Input
+            </label>
             <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".txt,.md,.json,.csv" className="hidden" />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="px-2.5 py-1 bg-[#111213] border border-[#2A2D30] hover:text-[#ECEBE9] text-[#A3A09B] text-xs font-bold rounded-lg transition-all flex items-center gap-1.5"
-            >
+            <button onClick={() => fileInputRef.current?.click()} className="px-3 py-1.5 bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs font-bold rounded-lg flex items-center gap-1.5 hover:border-[#3C6B4D]">
               <Upload size={12} /> Upload File
             </button>
           </div>
           <textarea
             value={documentContent}
             onChange={e => setDocumentContent(e.target.value)}
-            rows={7}
+            rows={8}
             className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
           />
         </div>
 
-        <div className="lg:col-span-5 bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-4">
-          <span className="text-xs font-extrabold text-[#ECEBE9] border-b border-[#2A2D30] pb-2 block">RAG Vector Query Controls</span>
+        <div className="lg:col-span-5 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
+          <label className="text-xs font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-2">
+            <Search size={14} className="text-[#3C6B4D]" /> Chunking &amp; Query Controls
+          </label>
           <div className="space-y-3 text-xs">
             <div>
-              <label className="text-[#A3A09B] block font-bold mb-1">Chunking Strategy</label>
-              <div className="grid grid-cols-3 gap-1.5">
+              <label className="text-[#72706C] block font-bold mb-1">Chunk Strategy</label>
+              <div className="grid grid-cols-3 gap-2">
                 {(['paragraph', 'sentence', 'fixed'] as const).map(st => (
                   <button
                     key={st}
                     onClick={() => setChunkStrategy(st)}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition-all uppercase border ${
+                    className={`py-1.5 rounded-lg border text-[11px] font-bold uppercase transition-all ${
                       chunkStrategy === st ? 'bg-[#3C6B4D] text-white border-[#3C6B4D]' : 'bg-[#111213] text-[#72706C] border-[#2A2D30]'
                     }`}
                   >
@@ -246,7 +245,7 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
               </div>
             </div>
             <div>
-              <label className="text-[#A3A09B] block font-bold mb-1">Search Vector Query</label>
+              <label className="text-[#72706C] block font-bold mb-1">Search Vector Query</label>
               <input
                 type="text"
                 value={searchQuery}
@@ -265,6 +264,15 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
           </div>
         </div>
       </div>
+
+      {ragAnswer && (
+        <div className="bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl space-y-2 text-xs font-mono">
+          <div className="text-[#3C6B4D] font-bold flex items-center gap-2">
+            <Sparkles size={14} /> <span>RAG Context Synthesis Output</span>
+          </div>
+          <pre className="text-[#ECEBE9] whitespace-pre-wrap leading-relaxed">{ragAnswer}</pre>
+        </div>
+      )}
 
       {chunks.length > 0 && (
         <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">

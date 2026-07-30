@@ -225,7 +225,7 @@ export const AIHubStudio = () => {
   const [activeTab, setActiveTab] = useState<
     'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs' |
     'rag' | 'prompts' | 'extractor' | 'function-calling' | 'guardrails' |
-    'code-patch' | 'router' | 'knowledge-graph' | 'vision-studio' | 'quant-calc'
+    'code-patch' | 'router' | 'knowledge-graph' | 'vision-studio' | 'quant-calc' | 'model-settings'
   >('chat');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

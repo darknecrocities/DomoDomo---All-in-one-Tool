@@ -33,6 +33,12 @@
   </url>
   
   <url>
+    <loc>https://domodomo.site/blog/model-settings-manager-dynamic-ai-hub</loc>
+    <lastmod>2026-07-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://domodomo.site/blog/ai-hub-16-tools-expansion-vision-downloader</loc>
     <lastmod>2026-07-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -3396,6 +3402,12 @@
   </url>
   <url>
     <loc>https://domodomo.site/tool/ai-hub-studio</loc>
+    <lastmod>2026-07-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://domodomo.site/tool/ai-model-manager</loc>
     <lastmod>2026-07-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
