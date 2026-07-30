@@ -295,8 +295,56 @@
     background-color: var(--surface-dim) !important;
   }
 
+  .bg-\[\#222426\] {
+    background-color: var(--surface-dim) !important;
+  }
+
+  .bg-\[\#1D2022\] {
+    background-color: var(--surface-dim) !important;
+  }
+
+  .bg-black\/20 {
+    background-color: rgba(var(--primary-rgb), 0.08) !important;
+  }
+
   .border-\[\#2A2D30\] {
     border-color: var(--border) !important;
+  }
+
+  .border-\[\#3C3F44\] {
+    border-color: var(--border) !important;
+  }
+
+  .border-\[\#52565A\] {
+    border-color: var(--text-tertiary) !important;
+  }
+
+  .hover\:border-\[\#52565A\]:hover {
+    border-color: var(--text-tertiary) !important;
+  }
+
+  .hover\:border-\[\#3C3F44\]:hover {
+    border-color: var(--border) !important;
+  }
+
+  .hover\:bg-\[\#3C3F44\]:hover {
+    background-color: var(--surface-container) !important;
+  }
+
+  .hover\:bg-\[\#222426\]:hover {
+    background-color: var(--surface-dim) !important;
+  }
+
+  .focus\:border-\[\#52565A\]:focus {
+    border-color: var(--text-tertiary) !important;
+  }
+
+  .focus\:ring-\[\#52565A\]\/40:focus {
+    --tw-ring-color: rgba(var(--primary-rgb), 0.15) !important;
+  }
+
+  .text-\[\#C5C3C0\] {
+    color: var(--text-secondary) !important;
   }
 
   .text-\[\#ECEBE9\] {
