@@ -1,5 +1,17 @@
 [
   {
+    "hash": "bdf016e",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(analytics): add 1-hour cache and CORS-safe handling to visit counter"
+  },
+  {
+    "hash": "621ac48",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "2206d32",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-30",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "82d67df",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "merge: feat/ai-hub-prompt-lab-expansion into main"
-  },
-  {
-    "hash": "1faf122",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add card minimize & collapse controls to vision studio, hardware banner, and prompt lab library"
   }
 ]
