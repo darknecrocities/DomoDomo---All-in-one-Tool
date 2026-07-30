@@ -1,5 +1,53 @@
 [
   {
+    "hash": "c8ebc32",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "refactor(about): rename Active Users metric card to Total Visitors & Users"
+  },
+  {
+    "hash": "e4f8e9d",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
+    "hash": "04aa156",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): expand Prompt Engineering Lab with Framework Builder, Skill Library, and SKILL.md Exporter"
+  },
+  {
+    "hash": "c32852b",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
+    "hash": "fea7df7",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "perf(ai-hub): eliminate state mutation flickering by implementing silent background status polling"
+  },
+  {
+    "hash": "7ddc1f8",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
+    "hash": "d4c200c",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(dom): resolve nested button DOM validation error in AIHubStudio sidebar"
+  },
+  {
+    "hash": "b0e7122",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "c9c80b4",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -40,53 +88,5 @@
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "Merge branch 'feat/ai-hub-tools-expansion' into main"
-  },
-  {
-    "hash": "705b21e",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): correct model tag to llava-phi3, rethrow pull errors, and add content-type check in Shell"
-  },
-  {
-    "hash": "ea47237",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): resolve Ollama stream chunk parsing and sub-component model pull progress"
-  },
-  {
-    "hash": "99ecec6",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "d2f0401",
-    "date": "2026-07-30",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #61 from darknecrocities/improved-frontend-design"
-  },
-  {
-    "hash": "9b9e96c",
-    "date": "2026-07-30",
-    "author": "Ram-Gold",
-    "message": "refactor: standardize theme variables in CSS, update BlogContainer text color, and refresh PWA cache version"
-  },
-  {
-    "hash": "ec401bf",
-    "date": "2026-07-30",
-    "author": "Ram-Gold",
-    "message": "Merge main into improved-frontend-design"
-  },
-  {
-    "hash": "4691f39",
-    "date": "2026-07-30",
-    "author": "Ram-Gold",
-    "message": "refactor: optimize mascot and modal animations while standardizing transition performance across the UI."
-  },
-  {
-    "hash": "17d5d0c",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
