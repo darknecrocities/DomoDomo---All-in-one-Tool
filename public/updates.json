@@ -1,5 +1,23 @@
 [
   {
+    "hash": "2206d32",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "dc2cd18",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(analytics): configure CounterAPI.dev user token VITE_COUNTER_API_KEY"
+  },
+  {
+    "hash": "eb2a4fa",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "ead4536",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-30",
     "author": "darknecrocities",
     "message": "feat(ai-hub): add card minimize & collapse controls to vision studio, hardware banner, and prompt lab library"
-  },
-  {
-    "hash": "a078513",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): expand Prompt Lab Agent Skill Library to 22+ premade & custom skills with search & category filters"
-  },
-  {
-    "hash": "3a3acf1",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "e8fea4a",
-    "date": "2026-07-30",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #63 from darknecrocities/feat/ai-hub-prompt-lab-expansion"
   }
 ]
