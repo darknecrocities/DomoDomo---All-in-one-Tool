@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Wand2, Copy, Check, Plus, Trash2, Sparkles, Layers, Play, Bot, Cpu, Download, BookOpen, Award, ShieldCheck, Share2, Save, Archive } from 'lucide-react';
+import { Terminal, Wand2, Copy, Check, Plus, Trash2, Sparkles, Layers, Play, Bot, Cpu, Download, BookOpen, Award, ShieldCheck, Share2, Save, Archive, Search, Filter, ChevronDown, ChevronUp, Code, FileText, X, Grid, List, ArrowUpDown, Maximize2, Minimize2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { aiService } from '../../../utils/aiService';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
 import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
+import { PREMADE_SKILLS, type SkillDef } from '../data/premadeSkills';
 
 interface PromptEngineeringLabProps {
   selectedModel?: string;
@@ -128,6 +129,28 @@ const BUILTIN_AGENT_SKILLS: AgentSkillPreset[] = [
   }
 ];
 
+// Convert PremadeSkills dataset into AgentSkillPreset format
+const PREMADE_LAB_SKILLS: AgentSkillPreset[] = PREMADE_SKILLS.map((sk: SkillDef) => ({
+  id: sk.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+  name: sk.name,
+  category: sk.name.includes('Security') ? 'Security Audit' :
+            sk.name.includes('React') || sk.name.includes('UI/UX') ? 'Frontend Engineering' :
+            sk.name.includes('Python') || sk.name.includes('Backend') || sk.name.includes('SQL') ? 'Backend Engineering' :
+            sk.name.includes('DevOps') || sk.name.includes('Performance') ? 'Systems & Infrastructure' :
+            sk.name.includes('Data') ? 'Data & Analytics' : 'Core Architecture',
+  description: sk.description,
+  systemPersona: `${sk.systemInstructions}\n\n### MANDATORY RULES & CONSTRAINTS\n${sk.rules.map(r => `- ${r}`).join('\n')}`,
+  userTemplate: `TASK OBJECTIVE: {{task_objective}}\nCONTEXT & CONSTRAINTS: {{context_constraints}}\nOUTPUT FORMAT: {{output_format}}`,
+  variables: {
+    task_objective: `Execute high-precision ${sk.name} workflow on target module`,
+    context_constraints: `Strict compliance with project architectural standards and non-breaking changes`,
+    output_format: `Clean, fully documented production-ready response`
+  },
+  fewShot: []
+}));
+
+const ALL_BUILTIN_SKILLS = [...BUILTIN_AGENT_SKILLS, ...PREMADE_LAB_SKILLS];
+
 const COMMON_LLM_PRESETS = [
   'llama3.2:1b',
   'llama3.2:3b',
@@ -149,20 +172,98 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
 
   const [activeTab, setActiveTab] = useState<'workspace' | 'frameworks' | 'skills' | 'exporter' | 'audit'>('workspace');
 
-  // Custom User-Saved Skills state (persisted in LocalStorage)
+  // Custom User-Saved Skills state (persisted across DomoSkillCreator & PromptLab)
   const [customSkills, setCustomSkills] = useState<AgentSkillPreset[]>(() => {
     try {
-      const saved = localStorage.getItem('domodomo_custom_agent_skills');
-      return saved ? JSON.parse(saved) : [];
+      const savedAgentSkills = localStorage.getItem('domodomo_custom_agent_skills');
+      const savedDomoSkills = localStorage.getItem('domodomo_custom_skills');
+      
+      const parsedAgent = savedAgentSkills ? JSON.parse(savedAgentSkills) : [];
+      const parsedDomo = savedDomoSkills ? JSON.parse(savedDomoSkills).map((s: SkillDef) => ({
+        id: s.name.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+        name: s.name,
+        category: 'Custom Developer Skill',
+        description: s.description,
+        systemPersona: `${s.systemInstructions}\n\n### RULES\n${(s.rules || []).map(r => `- ${r}`).join('\n')}`,
+        userTemplate: `TASK: {{task}}\nFORMAT: {{format}}`,
+        variables: { task: 'Develop modular component', format: 'TypeScript ES6' },
+        fewShot: [],
+        isCustom: true
+      })) : [];
+
+      const combined = [...parsedAgent, ...parsedDomo];
+      const unique = Array.from(new Map(combined.map(item => [item.id, item])).values());
+      return unique;
     } catch {
       return [];
     }
   });
 
-  const [systemPersona, setSystemPersona] = useState(BUILTIN_AGENT_SKILLS[0].systemPersona);
-  const [userTemplate, setUserTemplate] = useState(BUILTIN_AGENT_SKILLS[0].userTemplate);
-  const [variableValues, setVariableValues] = useState<Record<string, string>>(BUILTIN_AGENT_SKILLS[0].variables);
-  const [fewShotExamples, setFewShotExamples] = useState<FewShotExample[]>(BUILTIN_AGENT_SKILLS[0].fewShot);
+  // Search, Filter, Sort, View & Expand state for Skills Library
+  const [skillSearchQuery, setSkillSearchQuery] = useState('');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
+  const [sortBy, setSortBy] = useState<'custom' | 'name' | 'category'>('custom');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [expandedSkillIds, setExpandedSkillIds] = useState<Record<string, boolean>>({});
+  const [copiedSkillId, setCopiedSkillId] = useState<string | null>(null);
+
+  const toggleSkillExpand = (id: string) => {
+    setExpandedSkillIds(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  const toggleExpandAll = (expand: boolean) => {
+    if (expand) {
+      const allMap: Record<string, boolean> = {};
+      allSkills.forEach(s => { allMap[s.id] = true; });
+      setExpandedSkillIds(allMap);
+    } else {
+      setExpandedSkillIds({});
+    }
+  };
+
+  const handleCopySkillPersona = (skill: AgentSkillPreset, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    navigator.clipboard.writeText(skill.systemPersona);
+    setCopiedSkillId(skill.id);
+    setTimeout(() => setCopiedSkillId(null), 1500);
+  };
+
+  const handleExportSingleSkill = (skill: AgentSkillPreset, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const slug = skill.id;
+    const skillContent = `---
+name: ${slug}
+description: ${skill.description}
+---
+
+# ${skill.name.toUpperCase()} Agent Skill
+
+## System Persona
+${skill.systemPersona}
+
+## Template Variables & User Instructions
+${skill.userTemplate}
+
+## Dynamic Variables
+${Object.entries(skill.variables || {}).map(([k, v]) => `- \`{{${k}}}\`: ${v}`).join('\n')}
+
+## Few-Shot Reference Examples
+${(skill.fewShot || []).map((ex, i) => `### Example #${i + 1}\n**Input:**\n${ex.input}\n\n**Output:**\n${ex.output}`).join('\n\n')}
+`;
+
+    triggerBlobDownload(
+      new Blob([skillContent], { type: 'text/markdown' }),
+      `SKILL_${slug}.md`
+    );
+  };
+
+  const [systemPersona, setSystemPersona] = useState(ALL_BUILTIN_SKILLS[0].systemPersona);
+  const [userTemplate, setUserTemplate] = useState(ALL_BUILTIN_SKILLS[0].userTemplate);
+  const [variableValues, setVariableValues] = useState<Record<string, string>>(ALL_BUILTIN_SKILLS[0].variables);
+  const [fewShotExamples, setFewShotExamples] = useState<FewShotExample[]>(ALL_BUILTIN_SKILLS[0].fewShot);
 
   const [skillName, setSkillName] = useState('custom-prompt-agent');
   const [skillDescription, setSkillDescription] = useState('Custom prompt template created in DomoDomo Prompt Engineering Lab');
@@ -174,9 +275,9 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
 
   const availableModels = Array.from(new Set([...installedModels, ...COMMON_LLM_PRESETS]));
 
-  const allSkills = [...customSkills, ...BUILTIN_AGENT_SKILLS];
+  const allSkills = [...customSkills, ...ALL_BUILTIN_SKILLS];
 
-  // Save custom skills to LocalStorage
+  // Save custom skills to LocalStorage (synced with DomoSkillCreator)
   useEffect(() => {
     try {
       localStorage.setItem('domodomo_custom_agent_skills', JSON.stringify(customSkills));
@@ -184,6 +285,33 @@ export const PromptEngineeringLab: React.FC<PromptEngineeringLabProps> = ({
       // Ignore write errors
     }
   }, [customSkills]);
+
+  const categoriesList = ['All', 'User Custom Skill', ...Array.from(new Set(ALL_BUILTIN_SKILLS.map(s => s.category)))];
+
+  const filteredSkills = allSkills
+    .filter(skill => {
+      const q = skillSearchQuery.toLowerCase();
+      const matchesSearch =
+        skill.name.toLowerCase().includes(q) ||
+        skill.description.toLowerCase().includes(q) ||
+        skill.category.toLowerCase().includes(q) ||
+        skill.systemPersona.toLowerCase().includes(q);
+      const matchesCategory =
+        selectedCategoryFilter === 'All' ||
+        (selectedCategoryFilter === 'User Custom Skill' ? skill.isCustom : skill.category === selectedCategoryFilter);
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'custom') {
+        if (a.isCustom && !b.isCustom) return -1;
+        if (!a.isCustom && b.isCustom) return 1;
+        return a.name.localeCompare(b.name);
+      }
+      if (sortBy === 'category') {
+        return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+      }
+      return a.name.localeCompare(b.name);
+    });
 
   const handleModelChange = (modelName: string) => {
     setCurrentModel(modelName);
@@ -442,7 +570,7 @@ Generated by **DomoDomo Prompt Engineering Lab**.
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
             <Wand2 size={12} />
-            <span>Prompt Framework Architect &amp; Agent Skill Creator</span>
+            <span>Prompt Framework Architect &amp; Agent Skill Creator ({allSkills.length} Skills)</span>
           </div>
           <h2 className="text-lg font-extrabold text-[#ECEBE9]">Prompt Engineering Lab</h2>
           <p className="text-[#72706C] text-xs mt-0.5">Design system personas, save &amp; activate custom agent skills in DomoDomo, and download .agents ZIP bundles.</p>
@@ -597,7 +725,7 @@ Generated by **DomoDomo Prompt Engineering Lab**.
                 <textarea
                   value={systemPersona}
                   onChange={e => setSystemPersona(e.target.value)}
-                  rows={4}
+                  rows={5}
                   className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
                 />
               </div>
@@ -715,72 +843,393 @@ Generated by **DomoDomo Prompt Engineering Lab**.
       {/* ── TAB 3: AGENT SKILL LIBRARY & SAVED PROMPTS ── */}
       {activeTab === 'skills' && (
         <div className="space-y-6">
-          {/* Custom Saved Skills */}
-          {customSkills.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="text-xs font-extrabold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-2">
-                <Save size={14} className="text-[#3C6B4D]" /> My Saved Custom Prompts ({customSkills.length})
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {customSkills.map(skill => (
-                  <div key={skill.id} className="bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-extrabold text-[#ECEBE9]">{skill.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/20 text-[#3C6B4D]">
-                            Custom
-                          </span>
-                          <button onClick={() => handleDeleteCustomSkill(skill.id)} className="text-[#72706C] hover:text-red-400 p-0.5">
-                            <Trash2 size={13} />
+          {/* Search, Filter, Sort, View Controls Header */}
+          <div className="bg-[#18191B] border border-[#2A2D30] p-4 rounded-2xl space-y-3">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+              {/* Search Bar */}
+              <div className="relative flex-1">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C]" />
+                <input
+                  type="text"
+                  value={skillSearchQuery}
+                  onChange={e => setSkillSearchQuery(e.target.value)}
+                  placeholder="Search skills by title, role, persona instructions, or keywords..."
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-8 py-2 text-xs text-[#ECEBE9] placeholder-[#72706C] focus:outline-none focus:border-[#3C6B4D] transition-colors"
+                />
+                {skillSearchQuery && (
+                  <button
+                    onClick={() => setSkillSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#72706C] hover:text-[#ECEBE9]"
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Filter & Sort Controls */}
+              <div className="flex items-center gap-2 flex-wrap shrink-0">
+                {/* Category Filter */}
+                <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1.5 text-xs text-[#ECEBE9]">
+                  <Filter size={13} className="text-[#3C6B4D]" />
+                  <select
+                    value={selectedCategoryFilter}
+                    onChange={e => setSelectedCategoryFilter(e.target.value)}
+                    className="bg-transparent text-[#ECEBE9] text-xs font-bold focus:outline-none cursor-pointer"
+                  >
+                    {categoriesList.map(cat => (
+                      <option key={cat} value={cat} className="bg-[#18191B] text-[#ECEBE9]">
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Sort dropdown */}
+                <div className="flex items-center gap-1.5 bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1.5 text-xs text-[#ECEBE9]">
+                  <ArrowUpDown size={13} className="text-[#3C6B4D]" />
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value as any)}
+                    className="bg-transparent text-[#ECEBE9] text-xs font-bold focus:outline-none cursor-pointer"
+                  >
+                    <option value="custom" className="bg-[#18191B]">Sort: Custom First</option>
+                    <option value="name" className="bg-[#18191B]">Sort: Name (A-Z)</option>
+                    <option value="category" className="bg-[#18191B]">Sort: Category</option>
+                  </select>
+                </div>
+
+                {/* View Mode Toggle */}
+                <div className="flex items-center bg-[#111213] border border-[#2A2D30] rounded-xl p-0.5">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-1.5 rounded-lg text-xs transition-colors ${viewMode === 'grid' ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}
+                    title="Grid View"
+                  >
+                    <Grid size={14} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-1.5 rounded-lg text-xs transition-colors ${viewMode === 'list' ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}
+                    title="List View"
+                  >
+                    <List size={14} />
+                  </button>
+                </div>
+
+                {/* Expand All / Collapse All */}
+                <button
+                  onClick={() => toggleExpandAll(!filteredSkills.length || !filteredSkills.every(s => expandedSkillIds[s.id]))}
+                  className="px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
+                  title="Toggle expand all prompt cards"
+                >
+                  {filteredSkills.length > 0 && filteredSkills.every(s => expandedSkillIds[s.id]) ? (
+                    <>
+                      <Minimize2 size={13} className="text-amber-400" />
+                      <span>Collapse All</span>
+                    </>
+                  ) : (
+                    <>
+                      <Maximize2 size={13} className="text-[#3C6B4D]" />
+                      <span>Expand All</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Catalog Count Header */}
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-extrabold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-2">
+              <Award size={14} className="text-amber-400" /> Integrated Agent Skills Catalog ({filteredSkills.length})
+            </h3>
+            <span className="text-[11px] text-[#72706C]">
+              {allSkills.filter(s => s.isCustom).length} Custom • {ALL_BUILTIN_SKILLS.length} Built-in
+            </span>
+          </div>
+
+          {/* Skill List / Grid */}
+          {filteredSkills.length === 0 ? (
+            <div className="p-8 text-center bg-[#18191B] border border-[#2A2D30] rounded-2xl text-xs text-[#72706C] space-y-2">
+              <p className="font-semibold">No agent skills found matching your filters.</p>
+              <p className="text-[11px]">Try clearing your search query or switching the category filter.</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredSkills.map(skill => {
+                const isExpanded = !!expandedSkillIds[skill.id];
+                const tokenEstimate = Math.round((skill.systemPersona?.length || 0) / 4);
+                const varCount = Object.keys(skill.variables || {}).length;
+                const fewShotCount = (skill.fewShot || []).length;
+                const isCopied = copiedSkillId === skill.id;
+
+                return (
+                  <div
+                    key={skill.id}
+                    className={`bg-[#18191B] border ${
+                      isExpanded ? 'border-[#3C6B4D] shadow-lg shadow-[#3C6B4D]/10' : 'border-[#2A2D30] hover:border-[#3C6B4D]/50'
+                    } p-5 rounded-2xl space-y-4 flex flex-col justify-between transition-all duration-200 relative group`}
+                  >
+                    {/* Top Header */}
+                    <div className="space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span
+                              className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md ${
+                                skill.isCustom
+                                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                  : 'bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/30'
+                              }`}
+                            >
+                              {skill.category}
+                            </span>
+                            {skill.isCustom && (
+                              <span className="text-[9px] font-mono font-extrabold uppercase px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-300">
+                                Custom Skill
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="text-sm font-extrabold text-[#ECEBE9] leading-snug">{skill.name}</h4>
+                        </div>
+
+                        {/* Actions Top Right */}
+                        <div className="flex items-center gap-1 shrink-0">
+                          {skill.isCustom && (
+                            <button
+                              onClick={() => handleDeleteCustomSkill(skill.id)}
+                              className="text-[#72706C] hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+                              title="Delete custom skill"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                          <button
+                            onClick={e => handleExportSingleSkill(skill, e)}
+                            className="text-[#72706C] hover:text-amber-400 p-1.5 rounded-lg hover:bg-amber-500/10 transition-colors"
+                            title="Download SKILL.md file"
+                          >
+                            <FileText size={13} />
+                          </button>
+                          <button
+                            onClick={e => handleCopySkillPersona(skill, e)}
+                            className="text-[#72706C] hover:text-emerald-400 p-1.5 rounded-lg hover:bg-emerald-500/10 transition-colors"
+                            title="Copy system persona to clipboard"
+                          >
+                            {isCopied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
                           </button>
                         </div>
                       </div>
-                      <p className="text-xs text-[#72706C]">{skill.description}</p>
+
+                      {/* Quick Metadata Stats */}
+                      <div className="flex items-center gap-3 text-[10px] font-mono text-[#72706C] border-y border-[#2A2D30]/60 py-1.5">
+                        <span title="Estimated Token Footprint">Est. Tokens: ~{tokenEstimate}</span>
+                        <span>•</span>
+                        <span title="Template Variables">{varCount} Vars</span>
+                        <span>•</span>
+                        <span title="Few-Shot Examples">{fewShotCount} Examples</span>
+                      </div>
+
+                      {/* Description with Expand/Collapse */}
+                      <div className="space-y-1.5">
+                        <p className={`text-xs text-[#A3A09B] leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
+                          {skill.description}
+                        </p>
+                        {skill.description.length > 90 && (
+                          <button
+                            onClick={() => toggleSkillExpand(skill.id)}
+                            className="text-[11px] font-bold text-[#3C6B4D] hover:text-white flex items-center gap-1 transition-colors"
+                          >
+                            <span>{isExpanded ? 'Show Less' : 'Show Details'}</span>
+                            {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Expanded Preview Details */}
+                      {isExpanded && (
+                        <div className="space-y-3 pt-2 border-t border-[#2A2D30] animate-fadeIn">
+                          {/* System Persona Instructions */}
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-[10px] font-bold text-[#ECEBE9] uppercase tracking-wider">
+                              <span className="flex items-center gap-1 text-[#3C6B4D]">
+                                <Terminal size={12} /> System Persona Instructions
+                              </span>
+                              <button
+                                onClick={e => handleCopySkillPersona(skill, e)}
+                                className="text-[10px] text-[#3C6B4D] hover:text-white flex items-center gap-1 font-mono"
+                              >
+                                {isCopied ? <Check size={11} /> : <Copy size={11} />}
+                                <span>{isCopied ? 'Copied' : 'Copy'}</span>
+                              </button>
+                            </div>
+                            <pre className="p-3 bg-[#111213] border border-[#2A2D30] rounded-xl text-[11px] font-mono text-[#ECEBE9] leading-relaxed max-h-36 overflow-y-auto whitespace-pre-wrap">
+                              {skill.systemPersona}
+                            </pre>
+                          </div>
+
+                          {/* User Instruction Template */}
+                          <div className="space-y-1">
+                            <span className="text-[10px] font-bold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-1 text-amber-400">
+                              <Code size={12} /> User Instruction Template
+                            </span>
+                            <pre className="p-3 bg-[#111213] border border-[#2A2D30] rounded-xl text-[11px] font-mono text-amber-300/90 leading-relaxed max-h-28 overflow-y-auto whitespace-pre-wrap">
+                              {skill.userTemplate}
+                            </pre>
+                          </div>
+
+                          {/* Dynamic Variables Schema */}
+                          {varCount > 0 && (
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">
+                                Template Variables ({varCount})
+                              </span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {Object.entries(skill.variables || {}).map(([key, val]) => (
+                                  <span key={key} className="px-2 py-0.5 rounded bg-[#111213] border border-[#2A2D30] text-[10px] font-mono text-[#ECEBE9]">
+                                    <strong className="text-[#3C6B4D]">{'{{' + key + '}}'}</strong>: {val}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Few-Shot Pair Examples */}
+                          {fewShotCount > 0 && (
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">
+                                Few-Shot Examples ({fewShotCount})
+                              </span>
+                              <div className="space-y-1.5">
+                                {skill.fewShot.map((ex, idx) => (
+                                  <div key={ex.id || idx} className="p-2 bg-[#111213] border border-[#2A2D30] rounded-lg text-[10px] font-mono space-y-1">
+                                    <div className="text-[#ECEBE9]"><strong className="text-[#72706C]">Input:</strong> {ex.input}</div>
+                                    <div className="text-emerald-400"><strong className="text-[#72706C]">Output:</strong> {ex.output}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
-                    <button
-                      onClick={() => handleInjectSkill(skill)}
-                      className="w-full py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                    >
-                      <Sparkles size={14} />
-                      <span>Load into Workspace</span>
-                    </button>
+                    {/* Bottom Action Footer */}
+                    <div className="pt-2 border-t border-[#2A2D30]/60 flex items-center justify-between gap-2">
+                      <button
+                        onClick={() => toggleSkillExpand(skill.id)}
+                        className="px-3 py-1.5 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
+                      >
+                        {isExpanded ? (
+                          <>
+                            <ChevronUp size={13} className="text-amber-400" />
+                            <span>Less</span>
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown size={13} className="text-[#3C6B4D]" />
+                            <span>Expand</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => handleInjectSkill(skill)}
+                        className="flex-1 py-2 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] hover:bg-[#3C6B4D]/20 text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 group-hover:border-[#3C6B4D]"
+                      >
+                        <Sparkles size={14} className="text-amber-400" />
+                        <span>Inject Skill into Workspace</span>
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
+            </div>
+          ) : (
+            /* List View */
+            <div className="space-y-3">
+              {filteredSkills.map(skill => {
+                const isExpanded = !!expandedSkillIds[skill.id];
+                const tokenEstimate = Math.round((skill.systemPersona?.length || 0) / 4);
+                const varCount = Object.keys(skill.variables || {}).length;
+                const isCopied = copiedSkillId === skill.id;
+
+                return (
+                  <div
+                    key={skill.id}
+                    className={`bg-[#18191B] border ${
+                      isExpanded ? 'border-[#3C6B4D]' : 'border-[#2A2D30] hover:border-[#3C6B4D]/50'
+                    } p-4 rounded-2xl space-y-3 transition-all`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md ${
+                              skill.isCustom
+                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                : 'bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/30'
+                            }`}
+                          >
+                            {skill.category}
+                          </span>
+                          <span className="text-xs font-mono text-[#72706C]">~{tokenEstimate} tokens</span>
+                          <span className="text-xs font-mono text-[#72706C]">• {varCount} vars</span>
+                        </div>
+                        <h4 className="text-sm font-extrabold text-[#ECEBE9]">{skill.name}</h4>
+                        <p className="text-xs text-[#72706C] line-clamp-1">{skill.description}</p>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={e => handleCopySkillPersona(skill, e)}
+                          className="p-2 bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-emerald-400 rounded-xl transition-colors"
+                          title="Copy system persona"
+                        >
+                          {isCopied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                        </button>
+
+                        <button
+                          onClick={() => toggleSkillExpand(skill.id)}
+                          className="px-3 py-2 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center gap-1"
+                        >
+                          <span>{isExpanded ? 'Less' : 'Details'}</span>
+                          {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                        </button>
+
+                        <button
+                          onClick={() => handleInjectSkill(skill)}
+                          className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
+                        >
+                          <Sparkles size={14} className="text-amber-400" />
+                          <span>Inject</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* List View Expanded Details */}
+                    {isExpanded && (
+                      <div className="pt-3 border-t border-[#2A2D30] space-y-3 text-xs animate-fadeIn">
+                        <p className="text-[#ECEBE9] font-medium">{skill.description}</p>
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-bold text-[#3C6B4D] uppercase">System Persona</span>
+                          <pre className="p-3 bg-[#111213] border border-[#2A2D30] rounded-xl text-[11px] font-mono text-[#ECEBE9] whitespace-pre-wrap max-h-36 overflow-y-auto">
+                            {skill.systemPersona}
+                          </pre>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-bold text-amber-400 uppercase">User Instruction Template</span>
+                          <pre className="p-3 bg-[#111213] border border-[#2A2D30] rounded-xl text-[11px] font-mono text-amber-300 whitespace-pre-wrap max-h-28 overflow-y-auto">
+                            {skill.userTemplate}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
-
-          {/* Built-in Agent Skill Library */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-extrabold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-2">
-              <Award size={14} className="text-amber-400" /> Built-in Agent Skill Library ({BUILTIN_AGENT_SKILLS.length})
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {BUILTIN_AGENT_SKILLS.map(skill => (
-                <div key={skill.id} className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-3 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-extrabold text-[#ECEBE9]">{skill.name}</span>
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#3C6B4D]/20 text-[#3C6B4D]">
-                        {skill.category}
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#72706C]">{skill.description}</p>
-                  </div>
-
-                  <button
-                    onClick={() => handleInjectSkill(skill)}
-                    className="w-full py-2 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D] text-[#ECEBE9] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                  >
-                    <Sparkles size={14} className="text-amber-400" />
-                    <span>Inject Skill into Prompt Lab</span>
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
 

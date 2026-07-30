@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, CpuIcon, Download, Check, Sparkles, HardDrive, Layers, ChevronRight, ChevronDown } from 'lucide-react';
+import { Cpu, CpuIcon, Download, Check, Sparkles, HardDrive, Layers, ChevronRight, ChevronDown, Minimize2, Maximize2 } from 'lucide-react';
 import { detectHardwareSpecs, getToolHardwareRecommendation } from '../../../utils/hardwareRecommender';
 
 interface HardwareRecommendationBannerProps {
@@ -22,6 +22,7 @@ export const HardwareRecommendationBanner: React.FC<HardwareRecommendationBanner
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   const specs = detectHardwareSpecs();
   const rec = getToolHardwareRecommendation(activeTab, installedModels);
@@ -49,13 +50,16 @@ export const HardwareRecommendationBanner: React.FC<HardwareRecommendationBanner
     }
   };
 
-  if (compact) {
+  if (compact || isMinimized) {
     return (
-      <div className="bg-[#18191B] border border-[#3C6B4D]/30 p-2.5 rounded-xl flex items-center justify-between gap-3 text-xs">
+      <div className="bg-[#18191B] border border-[#3C6B4D]/30 p-2.5 rounded-xl flex items-center justify-between gap-3 text-xs shadow-md transition-all">
         <div className="flex items-center gap-2 truncate">
           <Sparkles size={14} className="text-amber-400 shrink-0 animate-pulse" />
           <span className="text-[#ECEBE9] font-bold truncate">
             {rec.badgeText}: <code className="text-[#3C6B4D] font-mono">{rec.recommendedModelId}</code>
+          </span>
+          <span className="text-[10px] font-mono text-[#72706C] hidden sm:inline truncate">
+            ({specs.ramGB}GB RAM • {specs.tierLabel})
           </span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -81,13 +85,23 @@ export const HardwareRecommendationBanner: React.FC<HardwareRecommendationBanner
               <span>{downloading ? `${progress}%` : 'Install Model'}</span>
             </button>
           )}
+
+          {isMinimized && (
+            <button
+              onClick={() => setIsMinimized(false)}
+              className="p-1 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+              title="Expand Hardware Recommendation Card"
+            >
+              <Maximize2 size={13} />
+            </button>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl space-y-3 shadow-lg relative overflow-hidden">
+    <div className="bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl space-y-3 shadow-lg relative overflow-hidden transition-all">
       {/* Background Subtle Gradient Glow */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-[#3C6B4D]/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -110,13 +124,23 @@ export const HardwareRecommendationBanner: React.FC<HardwareRecommendationBanner
           </div>
         </div>
 
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="text-[11px] font-bold text-[#72706C] hover:text-[#ECEBE9] flex items-center gap-1 self-start sm:self-center transition-colors cursor-pointer"
-        >
-          <span>{expanded ? 'Hide Hardware Analysis' : 'Hardware Details'}</span>
-          {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-[11px] font-bold text-[#72706C] hover:text-[#ECEBE9] flex items-center gap-1 transition-colors cursor-pointer"
+          >
+            <span>{expanded ? 'Hide Details' : 'Details'}</span>
+            {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+          </button>
+
+          <button
+            onClick={() => setIsMinimized(true)}
+            className="p-1.5 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] transition-colors"
+            title="Minimize Hardware Card"
+          >
+            <Minimize2 size={13} />
+          </button>
+        </div>
       </div>
 
       {/* Recommended Model for Active Tab */}
