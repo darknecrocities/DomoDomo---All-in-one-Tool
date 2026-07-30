@@ -3,7 +3,10 @@ import { useState, useEffect, useCallback } from 'react';
 const INITIAL_BASE_COUNT = 8172;
 const STORAGE_KEY = 'domodomo_active_users_count';
 const SESSION_KEY = 'domodomo_session_tracked';
+const TIMESTAMP_KEY = 'domodomo_counter_last_fetch_timestamp';
 const EVENT_NAME = 'domodomo_count_updated';
+const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour caching window
+
 const COUNTER_API_UP = 'https://api.counterapi.dev/v1/domodomo_site_visitors/visits/up';
 const COUNTER_API_READ = 'https://api.counterapi.dev/v1/domodomo_site_visitors/visits';
 
@@ -58,45 +61,61 @@ export function formatCount(count: number): string {
 }
 
 /**
- * React hook to get and automatically update/increment visit count across visits and interactions.
- * Connects to global real-time Counter API with fallback to localStorage starting at base 8,172.
+ * React hook to manage real-time visit count dynamically with a 1-hour cache mechanism
+ * to prevent rate limit hits and avoid CORS browser errors.
  */
 export function useVisitCounter(trackClicks: boolean = true) {
   const [count, setCount] = useState<number>(() => {
     return getStoredVisitCount();
   });
 
-  // Real-time API counter sync function connecting to CounterAPI.dev
+  // Dynamic API sync with 1-hour caching window
   const syncGlobalCounter = useCallback(async (isNewSession: boolean) => {
-    const counterApiKey = import.meta.env.VITE_COUNTER_API_KEY || 'ut_Ck0B5fOlx0MTc3zvK0M79QJNfPwInkNcEsjjcvZ7';
+    if (typeof window === 'undefined') return;
 
-    try {
-      const baseUrl = isNewSession ? COUNTER_API_UP : COUNTER_API_READ;
-      const url = `${baseUrl}?token=${encodeURIComponent(counterApiKey)}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        if (data && typeof data.count === 'number') {
-          // Add API remote count to base count (starting at 8,172)
-          const baseOffset = INITIAL_BASE_COUNT - 1;
-          const liveTotal = baseOffset + data.count;
-          const updated = setStoredVisitCount(liveTotal);
-          setCount(updated);
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('CounterAPI sync offline or unreachable, using local fallback:', err);
-    }
+    const now = Date.now();
+    const lastFetchStr = localStorage.getItem(TIMESTAMP_KEY);
+    const lastFetch = lastFetchStr ? parseInt(lastFetchStr, 10) : 0;
+    const isCacheExpired = isNaN(lastFetch) || now - lastFetch > CACHE_DURATION_MS;
 
-    // Fallback if network requests fail
+    // Increment local session count if this is a new session
     if (isNewSession) {
       const updated = incrementVisitCount(1);
       setCount(updated);
     }
+
+    // Only query remote CounterAPI if 1 hour has elapsed since last API fetch
+    if (!isCacheExpired && lastFetch > 0) {
+      return; // Use 1-hour cached count
+    }
+
+    try {
+      const token = import.meta.env.VITE_COUNTER_API_KEY;
+      const baseUrl = isNewSession ? COUNTER_API_UP : COUNTER_API_READ;
+      const url = token ? `${baseUrl}?token=${encodeURIComponent(token)}` : baseUrl;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data && typeof data.count === 'number') {
+          const baseOffset = INITIAL_BASE_COUNT - 1;
+          const liveTotal = baseOffset + data.count;
+          const updated = setStoredVisitCount(liveTotal);
+          setCount(updated);
+          localStorage.setItem(TIMESTAMP_KEY, now.toString());
+        }
+      }
+    } catch {
+      // Quietly ignore CORS/network restrictions and update timestamp for local cache stability
+      localStorage.setItem(TIMESTAMP_KEY, now.toString());
+    }
   }, []);
 
-  // Increment visit count on initial mount if new session
+  // Initialize session & sync on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -114,7 +133,7 @@ export function useVisitCounter(trackClicks: boolean = true) {
     }
   }, [syncGlobalCounter]);
 
-  // Sync state with storage / custom events across tabs & components
+  // Sync state across browser tabs & components
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -180,4 +199,3 @@ export function useVisitCounter(trackClicks: boolean = true) {
     incrementCount: manuallyIncrement
   };
 }
-
