@@ -1,5 +1,17 @@
 [
   {
+    "hash": "d4c200c",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(dom): resolve nested button DOM validation error in AIHubStudio sidebar"
+  },
+  {
+    "hash": "b0e7122",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "c9c80b4",
     "date": "2026-07-30",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-30",
     "author": "Ram-Gold",
     "message": "Merge main into improved-frontend-design"
-  },
-  {
-    "hash": "4691f39",
-    "date": "2026-07-30",
-    "author": "Ram-Gold",
-    "message": "refactor: optimize mascot and modal animations while standardizing transition performance across the UI."
-  },
-  {
-    "hash": "17d5d0c",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
