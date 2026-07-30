@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const INITIAL_BASE_COUNT = 7876;
+const INITIAL_BASE_COUNT = 8172;
 const STORAGE_KEY = 'domodomo_active_users_count';
 const SESSION_KEY = 'domodomo_session_tracked';
 const EVENT_NAME = 'domodomo_count_updated';
+const COUNTER_API_UP = 'https://api.counterapi.dev/v1/domodomo_site_visitors/visits/up';
+const COUNTER_API_READ = 'https://api.counterapi.dev/v1/domodomo_site_visitors/visits';
 
 /**
- * Gets the current raw visit / active user count from localStorage or returns initial base count (7,876).
+ * Gets the current raw visit / active user count from localStorage or returns initial base count (8,172).
  */
 export function getStoredVisitCount(): number {
   if (typeof window === 'undefined') return INITIAL_BASE_COUNT;
@@ -49,7 +51,7 @@ export function incrementVisitCount(step: number = 1): number {
 }
 
 /**
- * Formats a count number with comma separators (e.g. 7876 -> "7,876")
+ * Formats a count number with comma separators (e.g. 8172 -> "8,172")
  */
 export function formatCount(count: number): string {
   return count.toLocaleString('en-US');
@@ -57,12 +59,39 @@ export function formatCount(count: number): string {
 
 /**
  * React hook to get and automatically update/increment visit count across visits and interactions.
- * TrackClicks: If true, user click interactions on the page will also increment the counter.
+ * Connects to global real-time Counter API with fallback to localStorage starting at base 8,172.
  */
 export function useVisitCounter(trackClicks: boolean = true) {
   const [count, setCount] = useState<number>(() => {
     return getStoredVisitCount();
   });
+
+  // Real-time API counter sync function
+  const syncGlobalCounter = useCallback(async (isNewSession: boolean) => {
+    try {
+      const url = isNewSession ? COUNTER_API_UP : COUNTER_API_READ;
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        if (data && typeof data.count === 'number') {
+          // Add API remote count to base count (starting at 8,172)
+          const baseOffset = INITIAL_BASE_COUNT - 1;
+          const liveTotal = baseOffset + data.count;
+          const updated = setStoredVisitCount(liveTotal);
+          setCount(updated);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Counter API sync offline or unreachable, using local fallback:', err);
+    }
+
+    // Fallback if API request fails
+    if (isNewSession) {
+      const updated = incrementVisitCount(1);
+      setCount(updated);
+    }
+  }, []);
 
   // Increment visit count on initial mount if new session
   useEffect(() => {
@@ -71,17 +100,16 @@ export function useVisitCounter(trackClicks: boolean = true) {
     try {
       const sessionTracked = sessionStorage.getItem(SESSION_KEY);
       if (!sessionTracked) {
-        // Increment on new page load / visit session starting at 7,876
-        const updated = incrementVisitCount(1);
         sessionStorage.setItem(SESSION_KEY, 'true');
-        setCount(updated);
+        syncGlobalCounter(true);
+      } else {
+        syncGlobalCounter(false);
       }
     } catch (e) {
-      // Fallback increment
       const updated = incrementVisitCount(1);
       setCount(updated);
     }
-  }, []);
+  }, [syncGlobalCounter]);
 
   // Sync state with storage / custom events across tabs & components
   useEffect(() => {
@@ -122,7 +150,6 @@ export function useVisitCounter(trackClicks: boolean = true) {
 
     const handleUserClick = () => {
       if (clickThrottleTimeout) return;
-      // Throttle click increments so user clicks increase count smoothly (once per 500ms max)
       clickThrottleTimeout = setTimeout(() => {
         clickThrottleTimeout = null;
       }, 500);
@@ -150,3 +177,4 @@ export function useVisitCounter(trackClicks: boolean = true) {
     incrementCount: manuallyIncrement
   };
 }
+
