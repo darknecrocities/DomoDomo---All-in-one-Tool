@@ -656,8 +656,8 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
   const [activeFastApiUrl, setActiveFastApiUrl] = useState<string>(aiSettings.fastApiEndpoint);
 
   // Check Ollama Connection & Downloaded Models across candidate endpoints
-  const checkOllama = useCallback(async () => {
-    setOllamaStatus('checking');
+  const checkOllama = useCallback(async (showCheckingState = false) => {
+    if (showCheckingState) setOllamaStatus('checking');
     const candidates = Array.from(new Set([
       '/ollama-proxy',
       aiSettings.ollamaEndpoint,
@@ -675,31 +675,38 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
         if (res.ok) {
           const data = await res.json();
           const fetchedModels: OllamaModel[] = data.models || [];
-          setModels(fetchedModels);
+          
+          setModels(prev => {
+            const prevStr = prev.map(m => `${m.name}:${m.size}`).join('|');
+            const newStr = fetchedModels.map(m => `${m.name}:${m.size}`).join('|');
+            if (prevStr === newStr) return prev;
+            return fetchedModels;
+          });
+
           if (fetchedModels.length > 0) {
             setSelectedModel(prev => {
-              if (fetchedModels.some(m => m.name === prev)) return prev;
+              if (prev && fetchedModels.some(m => m.name === prev)) return prev;
               return fetchedModels[0].name;
             });
             setSecondaryModel(prev => {
-              if (fetchedModels.some(m => m.name === prev)) return prev;
+              if (prev && fetchedModels.some(m => m.name === prev)) return prev;
               return fetchedModels[1]?.name || fetchedModels[0].name;
             });
           }
           setActiveOllamaUrl(endpoint);
-          setOllamaStatus('connected');
+          setOllamaStatus(prev => prev === 'connected' ? prev : 'connected');
           return;
         }
       } catch {
         // Try next candidate endpoint
       }
     }
-    setOllamaStatus('offline');
+    setOllamaStatus(prev => prev === 'offline' ? prev : 'offline');
   }, [aiSettings.ollamaEndpoint]);
 
   // Check Python FastAPI Backend Status across candidate endpoints
-  const checkFastApi = useCallback(async () => {
-    setFastApiStatus('checking');
+  const checkFastApi = useCallback(async (showCheckingState = false) => {
+    if (showCheckingState) setFastApiStatus('checking');
     const candidates = Array.from(new Set([
       '/fastapi-proxy',
       aiSettings.fastApiEndpoint,
@@ -716,25 +723,25 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
 
         if (res.ok) {
           setActiveFastApiUrl(endpoint);
-          setFastApiStatus('connected');
+          setFastApiStatus(prev => prev === 'connected' ? prev : 'connected');
           return;
         }
       } catch {
         // Try next candidate
       }
     }
-    setFastApiStatus('offline');
+    setFastApiStatus(prev => prev === 'offline' ? prev : 'offline');
   }, [aiSettings.fastApiEndpoint]);
 
   // Initial check & periodic status polling
   useEffect(() => {
-    checkOllama();
-    checkFastApi();
+    checkOllama(true);
+    checkFastApi(true);
 
     const interval = setInterval(() => {
-      checkOllama();
-      checkFastApi();
-    }, 4000);
+      checkOllama(false);
+      checkFastApi(false);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [checkOllama, checkFastApi]);
@@ -1672,7 +1679,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                      ollamaStatus === 'checking' ? 'Connecting...' : 'Offline (sim)'}
                   </span>
                 </div>
-                <button onClick={checkOllama} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Refresh Ollama">
+                <button onClick={() => checkOllama(true)} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Refresh Ollama">
                   <RefreshCw size={10} className={ollamaStatus === 'checking' ? 'animate-spin' : ''} />
                 </button>
               </div>
@@ -1687,7 +1694,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     {fastApiStatus === 'connected' ? 'Python ML Engine Ready' : 'Python ML Standby'}
                   </span>
                 </div>
-                <button onClick={checkFastApi} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Check Python ML status">
+                <button onClick={() => checkFastApi(true)} className="p-0.5 text-[#72706C] hover:text-[#ECEBE9]" title="Check Python ML status">
                   <RefreshCw size={9} className={fastApiStatus === 'checking' ? 'animate-spin' : ''} />
                 </button>
               </div>
@@ -2110,11 +2117,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="py-3 border-b border-[#2A2D30] space-y-1 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[#A3A09B]">Ollama: {ollamaStatus}</span>
-                  <button onClick={checkOllama} className="text-[#3C6B4D] font-bold">Refresh</button>
+                  <button onClick={() => checkOllama(true)} className="text-[#3C6B4D] font-bold">Refresh</button>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#72706C]">
                   <span>Python ML: {fastApiStatus}</span>
-                  <button onClick={checkFastApi} className="text-[#3C6B4D]">Check</button>
+                  <button onClick={() => checkFastApi(true)} className="text-[#3C6B4D]">Check</button>
                 </div>
               </div>
 
@@ -3164,7 +3171,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 selectedModel={selectedModel}
                 installedModels={models.map(m => m.name)}
                 onSelectGlobalModel={setSelectedModel}
-                onRefreshModels={checkOllama}
+                onRefreshModels={() => checkOllama(true)}
               />
             )}
 
@@ -3268,7 +3275,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
                     />
                     <button
-                      onClick={checkOllama}
+                      onClick={() => checkOllama(true)}
                       className="px-3 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all shrink-0"
                     >
                       Test Connection
@@ -3294,7 +3301,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
                     />
                     <button
-                      onClick={checkFastApi}
+                      onClick={() => checkFastApi(true)}
                       className="px-3 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all shrink-0"
                     >
                       Test Backend
