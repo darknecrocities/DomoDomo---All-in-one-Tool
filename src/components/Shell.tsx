@@ -618,7 +618,7 @@ export const Shell = () => {
       )}
 
       {/* Main Content Workspace */}
-      <main className={isAIHub ? 'flex-1 w-full p-0 max-w-none' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8'}>
+      <main className={isAIHub ? 'flex-1 w-full p-0 max-w-none' : 'flex-1 max-w-7xl w-full mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8'}>
         <Outlet />
       </main>
 
@@ -627,16 +627,16 @@ export const Shell = () => {
 
       {/* Bottom Footer (Hidden on /ai-hub full-bleed layout) */}
       {!isAIHub && (
-        <footer className="bg-[#111213] border-t border-[#2A2D30] pt-16 pb-8 px-6 sm:px-12 mt-12 w-full">
+        <footer className="bg-[#111213] border-t border-[#2A2D30] pt-10 sm:pt-16 pb-6 sm:pb-8 px-4 sm:px-8 md:px-12 mt-8 sm:mt-12 w-full">
           <div className="max-w-7xl mx-auto flex flex-col gap-12">
             {/* Main Footer Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12">
               {/* Left Tagline */}
-              <div className="lg:col-span-6 flex flex-col justify-between text-left gap-6">
-                <div className="space-y-4">
+              <div className="lg:col-span-6 flex flex-col justify-between text-left gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
-                    <Logo size={36} showText={false} />
-                    <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-none text-[#ECEBE9] font-heading">
+                    <Logo size={28} showText={false} />
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-none text-[#ECEBE9] font-heading">
                       DomoDomo
                     </h2>
                   </div>
@@ -844,7 +844,7 @@ export const Shell = () => {
               </div>
 
               {/* Right Link Columns */}
-              <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
+              <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-6 text-left">
                 {/* Column 1 */}
                 <div className="flex flex-col gap-4">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#72706C]">Quicklinks</span>
@@ -899,7 +899,7 @@ export const Shell = () => {
             </div>
 
             {/* Sub-footer / Copyright bar */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-[#2A2D30]/30 text-[10px] text-[#72706C] font-semibold">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 pt-4 border-t border-[#2A2D30]/30 text-[10px] text-[#72706C] font-semibold">
               <div className="flex gap-4">
                 <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link>
                 <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link>
@@ -913,7 +913,7 @@ export const Shell = () => {
                 </button>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center md:justify-end gap-3.5">
+              <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3.5">
                 <span>Copyright © {new Date().getFullYear()} DomoDomo. All rights reserved.</span>
                 <span className="text-[#2A2D30] hidden md:inline">•</span>
                 <span>Zero-Server Architecture</span>

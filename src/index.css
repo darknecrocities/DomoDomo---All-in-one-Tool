@@ -56,6 +56,15 @@
     background-image:
       radial-gradient(at 50% 0%, var(--primary-glow) 0px, transparent 60%);
     background-attachment: fixed;
+    /* Safe area support for notched phones */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Prevent text size inflation on iOS */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   h1,
@@ -718,4 +727,34 @@
 .gold-shining-border:hover {
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
   transform: translateY(-1px);
+}
+
+/* ============================================
+   XS Breakpoint (480px) — finer mobile control
+   ============================================ */
+@media (min-width: 480px) {
+  .xs\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .xs\:flex-row {
+    flex-direction: row;
+  }
+  .xs\:w-auto {
+    width: auto;
+  }
+}
+
+/* ============================================
+   Mobile hero improvements
+   ============================================ */
+@media (max-width: 640px) {
+  /* Compact command bar on mobile */
+  .category-scroll-btn {
+    padding: 5px;
+  }
+
+  /* Better card touch targets */
+  .glass-card {
+    min-height: 120px;
+  }
 }
