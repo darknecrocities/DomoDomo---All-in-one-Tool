@@ -877,6 +877,106 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		status: "functional",
 		popular: true,
 	},
+	{
+		id: "sql-workbench",
+		name: "SQL Workbench & Data Analyzer",
+		categories: ["dev", "data"],
+		description:
+			"Run SQLite queries locally on your JSON and CSV files and build visual charts in-browser.",
+		icon: "Database",
+		status: "functional",
+		popular: true,
+	},
+	{
+		id: "jwt-gen",
+		name: "JWT Generator & Signer",
+		categories: ["dev", "security"],
+		description:
+			"Generate, sign, and verify JWT tokens locally using WebCrypto HS256.",
+		icon: "Lock",
+		status: "functional",
+	},
+	{
+		id: "case-convert",
+		name: "Text Case Converter",
+		categories: ["dev"],
+		description:
+			"Convert text identifier cases between camel, Pascal, snake, kebab, and slug styles.",
+		icon: "Code",
+		status: "functional",
+	},
+	{
+		id: "url-parse",
+		name: "URL & Query String Parser",
+		categories: ["dev"],
+		description:
+			"Parse, edit parameters, and validate URL query strings in real-time.",
+		icon: "Globe",
+		status: "functional",
+	},
+	{
+		id: "flexbox-grid-playground",
+		name: "CSS Flexbox & Grid Playground",
+		categories: ["dev", "design"],
+		description:
+			"Interactive visual simulator to build and customize CSS Flexbox and Grid layouts.",
+		icon: "LayoutGrid",
+		status: "functional",
+	},
+	{
+		id: "js-sandbox-console",
+		name: "JS Code Sandbox & Console",
+		categories: ["dev"],
+		description:
+			"Execute ES6 JavaScript scripts in a sandboxed console window with speed benchmarking.",
+		icon: "Code",
+		status: "functional",
+	},
+	{
+		id: "docker-compose-builder",
+		name: "Docker Compose Builder",
+		categories: ["dev"],
+		description:
+			"Visually configure multi-container Docker services and export compose configurations.",
+		icon: "Box",
+		status: "functional",
+	},
+	{
+		id: "svg-optimizer",
+		name: "SVG Optimizer & Editor",
+		categories: ["dev", "design"],
+		description:
+			"Clean up vector paths, override stroke/fill attributes, and optimize file sizes.",
+		icon: "Image",
+		status: "functional",
+	},
+	{
+		id: "http-header-inspector",
+		name: "HTTP Header Inspector",
+		categories: ["dev", "network", "security"],
+		description:
+			"Parse header logs, validate security compliance scores, and generate CORS rules.",
+		icon: "Globe",
+		status: "functional",
+	},
+	{
+		id: "ip-subnetter",
+		name: "CIDR Subnet & Socket Calculator",
+		categories: ["dev", "network"],
+		description:
+			"Calculate IP subnet mask addresses, usable host scopes, and lookup network ports.",
+		icon: "Globe",
+		status: "functional",
+	},
+	{
+		id: "viewport-ua-tester",
+		name: "Viewport & User-Agent Tester",
+		categories: ["dev", "design"],
+		description:
+			"Simulate screen sizes responsive grids, rotate view orientations, and check network speeds.",
+		icon: "Globe",
+		status: "functional",
+	},
 
 	// AI Tools (20)
 	{
@@ -2203,10 +2303,8 @@ export const Dashboard = () => {
 	};
 
 	const getFilteredTools = () => {
+		const query = search.trim().toLowerCase();
 		const list = ALL_PLANNED_TOOLS.filter((tool) => {
-			if (activeCategory === "all" && tool.categories.includes("ai") && !hasOllama) {
-				return false;
-			}
 			const matchesCategory =
 				activeCategory === "all" ||
 				(activeCategory === "popular" && tool.popular) ||
@@ -2214,15 +2312,23 @@ export const Dashboard = () => {
 
 			if (!matchesCategory) return false;
 
-			const matchesSearch =
-				tool.name.toLowerCase().includes(search.toLowerCase()) ||
-				tool.description.toLowerCase().includes(search.toLowerCase());
-
-			if (search && tool.status !== "functional") {
-				return false;
+			if (query) {
+				if (tool.status !== "functional") {
+					return false;
+				}
+				const matchesName = tool.name.toLowerCase().includes(query);
+				const matchesDesc = tool.description.toLowerCase().includes(query);
+				const matchesCat = tool.categories.some((c) => {
+					const catObj = CATEGORIES.find((cat) => cat.id === c);
+					return (
+						c.toLowerCase().includes(query) ||
+						(catObj && catObj.name.toLowerCase().includes(query))
+					);
+				});
+				return matchesName || matchesDesc || matchesCat;
 			}
 
-			return matchesSearch;
+			return true;
 		});
 
 		return list;
@@ -3200,8 +3306,8 @@ ollama run llama3.2`}
 							const isReady = tool.status === "functional";
 							const isTeased =
 								(tool.requiresOllama ||
-									tool.categories.includes("investigation") ||
-									tool.categories.includes("ai")) &&
+									tool.categories[0] === "ai" ||
+									tool.categories[0] === "investigation") &&
 								(!isLocal || !hasOllama);
 
 							return (
