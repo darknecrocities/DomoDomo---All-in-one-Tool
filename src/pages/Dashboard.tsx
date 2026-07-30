@@ -2383,11 +2383,13 @@ export const Dashboard = () => {
 				<div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.15] pointer-events-none" />
 
 				<div className="lg:col-span-7 flex flex-col gap-3 md:gap-4 text-left z-10 justify-center">
-					{/* Group 1: Rankings & Accolades Bar */}
-					<div className="flex flex-wrap items-center gap-2">
-						{/* Live App Builders PH Vote Widget */}
+					{/* App Builders PH Primary Vote Widget */}
+					<div>
 						<AppBuildersWidget compact />
+					</div>
 
+					{/* Category Rankings Strip — all 4 badges together below App Builders PH */}
+					<div className="flex flex-wrap items-center gap-2">
 						{/* App Builders PH #1 All Time Overall Badge */}
 						<a
 							href="https://www.appbuildersph.com/apps/domodomo"
