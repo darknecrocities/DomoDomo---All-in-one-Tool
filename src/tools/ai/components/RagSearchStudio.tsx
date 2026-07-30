@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Database, Upload, Download, Sparkles, FileText, Search, Cpu, AlertTriangle } from 'lucide-react';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
 import { aiService } from '../../../utils/aiService';
+import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
 
 interface RagSearchStudioProps {
   selectedModel?: string;
@@ -186,6 +187,15 @@ export const RagSearchStudio: React.FC<RagSearchStudioProps> = ({
           )}
         </div>
       </div>
+
+      <HardwareRecommendationBanner
+        compact
+        activeTab="rag"
+        selectedModel={currentModel}
+        installedModels={installedModels}
+        onSelectGlobalModel={onSelectGlobalModel}
+        onDownloadModel={onDownloadModel}
+      />
 
       {!isInstalled(currentModel) && (
         <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-300">

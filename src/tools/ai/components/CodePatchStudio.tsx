@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Code2, Wand2, Download, CheckCircle2, Copy, Check, Cpu, Download as PullIcon, AlertTriangle } from 'lucide-react';
 import { triggerBlobDownload } from '../../../utils/sharedHelpers';
 import { aiService } from '../../../utils/aiService';
+import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
 
 interface CodePatchStudioProps {
   selectedModel?: string;
@@ -152,6 +153,15 @@ export const CodePatchStudio: React.FC<CodePatchStudioProps> = ({
           </button>
         </div>
       </div>
+
+      <HardwareRecommendationBanner
+        compact
+        activeTab="code-patch"
+        selectedModel={currentModel}
+        installedModels={installedModels}
+        onSelectGlobalModel={handleModelChange}
+        onDownloadModel={onDownloadModel || (async () => {})}
+      />
 
       {!isInstalled(currentModel) && (
         <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-300">

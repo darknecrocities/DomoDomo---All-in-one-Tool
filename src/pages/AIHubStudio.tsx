@@ -60,6 +60,7 @@ import { KnowledgeGraphVisualizer } from '../tools/ai/components/KnowledgeGraphV
 import { VisionInspectionStudio } from '../tools/ai/components/VisionInspectionStudio';
 import { HardwareQuantCalculator } from '../tools/ai/components/HardwareQuantCalculator';
 import { ModelManagerStudio } from '../tools/ai/components/ModelManagerStudio';
+import { HardwareRecommendationBanner } from '../tools/ai/components/HardwareRecommendationBanner';
 
 interface OllamaModel {
   name: string;
@@ -2223,7 +2224,16 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
           </div>
 
           {/* TAB CONTENT — scrollable */}
-          <div className="p-6">
+          <div className="p-6 space-y-6">
+
+            {/* ── HARDWARE-AWARE MODEL RECOMMENDER BANNER ── */}
+            <HardwareRecommendationBanner
+              activeTab={activeTab}
+              selectedModel={selectedModel}
+              installedModels={models.map(m => m.name)}
+              onSelectGlobalModel={setSelectedModel}
+              onDownloadModel={handleDownloadModel}
+            />
 
             {/* ── ONLINE DEMO / LOCAL OLLAMA LOCK BANNER ── */}
             {(ollamaStatus !== 'connected' || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) && (

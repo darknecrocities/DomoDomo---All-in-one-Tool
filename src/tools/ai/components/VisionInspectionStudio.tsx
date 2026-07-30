@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Eye, Upload, Sparkles, CheckCircle2, Cpu, Download, AlertTriangle, Check, Layers } from 'lucide-react';
 import { aiService } from '../../../utils/aiService';
+import { HardwareRecommendationBanner } from './HardwareRecommendationBanner';
 
 interface VisionInspectionStudioProps {
   selectedModel?: string;
@@ -282,6 +283,15 @@ export const VisionInspectionStudio: React.FC<VisionInspectionStudioProps> = ({
           </button>
         </div>
       </div>
+
+      <HardwareRecommendationBanner
+        compact
+        activeTab="vision-studio"
+        selectedModel={selectedVisionModel}
+        installedModels={installedModels}
+        onSelectGlobalModel={(m) => { setSelectedVisionModel(m); if (onSelectGlobalModel) onSelectGlobalModel(m); }}
+        onDownloadModel={onDownloadModel}
+      />
 
       {pullError && (
         <div className="bg-rose-500/10 border border-rose-500/30 p-4 rounded-2xl flex items-center justify-between gap-3 text-xs text-rose-300">
