@@ -1,5 +1,53 @@
 [
   {
+    "hash": "fde1b54",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'main' of https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
+  },
+  {
+    "hash": "ba1a43c",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "7da1526",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "fix(dashboard): restore all tools in 'All' category and register missing dev tools"
+  },
+  {
+    "hash": "be910e2",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "82d67df",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "merge: feat/ai-hub-prompt-lab-expansion into main"
+  },
+  {
+    "hash": "1faf122",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add card minimize & collapse controls to vision studio, hardware banner, and prompt lab library"
+  },
+  {
+    "hash": "a078513",
+    "date": "2026-07-30",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): expand Prompt Lab Agent Skill Library to 22+ premade & custom skills with search & category filters"
+  },
+  {
+    "hash": "3a3acf1",
+    "date": "2026-07-30",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "e8fea4a",
     "date": "2026-07-30",
     "author": "RhonzKieee",
@@ -37,54 +85,6 @@
   },
   {
     "hash": "c32852b",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "fea7df7",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "perf(ai-hub): eliminate state mutation flickering by implementing silent background status polling"
-  },
-  {
-    "hash": "7ddc1f8",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "d4c200c",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(dom): resolve nested button DOM validation error in AIHubStudio sidebar"
-  },
-  {
-    "hash": "b0e7122",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "c9c80b4",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add hardware-aware model recommender system and interactive recommendation banners"
-  },
-  {
-    "hash": "867d3d5",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "0c82130",
-    "date": "2026-07-30",
-    "author": "darknecrocities",
-    "message": "fix(ci): resolve TypeScript compilation errors in AIHubStudio, RagSearchStudio, and VisionInspectionStudio"
-  },
-  {
-    "hash": "139f5db",
     "date": "2026-07-30",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
