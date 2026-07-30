@@ -2469,15 +2469,17 @@ export const Dashboard = () => {
 							<img src={stageByAntLogo} alt="Stage by Ant" className="w-4 h-4 object-contain rounded-sm" />
 							<span>Stage by Ant</span>
 						</a>
+					</div>
 
-						{/* Core Privacy & Open Source Badges */}
-						<div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-[11px] font-bold">
-							<Globe size={11} />
-							<span>Sandbox Offline</span>
+					{/* Group 3: Core Privacy & Open Source Guarantees */}
+					<div className="flex flex-wrap items-center gap-2">
+						<div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-xs font-semibold">
+							<Globe size={12} />
+							<span>Sandbox Offline Web Utilities</span>
 						</div>
-						<div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#1E2022] text-[#A3A09B] border border-[#2A2D30] text-[11px] font-bold">
-							<Code size={11} />
-							<span>100% Open Source</span>
+						<div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#1E2022] text-[#A3A09B] border border-[#2A2D30] text-xs font-semibold">
+							<Code size={12} />
+							<span>100% Free & Open Source</span>
 						</div>
 					</div>
 					<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
