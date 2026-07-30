@@ -212,7 +212,7 @@ export const BlogContainer = () => {
 
             <Link
               to={`/blog/${featuredPost.slug}`}
-              className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#2A2D30] hover:bg-[#3C3F44] border border-[#3C3F44] text-white text-xs font-black transition-all shadow-md group-hover/spotlight:scale-105"
+              className="shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#2A2D30] hover:bg-[#3C3F44] border border-[#3C3F44] text-[#ECEBE9] text-xs font-black transition-all shadow-md group-hover/spotlight:scale-105"
             >
               <span>Read Spotlight Article</span>
               <ChevronRight size={16} />

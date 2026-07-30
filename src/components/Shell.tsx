@@ -395,7 +395,7 @@ export const Shell = () => {
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
+              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] hover:bg-[#1E2022]"
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
@@ -419,7 +419,7 @@ export const Shell = () => {
             {/* Hamburger — mobile / tablet only */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022]"
+              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] hover:bg-[#1E2022]"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
@@ -430,7 +430,7 @@ export const Shell = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#2A2D30] bg-[#18191B] px-4 pb-4 animate-fadeIn">
+          <div className="lg:hidden border-t border-[#2A2D30] bg-[#18191B] px-4 pb-4 emil-modal-container">
             {/* Quick links */}
             <nav className="flex flex-col gap-0.5 py-3">
               <NavLink

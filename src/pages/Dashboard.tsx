@@ -2185,7 +2185,7 @@ export const Dashboard = () => {
 		} catch (err: any) {
 			setDownloadError(
 				err.message ||
-					'Download failed. Ensure OLLAMA_ORIGINS="*" is set and Ollama is running.',
+				'Download failed. Ensure OLLAMA_ORIGINS="*" is set and Ollama is running.',
 			);
 		} finally {
 			setDownloadingModel("");
@@ -2207,11 +2207,11 @@ export const Dashboard = () => {
 			const matchesSearch =
 				tool.name.toLowerCase().includes(search.toLowerCase()) ||
 				tool.description.toLowerCase().includes(search.toLowerCase());
-				
+
 			if (search && tool.status !== "functional") {
 				return false;
 			}
-			
+
 			return matchesSearch;
 		});
 
@@ -2613,7 +2613,7 @@ export const Dashboard = () => {
 					>
 						<TransparentVideoMascot
 							src={domoLaptopWebm}
-							className="w-48 h-48 md:w-60 md:h-60 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+							className="w-48 h-48 md:w-60 md:h-60 drop-shadow-2xl transition-transform duration-200 ease-[var(--ease-out)] hover:scale-105"
 							clickable={true}
 							isNativeTransparent={true}
 						/>
@@ -2656,13 +2656,12 @@ export const Dashboard = () => {
 								<button
 									key={cat.id}
 									onClick={() => handleCategoryChange(cat.id)}
-									className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${
-										activeCategory === cat.id
+									className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${activeCategory === cat.id
 											? "bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm"
 											: isUnavailable
 												? "bg-[#18191B]/40 border-[#2A2D30] text-[#72706C]"
 												: "bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]"
-									}`}
+										}`}
 								>
 									{isUnavailable && (
 										<Lock size={12} className="text-[#E29E2D] animate-pulse" />
@@ -2761,7 +2760,7 @@ export const Dashboard = () => {
 							</p>
 							<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] font-mono text-[10px] text-[#ECEBE9]">
 								<pre className="overflow-x-auto">
-{`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
+									{`git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
 cd DomoDomo---All-in-one-Tool
 npm install
 npm run dev`}
@@ -2781,7 +2780,7 @@ npm run dev`}
 							</p>
 							<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] font-mono text-[10px] text-[#ECEBE9]">
 								<pre className="overflow-x-auto">
-{`# 1. Install Ollama from ollama.com
+									{`# 1. Install Ollama from ollama.com
 # 2. Run your preferred model:
 ollama run llama3.2`}
 								</pre>
@@ -2976,11 +2975,10 @@ ollama run llama3.2`}
 								return (
 									<div
 										key={model.name}
-										className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${
-											isRecommended
+										className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${isRecommended
 												? "border-[#3C6B4D]/40 bg-[#3C6B4D]/5"
 												: "border-[#2A2D30] hover:border-[#2E533B]/40"
-										}`}
+											}`}
 									>
 										{isRecommended && (
 											<span className="absolute -top-2.5 right-4 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
@@ -3001,11 +2999,10 @@ ollama run llama3.2`}
 										<button
 											onClick={() => handlePullModel(model.name)}
 											disabled={!!downloadingModel}
-											className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${
-												isRecommended
+											className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${isRecommended
 													? "bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] disabled:opacity-40"
 													: "bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#A3A09B] disabled:opacity-40"
-											}`}
+												}`}
 										>
 											{downloadingModel === model.name
 												? "Downloading..."
@@ -3021,331 +3018,327 @@ ollama run llama3.2`}
 
 			<div className="flex flex-col gap-6 w-full text-left">
 				{activeCategory === "ai" && hasOllama && (
-						<div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
-							<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-								<div className="flex items-center gap-3">
-									<div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
-										<Cpu size={18} />
-									</div>
-									<div>
-										<span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">
-											Active LLM Model
+					<div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
+						<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+							<div className="flex items-center gap-3">
+								<div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+									<Cpu size={18} />
+								</div>
+								<div>
+									<span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">
+										Active LLM Model
+									</span>
+									<div className="flex items-center gap-2 mt-0.5">
+										<span className="text-sm font-bold text-[#ECEBE9] font-mono">
+											{selectedOllamaModel || "None"}
 										</span>
-										<div className="flex items-center gap-2 mt-0.5">
-											<span className="text-sm font-bold text-[#ECEBE9] font-mono">
-												{selectedOllamaModel || "None"}
-											</span>
-											<span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
-												Ollama Active
-											</span>
-										</div>
+										<span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
+											Ollama Active
+										</span>
 									</div>
-								</div>
-
-								<div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-									<select
-										value={selectedOllamaModel}
-										onChange={(e) => {
-											setSelectedOllamaModel(e.target.value);
-											aiService.setSelectedOllamaModel(e.target.value);
-										}}
-										className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
-									>
-										{ollamaModels.map((m) => (
-											<option key={m} value={m}>
-												{m}
-											</option>
-										))}
-									</select>
-
-									<button
-										onClick={() => setShowManageModels(!showManageModels)}
-										className="btn-secondary py-2 px-4 text-xs font-semibold w-full md:w-auto shrink-0 flex items-center justify-center gap-1.5"
-									>
-										<ChevronDown
-											size={14}
-											className={`transform transition-transform ${showManageModels ? "rotate-180" : ""}`}
-										/>
-										<span>Download More Models</span>
-									</button>
 								</div>
 							</div>
 
-							{showManageModels && (
-								<div className="border-t border-[#2A2D30] pt-5 mt-2 flex flex-col gap-4">
-									<div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-										<div>
-											<span className="text-[10px] text-[#72706C] uppercase font-semibold block">
-												Hardware Recommendation System
-											</span>
-											<span className="text-xs text-[#A3A09B] block mt-1">
-												System RAM:{" "}
-												<strong className="text-[#3C6B4D]">
-													{hardware.ram}
-												</strong>{" "}
-												| CPU Cores:{" "}
-												<strong className="text-[#3C6B4D]">
-													{hardware.cores}
-												</strong>
-											</span>
-										</div>
-										<div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
-											We recommend{" "}
-											<strong className="text-[#ECEBE9] font-mono">
-												{hardware.recommendedModel}
+							<div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+								<select
+									value={selectedOllamaModel}
+									onChange={(e) => {
+										setSelectedOllamaModel(e.target.value);
+										aiService.setSelectedOllamaModel(e.target.value);
+									}}
+									className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
+								>
+									{ollamaModels.map((m) => (
+										<option key={m} value={m}>
+											{m}
+										</option>
+									))}
+								</select>
+
+								<button
+									onClick={() => setShowManageModels(!showManageModels)}
+									className="btn-secondary py-2 px-4 text-xs font-semibold w-full md:w-auto shrink-0 flex items-center justify-center gap-1.5"
+								>
+									<ChevronDown
+										size={14}
+										className={`transform transition-transform ${showManageModels ? "rotate-180" : ""}`}
+									/>
+									<span>Download More Models</span>
+								</button>
+							</div>
+						</div>
+
+						{showManageModels && (
+							<div className="border-t border-[#2A2D30] pt-5 mt-2 flex flex-col gap-4">
+								<div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+									<div>
+										<span className="text-[10px] text-[#72706C] uppercase font-semibold block">
+											Hardware Recommendation System
+										</span>
+										<span className="text-xs text-[#A3A09B] block mt-1">
+											System RAM:{" "}
+											<strong className="text-[#3C6B4D]">
+												{hardware.ram}
 											</strong>{" "}
-											for your hardware.
-										</div>
+											| CPU Cores:{" "}
+											<strong className="text-[#3C6B4D]">
+												{hardware.cores}
+											</strong>
+										</span>
 									</div>
-
-									{downloadingModel && (
-										<div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
-											<div className="flex justify-between items-center text-xs font-semibold">
-												<span className="text-[#3C6B4D]">
-													Downloading {downloadingModel}...
-												</span>
-												<span>{downloadProgress}%</span>
-											</div>
-											<div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
-												<div
-													className="bg-[#3C6B4D] h-full"
-													style={{ width: `${downloadProgress}%` }}
-												/>
-											</div>
-										</div>
-									)}
-
-									{downloadError && (
-										<div className="bg-rose-500/10 border border-rose-500/25 p-3 rounded-lg text-xs text-rose-450 font-semibold">
-											{downloadError}
-										</div>
-									)}
-
-									<div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-										{[
-											{ name: "qwen2.5:0.5b", size: "397MB" },
-											{ name: "llama3.2:1b", size: "1.3GB" },
-											{ name: "gemma2:2b", size: "1.6GB" },
-											{ name: "llama3:8b", size: "4.7GB" },
-											{ name: "mistral:7b", size: "4.1GB" },
-										].map((m) => {
-											const alreadyInstalled = ollamaModels.includes(m.name);
-											return (
-												<div
-													key={m.name}
-													className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl flex flex-col justify-between gap-3"
-												>
-													<div className="text-left">
-														<span className="text-[11px] font-bold text-[#ECEBE9] block font-mono truncate">
-															{m.name}
-														</span>
-														<span className="text-[9px] text-[#72706C] block font-semibold mt-0.5">
-															{m.size}
-														</span>
-													</div>
-													<button
-														onClick={() => handlePullModel(m.name)}
-														disabled={alreadyInstalled || !!downloadingModel}
-														className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${
-															alreadyInstalled
-																? "bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]"
-																: "bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20"
-														}`}
-													>
-														{alreadyInstalled
-															? "Installed"
-															: downloadingModel === m.name
-																? "Downloading"
-																: "Download"}
-													</button>
-												</div>
-											);
-										})}
+									<div className="text-xs text-[#A3A09B] max-w-md bg-[#18191B] p-2.5 rounded-lg border border-[#2A2D30]">
+										We recommend{" "}
+										<strong className="text-[#ECEBE9] font-mono">
+											{hardware.recommendedModel}
+										</strong>{" "}
+										for your hardware.
 									</div>
 								</div>
-							)}
-						</div>
-					)}
-					{activeCategory === "security" && (!isLocal || !hasOllama) && (
-						<div className="bg-[#E29E2D]/10 border border-[#E29E2D]/20 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
-							<div>
-								<h3 className="text-[#ECEBE9] font-bold text-sm flex items-center gap-2">
-									<ShieldAlert size={16} className="text-[#E29E2D]" />
-									Unlock DomoGuard AI Suite
-								</h3>
-								<p className="text-[#A3A09B] text-xs mt-1 leading-relaxed">
-									10 advanced AI security tools are currently hidden. Start your
-									local Ollama instance and download a model to unlock them.
-								</p>
-							</div>
-							<button
-								onClick={() => handleCategoryChange("ai")}
-								className="btn-secondary text-xs px-4 py-2 shrink-0 border-[#E29E2D]/20 text-[#E29E2D] hover:bg-[#E29E2D]/10"
-							>
-								Setup Offline AI
-							</button>
-						</div>
-					)}
 
-					<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-						{filteredTools
-							.slice(0, activeCategory === "all" ? visibleCount : undefined)
-							.map((tool) => {
-								const isReady = tool.status === "functional";
-								const isTeased =
-									(tool.requiresOllama ||
-										tool.categories.includes("investigation") ||
-										tool.categories.includes("ai")) &&
-									(!isLocal || !hasOllama);
-
-								return (
-									<div
-										key={tool.id}
-										onClick={() => {
-											if (isTeased) {
-												const primaryCat = tool.categories.includes("investigation")
-													? "Investigative Research"
-													: "Local AI";
-												setSetupModalState({
-													open: true,
-													toolName: tool.name,
-													categoryName: primaryCat,
-												});
-											} else if (isReady) {
-												navigate(`/tool/${tool.id}`);
-											}
-										}}
-										className={`glass-card p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
-											isReady && !isTeased
-												? tool.popular
-													? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]"
-													: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50"
-												: "opacity-75 border-dashed border-[#E29E2D]/35 hover:border-[#E29E2D]/70 bg-[#111213]/60 cursor-pointer select-none"
-										} transition-all duration-200`}
-									>
-										<div className="flex flex-col gap-4">
-											<div className="flex justify-between items-start">
-												<div
-													className={`p-3 rounded-xl border ${
-														isReady && !isTeased
-															? tool.popular
-																? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
-																: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform"
-															: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
-													}`}
-												>
-													<DynamicIcon name={tool.icon} size={22} />
-												</div>
-												{isTeased ? (
-													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
-														<Cpu size={10} />
-														Requires Local LLM
-													</span>
-												) : isReady ? (
-													<div className="flex items-center gap-1.5">
-														{tool.popular && (
-															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
-																<Star size={10} className="fill-[#D4AF37]" />
-																<span>Popular</span>
-															</span>
-														)}
-														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-															Ready
-														</span>
-													</div>
-												) : (
-													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
-														Planned
-													</span>
-												)}
-											</div>
-
-											<div className="flex flex-col gap-1.5">
-												<h3
-													className={`font-bold text-lg text-[#ECEBE9] ${
-														isTeased
-															? "group-hover:text-[#E29E2D]"
-															: tool.popular
-																? "group-hover:text-[#D4AF37]"
-																: "group-hover:text-[#3C6B4D]"
-													} transition-colors`}
-												>
-													{tool.name}
-												</h3>
-												<p className="text-[#A3A09B] text-xs leading-relaxed">
-													{tool.description}
-												</p>
-											</div>
-										</div>
-
-										{/* Card Footer badges */}
-										<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
-											<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
-												{tool.categories
-													.map((cId) => {
-														const catObj = CATEGORIES.find(
-															(cat) => cat.id === cId,
-														);
-														return catObj ? catObj.name : cId;
-													})
-													.join(" / ")}
+								{downloadingModel && (
+									<div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
+										<div className="flex justify-between items-center text-xs font-semibold">
+											<span className="text-[#3C6B4D]">
+												Downloading {downloadingModel}...
 											</span>
-
-											{isReady && !isTeased && (
-												<span
-													className={`text-xs font-semibold ${
-														tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
-													} group-hover:translate-x-1 transition-transform flex items-center gap-1`}
-												>
-													<span>Open</span>
-													<span>→</span>
-												</span>
-											)}
-											{isTeased && (
-												<span className="text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1">
-													<ShieldAlert size={12} />
-													Setup Local AI to Unlock →
-												</span>
-											)}
+											<span>{downloadProgress}%</span>
+										</div>
+										<div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
+											<div
+												className="bg-[#3C6B4D] h-full"
+												style={{ width: `${downloadProgress}%` }}
+											/>
 										</div>
 									</div>
-								);
-							})}
+								)}
 
-						{filteredTools.length === 0 && (
-							<div className="col-span-full py-16 flex flex-col items-center justify-center text-[#72706C] gap-2">
-								<Cpu size={32} className="opacity-40 animate-pulse" />
-								<p className="text-sm">
-									No local tools matched your selection.
-								</p>
+								{downloadError && (
+									<div className="bg-rose-500/10 border border-rose-500/25 p-3 rounded-lg text-xs text-rose-450 font-semibold">
+										{downloadError}
+									</div>
+								)}
+
+								<div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+									{[
+										{ name: "qwen2.5:0.5b", size: "397MB" },
+										{ name: "llama3.2:1b", size: "1.3GB" },
+										{ name: "gemma2:2b", size: "1.6GB" },
+										{ name: "llama3:8b", size: "4.7GB" },
+										{ name: "mistral:7b", size: "4.1GB" },
+									].map((m) => {
+										const alreadyInstalled = ollamaModels.includes(m.name);
+										return (
+											<div
+												key={m.name}
+												className="bg-[#111213] border border-[#2A2D30] p-3 rounded-xl flex flex-col justify-between gap-3"
+											>
+												<div className="text-left">
+													<span className="text-[11px] font-bold text-[#ECEBE9] block font-mono truncate">
+														{m.name}
+													</span>
+													<span className="text-[9px] text-[#72706C] block font-semibold mt-0.5">
+														{m.size}
+													</span>
+												</div>
+												<button
+													onClick={() => handlePullModel(m.name)}
+													disabled={alreadyInstalled || !!downloadingModel}
+													className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${alreadyInstalled
+															? "bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]"
+															: "bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20"
+														}`}
+												>
+													{alreadyInstalled
+														? "Installed"
+														: downloadingModel === m.name
+															? "Downloading"
+															: "Download"}
+												</button>
+											</div>
+										);
+									})}
+								</div>
 							</div>
 						)}
 					</div>
-					{activeCategory === "all" && filteredTools.length > visibleCount && (
-						<div className="flex flex-col items-center gap-3 mt-8 pb-10 w-full">
-							<div className="text-xs text-[#72706C] font-bold uppercase tracking-wider">
-								Showing 12 of {filteredTools.length} total utilities
-							</div>
-							<button
-								onClick={() => setVisibleCount(filteredTools.length)}
-								className="btn-primary group px-8 py-3.5 hover:scale-[1.01] transition-all flex items-center gap-2"
-							>
-								<span>Reveal All {filteredTools.length} Tools</span>
-								<ChevronDown
-									size={18}
-									className="group-hover:translate-y-0.5 transition-transform"
-								/>
-							</button>
+				)}
+				{activeCategory === "security" && (!isLocal || !hasOllama) && (
+					<div className="bg-[#E29E2D]/10 border border-[#E29E2D]/20 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
+						<div>
+							<h3 className="text-[#ECEBE9] font-bold text-sm flex items-center gap-2">
+								<ShieldAlert size={16} className="text-[#E29E2D]" />
+								Unlock DomoGuard AI Suite
+							</h3>
+							<p className="text-[#A3A09B] text-xs mt-1 leading-relaxed">
+								10 advanced AI security tools are currently hidden. Start your
+								local Ollama instance and download a model to unlock them.
+							</p>
+						</div>
+						<button
+							onClick={() => handleCategoryChange("ai")}
+							className="btn-secondary text-xs px-4 py-2 shrink-0 border-[#E29E2D]/20 text-[#E29E2D] hover:bg-[#E29E2D]/10"
+						>
+							Setup Offline AI
+						</button>
+					</div>
+				)}
+
+				<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+					{filteredTools
+						.slice(0, activeCategory === "all" ? visibleCount : undefined)
+						.map((tool, index) => {
+							const isReady = tool.status === "functional";
+							const isTeased =
+								(tool.requiresOllama ||
+									tool.categories.includes("investigation") ||
+									tool.categories.includes("ai")) &&
+								(!isLocal || !hasOllama);
+
+							return (
+								<div
+									key={tool.id}
+									style={{ '--card-index': Math.min(index, 12) } as React.CSSProperties}
+									onClick={() => {
+										if (isTeased) {
+											const primaryCat = tool.categories.includes("investigation")
+												? "Investigative Research"
+												: "Local AI";
+											setSetupModalState({
+												open: true,
+												toolName: tool.name,
+												categoryName: primaryCat,
+											});
+										} else if (isReady) {
+											navigate(`/tool/${tool.id}`);
+										}
+									}}
+									className={`glass-card emil-card-enter p-6 flex flex-col justify-between text-left relative overflow-hidden group ${isReady && !isTeased
+											? tool.popular
+												? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]"
+												: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50"
+											: "opacity-75 border-dashed border-[#E29E2D]/35 hover:border-[#E29E2D]/70 bg-[#111213]/60 cursor-pointer select-none"
+										}`}
+								>
+									<div className="flex flex-col gap-4">
+										<div className="flex justify-between items-start">
+											<div
+												className={`p-3 rounded-xl border ${isReady && !isTeased
+														? tool.popular
+															? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
+															: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform"
+														: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
+													}`}
+											>
+												<DynamicIcon name={tool.icon} size={22} />
+											</div>
+											{isTeased ? (
+												<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
+													<Cpu size={10} />
+													Requires Local LLM
+												</span>
+											) : isReady ? (
+												<div className="flex items-center gap-1.5">
+													{tool.popular && (
+														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
+															<Star size={10} className="fill-[#D4AF37]" />
+															<span>Popular</span>
+														</span>
+													)}
+													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+														Ready
+													</span>
+												</div>
+											) : (
+												<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+													Planned
+												</span>
+											)}
+										</div>
+
+										<div className="flex flex-col gap-1.5">
+											<h3
+												className={`font-bold text-lg text-[#ECEBE9] ${isTeased
+														? "group-hover:text-[#E29E2D]"
+														: tool.popular
+															? "group-hover:text-[#D4AF37]"
+															: "group-hover:text-[#3C6B4D]"
+													} transition-colors`}
+											>
+												{tool.name}
+											</h3>
+											<p className="text-[#A3A09B] text-xs leading-relaxed">
+												{tool.description}
+											</p>
+										</div>
+									</div>
+
+									{/* Card Footer badges */}
+									<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
+										<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+											{tool.categories
+												.map((cId) => {
+													const catObj = CATEGORIES.find(
+														(cat) => cat.id === cId,
+													);
+													return catObj ? catObj.name : cId;
+												})
+												.join(" / ")}
+										</span>
+
+										{isReady && !isTeased && (
+											<span
+												className={`text-xs font-semibold ${tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
+													} group-hover:translate-x-1 transition-transform flex items-center gap-1`}
+											>
+												<span>Open</span>
+												<span>→</span>
+											</span>
+										)}
+										{isTeased && (
+											<span className="text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1">
+												<ShieldAlert size={12} />
+												Setup Local AI to Unlock →
+											</span>
+										)}
+									</div>
+								</div>
+							);
+						})}
+
+					{filteredTools.length === 0 && (
+						<div className="col-span-full py-16 flex flex-col items-center justify-center text-[#72706C] gap-2">
+							<Cpu size={32} className="opacity-40 animate-pulse" />
+							<p className="text-sm">
+								No local tools matched your selection.
+							</p>
 						</div>
 					)}
 				</div>
+				{activeCategory === "all" && filteredTools.length > visibleCount && (
+					<div className="flex flex-col items-center gap-3 mt-8 pb-10 w-full">
+						<div className="text-xs text-[#72706C] font-bold uppercase tracking-wider">
+							Showing 12 of {filteredTools.length} total utilities
+						</div>
+						<button
+							onClick={() => setVisibleCount(filteredTools.length)}
+							className="btn-primary group px-8 py-3.5 hover:scale-[1.01] transition-all flex items-center gap-2"
+						>
+							<span>Reveal All {filteredTools.length} Tools</span>
+							<ChevronDown
+								size={18}
+								className="group-hover:translate-y-0.5 transition-transform"
+							/>
+						</button>
+					</div>
+				)}
+			</div>
 
-				<LocalAISetupModal
-					isOpen={setupModalState.open}
-					onClose={() => setSetupModalState({ open: false })}
-					toolName={setupModalState.toolName}
-					categoryName={setupModalState.categoryName}
-				/>
+			<LocalAISetupModal
+				isOpen={setupModalState.open}
+				onClose={() => setSetupModalState({ open: false })}
+				toolName={setupModalState.toolName}
+				categoryName={setupModalState.categoryName}
+			/>
 		</div>
 	);
 };

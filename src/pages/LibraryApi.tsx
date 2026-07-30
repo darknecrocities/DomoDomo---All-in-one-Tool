@@ -203,7 +203,7 @@ curl -X GET "${endpoint}" \\
         <div className="relative z-20 shrink-0 flex items-center justify-center -my-4 md:-my-6">
           <TransparentVideoMascot
             src={domoReadingWebm}
-            className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+            className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 drop-shadow-2xl transition-transform duration-200 ease-[var(--ease-out)] hover:scale-105"
             clickable={true}
             isNativeTransparent={true}
           />

@@ -177,7 +177,7 @@ export const TransparentVideoMascot = ({
   }, [clickable]);
 
   return (
-    <div className={`relative ${className}`} style={{ cursor: clickable ? 'pointer' : 'default' }}>
+    <div className={`relative ${className} transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 active:scale-[0.94]`} style={{ cursor: clickable ? 'pointer' : 'default' }}>
       {/* Speech bubble — overlaid directly ON the video canvas at the top */}
       {message && (
         <div

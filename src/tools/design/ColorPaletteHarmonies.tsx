@@ -291,7 +291,7 @@ Provide color psychology analysis, UI application guidelines (background, primar
               <div
                 key={i}
                 style={{ backgroundColor: c }}
-                className="rounded-xl flex flex-col items-center justify-between p-3 border border-white/10 shadow-lg cursor-pointer hover:scale-105 transition"
+                className="rounded-xl flex flex-col items-center justify-between p-3 border border-white/10 shadow-lg cursor-pointer hover:scale-105 transition-transform duration-160 ease-[var(--ease-out)]"
                 onClick={() => navigator.clipboard.writeText(c)}
                 title="Click to copy hex"
               >

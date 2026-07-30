@@ -66,8 +66,8 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0d0e0f]/90 backdrop-blur-md px-4">
-      <div className="relative w-full max-w-lg bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl text-left overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0d0e0f]/90 backdrop-blur-md px-4 emil-backdrop">
+      <div className="relative w-full max-w-lg bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl text-left overflow-hidden emil-modal-container">
         {/* Glow indicator */}
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#3C6B4D]/10 rounded-full blur-2xl pointer-events-none" />
 
