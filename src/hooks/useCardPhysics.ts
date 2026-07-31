@@ -120,6 +120,7 @@ export function useCardPhysics(
 			});
 
 			if (newBodies.length > 0) {
+				bodiesRef.current = newBodies; // Set ref synchronously to avoid React state batching race condition!
 				setPhysicsBodies(newBodies);
 				setIsPhysicsActive(true);
 			}
@@ -180,7 +181,7 @@ export function useCardPhysics(
 					allSnapped = false;
 
 					if (nextBody.morphProgress !== undefined && nextBody.morphProgress < 1) {
-						nextBody.morphProgress += 0.08; // morph takes ~12 frames
+						nextBody.morphProgress += 0.04; // morph takes ~25 frames (~400ms)
 						if (nextBody.morphProgress >= 1) {
 							nextBody.morphProgress = 1;
 							// Finished morphing in place! Trigger initial physics scatter and drop!
