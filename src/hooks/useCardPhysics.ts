@@ -9,6 +9,8 @@ export interface PhysicsBody {
 	oy: number;
 	width: number;
 	height: number;
+	owidth: number;
+	oheight: number;
 	vx: number;
 	vy: number;
 	angle: number;
@@ -76,18 +78,28 @@ export function useCardPhysics(
 					const width = el.offsetWidth;
 					const height = el.offsetHeight;
 
+					// Define size of the cubes
+					const isMobile = window.innerWidth < 640;
+					const size = isMobile ? 80 : 100;
+
+					// Center the physics body (cube) on the grid card position
+					const px = ox + (width - size) / 2;
+					const py = oy + (height - size) / 2;
+
 					newBodies.push({
 						id: tool.id,
 						tool,
-						x: ox,
-						y: oy,
+						x: px,
+						y: py,
 						ox,
 						oy,
-						width,
-						height,
+						width: size,
+						height: size,
+						owidth: width,
+						oheight: height,
 						vx: (Math.random() - 0.5) * 8,
 						vy: -Math.random() * 6 - 3, // scatter and pop up!
-						angle: 0,
+						angle: (Math.random() - 0.5) * 0.5,
 						angularVelocity: (Math.random() - 0.5) * 0.15,
 						isReady: tool.status === "functional",
 						isTeased: (tool.requiresOllama ||
@@ -128,20 +140,32 @@ export function useCardPhysics(
 					const dx = nextBody.ox - nextBody.x;
 					const dy = nextBody.oy - nextBody.y;
 					const dAngle = 0 - nextBody.angle;
+					const dWidth = nextBody.owidth - nextBody.width;
+					const dHeight = nextBody.oheight - nextBody.height;
 
 					nextBody.x += dx * 0.15;
 					nextBody.y += dy * 0.15;
 					nextBody.angle += dAngle * 0.15;
+					nextBody.width += dWidth * 0.15;
+					nextBody.height += dHeight * 0.15;
 					nextBody.vx = 0;
 					nextBody.vy = 0;
 					nextBody.angularVelocity = 0;
 
-					if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5 || Math.abs(dAngle) > 0.01) {
+					if (
+						Math.abs(dx) > 0.5 ||
+						Math.abs(dy) > 0.5 ||
+						Math.abs(dAngle) > 0.01 ||
+						Math.abs(dWidth) > 1 ||
+						Math.abs(dHeight) > 1
+					) {
 						allSnapped = false;
 					} else {
 						nextBody.x = nextBody.ox;
 						nextBody.y = nextBody.oy;
 						nextBody.angle = 0;
+						nextBody.width = nextBody.owidth;
+						nextBody.height = nextBody.oheight;
 					}
 				} else {
 					allSnapped = false;

@@ -3309,18 +3309,19 @@ ollama run llama3.2`}
 											userSelect: "none",
 											WebkitUserSelect: "none",
 										}}
-										className={`glass-card p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
+										className={`glass-card flex flex-col items-center justify-center overflow-hidden group select-none ${
 											isReady && !isTeased
 												? tool.popular
 													? "border-[#D4AF37]/35 shadow-[0_0_20px_rgba(212,175,55,0.08)] bg-[#18191B]"
 													: "border-[#2A2D30] bg-[#18191B]"
-												: "opacity-75 border-dashed border-[#E29E2D]/35 bg-[#111213]/60 select-none"
+												: "opacity-75 border-dashed border-[#E29E2D]/35 bg-[#111213]/60"
 										}`}
 									>
-										<div className="flex flex-col gap-4 pointer-events-none">
-											<div className="flex justify-between items-start">
+										{body.width < 140 ? (
+											/* Visual Cube Box representation for physics mode */
+											<div className="flex flex-col items-center justify-center w-full h-full gap-1.5 p-2 pointer-events-none text-center">
 												<div
-													className={`p-3 rounded-xl border ${
+													className={`p-2 rounded-xl border flex items-center justify-center shrink-0 ${
 														isReady && !isTeased
 															? tool.popular
 																? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37]"
@@ -3330,67 +3331,89 @@ ollama run llama3.2`}
 												>
 													<DynamicIcon name={tool.icon} size={18} />
 												</div>
-												{isTeased ? (
-													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
-														<Cpu size={10} />
-														Requires Local LLM
-													</span>
-												) : isReady ? (
-													<div className="flex items-center gap-1.5">
-														{tool.popular && (
-															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
-																<Star size={10} className="fill-[#D4AF37]" />
-																<span>Popular</span>
+												<span className="text-[9px] font-extrabold text-[#ECEBE9] truncate w-full tracking-tight leading-none px-0.5">
+													{tool.name}
+												</span>
+											</div>
+										) : (
+											/* Full Card representation during snap-back restore phase */
+											<div className="flex flex-col justify-between w-full h-full p-4 sm:p-5 lg:p-6 text-left pointer-events-none">
+												<div className="flex flex-col gap-4">
+													<div className="flex justify-between items-start">
+														<div
+															className={`p-3 rounded-xl border ${
+																isReady && !isTeased
+																	? tool.popular
+																		? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37]"
+																		: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D]"
+																	: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
+															}`}
+														>
+															<DynamicIcon name={tool.icon} size={18} />
+														</div>
+														{isTeased ? (
+															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
+																<Cpu size={10} />
+																Requires Local LLM
+															</span>
+														) : isReady ? (
+															<div className="flex items-center gap-1.5">
+																{tool.popular && (
+																	<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
+																		<Star size={10} className="fill-[#D4AF37]" />
+																		<span>Popular</span>
+																	</span>
+																)}
+																<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+																	Ready
+																</span>
+															</div>
+														) : (
+															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+																Planned
 															</span>
 														)}
-														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-															Ready
-														</span>
 													</div>
-												) : (
-													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
-														Planned
+
+													<div className="flex flex-col gap-1.5">
+														<h3 className="font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9]">
+															{tool.name}
+														</h3>
+														<p className="text-[#A3A09B] text-xs leading-relaxed">
+															{tool.description}
+														</p>
+													</div>
+												</div>
+
+												<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
+													<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+														{tool.categories
+															.map((cId: string) => {
+																const catObj = CATEGORIES.find((cat) => cat.id === cId);
+																return catObj ? catObj.name : cId;
+															})
+															.join(" / ")}
 													</span>
-												)}
+
+													{isReady && !isTeased && (
+														<span
+															className={`text-xs font-semibold ${
+																tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
+															} flex items-center gap-1`}
+														>
+															<span>Open</span>
+															<span>→</span>
+														</span>
+													)}
+													{isTeased && (
+														<span className="text-[11px] font-bold text-[#E29E2D] flex items-center gap-1">
+															<ShieldAlert size={12} />
+															Setup Local AI to Unlock →
+														</span>
+													)}
+												</div>
 											</div>
-
-											<div className="flex flex-col gap-1.5">
-												<h3 className="font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9]">
-													{tool.name}
-												</h3>
-												<p className="text-[#A3A09B] text-xs leading-relaxed">
-													{tool.description}
-												</p>
-											</div>
-										</div>
-
-										<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65 pointer-events-none">
-											<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
-												{tool.categories
-													.map((cId: string) => {
-														const catObj = CATEGORIES.find((cat) => cat.id === cId);
-														return catObj ? catObj.name : cId;
-													})
-													.join(" / ")}
-											</span>
-
-											{isReady && !isTeased && (
-												<span
-													className={`text-xs font-semibold ${
-														tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
-													} flex items-center gap-1`}
-												>
-													<span>Open</span>
-													<span>→</span>
-												</span>
-											)}
-											{isTeased && (
-												<span className="text-[11px] font-bold text-[#E29E2D] flex items-center gap-1">
-													<ShieldAlert size={12} />
-													Setup Local AI to Unlock →
-												</span>
-											)}
-										</div>
+										)}
 									</div>
 								);
 						  })
