@@ -17,6 +17,10 @@ export interface PhysicsBody {
 	angularVelocity: number;
 	isReady: boolean;
 	isTeased: boolean;
+	targetSize?: number;
+	targetX?: number;
+	targetY?: number;
+	morphProgress?: number;
 }
 
 export function useCardPhysics(
@@ -78,9 +82,9 @@ export function useCardPhysics(
 					const width = el.offsetWidth;
 					const height = el.offsetHeight;
 
-					// Define size of the cubes
+					// Define size of the cubes (larger cubes as requested by the user!)
 					const isMobile = window.innerWidth < 640;
-					const size = isMobile ? 80 : 100;
+					const size = isMobile ? 100 : 120;
 
 					// Center the physics body (cube) on the grid card position
 					const px = ox + (width - size) / 2;
@@ -89,23 +93,28 @@ export function useCardPhysics(
 					newBodies.push({
 						id: tool.id,
 						tool,
-						x: px,
-						y: py,
+						// Start exactly at the grid coordinates and dimensions
+						x: ox,
+						y: oy,
 						ox,
 						oy,
-						width: size,
-						height: size,
+						width,
+						height,
 						owidth: width,
 						oheight: height,
-						vx: (Math.random() - 0.5) * 8,
-						vy: -Math.random() * 6 - 3, // scatter and pop up!
-						angle: (Math.random() - 0.5) * 0.5,
-						angularVelocity: (Math.random() - 0.5) * 0.15,
+						targetSize: size,
+						targetX: px,
+						targetY: py,
+						vx: 0,
+						vy: 0,
+						angle: 0,
+						angularVelocity: 0,
 						isReady: tool.status === "functional",
 						isTeased: (tool.requiresOllama ||
 							tool.categories[0] === "ai" ||
 							tool.categories[0] === "investigation") &&
 							(!isLocal || !hasOllama),
+						morphProgress: 0, // start at 0 (animates from grid cards to cubes)
 					});
 				}
 			});
@@ -170,45 +179,70 @@ export function useCardPhysics(
 				} else {
 					allSnapped = false;
 
-					if (nextBody.id === draggingId) {
-						const targetX = pointerPosRef.current.x - dragOffsetRef.current.x;
-						const targetY = pointerPosRef.current.y - dragOffsetRef.current.y;
-
-						nextBody.vx = (targetX - nextBody.x) * 0.35;
-						nextBody.vy = (targetY - nextBody.y) * 0.35;
-
-						nextBody.x = targetX;
-						nextBody.y = targetY;
-						nextBody.angle += nextBody.vx * 0.005;
-						nextBody.angularVelocity = nextBody.vx * 0.05;
-					} else {
-						nextBody.vy += gravity;
-						nextBody.vx *= friction;
-						nextBody.vy *= friction;
-						nextBody.angularVelocity *= 0.95;
-
-						nextBody.x += nextBody.vx;
-						nextBody.y += nextBody.vy;
-						nextBody.angle += nextBody.angularVelocity;
-
-						if (nextBody.x < padding) {
-							nextBody.x = padding;
-							nextBody.vx = -nextBody.vx * bounce;
-							nextBody.angularVelocity += nextBody.vy * 0.01;
-						} else if (nextBody.x + nextBody.width > containerWidth - padding) {
-							nextBody.x = containerWidth - nextBody.width - padding;
-							nextBody.vx = -nextBody.vx * bounce;
-							nextBody.angularVelocity -= nextBody.vy * 0.01;
+					if (nextBody.morphProgress !== undefined && nextBody.morphProgress < 1) {
+						nextBody.morphProgress += 0.08; // morph takes ~12 frames
+						if (nextBody.morphProgress >= 1) {
+							nextBody.morphProgress = 1;
+							// Finished morphing in place! Trigger initial physics scatter and drop!
+							nextBody.x = nextBody.targetX!;
+							nextBody.y = nextBody.targetY!;
+							nextBody.width = nextBody.targetSize!;
+							nextBody.height = nextBody.targetSize!;
+							nextBody.vx = (Math.random() - 0.5) * 8;
+							nextBody.vy = -Math.random() * 5 - 2; // scatter slightly upwards
+							nextBody.angle = (Math.random() - 0.5) * 0.5; // slight starting rotation
+							nextBody.angularVelocity = (Math.random() - 0.5) * 0.15;
+						} else {
+							// Interpolate size and coordinates using cubic easing
+							const p = nextBody.morphProgress;
+							const easedP = p * p * (3 - 2 * p);
+							nextBody.width = nextBody.owidth + (nextBody.targetSize! - nextBody.owidth) * easedP;
+							nextBody.height = nextBody.oheight + (nextBody.targetSize! - nextBody.oheight) * easedP;
+							nextBody.x = nextBody.ox + (nextBody.targetX! - nextBody.ox) * easedP;
+							nextBody.y = nextBody.oy + (nextBody.targetY! - nextBody.oy) * easedP;
 						}
+					} else {
+						// Run normal physics calculations
+						if (nextBody.id === draggingId) {
+							const targetX = pointerPosRef.current.x - dragOffsetRef.current.x;
+							const targetY = pointerPosRef.current.y - dragOffsetRef.current.y;
 
-						if (nextBody.y < padding) {
-							nextBody.y = padding;
-							nextBody.vy = -nextBody.vy * bounce;
-						} else if (nextBody.y + nextBody.height > containerHeight - padding) {
-							nextBody.y = containerHeight - nextBody.height - padding;
-							nextBody.vy = -nextBody.vy * bounce;
-							nextBody.vx *= 0.85;
-							nextBody.angularVelocity *= 0.85;
+							nextBody.vx = (targetX - nextBody.x) * 0.35;
+							nextBody.vy = (targetY - nextBody.y) * 0.35;
+
+							nextBody.x = targetX;
+							nextBody.y = targetY;
+							nextBody.angle += nextBody.vx * 0.005;
+							nextBody.angularVelocity = nextBody.vx * 0.05;
+						} else {
+							nextBody.vy += gravity;
+							nextBody.vx *= friction;
+							nextBody.vy *= friction;
+							nextBody.angularVelocity *= 0.95;
+
+							nextBody.x += nextBody.vx;
+							nextBody.y += nextBody.vy;
+							nextBody.angle += nextBody.angularVelocity;
+
+							if (nextBody.x < padding) {
+								nextBody.x = padding;
+								nextBody.vx = -nextBody.vx * bounce;
+								nextBody.angularVelocity += nextBody.vy * 0.01;
+							} else if (nextBody.x + nextBody.width > containerWidth - padding) {
+								nextBody.x = containerWidth - nextBody.width - padding;
+								nextBody.vx = -nextBody.vx * bounce;
+								nextBody.angularVelocity -= nextBody.vy * 0.01;
+							}
+
+							if (nextBody.y < padding) {
+								nextBody.y = padding;
+								nextBody.vy = -nextBody.vy * bounce;
+							} else if (nextBody.y + nextBody.height > containerHeight - padding) {
+								nextBody.y = containerHeight - nextBody.height - padding;
+								nextBody.vy = -nextBody.vy * bounce;
+								nextBody.vx *= 0.85;
+								nextBody.angularVelocity *= 0.85;
+							}
 						}
 					}
 				}

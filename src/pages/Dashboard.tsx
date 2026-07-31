@@ -3317,7 +3317,7 @@ ollama run llama3.2`}
 												: "opacity-75 border-dashed border-[#E29E2D]/35 bg-[#111213]/60"
 										}`}
 									>
-										{body.width < 140 ? (
+										{body.width < body.owidth - 20 ? (
 											/* Visual Cube Box representation for physics mode */
 											<div className="flex flex-col items-center justify-center w-full h-full gap-1.5 p-2 pointer-events-none text-center">
 												<div
