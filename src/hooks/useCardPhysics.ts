@@ -1,0 +1,266 @@
+import { useState, useEffect, useRef } from "react";
+
+export interface PhysicsBody {
+	id: string;
+	tool: any;
+	x: number;
+	y: number;
+	ox: number;
+	oy: number;
+	width: number;
+	height: number;
+	vx: number;
+	vy: number;
+	angle: number;
+	angularVelocity: number;
+	isReady: boolean;
+	isTeased: boolean;
+}
+
+export function useCardPhysics(
+	filteredTools: any[],
+	activeCategory: string,
+	visibleCount: number,
+	isLocal: boolean,
+	hasOllama: boolean
+) {
+	const gridContainerRef = useRef<HTMLDivElement>(null);
+	const [isPhysicsActive, setIsPhysicsActive] = useState(false);
+	const [isSnappingBack, setIsSnappingBack] = useState(false);
+	const [physicsBodies, setPhysicsBodies] = useState<PhysicsBody[]>([]);
+	const [physicsContainerHeight, setPhysicsContainerHeight] = useState<number | null>(null);
+	const [draggingId, setDraggingId] = useState<string | null>(null);
+
+	const dragOffsetRef = useRef({ x: 0, y: 0 });
+	const pointerPosRef = useRef({ x: 0, y: 0 });
+	const bodiesRef = useRef<PhysicsBody[]>([]);
+
+	// Update bodiesRef whenever physicsBodies state changes to prevent animation loop closures
+	useEffect(() => {
+		bodiesRef.current = physicsBodies;
+	}, [physicsBodies]);
+
+	// Mouse/Touch move handlers relative to container
+	const handlePointerMove = (e: React.PointerEvent) => {
+		if (!draggingId || !gridContainerRef.current) return;
+		const rect = gridContainerRef.current.getBoundingClientRect();
+		const clientX = e.clientX - rect.left;
+		const clientY = e.clientY - rect.top;
+		pointerPosRef.current = { x: clientX, y: clientY };
+	};
+
+	const handlePointerUp = () => {
+		setDraggingId(null);
+	};
+
+	const togglePhysicsMode = () => {
+		if (isSnappingBack) return;
+
+		if (isPhysicsActive) {
+			setIsSnappingBack(true);
+		} else {
+			if (!gridContainerRef.current) return;
+
+			const currentHeight = gridContainerRef.current.offsetHeight;
+			setPhysicsContainerHeight(currentHeight);
+
+			const cardElements = gridContainerRef.current.querySelectorAll(".glass-card");
+			const newBodies: PhysicsBody[] = [];
+			const currentTools = filteredTools.slice(0, activeCategory === "all" ? visibleCount : undefined);
+
+			currentTools.forEach((tool, index) => {
+				const el = cardElements[index] as HTMLElement;
+				if (el) {
+					const ox = el.offsetLeft;
+					const oy = el.offsetTop;
+					const width = el.offsetWidth;
+					const height = el.offsetHeight;
+
+					newBodies.push({
+						id: tool.id,
+						tool,
+						x: ox,
+						y: oy,
+						ox,
+						oy,
+						width,
+						height,
+						vx: (Math.random() - 0.5) * 8,
+						vy: -Math.random() * 6 - 3, // scatter and pop up!
+						angle: 0,
+						angularVelocity: (Math.random() - 0.5) * 0.15,
+						isReady: tool.status === "functional",
+						isTeased: (tool.requiresOllama ||
+							tool.categories[0] === "ai" ||
+							tool.categories[0] === "investigation") &&
+							(!isLocal || !hasOllama),
+					});
+				}
+			});
+
+			if (newBodies.length > 0) {
+				setPhysicsBodies(newBodies);
+				setIsPhysicsActive(true);
+			}
+		}
+	};
+
+	useEffect(() => {
+		if (!isPhysicsActive && !isSnappingBack) return;
+
+		let animationFrameId: number;
+		const gravity = 0.5;
+		const friction = 0.985;
+		const bounce = 0.6;
+		const padding = 4;
+
+		const tick = () => {
+			if (!gridContainerRef.current) return;
+			const containerWidth = gridContainerRef.current.clientWidth;
+			const containerHeight = physicsContainerHeight || gridContainerRef.current.clientHeight;
+
+			let allSnapped = true;
+
+			const updatedBodies = bodiesRef.current.map((body) => {
+				const nextBody = { ...body };
+
+				if (isSnappingBack) {
+					const dx = nextBody.ox - nextBody.x;
+					const dy = nextBody.oy - nextBody.y;
+					const dAngle = 0 - nextBody.angle;
+
+					nextBody.x += dx * 0.15;
+					nextBody.y += dy * 0.15;
+					nextBody.angle += dAngle * 0.15;
+					nextBody.vx = 0;
+					nextBody.vy = 0;
+					nextBody.angularVelocity = 0;
+
+					if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5 || Math.abs(dAngle) > 0.01) {
+						allSnapped = false;
+					} else {
+						nextBody.x = nextBody.ox;
+						nextBody.y = nextBody.oy;
+						nextBody.angle = 0;
+					}
+				} else {
+					allSnapped = false;
+
+					if (nextBody.id === draggingId) {
+						const targetX = pointerPosRef.current.x - dragOffsetRef.current.x;
+						const targetY = pointerPosRef.current.y - dragOffsetRef.current.y;
+
+						nextBody.vx = (targetX - nextBody.x) * 0.35;
+						nextBody.vy = (targetY - nextBody.y) * 0.35;
+
+						nextBody.x = targetX;
+						nextBody.y = targetY;
+						nextBody.angle += nextBody.vx * 0.005;
+						nextBody.angularVelocity = nextBody.vx * 0.05;
+					} else {
+						nextBody.vy += gravity;
+						nextBody.vx *= friction;
+						nextBody.vy *= friction;
+						nextBody.angularVelocity *= 0.95;
+
+						nextBody.x += nextBody.vx;
+						nextBody.y += nextBody.vy;
+						nextBody.angle += nextBody.angularVelocity;
+
+						if (nextBody.x < padding) {
+							nextBody.x = padding;
+							nextBody.vx = -nextBody.vx * bounce;
+							nextBody.angularVelocity += nextBody.vy * 0.01;
+						} else if (nextBody.x + nextBody.width > containerWidth - padding) {
+							nextBody.x = containerWidth - nextBody.width - padding;
+							nextBody.vx = -nextBody.vx * bounce;
+							nextBody.angularVelocity -= nextBody.vy * 0.01;
+						}
+
+						if (nextBody.y < padding) {
+							nextBody.y = padding;
+							nextBody.vy = -nextBody.vy * bounce;
+						} else if (nextBody.y + nextBody.height > containerHeight - padding) {
+							nextBody.y = containerHeight - nextBody.height - padding;
+							nextBody.vy = -nextBody.vy * bounce;
+							nextBody.vx *= 0.85;
+							nextBody.angularVelocity *= 0.85;
+						}
+					}
+				}
+
+				return nextBody;
+			});
+
+			if (!isSnappingBack) {
+				for (let i = 0; i < updatedBodies.length; i++) {
+					const b1 = updatedBodies[i];
+					for (let j = i + 1; j < updatedBodies.length; j++) {
+						const b2 = updatedBodies[j];
+
+						const overlapX = Math.min(b1.x + b1.width, b2.x + b2.width) - Math.max(b1.x, b2.x);
+						const overlapY = Math.min(b1.y + b1.height, b2.y + b2.height) - Math.max(b1.y, b2.y);
+
+						if (overlapX > 0 && overlapY > 0) {
+							if (overlapX < overlapY) {
+								const push = overlapX / 2;
+								const direction = b1.x < b2.x ? -1 : 1;
+
+								if (b1.id !== draggingId) {
+									b1.x += push * direction;
+									b1.vx = -b1.vx * bounce + (b2.vx * 0.2);
+									b1.angularVelocity += b1.vx * 0.001;
+								}
+								if (b2.id !== draggingId) {
+									b2.x -= push * direction;
+									b2.vx = -b2.vx * bounce + (b1.vx * 0.2);
+									b2.angularVelocity -= b2.vx * 0.001;
+								}
+							} else {
+								const push = overlapY / 2;
+								const direction = b1.y < b2.y ? -1 : 1;
+
+								if (b1.id !== draggingId) {
+									b1.y += push * direction;
+									b1.vy = -b1.vy * bounce + (b2.vy * 0.2);
+								}
+								if (b2.id !== draggingId) {
+									b2.y -= push * direction;
+									b2.vy = -b2.vy * bounce + (b1.vy * 0.2);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			setPhysicsBodies(updatedBodies);
+
+			if (isSnappingBack && allSnapped) {
+				setIsPhysicsActive(false);
+				setIsSnappingBack(false);
+				setPhysicsContainerHeight(null);
+			} else {
+				animationFrameId = requestAnimationFrame(tick);
+			}
+		};
+
+		animationFrameId = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(animationFrameId);
+	}, [isPhysicsActive, isSnappingBack, physicsContainerHeight, draggingId]);
+
+	return {
+		gridContainerRef,
+		isPhysicsActive,
+		isSnappingBack,
+		physicsBodies,
+		physicsContainerHeight,
+		draggingId,
+		dragOffsetRef,
+		pointerPosRef,
+		togglePhysicsMode,
+		handlePointerMove,
+		handlePointerUp,
+		setDraggingId,
+	};
+}
