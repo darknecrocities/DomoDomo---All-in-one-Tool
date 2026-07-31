@@ -3266,7 +3266,7 @@ ollama run llama3.2`}
 					className={
 						isPhysicsActive
 							? "w-full select-none"
-							: "grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6"
+							: "relative grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6"
 					}
 					onPointerMove={isPhysicsActive ? handlePointerMove : undefined}
 					onPointerUp={isPhysicsActive ? handlePointerUp : undefined}
