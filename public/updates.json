@@ -1,5 +1,35 @@
 [
   {
+    "hash": "265a9de",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "9507637",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "chore: commit final synced configuration files"
+  },
+  {
+    "hash": "76260c9",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "9b42da6",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "feat(physics): animate morph-to-cube transition in place before gravity release, increase cube sizes"
+  },
+  {
+    "hash": "3eec36c",
+    "date": "2026-07-31",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "83254fd",
     "date": "2026-07-31",
     "author": "darknecrocities",
@@ -58,35 +88,5 @@
     "date": "2026-07-31",
     "author": "darknecrocities",
     "message": "feat(mascot): create pixelated Domo walking and knocking animation on door splash screen"
-  },
-  {
-    "hash": "95cfe05",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "c047930",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "Merge branch 'main' into feat/appbar-hamburger-ai-hub-unsloth-studio"
-  },
-  {
-    "hash": "3a1bae4",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "fix(ui): separate product spec guarantees from Featured On press row"
-  },
-  {
-    "hash": "2410b6b",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "fix(ui): position rank badges directly underneath App Builders PH widget"
-  },
-  {
-    "hash": "5cd070c",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "fix(ui): position rank badges directly underneath App Builders PH widget"
   }
 ]
