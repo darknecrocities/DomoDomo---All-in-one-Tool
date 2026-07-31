@@ -1,5 +1,23 @@
 [
   {
+    "hash": "83254fd",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "0526cf5",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "feat(physics): render collapsed cards as compact physics cubes"
+  },
+  {
+    "hash": "308a4b8",
+    "date": "2026-07-31",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "14029dc",
     "date": "2026-07-31",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-31",
     "author": "darknecrocities",
     "message": "fix(ui): position rank badges directly underneath App Builders PH widget"
-  },
-  {
-    "hash": "4801374",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "b30db64",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "fix(ui): unify hero badging design and optimize mobile AI Hub chat viewport"
-  },
-  {
-    "hash": "da8e682",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
