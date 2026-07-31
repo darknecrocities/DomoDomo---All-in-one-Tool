@@ -15,6 +15,7 @@ import {
 	Check,
 	Trophy as TrophyIcon,
 	Award as AwardIcon,
+	Sparkles,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
@@ -2187,6 +2188,231 @@ export const Dashboard = () => {
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const categoryScrollRef = useRef<HTMLDivElement>(null);
 
+	const gridContainerRef = useRef<HTMLDivElement>(null);
+	const [isPhysicsActive, setIsPhysicsActive] = useState(false);
+	const [isSnappingBack, setIsSnappingBack] = useState(false);
+	const [physicsBodies, setPhysicsBodies] = useState<any[]>([]);
+	const [physicsContainerHeight, setPhysicsContainerHeight] = useState<number | null>(null);
+	const [draggingId, setDraggingId] = useState<string | null>(null);
+
+	const dragOffsetRef = useRef({ x: 0, y: 0 });
+	const pointerPosRef = useRef({ x: 0, y: 0 });
+	const bodiesRef = useRef<any[]>([]);
+
+	// Update bodiesRef whenever physicsBodies state changes to prevent animation loop closures
+	useEffect(() => {
+		bodiesRef.current = physicsBodies;
+	}, [physicsBodies]);
+
+	// Mouse/Touch move handlers relative to container
+	const handlePointerMove = (e: React.PointerEvent) => {
+		if (!draggingId || !gridContainerRef.current) return;
+		const rect = gridContainerRef.current.getBoundingClientRect();
+		const clientX = e.clientX - rect.left;
+		const clientY = e.clientY - rect.top;
+		pointerPosRef.current = { x: clientX, y: clientY };
+	};
+
+	const handlePointerUp = () => {
+		setDraggingId(null);
+	};
+
+	const togglePhysicsMode = () => {
+		if (isSnappingBack) return;
+
+		if (isPhysicsActive) {
+			setIsSnappingBack(true);
+		} else {
+			if (!gridContainerRef.current) return;
+
+			const currentHeight = gridContainerRef.current.offsetHeight;
+			setPhysicsContainerHeight(currentHeight);
+
+			const cardElements = gridContainerRef.current.querySelectorAll(".glass-card");
+			const newBodies: any[] = [];
+			const currentTools = filteredTools.slice(0, activeCategory === "all" ? visibleCount : undefined);
+
+			currentTools.forEach((tool, index) => {
+				const el = cardElements[index] as HTMLElement;
+				if (el) {
+					const ox = el.offsetLeft;
+					const oy = el.offsetTop;
+					const width = el.offsetWidth;
+					const height = el.offsetHeight;
+
+					newBodies.push({
+						id: tool.id,
+						tool,
+						x: ox,
+						y: oy,
+						ox,
+						oy,
+						width,
+						height,
+						vx: (Math.random() - 0.5) * 8,
+						vy: -Math.random() * 6 - 3, // scatter and pop up!
+						angle: 0,
+						angularVelocity: (Math.random() - 0.5) * 0.15,
+						isReady: tool.status === "functional",
+						isTeased: (tool.requiresOllama ||
+							tool.categories[0] === "ai" ||
+							tool.categories[0] === "investigation") &&
+							(!isLocal || !hasOllama),
+					});
+				}
+			});
+
+			if (newBodies.length > 0) {
+				setPhysicsBodies(newBodies);
+				setIsPhysicsActive(true);
+			}
+		}
+	};
+
+	useEffect(() => {
+		if (!isPhysicsActive && !isSnappingBack) return;
+
+		let animationFrameId: number;
+		const gravity = 0.5;
+		const friction = 0.985;
+		const bounce = 0.6;
+		const padding = 4;
+
+		const tick = () => {
+			if (!gridContainerRef.current) return;
+			const containerWidth = gridContainerRef.current.clientWidth;
+			const containerHeight = physicsContainerHeight || gridContainerRef.current.clientHeight;
+
+			let allSnapped = true;
+
+			const updatedBodies = bodiesRef.current.map((body) => {
+				const nextBody = { ...body };
+
+				if (isSnappingBack) {
+					const dx = nextBody.ox - nextBody.x;
+					const dy = nextBody.oy - nextBody.y;
+					const dAngle = 0 - nextBody.angle;
+
+					nextBody.x += dx * 0.15;
+					nextBody.y += dy * 0.15;
+					nextBody.angle += dAngle * 0.15;
+					nextBody.vx = 0;
+					nextBody.vy = 0;
+					nextBody.angularVelocity = 0;
+
+					if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5 || Math.abs(dAngle) > 0.01) {
+						allSnapped = false;
+					} else {
+						nextBody.x = nextBody.ox;
+						nextBody.y = nextBody.oy;
+						nextBody.angle = 0;
+					}
+				} else {
+					allSnapped = false;
+
+					if (nextBody.id === draggingId) {
+						const targetX = pointerPosRef.current.x - dragOffsetRef.current.x;
+						const targetY = pointerPosRef.current.y - dragOffsetRef.current.y;
+
+						nextBody.vx = (targetX - nextBody.x) * 0.35;
+						nextBody.vy = (targetY - nextBody.y) * 0.35;
+
+						nextBody.x = targetX;
+						nextBody.y = targetY;
+						nextBody.angle += nextBody.vx * 0.005;
+						nextBody.angularVelocity = nextBody.vx * 0.05;
+					} else {
+						nextBody.vy += gravity;
+						nextBody.vx *= friction;
+						nextBody.vy *= friction;
+						nextBody.angularVelocity *= 0.95;
+
+						nextBody.x += nextBody.vx;
+						nextBody.y += nextBody.vy;
+						nextBody.angle += nextBody.angularVelocity;
+
+						if (nextBody.x < padding) {
+							nextBody.x = padding;
+							nextBody.vx = -nextBody.vx * bounce;
+							nextBody.angularVelocity += nextBody.vy * 0.01;
+						} else if (nextBody.x + nextBody.width > containerWidth - padding) {
+							nextBody.x = containerWidth - nextBody.width - padding;
+							nextBody.vx = -nextBody.vx * bounce;
+							nextBody.angularVelocity -= nextBody.vy * 0.01;
+						}
+
+						if (nextBody.y < padding) {
+							nextBody.y = padding;
+							nextBody.vy = -nextBody.vy * bounce;
+						} else if (nextBody.y + nextBody.height > containerHeight - padding) {
+							nextBody.y = containerHeight - nextBody.height - padding;
+							nextBody.vy = -nextBody.vy * bounce;
+							nextBody.vx *= 0.85;
+							nextBody.angularVelocity *= 0.85;
+						}
+					}
+				}
+
+				return nextBody;
+			});
+
+			if (!isSnappingBack) {
+				for (let i = 0; i < updatedBodies.length; i++) {
+					const b1 = updatedBodies[i];
+					for (let j = i + 1; j < updatedBodies.length; j++) {
+						const b2 = updatedBodies[j];
+
+						const overlapX = Math.min(b1.x + b1.width, b2.x + b2.width) - Math.max(b1.x, b2.x);
+						const overlapY = Math.min(b1.y + b1.height, b2.y + b2.height) - Math.max(b1.y, b2.y);
+
+						if (overlapX > 0 && overlapY > 0) {
+							if (overlapX < overlapY) {
+								const push = overlapX / 2;
+								const direction = b1.x < b2.x ? -1 : 1;
+
+								if (b1.id !== draggingId) {
+									b1.x += push * direction;
+									b1.vx = -b1.vx * bounce + (b2.vx * 0.2);
+									b1.angularVelocity += b1.vx * 0.001;
+								}
+								if (b2.id !== draggingId) {
+									b2.x -= push * direction;
+									b2.vx = -b2.vx * bounce + (b1.vx * 0.2);
+									b2.angularVelocity -= b2.vx * 0.001;
+								}
+							} else {
+								const push = overlapY / 2;
+								const direction = b1.y < b2.y ? -1 : 1;
+
+								if (b1.id !== draggingId) {
+									b1.y += push * direction;
+									b1.vy = -b1.vy * bounce + (b2.vy * 0.2);
+								}
+								if (b2.id !== draggingId) {
+									b2.y -= push * direction;
+									b2.vy = -b2.vy * bounce + (b1.vy * 0.2);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			setPhysicsBodies(updatedBodies);
+
+			if (isSnappingBack && allSnapped) {
+				setIsPhysicsActive(false);
+				setIsSnappingBack(false);
+				setPhysicsContainerHeight(null);
+			} else {
+				animationFrameId = requestAnimationFrame(tick);
+			}
+		};
+
+		animationFrameId = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(animationFrameId);
+	}, [isPhysicsActive, isSnappingBack, physicsContainerHeight, draggingId]);
+
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -2745,6 +2971,19 @@ export const Dashboard = () => {
 							</kbd>
 						</div>
 					</div>
+
+					{/* Mystery Physics Button */}
+					<button
+						onClick={togglePhysicsMode}
+						className={`p-2.5 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0 shadow-md ${
+							isPhysicsActive
+								? "bg-[#3C6B4D] border-[#3C6B4D] text-white animate-pulse"
+								: "bg-[#111213] border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50"
+						}`}
+						title={isPhysicsActive ? "Restore original layout" : "Unlock chaotic mystery physics mode!"}
+					>
+						<Sparkles size={14} className={isPhysicsActive ? "animate-spin" : ""} />
+					</button>
 				</div>
 			</div>
 
@@ -3216,127 +3455,270 @@ ollama run llama3.2`}
 					</div>
 				)}
 
-				<div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-					{filteredTools
-						.slice(0, activeCategory === "all" ? visibleCount : undefined)
-						.map((tool, index) => {
-							const isReady = tool.status === "functional";
-							const isTeased =
-								(tool.requiresOllama ||
-									tool.categories[0] === "ai" ||
-									tool.categories[0] === "investigation") &&
-								(!isLocal || !hasOllama);
+				<div
+					ref={gridContainerRef}
+					style={
+						isPhysicsActive
+							? {
+									position: "relative",
+									height: physicsContainerHeight ? `${physicsContainerHeight}px` : "auto",
+									overflow: "hidden",
+							  }
+							: undefined
+					}
+					className={
+						isPhysicsActive
+							? "w-full select-none"
+							: "grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6"
+					}
+					onPointerMove={isPhysicsActive ? handlePointerMove : undefined}
+					onPointerUp={isPhysicsActive ? handlePointerUp : undefined}
+					onPointerLeave={isPhysicsActive ? handlePointerUp : undefined}
+				>
+					{isPhysicsActive
+						? physicsBodies.map((body) => {
+								const tool = body.tool;
+								const isReady = body.isReady;
+								const isTeased = body.isTeased;
 
-							return (
-								<div
-									key={tool.id}
-									style={{ '--card-index': Math.min(index, 12) } as React.CSSProperties}
-									onClick={() => {
-										if (isTeased) {
-											const primaryCat = tool.categories.includes("investigation")
-												? "Investigative Research"
-												: "Local AI";
-											setSetupModalState({
-												open: true,
-												toolName: tool.name,
-												categoryName: primaryCat,
-											});
-										} else if (isReady) {
-											navigate(`/tool/${tool.id}`);
-										}
-									}}
-									className={`glass-card emil-card-enter p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${isReady && !isTeased
-											? tool.popular
-												? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)]"
-												: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50"
-											: "opacity-75 border-dashed border-[#E29E2D]/35 hover:border-[#E29E2D]/70 bg-[#111213]/60 cursor-pointer select-none"
+								return (
+									<div
+										key={body.id}
+										onPointerDown={(e) => {
+											if (isSnappingBack) return;
+											e.preventDefault();
+											const rect = gridContainerRef.current?.getBoundingClientRect();
+											if (rect) {
+												const clickX = e.clientX - rect.left;
+												const clickY = e.clientY - rect.top;
+												dragOffsetRef.current = {
+													x: clickX - body.x,
+													y: clickY - body.y,
+												};
+												pointerPosRef.current = { x: clickX, y: clickY };
+												setDraggingId(body.id);
+											}
+										}}
+										style={{
+											position: "absolute",
+											left: 0,
+											top: 0,
+											width: `${body.width}px`,
+											height: `${body.height}px`,
+											transform: `translate3d(${body.x}px, ${body.y}px, 0) rotate(${body.angle}rad)`,
+											cursor: draggingId === body.id ? "grabbing" : "grab",
+											touchAction: "none",
+											zIndex: draggingId === body.id ? 50 : 10,
+											userSelect: "none",
+											WebkitUserSelect: "none",
+										}}
+										className={`glass-card p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
+											isReady && !isTeased
+												? tool.popular
+													? "border-[#D4AF37]/35 shadow-[0_0_20px_rgba(212,175,55,0.08)] bg-[#18191B]"
+													: "border-[#2A2D30] bg-[#18191B]"
+												: "opacity-75 border-dashed border-[#E29E2D]/35 bg-[#111213]/60 select-none"
 										}`}
-								>
-									<div className="flex flex-col gap-4">
-										<div className="flex justify-between items-start">
-											<div
-												className={`p-3 rounded-xl border ${isReady && !isTeased
-														? tool.popular
-															? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
-															: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform"
-														: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
+									>
+										<div className="flex flex-col gap-4 pointer-events-none">
+											<div className="flex justify-between items-start">
+												<div
+													className={`p-3 rounded-xl border ${
+														isReady && !isTeased
+															? tool.popular
+																? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37]"
+																: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D]"
+															: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
 													}`}
-											>
-												<DynamicIcon name={tool.icon} size={18} />
-											</div>
-											{isTeased ? (
-												<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
-													<Cpu size={10} />
-													Requires Local LLM
-												</span>
-											) : isReady ? (
-												<div className="flex items-center gap-1.5">
-													{tool.popular && (
-														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
-															<Star size={10} className="fill-[#D4AF37]" />
-															<span>Popular</span>
-														</span>
-													)}
-													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
-														Ready
-													</span>
+												>
+													<DynamicIcon name={tool.icon} size={18} />
 												</div>
-											) : (
-												<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
-													Planned
+												{isTeased ? (
+													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
+														<Cpu size={10} />
+														Requires Local LLM
+													</span>
+												) : isReady ? (
+													<div className="flex items-center gap-1.5">
+														{tool.popular && (
+															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
+																<Star size={10} className="fill-[#D4AF37]" />
+																<span>Popular</span>
+															</span>
+														)}
+														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+															Ready
+														</span>
+													</div>
+												) : (
+													<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+														Planned
+													</span>
+												)}
+											</div>
+
+											<div className="flex flex-col gap-1.5">
+												<h3 className="font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9]">
+													{tool.name}
+												</h3>
+												<p className="text-[#A3A09B] text-xs leading-relaxed">
+													{tool.description}
+												</p>
+											</div>
+										</div>
+
+										<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65 pointer-events-none">
+											<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+												{tool.categories
+													.map((cId) => {
+														const catObj = CATEGORIES.find((cat) => cat.id === cId);
+														return catObj ? catObj.name : cId;
+													})
+													.join(" / ")}
+											</span>
+
+											{isReady && !isTeased && (
+												<span
+													className={`text-xs font-semibold ${
+														tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
+													} flex items-center gap-1`}
+												>
+													<span>Open</span>
+													<span>→</span>
+												</span>
+											)}
+											{isTeased && (
+												<span className="text-[11px] font-bold text-[#E29E2D] flex items-center gap-1">
+													<ShieldAlert size={12} />
+													Setup Local AI to Unlock →
 												</span>
 											)}
 										</div>
+									</div>
+								);
+						  })
+						: filteredTools
+								.slice(0, activeCategory === "all" ? visibleCount : undefined)
+								.map((tool, index) => {
+									const isReady = tool.status === "functional";
+									const isTeased =
+										(tool.requiresOllama ||
+											tool.categories[0] === "ai" ||
+											tool.categories[0] === "investigation") &&
+										(!isLocal || !hasOllama);
 
-										<div className="flex flex-col gap-1.5">
-											<h3
-												className={`font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9] ${isTeased
-														? "group-hover:text-[#E29E2D]"
-														: tool.popular
-															? "group-hover:text-[#D4AF37]"
-															: "group-hover:text-[#3C6B4D]"
-													} transition-colors`}
-											>
-												{tool.name}
-											</h3>
-											<p className="text-[#A3A09B] text-xs leading-relaxed">
-												{tool.description}
-											</p>
+									return (
+										<div
+											key={tool.id}
+											style={{ "--card-index": Math.min(index, 12) } as React.CSSProperties}
+											onClick={() => {
+												if (isTeased) {
+													const primaryCat = tool.categories.includes("investigation")
+														? "Investigative Research"
+														: "Local AI";
+													setSetupModalState({
+														open: true,
+														toolName: tool.name,
+														categoryName: primaryCat,
+													});
+												} else if (isReady) {
+													navigate(`/tool/${tool.id}`);
+												}
+											}}
+											className={`glass-card emil-card-enter p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
+												isReady && !isTeased
+													? tool.popular
+														? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)] bg-[#18191B]"
+														: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50 bg-[#18191B]"
+													: "opacity-75 border-dashed border-[#E29E2D]/35 hover:border-[#E29E2D]/70 bg-[#111213]/60 cursor-pointer select-none"
+											}`}
+										>
+											<div className="flex flex-col gap-4">
+												<div className="flex justify-between items-start">
+													<div
+														className={`p-3 rounded-xl border ${
+															isReady && !isTeased
+																? tool.popular
+																	? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
+																	: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform"
+																: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
+														}`}
+													>
+														<DynamicIcon name={tool.icon} size={18} />
+													</div>
+													{isTeased ? (
+														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
+															<Cpu size={10} />
+															Requires Local LLM
+														</span>
+													) : isReady ? (
+														<div className="flex items-center gap-1.5">
+															{tool.popular && (
+																<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
+																	<Star size={10} className="fill-[#D4AF37]" />
+																	<span>Popular</span>
+																</span>
+															)}
+															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+																Ready
+															</span>
+														</div>
+													) : (
+														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+															Planned
+														</span>
+													)}
+												</div>
+
+												<div className="flex flex-col gap-1.5">
+													<h3
+														className={`font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9] ${
+															isTeased
+																? "group-hover:text-[#E29E2D]"
+																: tool.popular
+																? "group-hover:text-[#D4AF37]"
+																: "group-hover:text-[#3C6B4D]"
+														} transition-colors`}
+													>
+														{tool.name}
+													</h3>
+													<p className="text-[#A3A09B] text-xs leading-relaxed">
+														{tool.description}
+													</p>
+												</div>
+											</div>
+
+											{/* Card Footer badges */}
+											<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
+												<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+													{tool.categories
+														.map((cId) => {
+															const catObj = CATEGORIES.find((cat) => cat.id === cId);
+															return catObj ? catObj.name : cId;
+														})
+														.join(" / ")}
+												</span>
+
+												{isReady && !isTeased && (
+													<span
+														className={`text-xs font-semibold ${
+															tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
+														} group-hover:translate-x-1 transition-transform flex items-center gap-1`}
+													>
+														<span>Open</span>
+														<span>→</span>
+													</span>
+												)}
+												{isTeased && (
+													<span className="text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1">
+														<ShieldAlert size={12} />
+														Setup Local AI to Unlock →
+													</span>
+												)}
+											</div>
 										</div>
-									</div>
-
-									{/* Card Footer badges */}
-									<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
-										<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
-											{tool.categories
-												.map((cId) => {
-													const catObj = CATEGORIES.find(
-														(cat) => cat.id === cId,
-													);
-													return catObj ? catObj.name : cId;
-												})
-												.join(" / ")}
-										</span>
-
-										{isReady && !isTeased && (
-											<span
-												className={`text-xs font-semibold ${tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
-													} group-hover:translate-x-1 transition-transform flex items-center gap-1`}
-											>
-												<span>Open</span>
-												<span>→</span>
-											</span>
-										)}
-										{isTeased && (
-											<span className="text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1">
-												<ShieldAlert size={12} />
-												Setup Local AI to Unlock →
-											</span>
-										)}
-									</div>
-								</div>
-							);
-						})}
+									);
+								})}
 
 					{filteredTools.length === 0 && (
 						<div className="col-span-full py-16 flex flex-col items-center justify-center text-[#72706C] gap-2">
