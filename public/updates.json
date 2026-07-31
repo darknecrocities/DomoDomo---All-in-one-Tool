@@ -1,5 +1,23 @@
 [
   {
+    "hash": "5d14461",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "b0c1c04",
+    "date": "2026-07-31",
+    "author": "darknecrocities",
+    "message": "feat(physics): align offsetParent positions and update bodiesRef synchronously to fix morph animation jump"
+  },
+  {
+    "hash": "f7d9b7b",
+    "date": "2026-07-31",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "265a9de",
     "date": "2026-07-31",
     "author": "darknecrocities",
@@ -70,23 +88,5 @@
     "date": "2026-07-30",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "12f6608",
-    "date": "2026-07-31",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #64 from darknecrocities/feature/onboarding-mascot-revamp"
-  },
-  {
-    "hash": "e60f3b8",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat: integrate full-screen video mascot splash, onboarding gif, mobile terminal, and 3D hover physics tilt"
-  },
-  {
-    "hash": "873462d",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat(mascot): create pixelated Domo walking and knocking animation on door splash screen"
   }
 ]
