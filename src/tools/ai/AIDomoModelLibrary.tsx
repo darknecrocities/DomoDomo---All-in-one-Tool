@@ -789,6 +789,139 @@ const MODELS_CATALOG: ModelInfo[] = [
     recommendation: 'Best Suited Tools: AI Email Composer, AI Sentiment Journal, Summarizer, Text Rewriter.',
     ramRequired: '4GB - 8GB RAM',
     categories: ['low-spec', 'general']
+  },
+  {
+    id: 'nomic-embed-text',
+    name: 'Nomic Embed Text',
+    parameters: '137M',
+    size: '274 MB',
+    description: 'High-dimensional text embedding model tailored for RAG vector search, document indexing, and semantic similarity.',
+    tags: ['Nomic', 'Embeddings', 'RAG Vector Search', 'Semantic Embeddings'],
+    purpose: 'Vector search chunk indexing, semantic document clustering, and local RAG retrieval.',
+    features: {
+      contextWindow: '8k',
+      multilingual: true,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: RAG Vector Search Studio, AI PDF Investigator, Document Analyzer.',
+    ramRequired: '1GB - 2GB RAM',
+    categories: ['embedding', 'low-spec']
+  },
+  {
+    id: 'bge-small-en',
+    name: 'BAAI BGE Small EN',
+    parameters: '33M',
+    size: '67 MB',
+    description: 'Ultra-fast BAAI English embedding model for rapid local vector indexing and semantic retrieval.',
+    tags: ['BAAI', 'BGE Embeddings', 'Ultra-Fast', 'Low RAM'],
+    purpose: 'Instant document vector embeddings, micro-RAG pipelines, and semantic similarity matching.',
+    features: {
+      contextWindow: '512',
+      multilingual: false,
+      vision: false,
+      speed: 'Very Fast',
+      coding: 'Basic'
+    },
+    recommendation: 'Best Suited Tools: RAG Vector Search Studio, AI Search, Knowledge Graph Visualizer.',
+    ramRequired: '512MB RAM',
+    categories: ['embedding', 'low-spec']
+  },
+  {
+    id: 'deepseek-r1:32b',
+    name: 'DeepSeek R1 Distill 32B',
+    parameters: '32B',
+    size: '20 GB',
+    description: 'Massive 32B reasoning distilled model rivaling frontier closed models on MATH and HumanEval benchmark suites.',
+    tags: ['DeepSeek', '32B Frontier', 'Expert Reasoning', 'Chain-of-Thought'],
+    purpose: 'Advanced mathematical proofs, complex algorithm synthesis, and deep multi-step reasoning.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AI Research Orchestration Hub, Advanced Fine-Tune Studio, Eval Benchmarks.',
+    ramRequired: '32GB RAM / VRAM',
+    categories: ['high-perf', 'heavy']
+  },
+  {
+    id: 'llama3.3:70b',
+    name: 'Meta Llama 3.3 70B',
+    parameters: '70B',
+    size: '43 GB',
+    description: 'Meta\'s SOTA 70B instruction model offering GPT-4 class performance on reasoning, tool use, and coding.',
+    tags: ['Meta', '70B Flagship', 'SOTA Reasoning', 'Enterprise Grade'],
+    purpose: 'Enterprise AI orchestration, advanced tool use, complex code bases, and research generation.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Slow',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: AI Hub Studio, Function Calling Studio, Multi-Model Router.',
+    ramRequired: '64GB+ RAM / Multi-GPU',
+    categories: ['high-perf', 'heavy']
+  },
+  {
+    id: 'llama3.2-vision:11b',
+    name: 'Meta Llama 3.2 11B Vision',
+    parameters: '11B',
+    size: '7.9 GB',
+    description: 'Meta\'s flagship vision-language model for complex image visual reasoning, chart breakdown, and OCR document analysis.',
+    tags: ['Meta', 'Llama 3.2 Vision', 'Chart QA', 'OCR Multimodal'],
+    purpose: 'Visual document inspection, UI layout parsing, chart analysis, and image QA.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: true,
+      speed: 'Moderate',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: Vision Inspection Studio, AIPDF Investigator, OCR Assistant.',
+    ramRequired: '16GB RAM / VRAM',
+    categories: ['vision', 'high-perf']
+  },
+  {
+    id: 'phi3.5:latest',
+    name: 'Microsoft Phi-3.5 Mini 3.8B',
+    parameters: '3.8B',
+    size: '2.4 GB',
+    description: 'Updated Microsoft Phi-3.5 Mini with improved 128k context window and enhanced reasoning logic.',
+    tags: ['Microsoft', '128k Context', 'Multi-Turn', 'Reasoning'],
+    purpose: 'Extended dialogue reasoning, document synthesis, and synthetic dataset generation.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Fast',
+      coding: 'Good'
+    },
+    recommendation: 'Best Suited Tools: Prompt Engineering Lab, AI Research Orchestration Hub, Structured JSON Extractor.',
+    ramRequired: '8GB RAM',
+    categories: ['balanced', 'general']
+  },
+  {
+    id: 'qwen2.5-coder:32b',
+    name: 'Qwen 2.5 Coder 32B',
+    parameters: '32B',
+    size: '20 GB',
+    description: 'Top-tier 32B programming model outperforming commercial coding APIs across Python, TS, Rust, C++, and Go.',
+    tags: ['Qwen', '32B Coder', 'Multi-Language SOTA', 'Repository Refactoring'],
+    purpose: 'Full codebase architectural refactoring, complex bug debugging, and automated code generation.',
+    features: {
+      contextWindow: '128k',
+      multilingual: true,
+      vision: false,
+      speed: 'Moderate',
+      coding: 'Excellent'
+    },
+    recommendation: 'Best Suited Tools: Code Refactoring & AI Patch, Function Calling Studio, AI DevOps Command Architect.',
+    ramRequired: '32GB RAM / VRAM',
+    categories: ['coding', 'high-perf']
   }
 ];
 
@@ -1149,7 +1282,8 @@ export const AIDomoModelLibrary = () => {
                 { id: 'balanced', label: 'Balanced (3B-7B)' },
                 { id: 'high-perf', label: 'High Performance (≥7B)' },
                 { id: 'coding', label: 'Coding Specialized' },
-                { id: 'vision', label: 'Vision / Multimodal' }
+                { id: 'vision', label: 'Vision / Multimodal' },
+                { id: 'embedding', label: 'Embedding & RAG' }
               ].map(tab => (
                 <button
                   key={tab.id}

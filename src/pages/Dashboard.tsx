@@ -1303,7 +1303,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		id: "ai-hub-studio",
 		name: "AI Hub Studio (Fine-Tune & Flow Automation)",
 		categories: ["AI & Local Models"],
-		description: "Local AI workspace featuring ChatGPT-style chat, Fine-Tune QLoRA recipe builder, side-by-side benchmark evaluator, and interactive local AI flow automations.",
+		description: "Local AI workspace featuring ChatGPT-style chat, HuggingFace Model Hub, Advanced Multi-Method Fine-Tuning (QLoRA/LoRA/Full/Prefix/Adapter/DPO), side-by-side benchmark evaluator, and interactive local AI flow automations.",
 		icon: "Bot",
 		status: "functional",
 		popular: true,

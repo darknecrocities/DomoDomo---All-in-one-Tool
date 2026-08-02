@@ -13,6 +13,50 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'huggingface-hub-advanced-finetune-studio',
+    title: 'Introducing HuggingFace Model Hub & Advanced Multi-Method Fine-Tune Studio',
+    excerpt: 'DomoDomo expands its AI Hub with HuggingFace Hub integration (token authentication, model search, GGUF variant browser, 1-click pull) and Advanced Fine-Tune Studio supporting 6 training strategies (QLoRA, LoRA, Full Fine-Tune, Prefix, Adapter, DPO) with downloadable Python scripts, Modelfiles, and training packages.',
+    date: 'August 2, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'huggingface integration, gguf browser, qlora, lora, full fine-tune, prefix tuning, adapter tuning, dpo rlhf, downloadable fine-tuned models, local ai hub, domodomo',
+    content: `# Introducing HuggingFace Model Hub & Advanced Multi-Method Fine-Tune Studio
+
+DomoDomo is proud to release a major expansion to **AI Hub Studio** (\`/ai-hub\`), introducing **HuggingFace Model Hub Integration** and **Advanced Multi-Method Fine-Tune Studio**!
+
+---
+
+## 🚀 Key Features
+
+### 1. 🤗 HuggingFace Model Hub Integration
+- **Token Config**: Enter an optional HuggingFace token for gated models or use publicly available repositories without authentication.
+- **Hub Model Search**: Real-time search across HuggingFace's model library with filters by task, popularity, downloads, and architecture.
+- **GGUF Variant Browser**: Inspect available GGUF quantization variants (Q4_K_M, Q5_K_M, Q8_0, F16) with file size indicators.
+- **1-Click Pull to Ollama**: Pull HuggingFace models directly into your local Ollama daemon and use them across all AI Hub features.
+
+### 2. 🧪 Advanced Multi-Method Fine-Tune Studio (6 Training Strategies)
+- **QLoRA (4-bit)**: Minimal VRAM footprint, 2.5x speed multiplier, consumer GPU optimized.
+- **LoRA (Full Precision)**: Higher quality adapter weights, easy merging with base checkpoints.
+- **Full Fine-Tune**: Update 100% of model parameters for maximum customization.
+- **Prefix Tuning**: Tunable virtual prefix tokens with ultra-small parameter overhead.
+- **Adapter (BottleNeck)**: Modular Pfeiffer and Houlsby bottleneck adapter layers.
+- **DPO / RLHF Alignment**: Direct Preference Optimization with chosen vs rejected preference pairs.
+
+### 3. 📦 Downloadable Training Packages & Deployment
+- **Python Training Scripts (\`.py\`)**: Ready-to-run PyTorch, HuggingFace PEFT, and TRL scripts.
+- **Ollama Modelfiles**: Pre-configured Modelfiles for local deployment.
+- **GGUF Conversion Scripts (\`.sh\`)**: Automated scripts to quantize and package custom models.
+- **Full Training Package (\`.json\`)**: Download complete hyperparameter manifests and datasets in a single file.
+
+---
+
+## 🔄 Synchronized Model Management
+
+Every HuggingFace model pulled to local storage automatically synchronizes across all AI Hub Studio sub-tools, including **Chat & Inference**, **Side-by-Side Eval Benchmarks**, **Multi-Model Router**, and **Vision Studio**.
+`
+  },
+  {
     slug: 'model-settings-manager-dynamic-ai-hub',
     title: 'Introducing Model Settings Manager & 100% Dynamic AI Hub Expansion',
     excerpt: 'DomoDomo introduces a dedicated Model Settings & Storage Manager studio to inspect, delete, copy, and configure local Ollama models with 1 click, alongside 100% live vector embedding search and function calling sandboxes.',

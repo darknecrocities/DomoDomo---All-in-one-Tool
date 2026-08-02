@@ -123,7 +123,17 @@ export const PROVIDERS: ProviderConfig[] = [
     type: 'local',
     defaultEndpoint: 'http://localhost:11434',
     apiKeyKey: 'domodomo_key_ollama',
-    models: ['llama3.2:1b', 'llama3.2:3b', 'qwen2.5:0.5b', 'gemma2:2b', 'phi3:latest', 'llama3:latest']
+    models: [
+      'llama3.2:1b', 'llama3.2:3b', 'llama3.1:8b', 'llama3.3:70b',
+      'qwen2.5:0.5b', 'qwen2.5:1.5b', 'qwen2.5:3b', 'qwen2.5:7b',
+      'qwen2.5-coder:1.5b', 'qwen2.5-coder:7b', 'qwen2.5-coder:32b',
+      'deepseek-r1:1.5b', 'deepseek-r1:7b', 'deepseek-r1:8b', 'deepseek-r1:14b', 'deepseek-r1:32b',
+      'deepseek-coder:1.3b', 'deepseek-coder:6.7b',
+      'phi3:latest', 'phi3.5:latest', 'gemma2:2b', 'gemma2:9b', 'codegemma:7b',
+      'mistral:7b-instruct', 'mistral-nemo:12b',
+      'llava:7b', 'minicpm-v:8b', 'llama3.2-vision:11b',
+      'smollm2:1.7b', 'command-r:35b', 'nomic-embed-text', 'bge-small-en'
+    ]
   },
   {
     id: 'lm_studio',
@@ -196,6 +206,18 @@ export const PROVIDERS: ProviderConfig[] = [
     defaultEndpoint: 'https://api.together.xyz/v1',
     apiKeyKey: 'domodomo_key_together',
     models: ['togethercomputer/llama-2-7b-chat']
+  },
+  {
+    id: 'huggingface',
+    name: 'Hugging Face',
+    type: 'cloud',
+    defaultEndpoint: 'https://huggingface.co',
+    apiKeyKey: 'domodomo_key_huggingface',
+    models: [
+      'meta-llama/Llama-3.2-3B-Instruct', 'Qwen/Qwen2.5-7B-Instruct', 'google/gemma-2-9b-it',
+      'mistralai/Mistral-7B-Instruct-v0.3', 'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B',
+      'bartowski/Llama-3.2-3B-Instruct-GGUF', 'bartowski/Qwen2.5-7B-Instruct-GGUF'
+    ]
   }
 ];
 
@@ -225,6 +247,192 @@ export const aiService = {
   setSelectedOllamaModel(model: string) {
     localStorage.setItem('domodomo_selected_ollama_model', model);
   },
+
+  // ── HuggingFace Token & API Methods ──────────────────────────────────────────
+
+  getHuggingFaceToken(): string {
+    return localStorage.getItem('domodomo_key_huggingface') || '';
+  },
+
+  setHuggingFaceToken(token: string) {
+    localStorage.setItem('domodomo_key_huggingface', token);
+  },
+
+  async checkHuggingFaceConnection(): Promise<{ status: boolean; username: string }> {
+    try {
+      const token = this.getHuggingFaceToken();
+      if (!token) return { status: false, username: '' };
+      const res = await fetchWithTimeout('https://huggingface.co/api/whoami-v2', {
+        headers: { Authorization: `Bearer ${token}` }
+      }, 5000);
+      if (!res.ok) return { status: false, username: '' };
+      const data = await res.json();
+      return { status: true, username: data.name || data.fullname || 'User' };
+    } catch {
+      return { status: false, username: '' };
+    }
+  },
+
+  async searchHuggingFaceModels(
+    query: string,
+    options?: { filter?: string; sort?: string; limit?: number }
+  ): Promise<any[]> {
+    try {
+      const token = this.getHuggingFaceToken();
+      const params = new URLSearchParams();
+      if (query) params.set('search', query);
+      if (options?.filter) params.set('filter', options.filter);
+      params.set('sort', options?.sort || 'downloads');
+      params.set('direction', '-1');
+      params.set('limit', String(options?.limit || 20));
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetchWithTimeout(
+        `https://huggingface.co/api/models?${params.toString()}`,
+        { headers },
+        8000
+      );
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  async getHuggingFaceModelInfo(modelId: string): Promise<any | null> {
+    try {
+      const token = this.getHuggingFaceToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetchWithTimeout(
+        `https://huggingface.co/api/models/${modelId}`,
+        { headers },
+        8000
+      );
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  async getHuggingFaceModelFiles(modelId: string): Promise<any[]> {
+    try {
+      const token = this.getHuggingFaceToken();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetchWithTimeout(
+        `https://huggingface.co/api/models/${modelId}/tree/main`,
+        { headers },
+        8000
+      );
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+
+  async pullHuggingFaceModelToOllama(
+    hfModelId: string,
+    quantization: string,
+    onProgress: (status: string, progress: number) => void
+  ): Promise<void> {
+    // Create an Ollama Modelfile from HuggingFace GGUF and register it
+    const ollamaName = hfModelId.replace(/\//g, '-').toLowerCase() + ':' + quantization;
+    const modelfileContent = `# HuggingFace Model: ${hfModelId}\nFROM hf.co/${hfModelId}:${quantization}\n\nPARAMETER temperature 0.7\nPARAMETER top_p 0.9\nPARAMETER num_ctx 4096\n\nSYSTEM """You are a helpful AI assistant."""\n`;
+
+    const endpoint = this.getCustomEndpoint('ollama') || 'http://localhost:11434';
+
+    // First try pulling via Ollama's native HF support (ollama >= 0.4)
+    try {
+      onProgress('Pulling from HuggingFace via Ollama...', 5);
+      await this.pullOllamaModel(`hf.co/${hfModelId}:${quantization}`, onProgress);
+      return;
+    } catch {
+      // Fallback: create model from Modelfile
+    }
+
+    // Fallback: Create Modelfile and register
+    try {
+      onProgress('Creating Ollama model from HuggingFace Modelfile...', 10);
+      const res = await fetch(`${endpoint}/api/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: ollamaName, modelfile: modelfileContent, stream: true })
+      });
+      if (!res.ok) throw new Error(`Failed to create model: ${res.statusText}`);
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('ReadableStream not supported');
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const data = JSON.parse(line);
+            if (data.error) throw new Error(data.error);
+            const pct = data.total && data.completed
+              ? Math.min(99, Math.round((data.completed / data.total) * 100))
+              : data.status === 'success' ? 100 : 50;
+            onProgress(data.status || 'processing', pct);
+          } catch (e: any) {
+            if (e.message && !e.message.includes('JSON')) throw e;
+          }
+        }
+      }
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async runHuggingFaceInference(
+    modelId: string,
+    prompt: string,
+    options?: { maxTokens?: number; temperature?: number }
+  ): Promise<string> {
+    const token = this.getHuggingFaceToken();
+    if (!token) throw new Error('HuggingFace token is required for inference.');
+    try {
+      const res = await fetch(
+        `https://api-inference.huggingface.co/models/${modelId}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            inputs: prompt,
+            parameters: {
+              max_new_tokens: options?.maxTokens || 512,
+              temperature: options?.temperature || 0.7,
+              return_full_text: false
+            }
+          })
+        }
+      );
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error || `HF Inference failed: ${res.statusText}`);
+      }
+      const data = await res.json();
+      if (Array.isArray(data) && data[0]?.generated_text) {
+        return data[0].generated_text;
+      }
+      return typeof data === 'string' ? data : JSON.stringify(data);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  // ── Ollama Connection ────────────────────────────────────────────────────────
 
   // Check Ollama status
   async checkOllama(): Promise<{ status: boolean; models: string[] }> {
