@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import {
   Bot,
   Sparkles,
-  Play,
   Trash2,
   RefreshCw,
   Send,
@@ -30,7 +29,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Terminal,
-  FileText,
   ShieldCheck,
   Server,
   Gauge,
@@ -45,9 +43,10 @@ import {
   EyeOff,
   Lock,
   Code,
-  Eye
+  Eye,
+  Globe
 } from 'lucide-react';
-import { triggerBlobDownload } from '../utils/sharedHelpers';
+import { aiService } from '../utils/aiService';
 import { Logo } from '../components/Logo';
 import { N8nFlowCanvas } from '../tools/ai/components/N8nFlowCanvas';
 import { RagSearchStudio } from '../tools/ai/components/RagSearchStudio';
@@ -61,6 +60,8 @@ import { KnowledgeGraphVisualizer } from '../tools/ai/components/KnowledgeGraphV
 import { VisionInspectionStudio } from '../tools/ai/components/VisionInspectionStudio';
 import { HardwareQuantCalculator } from '../tools/ai/components/HardwareQuantCalculator';
 import { ModelManagerStudio } from '../tools/ai/components/ModelManagerStudio';
+import { HuggingFaceModelHub } from '../tools/ai/components/HuggingFaceModelHub';
+import { AdvancedFineTuneStudio } from '../tools/ai/components/AdvancedFineTuneStudio';
 import { parseMarkdown } from '../utils/markdownParser';
 
 interface OllamaModel {
@@ -78,10 +79,11 @@ interface CatalogModel {
   ram: string;
   desc: string;
   tags: string[];
-  category: 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy';
+  category: 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy' | 'embedding';
 }
 
 const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
+  // ── LOW SPEC (≤3B) ──
   {
     id: 'llama3.2:1b',
     name: 'Meta Llama 3.2 1B',
@@ -91,16 +93,6 @@ const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
     desc: "Meta's lightweight instruction-tuned model. Ultra-fast inference designed for low-spec laptops.",
     tags: ['Meta', 'Ultra-Fast', 'General', 'Low RAM'],
     category: 'low-spec'
-  },
-  {
-    id: 'llama3.2:3b',
-    name: 'Meta Llama 3.2 3B',
-    params: '3.2B',
-    size: '2.0 GB',
-    ram: '4GB - 8GB RAM',
-    desc: 'High quality balance of speed and complex instruction following for desktop environments.',
-    tags: ['Meta', 'Balanced', 'Instruction-Tuned', 'Recommended'],
-    category: 'balanced'
   },
   {
     id: 'qwen2.5:0.5b',
@@ -113,15 +105,99 @@ const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
     category: 'low-spec'
   },
   {
-    id: 'qwen2.5:1.5b',
-    name: 'Alibaba Qwen 2.5 1.5B',
-    params: '1.5B',
-    size: '900 MB',
+    id: 'smollm2:1.7b',
+    name: 'Hugging Face SmolLM2 1.7B',
+    params: '1.7B',
+    size: '1.0 GB',
     ram: '2GB - 4GB RAM',
-    desc: 'Lightweight multilingual model with strong programming syntax and translation capabilities.',
-    tags: ['Alibaba', 'Multilingual', 'Coding', 'Bilingual'],
-    category: 'coding'
+    desc: 'Hugging Face compact model optimized for mobile and local browser environments.',
+    tags: ['HuggingFace', 'SmolLM2', 'Mobile Friendly', 'Lightweight'],
+    category: 'low-spec'
   },
+  {
+    id: 'gemma2:2b',
+    name: 'Google Gemma 2 2B',
+    params: '2.6B',
+    size: '1.6 GB',
+    ram: '4GB - 6GB RAM',
+    desc: "Google's lightweight 2B parameter model built from Gemini technology research.",
+    tags: ['Google', 'Gemma 2', 'Efficient', 'Fast Tokenizer'],
+    category: 'low-spec'
+  },
+  {
+    id: 'tinydolphin:2.8b',
+    name: 'TinyDolphin 2.8B',
+    params: '2.8B',
+    size: '1.6 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'Cognitive Computation conversational model with fast chat responses on low-spec hardware.',
+    tags: ['TinyDolphin', 'Conversational', 'Budget Laptops'],
+    category: 'low-spec'
+  },
+
+  // ── BALANCED (3B - 7B) ──
+  {
+    id: 'llama3.2:3b',
+    name: 'Meta Llama 3.2 3B',
+    params: '3.2B',
+    size: '2.0 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'High quality balance of speed and complex instruction following for desktop environments.',
+    tags: ['Meta', 'Balanced', 'Instruction-Tuned', 'Recommended'],
+    category: 'balanced'
+  },
+  {
+    id: 'phi3:latest',
+    name: 'Microsoft Phi-3 Mini 3.8B',
+    params: '3.8B',
+    size: '2.3 GB',
+    ram: '4GB - 8GB RAM',
+    desc: "Microsoft's high-density reasoning model optimized for synthetic dataset logic and math.",
+    tags: ['Microsoft', 'Logic', 'Compact', 'Math Solver'],
+    category: 'balanced'
+  },
+  {
+    id: 'phi3.5:latest',
+    name: 'Microsoft Phi-3.5 Mini 3.8B',
+    params: '3.8B',
+    size: '2.4 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'Updated Phi-3.5 Mini with improved 128k context and enhanced multi-turn dialogue logic.',
+    tags: ['Microsoft', '128k Context', 'Multi-Turn', 'Reasoning'],
+    category: 'balanced'
+  },
+  {
+    id: 'qwen2.5:3b',
+    name: 'Alibaba Qwen 2.5 3B',
+    params: '3.0B',
+    size: '1.9 GB',
+    ram: '4GB - 8GB RAM',
+    desc: 'Mid-range Qwen 2.5 with strong multilingual, math, and instruction capabilities.',
+    tags: ['Alibaba', 'Multilingual', 'Balanced', 'Structured Data'],
+    category: 'balanced'
+  },
+  {
+    id: 'mistral:7b-instruct',
+    name: 'Mistral 7B Instruct v0.3',
+    params: '7.2B',
+    size: '4.1 GB',
+    ram: '8GB - 16GB RAM',
+    desc: 'Classic 7B benchmark model with function calling and extended token vocabulary.',
+    tags: ['Mistral AI', '7B Standard', 'Function Calling', 'Instruct'],
+    category: 'balanced'
+  },
+  {
+    id: 'stable-beluga:7b',
+    name: 'Stable Beluga 7B',
+    params: '7.0B',
+    size: '3.8 GB',
+    ram: '8GB - 16GB RAM',
+    desc: 'Stability AI creative writing and conversational dialogue specialist.',
+    tags: ['Stability AI', 'Creative Writing', 'Dialogue'],
+    category: 'balanced'
+  },
+
+  // ── CODING SPECIALISTS ──
   {
     id: 'qwen2.5-coder:1.5b',
     name: 'Qwen 2.5 Coder 1.5B',
@@ -133,6 +209,100 @@ const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
     category: 'coding'
   },
   {
+    id: 'qwen2.5-coder:7b',
+    name: 'Qwen 2.5 Coder 7B',
+    params: '7.6B',
+    size: '4.7 GB',
+    ram: '8GB - 16GB RAM',
+    desc: 'Top-tier 7B programming LLM outperforming many closed API models on HumanEval benchmarks.',
+    tags: ['Coding Leader', 'Multi-Language', 'Refactoring', 'SOTA 7B'],
+    category: 'coding'
+  },
+  {
+    id: 'qwen2.5:1.5b',
+    name: 'Alibaba Qwen 2.5 1.5B',
+    params: '1.5B',
+    size: '900 MB',
+    ram: '2GB - 4GB RAM',
+    desc: 'Lightweight multilingual model with strong programming syntax and translation capabilities.',
+    tags: ['Alibaba', 'Multilingual', 'Coding', 'Bilingual'],
+    category: 'coding'
+  },
+  {
+    id: 'deepseek-coder:1.3b',
+    name: 'DeepSeek Coder 1.3B',
+    params: '1.3B',
+    size: '776 MB',
+    ram: '2GB - 4GB RAM',
+    desc: 'Fast inline code completion model trained on 2 trillion code tokens.',
+    tags: ['DeepSeek', 'Inline Completion', 'Fast', 'Code Fill'],
+    category: 'coding'
+  },
+  {
+    id: 'deepseek-coder:6.7b',
+    name: 'DeepSeek Coder 6.7B',
+    params: '6.7B',
+    size: '3.8 GB',
+    ram: '8GB - 16GB RAM',
+    desc: 'Powerful repository-level coding model supporting project-wide refactoring.',
+    tags: ['DeepSeek', 'Repo Level', 'Debugging', 'Multi-Language'],
+    category: 'coding'
+  },
+  {
+    id: 'codellama:7b',
+    name: 'Meta CodeLlama 7B',
+    params: '7.0B',
+    size: '3.8 GB',
+    ram: '8GB - 16GB RAM',
+    desc: "Meta's specialized CodeLlama fine-tuned for code generation and technical documentation.",
+    tags: ['Meta', 'CodeLlama', 'Software Engineering', 'Infilling'],
+    category: 'coding'
+  },
+  {
+    id: 'codegemma:7b',
+    name: 'Google CodeGemma 7B',
+    params: '7.0B',
+    size: '5.0 GB',
+    ram: '8GB - 16GB RAM',
+    desc: "Google's code-specialized Gemma model trained on code syntax and mathematical logic.",
+    tags: ['Google', 'CodeGemma', 'Syntax Optimization', 'Math Logic'],
+    category: 'coding'
+  },
+
+  // ── VISION / MULTIMODAL ──
+  {
+    id: 'llava:7b',
+    name: 'Llava 7B Multimodal Vision',
+    params: '7.0B',
+    size: '4.5 GB',
+    ram: '8GB - 16GB RAM',
+    desc: 'Multimodal vision model capable of answering questions about uploaded images and diagrams.',
+    tags: ['Vision', 'Multimodal', 'Image Captions', 'OCR'],
+    category: 'vision'
+  },
+  {
+    id: 'minicpm-v:8b',
+    name: 'MiniCPM-V 8B Multimodal',
+    params: '8.0B',
+    size: '5.5 GB',
+    ram: '10GB - 16GB RAM',
+    desc: 'SOTA multimodal model with high-resolution image analysis and document OCR capabilities.',
+    tags: ['OpenBMB', 'High-Res Vision', 'Document OCR', 'Chart QA'],
+    category: 'vision'
+  },
+  {
+    id: 'llama3.2-vision:11b',
+    name: 'Meta Llama 3.2 11B Vision',
+    params: '11.0B',
+    size: '7.9 GB',
+    ram: '16GB RAM',
+    desc: "Meta's flagship vision-language model for complex image visual reasoning and document understanding.",
+    tags: ['Meta', 'Llama 3.2 Vision', 'Chart Analysis', 'Flagship'],
+    category: 'vision'
+  },
+
+  // ── HEAVY & REASONING (≥7B) ──
+  {
     id: 'deepseek-r1:1.5b',
     name: 'DeepSeek R1 Distill 1.5B',
     params: '1.5B',
@@ -143,24 +313,106 @@ const COMPATIBLE_MODEL_CATALOG: CatalogModel[] = [
     category: 'heavy'
   },
   {
-    id: 'phi3:latest',
-    name: 'Microsoft Phi-3 Mini 3.8B',
-    params: '3.8B',
-    size: '2.3 GB',
-    ram: '4GB - 8GB RAM',
-    desc: "Microsoft's high-density reasoning model optimized for synthetic dataset logic.",
-    tags: ['Microsoft', 'Logic', 'Compact', 'Math Solver'],
-    category: 'balanced'
+    id: 'deepseek-r1:7b',
+    name: 'DeepSeek R1 Distill 7B',
+    params: '7.0B',
+    size: '4.7 GB',
+    ram: '8GB - 16GB RAM',
+    desc: '7B Reasoning powerhouse with step-by-step chain-of-thought verification for complex tasks.',
+    tags: ['DeepSeek', 'R1 Reasoning', 'Math SOTA', 'CoT Thinking'],
+    category: 'heavy'
   },
   {
-    id: 'llava:7b',
-    name: 'Llava 7B Multimodal Vision',
-    params: '7.0B',
-    size: '4.5 GB',
+    id: 'deepseek-r1:8b',
+    name: 'DeepSeek R1 Distill Llama 8B',
+    params: '8.0B',
+    size: '4.9 GB',
     ram: '8GB - 16GB RAM',
-    desc: 'Multimodal vision model capable of answering questions about uploaded images and diagrams.',
-    tags: ['Vision', 'Multimodal', 'Image Captions', 'OCR'],
-    category: 'vision'
+    desc: 'DeepSeek R1 reasoning capability distilled into Meta Llama 3.1 8B architecture.',
+    tags: ['DeepSeek', 'Llama Distill', 'Reasoning SOTA', 'CoT'],
+    category: 'heavy'
+  },
+  {
+    id: 'deepseek-r1:14b',
+    name: 'DeepSeek R1 Distill 14B',
+    params: '14.0B',
+    size: '9.0 GB',
+    ram: '16GB - 24GB RAM',
+    desc: 'High-precision 14B reasoning model for advanced math proofs, coding logic, and strategy.',
+    tags: ['DeepSeek', '14B Reasoning', 'Advanced Math', 'Strategy'],
+    category: 'heavy'
+  },
+  {
+    id: 'deepseek-r1:32b',
+    name: 'DeepSeek R1 Distill 32B',
+    params: '32.0B',
+    size: '20.0 GB',
+    ram: '32GB RAM',
+    desc: 'Massive 32B reasoning distilled model rivaling frontier closed models on benchmark suites.',
+    tags: ['DeepSeek', '32B Frontier', 'Expert Reasoning', 'Heavyweight'],
+    category: 'heavy'
+  },
+  {
+    id: 'llama3.1:8b',
+    name: 'Meta Llama 3.1 8B',
+    params: '8.0B',
+    size: '4.7 GB',
+    ram: '8GB - 16GB RAM',
+    desc: "Meta's flagship 8B model with 128k context length and state-of-the-art instruction following.",
+    tags: ['Meta', 'Llama 3.1', '128k Context', 'Workhorse'],
+    category: 'heavy'
+  },
+  {
+    id: 'gemma2:9b',
+    name: 'Google Gemma 2 9B',
+    params: '9.0B',
+    size: '5.4 GB',
+    ram: '10GB - 16GB RAM',
+    desc: "Google's 9B model featuring sliding window attention and exceptional reasoning output.",
+    tags: ['Google', 'Gemma 2 9B', 'High Accuracy', 'Research'],
+    category: 'heavy'
+  },
+  {
+    id: 'mistral-nemo:12b',
+    name: 'Mistral NeMo 12B',
+    params: '12.0B',
+    size: '7.1 GB',
+    ram: '16GB RAM',
+    desc: 'Jointly developed by Mistral AI & NVIDIA. 128k context window and high multilingual performance.',
+    tags: ['Mistral AI', 'NVIDIA', '128k Context', 'Multilingual'],
+    category: 'heavy'
+  },
+  {
+    id: 'command-r:35b',
+    name: 'Cohere Command R 35B',
+    params: '35.0B',
+    size: '20.0 GB',
+    ram: '32GB RAM',
+    desc: "Cohere's enterprise RAG and tool-use model designed for complex multi-step workflows.",
+    tags: ['Cohere', 'Enterprise RAG', 'Tool Use', '35B Heavy'],
+    category: 'heavy'
+  },
+
+  // ── EMBEDDING & VECTOR MODELS ──
+  {
+    id: 'nomic-embed-text',
+    name: 'Nomic Embed Text',
+    params: '137M',
+    size: '274 MB',
+    ram: '1GB - 2GB RAM',
+    desc: 'High-dimensional text embedding model tailored for RAG, vector search, and semantic similarity.',
+    tags: ['Nomic', 'Embeddings', 'RAG Vector Search', 'Compact'],
+    category: 'embedding'
+  },
+  {
+    id: 'bge-small-en',
+    name: 'BAAI BGE Small EN',
+    params: '33M',
+    size: '67 MB',
+    ram: '512MB RAM',
+    desc: 'Ultra-fast BAAI English embedding model for high-speed document indexing and search.',
+    tags: ['BAAI', 'BGE Embeddings', 'Ultra-Fast', 'Low RAM'],
+    category: 'embedding'
   }
 ];
 
@@ -225,7 +477,7 @@ const DEFAULT_SETTINGS: AISettings = {
 
 export const AIHubStudio = () => {
   const [activeTab, setActiveTab] = useState<
-    'chat' | 'library' | 'train' | 'eval' | 'workflow' | 'docs' |
+    'chat' | 'library' | 'huggingface' | 'train' | 'eval' | 'workflow' | 'docs' |
     'rag' | 'prompts' | 'extractor' | 'function-calling' | 'guardrails' |
     'code-patch' | 'router' | 'knowledge-graph' | 'vision-studio' | 'quant-calc' | 'model-settings'
   >('chat');
@@ -261,7 +513,7 @@ export const AIHubStudio = () => {
   const [secondaryModel, setSecondaryModel] = useState<string>('qwen2.5:0.5b');
 
   // Model Library Downloader State
-  const [catalogFilter, setCatalogFilter] = useState<'all' | 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy'>('all');
+  const [catalogFilter, setCatalogFilter] = useState<'all' | 'low-spec' | 'balanced' | 'coding' | 'vision' | 'heavy' | 'embedding'>('all');
   const [catalogSearch, setCatalogSearch] = useState<string>('');
   const [downloadingModelId, setDownloadingModelId] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState<number>(0);
@@ -394,103 +646,7 @@ export const AIHubStudio = () => {
     }
   };
 
-  // Document Ingestion & Fine-Tune State
-  interface UploadedDocMeta {
-    name: string;
-    size: number;
-    type: string;
-    content: string;
-    wordCount: number;
-    tokenEst: number;
-    paragraphCount: number;
-  }
-  const [uploadedDoc, setUploadedDoc] = useState<UploadedDocMeta | null>(null);
-  const [isExtractingDoc, setIsExtractingDoc] = useState(false);
-  const docInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Document Ingestion Handler (.json, .csv, .pdf, .txt, .md, .docx)
-  const handleDocFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      let rawText = event.target?.result as string || '';
-
-      if (file.name.endsWith('.json')) {
-        try {
-          const parsed = JSON.parse(rawText);
-          if (Array.isArray(parsed)) {
-            const jsonPairs: DatasetPair[] = parsed.map((item: any, idx: number) => ({
-              id: `doc-json-${Date.now()}-${idx}`,
-              system: item.system || item.input || 'You are a specialized AI assistant.',
-              instruction: item.instruction || item.prompt || item.question || `JSON Entry ${idx + 1}`,
-              response: item.response || item.output || item.answer || (typeof item === 'string' ? item : JSON.stringify(item))
-            }));
-            setDatasetPairs(prev => [...jsonPairs, ...prev]);
-          }
-        } catch {}
-      }
-
-      const words = rawText.split(/\s+/).filter(Boolean).length;
-      const paragraphs = rawText.split(/\n\s*\n/).filter(p => p.trim().length > 10).length;
-
-      setUploadedDoc({
-        name: file.name,
-        size: file.size,
-        type: file.name.split('.').pop()?.toUpperCase() || 'DOCUMENT',
-        content: rawText,
-        wordCount: words,
-        tokenEst: Math.round(words * 1.3),
-        paragraphCount: paragraphs || 1
-      });
-    };
-
-    reader.readAsText(file);
-  };
-
-  // Extract Q&A Instruction Pairs from Document Handler
-  const handleExtractPairsFromDoc = async () => {
-    if (!uploadedDoc || !uploadedDoc.content) return;
-    setIsExtractingDoc(true);
-
-    try {
-      const res = await fetch(`${activeFastApiUrl}/api/ml/extract-document-pairs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: uploadedDoc.name,
-          content: uploadedDoc.content.slice(0, 30000)
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.extracted_pairs && Array.isArray(data.extracted_pairs)) {
-          const newPairs: DatasetPair[] = data.extracted_pairs.map((p: any, idx: number) => ({
-            id: `doc-extracted-${Date.now()}-${idx}`,
-            system: p.system || systemPrompt,
-            instruction: p.instruction,
-            response: p.response
-          }));
-          setDatasetPairs(prev => [...newPairs, ...prev]);
-          setIsExtractingDoc(false);
-          return;
-        }
-      }
-    } catch {}
-
-    const lines = uploadedDoc.content.split(/\n\s*\n/).filter(l => l.trim().length > 30);
-    const fallbackPairs: DatasetPair[] = lines.slice(0, 6).map((para, idx) => ({
-      id: `doc-local-${Date.now()}-${idx}`,
-      system: `You are an expert AI assistant trained on '${uploadedDoc.name}'.`,
-      instruction: `Summarize key insights regarding section ${idx + 1} from ${uploadedDoc.name}?`,
-      response: para.trim()
-    }));
-
-    setDatasetPairs(prev => [...fallbackPairs, ...prev]);
-    setIsExtractingDoc(false);
-  };
 
   // Accordion Collapsible Sections State (Emil Kowalski Design Engineering)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
@@ -505,17 +661,6 @@ export const AIHubStudio = () => {
     setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // Fine-Tune State
-  const [baseModel, setBaseModel] = useState<string>('meta-llama/Llama-3.2-3B-Instruct');
-  const [loraRank, setLoraRank] = useState<number>(16);
-  const [loraAlpha, setLoraAlpha] = useState<number>(32);
-  const [learningRate, setLearningRate] = useState<string>('2e-4');
-  const [epochs, setEpochs] = useState<number>(3);
-  const [batchSize, setBatchSize] = useState<number>(2);
-  const [maxSeqLen, setMaxSeqLen] = useState<number>(aiSettings.numCtx);
-  const [quantTarget, setQuantTarget] = useState<'q4_k_m' | 'q8_0' | 'f16'>(aiSettings.quantization);
-  const [datasetFormat, setDatasetFormat] = useState<'alpaca' | 'sharegpt' | 'chatml'>('alpaca');
-  const [recipePrompt, setRecipePrompt] = useState<string>('Generate synthetic instructions for Python web scraper error handling.');
   const [datasetPairs, setDatasetPairs] = useState<DatasetPair[]>([
     {
       id: 'pair-1',
@@ -530,13 +675,6 @@ export const AIHubStudio = () => {
       response: 'Zero-leak architecture processes all files, LLMs, and data 100% locally in browser memory without sending packets to external cloud servers.'
     }
   ]);
-  const [isSynthesizing, setIsSynthesizing] = useState(false);
-  const [isTrainingSim, setIsTrainingSim] = useState(false);
-  const [trainingLoss, setTrainingLoss] = useState<number>(1.428);
-  const [trainingStep, setTrainingStep] = useState<number>(0);
-  const [totalSteps, setTotalSteps] = useState<number>(100);
-  const [trainingLogs, setTrainingLogs] = useState<string[]>([]);
-  const lossCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Test & Eval Benchmark State
   const [evalPrompt, setEvalPrompt] = useState('Write a Python function to check if a string is a palindrome and test edge cases.');
@@ -550,89 +688,6 @@ export const AIHubStudio = () => {
 
   // Code Integration Snippet State
   const [codeLang, setCodeLang] = useState<'javascript' | 'python' | 'curl' | 'react' | 'langchain' | 'llamaindex' | 'fine-tune' | 'n8n-workflow' | 'mcp-protocol'>('javascript');
-  const [isRegisteringModel, setIsRegisteringModel] = useState(false);
-  const [registeredModelName, setRegisteredModelName] = useState('domodomo-fine-tuned:latest');
-
-  // 1-Click Load Fine-Tuned Model into Ollama & Switch to Chat
-  const handleRegisterFineTunedModel = async () => {
-    setIsRegisteringModel(true);
-    const modelfileContent = `# DomoDomo Fine-Tuned Modelfile
-FROM ${selectedModel}
-
-PARAMETER temperature ${temperature}
-PARAMETER top_p ${topP}
-PARAMETER num_ctx ${aiSettings.numCtx}
-
-SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assistant.'}"""
-`;
-
-    try {
-      if (ollamaStatus === 'connected') {
-        const res = await fetch(`${activeOllamaUrl}/api/create`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: registeredModelName,
-            modelfile: modelfileContent,
-            stream: false
-          })
-        });
-
-        if (res.ok) {
-          await checkOllama();
-          setSelectedModel(registeredModelName);
-          setActiveTab('chat');
-          setIsRegisteringModel(false);
-          return;
-        }
-      }
-    } catch {}
-
-    // Fallback simulation mode
-    await new Promise(r => setTimeout(r, 1000));
-    setModels(prev => [
-      {
-        name: registeredModelName,
-        model: registeredModelName,
-        modified_at: new Date().toISOString(),
-        size: 1800000000,
-        digest: `digest-${Date.now()}`,
-        details: { parent_model: selectedModel, format: 'gguf', family: 'llama', parameter_size: '3B', quantization_level: quantTarget.toUpperCase() }
-      },
-      ...prev
-    ]);
-    setSelectedModel(registeredModelName);
-    setActiveTab('chat');
-    setIsRegisteringModel(false);
-  };
-
-  // Download Complete Model Weights Package (GGUF Manifest + PyTorch LoRA Adapter Specs)
-  const handleDownloadWeightsPackage = () => {
-    const manifest = {
-      model_name: registeredModelName,
-      base_model: baseModel,
-      lora_rank: loraRank,
-      lora_alpha: loraAlpha,
-      learning_rate: learningRate,
-      epochs: epochs,
-      quantization: quantTarget,
-      dataset_size: datasetPairs.length,
-      modelfile: `# DomoDomo Fine-Tuned Modelfile\nFROM ${selectedModel}\n\nPARAMETER temperature ${temperature}\nPARAMETER top_p ${topP}\nPARAMETER num_ctx ${aiSettings.numCtx}\n\nSYSTEM """${datasetPairs[0]?.system || 'You are a custom fine-tuned local assistant.'}"""`,
-      weights_format: "GGUF Q4_K_M + PyTorch LoRA Adapter",
-      adapter_config: {
-        peft_type: "LORA",
-        r: loraRank,
-        lora_alpha: loraAlpha,
-        target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"],
-        bias: "none"
-      }
-    };
-
-    triggerBlobDownload(
-      new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' }),
-      `${registeredModelName.replace(/[:/]/g, '_')}_weights_package.json`
-    );
-  };
   const [copiedCode, setCopiedCode] = useState(false);
 
   // Teaser Modal for Remote Web Visitors
@@ -831,57 +886,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
     reader.readAsText(file);
   };
 
-  // Draw Loss Curve Canvas in Train Tab
-  useEffect(() => {
-    if (activeTab !== 'train' || !lossCanvasRef.current) return;
-    const canvas = lossCanvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-
-    // Background Grid
-    ctx.strokeStyle = '#2A2D30';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < w; x += 40) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, h);
-      ctx.stroke();
-    }
-    for (let y = 0; y < h; y += 30) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
-
-    // Loss Curve (Exponential decay curve)
-    ctx.beginPath();
-    ctx.strokeStyle = '#3C6B4D';
-    ctx.lineWidth = 3;
-
-    const points = 50;
-    for (let i = 0; i <= points; i++) {
-      const x = (i / points) * (w - 40) + 20;
-      const progressFactor = i / points;
-      const lossVal = 2.4 * Math.exp(-3 * progressFactor) + 0.3 + (Math.random() * 0.05);
-      const y = h - ((lossVal / 3) * (h - 40) + 20);
-
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-
-    // Fill under curve
-    ctx.lineTo(w - 20, h - 20);
-    ctx.lineTo(20, h - 20);
-    ctx.fillStyle = 'rgba(60, 107, 77, 0.15)';
-    ctx.fill();
-  }, [activeTab, trainingStep]);
+// (Draw Loss Curve Canvas removed - handled inside AdvancedFineTuneStudio)
 
   const isOnlineWebHost = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
@@ -1124,186 +1129,7 @@ SYSTEM """${datasetPairs[0]?.system || 'You are a specialized fine-tuned assista
     }
   };
 
-  // Auto Synthesize Dataset Recipe via Python FastAPI backend
-  const handleSynthesizeDataset = async () => {
-    setIsSynthesizing(true);
-    try {
-      const res = await fetch(`${activeFastApiUrl}/api/ml/synthesize-recipe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: selectedModel,
-          topic: recipePrompt || 'software architecture and coding',
-          count: 3
-        })
-      });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.pairs && Array.isArray(data.pairs)) {
-          const newPairs: DatasetPair[] = data.pairs.map((p: any, idx: number) => ({
-            id: `synth-py-${Date.now()}-${idx}`,
-            system: p.system || systemPrompt,
-            instruction: p.instruction,
-            response: p.response
-          }));
-          setDatasetPairs(prev => [...prev, ...newPairs]);
-          setIsSynthesizing(false);
-          return;
-        }
-      }
-    } catch {
-      // Fallback to client-side synthesis if Python backend is offline
-    }
-
-    await new Promise(r => setTimeout(r, 1000));
-    const syntheticPairs: DatasetPair[] = [
-      {
-        id: `synth-${Date.now()}-1`,
-        system: 'You are an expert AI software architect.',
-        instruction: 'Explain LoRA rank r parameter optimization.',
-        response: 'LoRA rank (r) controls the dimension of low-rank matrices. Setting r=16 or r=32 balances parameter efficiency and fine-tuning accuracy.'
-      },
-      {
-        id: `synth-${Date.now()}-2`,
-        system: 'You are an offline security auditor.',
-        instruction: 'How do Web Crypto API signatures protect local JWT tokens?',
-        response: 'HMAC SHA-256 via Web Crypto API signs JWT byte payloads locally in the browser sandbox, preventing token tampering without secret leakage.'
-      }
-    ];
-
-    setDatasetPairs(prev => [...prev, ...syntheticPairs]);
-    setIsSynthesizing(false);
-  };
-
-  // Export JSONL Dataset
-  const handleExportJSONL = () => {
-    const jsonlContent = datasetPairs
-      .map(p => {
-        if (datasetFormat === 'sharegpt') {
-          return JSON.stringify({
-            conversations: [
-              { from: 'system', value: p.system },
-              { from: 'human', value: p.instruction },
-              { from: 'gpt', value: p.response }
-            ]
-          });
-        }
-        if (datasetFormat === 'chatml') {
-          return JSON.stringify({
-            messages: [
-              { role: 'system', content: p.system },
-              { role: 'user', content: p.instruction },
-              { role: 'assistant', content: p.response }
-            ]
-          });
-        }
-        // Default Alpaca format
-        return JSON.stringify({
-          instruction: p.instruction,
-          input: p.system,
-          output: p.response
-        });
-      })
-      .join('\n');
-
-    triggerBlobDownload(
-      new Blob([jsonlContent], { type: 'application/jsonl' }),
-      `unsloth_recipe_${datasetFormat}.jsonl`
-    );
-  };
-
-  // Execute Unsloth Training via Python FastAPI Backend / WASM Simulation
-  const handleStartTrainingSim = async () => {
-    setIsTrainingSim(true);
-    setTrainingStep(0);
-    setTotalSteps(100);
-    setTrainingLoss(2.428);
-    setTrainingLogs([`🚀 Connecting to DomoDomo Python FastAPI Training Engine (${activeFastApiUrl})...`]);
-
-    try {
-      const res = await fetch(`${activeFastApiUrl}/api/ml/train-qlora`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          base_model: baseModel,
-          lora_rank: loraRank,
-          lora_alpha: loraAlpha,
-          learning_rate: learningRate,
-          epochs: epochs,
-          batch_size: batchSize,
-          max_seq_length: maxSeqLen,
-          quantization: quantTarget,
-          dataset: datasetPairs.map(p => ({
-            system: p.system,
-            instruction: p.instruction,
-            response: p.response
-          }))
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.logs && Array.isArray(data.logs)) {
-          for (let i = 0; i < data.logs.length; i++) {
-            await new Promise(r => setTimeout(r, 350));
-            setTrainingLogs(prev => [...prev, data.logs[i]]);
-            setTrainingStep(Math.round(((i + 1) / data.logs.length) * 100));
-            setTrainingLoss(parseFloat((2.4 * Math.exp(-3 * ((i + 1) / data.logs.length)) + 0.3).toFixed(4)));
-          }
-          setIsTrainingSim(false);
-          return;
-        }
-      }
-    } catch {
-      // Fallback simulation
-    }
-
-    const steps = [
-      '📦 Unsloth Optimizer: Loading Base Model weights in 4-bit NF4 quantization...',
-      `🔧 Injecting LoRA matrices (Rank r=${loraRank}, Alpha α=${loraAlpha}) on target modules...`,
-      `📊 Loading synthetic dataset recipe (${datasetPairs.length} pairs, ${datasetFormat.toUpperCase()} format)...`,
-      '🔥 Step 10/100 | Loss: 2.3415 | Learning Rate: 2.00e-4 | Speed: 4.8 it/s',
-      '🔥 Step 30/100 | Loss: 1.5821 | Learning Rate: 1.80e-4 | Speed: 5.1 it/s',
-      '🔥 Step 60/100 | Loss: 0.8942 | Learning Rate: 1.20e-4 | Speed: 5.0 it/s',
-      '🔥 Step 90/100 | Loss: 0.4120 | Learning Rate: 4.00e-5 | Speed: 5.2 it/s',
-      `✨ Unsloth Fine-tuning completed! Loss converged to 0.3204 (2.5x faster training).`,
-      `📦 Quantizing & Compiling GGUF (${quantTarget.toUpperCase()})...`
-    ];
-
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise(r => setTimeout(r, 450));
-      setTrainingLogs(prev => [...prev, steps[i]]);
-      const stepPct = Math.round(((i + 1) / steps.length) * 100);
-      setTrainingStep(stepPct);
-      setTrainingLoss(parseFloat((2.4 * Math.exp(-3 * (stepPct / 100)) + 0.3).toFixed(4)));
-    }
-
-    setIsTrainingSim(false);
-  };
-
-  // Generate Ollama Modelfile
-  const handleExportModelfile = () => {
-    const modelfile = `# DomoDomo Unsloth Fine-Tuned Modelfile
-FROM ${selectedModel}
-
-# Hyperparameters
-PARAMETER temperature ${temperature}
-PARAMETER top_p ${topP}
-PARAMETER num_ctx ${maxSeqLen}
-
-# System Persona
-SYSTEM """${systemPrompt}"""
-
-# LoRA Adapter Weights
-# ADAPTER ./unsloth_lora_weights_${quantTarget}.bin
-`;
-
-    triggerBlobDownload(
-      new Blob([modelfile], { type: 'text/plain' }),
-      'Modelfile'
-    );
-  };
 
   // Run Eval Benchmark
   const handleRunEval = async () => {
@@ -1356,8 +1182,6 @@ SYSTEM """${systemPrompt}"""
     setTemperature(DEFAULT_SETTINGS.temperature);
     setTopP(DEFAULT_SETTINGS.topP);
     setMaxTokens(DEFAULT_SETTINGS.maxTokens);
-    setMaxSeqLen(DEFAULT_SETTINGS.numCtx);
-    setQuantTarget(DEFAULT_SETTINGS.quantization);
   };
 
   // Clear Local Chat History
@@ -1448,7 +1272,7 @@ curl ${aiSettings.ollamaEndpoint}/api/chat -d '{
 
 # C. Register Fine-Tuned Model via Ollama API
 curl ${aiSettings.ollamaEndpoint}/api/create -d '{
-  "name": "${registeredModelName}",
+  "name": "domodomo-fine-tuned:latest",
   "modelfile": "FROM ${selectedModel}\\nSYSTEM You are a custom fine-tuned assistant."
 }'`;
     }
@@ -1774,6 +1598,32 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             )}
             <div className={`emil-accordion-grid ${collapsedSections.train && !sidebarCollapsed ? 'collapsed' : ''}`}>
               <div className="emil-accordion-content flex flex-col gap-0.5">
+                <button
+                  onClick={() => setActiveTab('library')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'library'
+                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="Model Library & Downloader"
+                >
+                  <Download size={14} className="shrink-0" />
+                  {!sidebarCollapsed && <span>Model Library</span>}
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('huggingface')}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                    activeTab === 'huggingface'
+                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                  }`}
+                  title="HuggingFace Model Hub"
+                >
+                  <Globe size={14} className="shrink-0" />
+                  {!sidebarCollapsed && <span>HuggingFace Hub</span>}
+                </button>
+
                 <button
                   onClick={() => setActiveTab('train')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
@@ -2215,7 +2065,8 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <span className="text-[#ECEBE9] truncate max-w-[140px] sm:max-w-none">
                 {activeTab === 'chat' && 'Chat & Inference'}
                 {activeTab === 'library' && 'Model Library & Downloader'}
-                {activeTab === 'train' && 'Fine-Tune QLoRA Studio'}
+                {activeTab === 'huggingface' && 'HuggingFace Model Hub'}
+                {activeTab === 'train' && 'Advanced Fine-Tune Studio'}
                 {activeTab === 'eval' && 'Test & Eval Benchmarks'}
                 {activeTab === 'workflow' && 'Local AI Flow Studio'}
                 {activeTab === 'docs' && 'Docs & Integration'}
@@ -2259,6 +2110,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               { id: 'prompts', label: 'Prompt Lab', icon: Wand2 },
               { id: 'rag', label: 'RAG Search', icon: Database },
               { id: 'library', label: 'Models', icon: Download },
+              { id: 'huggingface', label: 'HuggingFace', icon: Globe },
               { id: 'train', label: 'Fine-Tune', icon: Sparkles },
               { id: 'guardrails', label: 'Guardrails', icon: ShieldCheck },
               { id: 'code-patch', label: 'Code Patch', icon: Code },
@@ -2686,8 +2538,8 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <h2 className="text-lg font-extrabold text-[#ECEBE9]">Model Library &amp; Custom Puller</h2>
                     <p className="text-[#72706C] text-xs mt-0.5">Download open-source LLMs locally directly into Ollama</p>
                   </div>
-                  <div className="flex gap-2">
-                    {(['all', 'low-spec', 'balanced', 'coding', 'vision', 'heavy'] as const).map(f => (
+                  <div className="flex flex-wrap gap-2">
+                    {(['all', 'low-spec', 'balanced', 'coding', 'vision', 'heavy', 'embedding'] as const).map(f => (
                       <button
                         key={f}
                         onClick={() => setCatalogFilter(f)}
@@ -2789,255 +2641,34 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               </div>
             )}
 
-            {/* ── TRAIN / FINE-TUNE TAB (Fine-Tune AI Studio) ── */}
+            {/* ── HUGGINGFACE MODEL HUB TAB ── */}
+            {activeTab === 'huggingface' && (
+              <HuggingFaceModelHub
+                ollamaModels={models.map(m => m.name)}
+                onModelPulled={() => {
+                  if (typeof window !== 'undefined') {
+                    aiService.checkOllama().then(res => {
+                      if (res.status) {
+                        setModels(res.models.map(m => ({ name: m, size: 0, modified_at: '', digest: '' })));
+                      }
+                    });
+                  }
+                }}
+              />
+            )}
+
+            {/* ── TRAIN / FINE-TUNE TAB (Advanced Fine-Tune Studio) ── */}
             {activeTab === 'train' && (
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl">
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 text-[#3C6B4D] text-[10px] font-bold uppercase tracking-wider mb-1">
-                      <Wand2 size={12} />
-                      <span>Document Analysis &amp; 4-bit QLoRA Fine-Tuning</span>
-                    </div>
-                    <h2 className="text-lg font-extrabold text-[#ECEBE9]">Fine-Tune Studio</h2>
-                    <p className="text-[#72706C] text-xs mt-0.5">Ingest JSON, PDF, CSV, TXT, MD &amp; Docx files, analyze document structure, extract instruction pairs, and export Modelfiles &amp; GGUF weights.</p>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 shrink-0">
-                    <button onClick={handleExportModelfile} className="px-3 py-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all flex items-center gap-1.5">
-                      <FileText size={13} className="text-[#3C6B4D]" />
-                      <span>Export Modelfile</span>
-                    </button>
-                    <button onClick={handleDownloadWeightsPackage} className="px-3 py-2 rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all flex items-center gap-1.5" title="Download model weights package manifest (GGUF + LoRA specs)">
-                      <Download size={13} className="text-emerald-400" />
-                      <span>Download Weights Package</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Document Ingestion & Structure Analyzer Panel */}
-                <div className="bg-[#18191B] border border-[#2A2D30] p-5 rounded-2xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
-                    <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
-                      <FileCode size={15} className="text-[#3C6B4D]" /> Multi-Format Document Ingestion &amp; Analysis
-                    </h3>
-                    <span className="text-[10px] font-mono text-[#72706C] bg-[#111213] px-2 py-0.5 rounded border border-[#2A2D30]">
-                      Supported: JSON, PDF, CSV, TXT, MD, DOCX
-                    </span>
-                  </div>
-
-                  <input
-                    type="file"
-                    ref={docInputRef}
-                    onChange={handleDocFileUpload}
-                    accept=".json,.csv,.pdf,.txt,.md,.docx"
-                    className="hidden"
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* File Drop Button */}
-                    <div
-                      onClick={() => docInputRef.current?.click()}
-                      className="border-2 border-dashed border-[#2A2D30] hover:border-[#3C6B4D]/60 rounded-xl p-5 flex flex-col items-center justify-center gap-2 cursor-pointer bg-[#111213]/50 hover:bg-[#111213] transition-all group text-center"
-                    >
-                      <Download size={22} className="text-[#72706C] group-hover:text-[#3C6B4D] transition-colors" />
-                      <span className="text-xs font-bold text-[#ECEBE9]">Upload Document File</span>
-                      <span className="text-[10px] text-[#72706C]">Click or drop JSON, PDF, CSV, TXT, or MD</span>
-                    </div>
-
-                    {/* Active Uploaded Document Stats */}
-                    {uploadedDoc ? (
-                      <div className="md:col-span-2 bg-[#111213] border border-[#3C6B4D]/30 rounded-xl p-4 flex flex-col justify-between gap-3">
-                        <div className="flex items-center justify-between border-b border-[#2A2D30] pb-2">
-                          <div className="flex items-center gap-2">
-                            <FileText size={16} className="text-[#3C6B4D]" />
-                            <span className="text-xs font-bold text-[#ECEBE9] truncate max-w-[200px]">{uploadedDoc.name}</span>
-                            <span className="text-[9px] font-mono bg-[#3C6B4D]/20 text-[#3C6B4D] px-1.5 py-0.5 rounded uppercase font-bold">{uploadedDoc.type}</span>
-                          </div>
-                          <span className="text-[10px] font-mono text-[#72706C]">{(uploadedDoc.size / 1024).toFixed(1)} KB</span>
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
-                          <div className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg">
-                            <span className="text-[#72706C] block text-[9px] uppercase">Words</span>
-                            <span className="text-[#ECEBE9] font-bold text-xs">{uploadedDoc.wordCount.toLocaleString()}</span>
-                          </div>
-                          <div className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg">
-                            <span className="text-[#72706C] block text-[9px] uppercase">Est. Tokens</span>
-                            <span className="text-[#3C6B4D] font-bold text-xs">{uploadedDoc.tokenEst.toLocaleString()}</span>
-                          </div>
-                          <div className="bg-[#18191B] border border-[#2A2D30] p-2 rounded-lg">
-                            <span className="text-[#72706C] block text-[9px] uppercase">Sections</span>
-                            <span className="text-[#ECEBE9] font-bold text-xs">{uploadedDoc.paragraphCount}</span>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={handleExtractPairsFromDoc}
-                          disabled={isExtractingDoc || !uploadedDoc}
-                          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                          title={isExtractingDoc ? 'Locked: Extracting instruction pairs' : !uploadedDoc ? 'Locked: Upload document first' : 'Extract Q&A Pairs from Document'}
-                        >
-                          {isExtractingDoc ? <Lock size={13} className="animate-spin text-amber-300" /> : !uploadedDoc ? <Lock size={13} className="text-gray-400" /> : <Sparkles size={13} />}
-                          {isExtractingDoc ? 'Extracting Instruction Pairs (Locked)...' : !uploadedDoc ? 'Upload Document to Extract (Locked)' : 'Extract Q&A Pairs from Document'}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="md:col-span-2 bg-[#111213] border border-[#2A2D30] rounded-xl p-4 flex flex-col items-center justify-center text-center text-[#72706C] gap-1">
-                        <Database size={20} className="text-[#2A2D30] mb-1" />
-                        <span className="text-xs font-semibold text-[#A3A09B]">No Document Loaded</span>
-                        <span className="text-[10px]">Select a JSON, PDF, CSV, TXT, or MD file to analyze structure and extract Q&amp;A training pairs</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Two-column layout: recipe builder + training config */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                  {/* Dataset Recipe Builder */}
-                  <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
-                    <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
-                      <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
-                        <Database size={14} className="text-[#3C6B4D]" /> Dataset Recipe Builder
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <select
-                          value={datasetFormat}
-                          onChange={e => setDatasetFormat(e.target.value as any)}
-                          className="bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1 text-[10px] font-mono text-[#ECEBE9] uppercase focus:outline-none"
-                        >
-                          <option value="alpaca">Alpaca</option>
-                          <option value="sharegpt">ShareGPT</option>
-                          <option value="chatml">ChatML</option>
-                        </select>
-                        <span className="text-[10px] font-mono text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded-full border border-[#3C6B4D]/30">{datasetPairs.length} pairs</span>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <textarea
-                        value={recipePrompt}
-                        onChange={e => setRecipePrompt(e.target.value)}
-                        rows={3}
-                        placeholder="Describe what dataset instruction pairs to synthesize..."
-                        className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleSynthesizeDataset}
-                          disabled={isSynthesizing || !recipePrompt.trim()}
-                          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] text-xs font-bold hover:bg-[#3C6B4D]/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                          title={isSynthesizing ? 'Locked: Synthesizing dataset' : !recipePrompt.trim() ? 'Locked: Enter prompt' : 'Synthesize dataset'}
-                        >
-                          {isSynthesizing ? <Lock size={13} className="animate-spin" /> : !recipePrompt.trim() ? <Lock size={13} className="text-gray-400" /> : <Sparkles size={13} />}
-                          {isSynthesizing ? 'Synthesizing...' : !recipePrompt.trim() ? 'Prompt Required (Locked)' : 'Synthesize Dataset'}
-                        </button>
-                        {datasetPairs.length > 0 && (
-                          <button onClick={handleExportJSONL} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-bold transition-all">
-                            <Download size={13} /> JSONL ({datasetFormat})
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    {/* Dataset rows */}
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {datasetPairs.map((pair, i) => (
-                        <div key={pair.id} className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-mono font-black text-[#3C6B4D]">PAIR #{i + 1} ({datasetFormat.toUpperCase()})</span>
-                            <button onClick={() => setDatasetPairs(prev => prev.filter(p => p.id !== pair.id))} className="text-[#72706C] hover:text-red-400">
-                              <X size={11} />
-                            </button>
-                          </div>
-                          <p className="text-[11px] text-[#A3A09B]"><span className="text-[#72706C] font-bold">Q:</span> {pair.instruction}</p>
-                          <p className="text-[11px] text-[#ECEBE9] leading-relaxed line-clamp-2"><span className="text-[#72706C] font-bold">A:</span> {pair.response}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Training Config + Run */}
-                  <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
-                    <div className="border-b border-[#2A2D30] pb-3">
-                      <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2">
-                        <Wand2 size={14} className="text-[#3C6B4D]" /> QLoRA Training Config
-                      </h3>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { label: 'Base Model', type: 'text', val: baseModel, set: setBaseModel },
-                        { label: 'LoRA Rank (r)', type: 'number', val: loraRank, set: (v: string) => setLoraRank(parseInt(v) || 16) },
-                        { label: 'LoRA Alpha (α)', type: 'number', val: loraAlpha, set: (v: string) => setLoraAlpha(parseInt(v) || 32) },
-                        { label: 'Learning Rate', type: 'text', val: learningRate, set: setLearningRate },
-                        { label: 'Epochs', type: 'number', val: epochs, set: (v: string) => setEpochs(parseInt(v) || 3) },
-                        { label: 'Batch Size', type: 'number', val: batchSize, set: (v: string) => setBatchSize(parseInt(v) || 2) },
-                        { label: 'Max Seq Length', type: 'number', val: maxSeqLen, set: (v: string) => setMaxSeqLen(parseInt(v) || 2048) },
-                      ].map(({ label, type, val, set }) => (
-                        <div key={label} className="space-y-1">
-                          <label className="text-[10px] font-bold text-[#72706C] uppercase tracking-wide">{label}</label>
-                          <input
-                            type={type}
-                            value={val}
-                            onChange={e => set(e.target.value)}
-                            className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <button
-                      onClick={handleStartTrainingSim}
-                      disabled={isTrainingSim || datasetPairs.length === 0}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-black transition-all"
-                      title={isTrainingSim ? 'Locked: Training in progress' : datasetPairs.length === 0 ? 'Locked: Dataset pairs required' : 'Start QLoRA Fine-Tuning'}
-                    >
-                      {isTrainingSim ? <Lock size={14} className="animate-pulse text-amber-300" /> : datasetPairs.length === 0 ? <Lock size={14} className="text-gray-400" /> : <Play size={14} />}
-                      {isTrainingSim ? 'Training in Progress (Locked)...' : datasetPairs.length === 0 ? 'Dataset Pairs Required (Locked)' : 'Start QLoRA Fine-Tuning'}
-                    </button>
-                    {/* Loss curve */}
-                    {isTrainingSim && (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-[#72706C]">Unsloth Loss Curve</span>
-                          <span className="font-mono text-[#3C6B4D] font-bold">{trainingLoss.toFixed(4)}</span>
-                        </div>
-                        <canvas ref={lossCanvasRef} width={400} height={120} className="w-full rounded-xl border border-[#2A2D30]" />
-                        <div className="flex items-center justify-between text-[10px] text-[#72706C]">
-                          <span>Step {trainingStep}/{totalSteps}</span>
-                          <span>{Math.round((trainingStep / totalSteps) * 100)}% complete</span>
-                        </div>
-                      </div>
-                    )}
-                    {trainingLogs.length > 0 && (
-                      <div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-3 max-h-32 overflow-y-auto font-mono text-[10px] text-[#3C6B4D] space-y-0.5">
-                        {trainingLogs.map((log, i) => <div key={i}>{log}</div>)}
-                      </div>
-                    )}
-
-                    {/* 1-Click Register & Load Fine-Tuned Model into Local Ollama */}
-                    <div className="pt-3 border-t border-[#2A2D30] space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold text-[#72706C] uppercase tracking-wider">Register &amp; Deploy Fine-Tuned Model Locally</label>
-                        <span className="text-[9px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">LIVE CHAT TEST READY</span>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          value={registeredModelName}
-                          onChange={e => setRegisteredModelName(e.target.value)}
-                          placeholder="e.g. domodomo-fine-tuned:latest"
-                          className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-1.5 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
-                        />
-                        <button
-                          onClick={handleRegisterFineTunedModel}
-                          disabled={isRegisteringModel || datasetPairs.length === 0}
-                          className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0"
-                          title={isRegisteringModel ? 'Locked: Registering model in Ollama' : datasetPairs.length === 0 ? 'Locked: Dataset pairs required' : '1-Click Load Model into Ollama'}
-                        >
-                          {isRegisteringModel ? <Lock size={13} className="animate-spin text-amber-400" /> : datasetPairs.length === 0 ? <Lock size={13} className="text-gray-400" /> : <Zap size={13} className="text-amber-400" />}
-                          <span>{isRegisteringModel ? 'Registering in Ollama (Locked)...' : datasetPairs.length === 0 ? 'Fine-Tune Required (Locked)' : '1-Click Load Model & Test in Chat'}</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AdvancedFineTuneStudio
+                selectedModel={selectedModel}
+                models={models.map(m => m.name)}
+                systemPrompt={systemPrompt}
+                temperature={temperature}
+                topP={topP}
+                activeFastApiUrl={activeFastApiUrl}
+                datasetPairs={datasetPairs}
+                setDatasetPairs={setDatasetPairs}
+              />
             )}
 
             {/* ── EVAL / BENCHMARK TAB ── */}
