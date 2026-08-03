@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TransparentVideoMascot } from './TransparentVideoMascot';
-import welcomeDomo from '../assets/welcome_domo.mp4';
+import welcomeDomo from '../assets/domotest.webm';
 
 export const DoorSplash = () => {
   const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>('walk');
@@ -11,26 +11,26 @@ export const DoorSplash = () => {
     let revealStartTimeout: NodeJS.Timeout;
     let goneTimeout: NodeJS.Timeout;
 
-    // Start video animation triggers
-    // 1. Fade out mascot starts at 5.5s (after walk-in and wave are complete in video)
+    // Start video animation triggers tuned for 6.2s domotest.webm duration
+    // 1. Fade out mascot starts at 4.8s (as domotest.webm animation finishes)
     fadeStartTimeout = setTimeout(() => {
       setAnimStage('fade-out');
-    }, 5500);
+    }, 4800);
 
-    // 2. Door opens at 6.0s (0.5s after mascot starts fading)
+    // 2. Door opens at 5.3s (0.5s after mascot starts fading)
     openStartTimeout = setTimeout(() => {
       setAnimStage('door-open');
-    }, 6000);
+    }, 5300);
 
-    // 3. Reveal starts at 6.7s (doors almost fully open)
+    // 3. Reveal starts at 6.0s (doors almost fully open)
     revealStartTimeout = setTimeout(() => {
       setAnimStage('reveal');
-    }, 6700);
+    }, 6000);
 
-    // 4. Splash gone at 7.5s (total 7.5s animation duration)
+    // 4. Splash gone at 6.8s
     goneTimeout = setTimeout(() => {
       setAnimStage('gone');
-    }, 7500);
+    }, 6800);
 
     return () => {
       if (fadeStartTimeout) clearTimeout(fadeStartTimeout);

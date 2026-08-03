@@ -354,41 +354,37 @@ export const aiService = {
     }
 
     // Fallback: Create Modelfile and register
-    try {
-      onProgress('Creating Ollama model from HuggingFace Modelfile...', 10);
-      const res = await fetch(`${endpoint}/api/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: ollamaName, modelfile: modelfileContent, stream: true })
-      });
-      if (!res.ok) throw new Error(`Failed to create model: ${res.statusText}`);
+    onProgress('Creating Ollama model from HuggingFace Modelfile...', 10);
+    const res = await fetch(`${endpoint}/api/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: ollamaName, modelfile: modelfileContent, stream: true })
+    });
+    if (!res.ok) throw new Error(`Failed to create model: ${res.statusText}`);
 
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error('ReadableStream not supported');
-      const decoder = new TextDecoder();
-      let buffer = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          try {
-            const data = JSON.parse(line);
-            if (data.error) throw new Error(data.error);
-            const pct = data.total && data.completed
-              ? Math.min(99, Math.round((data.completed / data.total) * 100))
-              : data.status === 'success' ? 100 : 50;
-            onProgress(data.status || 'processing', pct);
-          } catch (e: any) {
-            if (e.message && !e.message.includes('JSON')) throw e;
-          }
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error('ReadableStream not supported');
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const data = JSON.parse(line);
+          if (data.error) throw new Error(data.error);
+          const pct = data.total && data.completed
+            ? Math.min(99, Math.round((data.completed / data.total) * 100))
+            : data.status === 'success' ? 100 : 50;
+          onProgress(data.status || 'processing', pct);
+        } catch (e: any) {
+          if (e.message && !e.message.includes('JSON')) throw e;
         }
       }
-    } catch (err) {
-      throw err;
     }
   },
 
@@ -399,37 +395,33 @@ export const aiService = {
   ): Promise<string> {
     const token = this.getHuggingFaceToken();
     if (!token) throw new Error('HuggingFace token is required for inference.');
-    try {
-      const res = await fetch(
-        `https://api-inference.huggingface.co/models/${modelId}`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            inputs: prompt,
-            parameters: {
-              max_new_tokens: options?.maxTokens || 512,
-              temperature: options?.temperature || 0.7,
-              return_full_text: false
-            }
-          })
-        }
-      );
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error || `HF Inference failed: ${res.statusText}`);
+    const res = await fetch(
+      `https://api-inference.huggingface.co/models/${modelId}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          inputs: prompt,
+          parameters: {
+            max_new_tokens: options?.maxTokens || 512,
+            temperature: options?.temperature || 0.7,
+            return_full_text: false
+          }
+        })
       }
-      const data = await res.json();
-      if (Array.isArray(data) && data[0]?.generated_text) {
-        return data[0].generated_text;
-      }
-      return typeof data === 'string' ? data : JSON.stringify(data);
-    } catch (err) {
-      throw err;
+    );
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData?.error || `HF Inference failed: ${res.statusText}`);
     }
+    const data = await res.json();
+    if (Array.isArray(data) && data[0]?.generated_text) {
+      return data[0].generated_text;
+    }
+    return typeof data === 'string' ? data : JSON.stringify(data);
   },
 
   // ── Ollama Connection ────────────────────────────────────────────────────────
