@@ -1,5 +1,17 @@
 [
   {
+    "hash": "95151ce",
+    "date": "2026-08-03",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): remove static sample text fallbacks from Flow Automation nodes for 100% dynamic AI responses"
+  },
+  {
+    "hash": "7603f4e",
+    "date": "2026-08-03",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "6d81081",
     "date": "2026-08-03",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-31",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "265a9de",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "9507637",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "chore: commit final synced configuration files"
   }
 ]
