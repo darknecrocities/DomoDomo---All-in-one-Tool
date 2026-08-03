@@ -1,5 +1,17 @@
 [
   {
+    "hash": "6d81081",
+    "date": "2026-08-03",
+    "author": "darknecrocities",
+    "message": "fix(ai-hub): fix static response issue in flow automation chat console with dynamic query execution"
+  },
+  {
+    "hash": "e3c0c44",
+    "date": "2026-08-03",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "6f68465",
     "date": "2026-08-03",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-07-31",
     "author": "darknecrocities",
     "message": "chore: commit final synced configuration files"
-  },
-  {
-    "hash": "76260c9",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "9b42da6",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat(physics): animate morph-to-cube transition in place before gravity release, increase cube sizes"
   }
 ]
