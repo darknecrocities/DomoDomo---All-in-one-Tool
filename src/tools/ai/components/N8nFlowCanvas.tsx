@@ -268,17 +268,17 @@ const PRESET_WORKFLOWS: WorkflowPreset[] = [
         id: 'rag-doc',
         type: 'document_upload',
         title: 'Document & Data Ingestion',
-        subtitle: 'sample_knowledge_base.txt',
+        subtitle: 'Upload PDF / Text file',
         category: 'Data Ingestion',
         iconName: 'FileText',
         color: '#A855F7',
         x: 80,
         y: 200,
-        status: 'completed',
+        status: 'idle',
         config: {
-          fileName: 'sample_knowledge_base.txt',
-          fileSize: 4096,
-          fileContent: 'n8n is an open-source workflow automation tool. It allows users to connect APIs, LLMs, vector databases, and custom JS scripts client-side.'
+          fileName: '',
+          fileSize: 0,
+          fileContent: ''
         },
         inputs: [],
         outputs: [{ id: 'out', name: 'Document Text', type: 'output', label: '1 file' }]
@@ -873,8 +873,22 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
     try {
       const saved = localStorage.getItem('domodomo_n8n_workflows');
       if (saved) {
-        const parsedSaved: WorkflowPreset[] = JSON.parse(saved);
-        // Merge: keep user-created workflows + ensure all built-in presets exist
+        let parsedSaved: WorkflowPreset[] = JSON.parse(saved);
+        // Scrub stale dummy sample text from document nodes so queries execute 100% dynamically
+        parsedSaved = parsedSaved.map(w => ({
+          ...w,
+          nodes: w.nodes.map(n => {
+            if (n.type === 'document_upload' && (n.config?.fileContent?.includes('n8n is an open-source workflow automation tool') || n.config?.fileName === 'sample_knowledge_base.txt')) {
+              return {
+                ...n,
+                subtitle: 'Upload PDF / Text file',
+                status: 'idle',
+                config: { ...n.config, fileName: '', fileSize: 0, fileContent: '' }
+              };
+            }
+            return n;
+          })
+        }));
         const savedIds = new Set(parsedSaved.map(w => w.id));
         const missingPresets = PRESET_WORKFLOWS.filter(p => !savedIds.has(p.id));
         return [...parsedSaved, ...missingPresets];
@@ -1409,15 +1423,15 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
 
       try {
         if (node.type === 'document_upload') {
-          const docContent = node.config.fileContent || 'n8n is an open-source workflow automation tool. It allows users to connect APIs, LLMs, and vector databases.';
-          inputPayload = { fileName: node.config.fileName || 'sample_doc.txt', fileSize: node.config.fileSize || 2048 };
+          const docContent = node.config.fileContent || '';
+          inputPayload = { fileName: node.config.fileName || '', fileSize: node.config.fileSize || 0 };
           outputPayload = {
-            fileName: node.config.fileName || 'sample_doc.txt',
-            fileSize: node.config.fileSize || 2048,
+            fileName: node.config.fileName || '',
+            fileSize: node.config.fileSize || 0,
             text: docContent,
             textLength: docContent.length,
-            lines: docContent.split('\n').length,
-            preview: docContent.slice(0, 250) + (docContent.length > 250 ? '...' : '')
+            lines: docContent ? docContent.split('\n').length : 0,
+            preview: docContent ? (docContent.slice(0, 250) + (docContent.length > 250 ? '...' : '')) : ''
           };
         } else if (node.type === 'trigger') {
           const userPrompt = queryOverride || chatInput.trim() || 'What are the key features of the document?';
@@ -1439,20 +1453,23 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             status: 'model_ready'
           };
         } else if (node.type === 'vector_store') {
-          const activeQuery = queryOverride || chatInput.trim() || 'workflow automation features';
-          const rawDocText = cleanDocumentText(inputPayload.in?.text || inputPayload.document?.text || activeQuery);
+          const activeQuery = queryOverride || chatInput.trim() || '';
+          const rawDocText = cleanDocumentText(inputPayload.in?.text || inputPayload.document?.text || inputPayload.rag_doc?.text || '');
           const collection = node.config.collection || 'doc_chunks';
           const k = node.config.topK || 5;
           inputPayload = { query: activeQuery, collection, k };
+
+          const retrievedDocs = rawDocText && rawDocText.trim().length > 0 ? [
+            { id: 'chunk-1', text: rawDocText.slice(0, 350), score: 0.98 },
+            { id: 'chunk-2', text: rawDocText.slice(350, 700), score: 0.95 }
+          ].filter(d => d.text && d.text.trim().length > 0) : [];
+
           outputPayload = {
             query: activeQuery,
             collection,
             k,
-            matchCount: 4,
-            retrievedDocuments: [
-              { id: 'chunk-1', text: rawDocText.slice(0, 350), score: 0.98 },
-              { id: 'chunk-2', text: rawDocText.slice(350, 700) || 'Workflow supports dynamic query execution and local AI processing.', score: 0.95 }
-            ]
+            matchCount: retrievedDocs.length,
+            retrievedDocuments: retrievedDocs
           };
         } else if (node.type === 'memory') {
           inputPayload = { tableName: node.config.tableName || 'chat_history' };
