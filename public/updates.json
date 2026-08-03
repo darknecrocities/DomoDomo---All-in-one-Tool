@@ -1,5 +1,53 @@
 [
   {
+    "hash": "6f68465",
+    "date": "2026-08-03",
+    "author": "darknecrocities",
+    "message": "chore: update profile sync"
+  },
+  {
+    "hash": "47ce913",
+    "date": "2026-08-03",
+    "author": "darknecrocities",
+    "message": "chore: update profile sync timestamp"
+  },
+  {
+    "hash": "b626b28",
+    "date": "2026-08-03",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "be0b209",
+    "date": "2026-08-03",
+    "author": "darknecrocities",
+    "message": "feat: replace welcome splash animation with domotest.webm and update timing"
+  },
+  {
+    "hash": "77b3435",
+    "date": "2026-08-02",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "8013672",
+    "date": "2026-08-02",
+    "author": "darknecrocities",
+    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+  },
+  {
+    "hash": "314ff72",
+    "date": "2026-08-02",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add HuggingFace Model Hub, 6 multi-method fine-tuning strategies, and expand 32-model catalog"
+  },
+  {
+    "hash": "41963b2",
+    "date": "2026-07-31",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "5d14461",
     "date": "2026-07-31",
     "author": "darknecrocities",
@@ -40,53 +88,5 @@
     "date": "2026-07-31",
     "author": "darknecrocities",
     "message": "feat(physics): animate morph-to-cube transition in place before gravity release, increase cube sizes"
-  },
-  {
-    "hash": "3eec36c",
-    "date": "2026-07-31",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "83254fd",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "0526cf5",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat(physics): render collapsed cards as compact physics cubes"
-  },
-  {
-    "hash": "308a4b8",
-    "date": "2026-07-31",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "14029dc",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat(physics): extract useCardPhysics hook, make mobile grid two-columns, set collapse button icons to Bomb/Hammer"
-  },
-  {
-    "hash": "3163efc",
-    "date": "2026-07-31",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "0db61d5",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat: add interactive physics mode to dashboard tool cards"
-  },
-  {
-    "hash": "4c4c059",
-    "date": "2026-07-30",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
