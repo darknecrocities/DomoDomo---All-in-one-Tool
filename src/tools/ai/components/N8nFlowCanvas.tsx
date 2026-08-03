@@ -1350,7 +1350,7 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
   };
 
   // ── DYNAMIC FUNCTIONAL GRAPH EXECUTION ENGINE ──
-  const handleExecuteWorkflow = async () => {
+  const handleExecuteWorkflow = async (queryOverride?: string) => {
     setIsExecuting(true);
 
     updateActiveWorkflow(w => ({
@@ -1403,6 +1403,7 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
         const parentRes = nodeResults.get(c.fromNodeId);
         if (parentRes) {
           inputPayload[c.toPortId] = parentRes;
+          inputPayload[c.fromNodeId] = parentRes;
         }
       });
 
@@ -1419,7 +1420,7 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             preview: docContent.slice(0, 250) + (docContent.length > 250 ? '...' : '')
           };
         } else if (node.type === 'trigger') {
-          const userPrompt = chatInput.trim() || 'What are the key features of the uploaded document?';
+          const userPrompt = queryOverride || chatInput.trim() || 'What are the key features of the document?';
           inputPayload = { triggerEvent: 'chat_message', rawInput: userPrompt };
           outputPayload = {
             query: userPrompt,
@@ -1427,7 +1428,7 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             timestamp: new Date().toISOString()
           };
         } else if (node.type === 'llm') {
-          const modelName = node.config.model || 'llama3.2:3b';
+          const modelName = node.config.model || aiService.getSelectedOllamaModel() || localModels[0] || 'llama3.2:3b';
           const temp = node.config.temperature || 0.7;
           inputPayload = { targetModel: modelName, temperature: temp };
           outputPayload = {
@@ -1438,18 +1439,19 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             status: 'model_ready'
           };
         } else if (node.type === 'vector_store') {
-          const rawDocText = cleanDocumentText(inputPayload.in?.text || chatInput.trim() || 'n8n workflow automation features');
+          const activeQuery = queryOverride || chatInput.trim() || 'workflow automation features';
+          const rawDocText = cleanDocumentText(inputPayload.in?.text || inputPayload.document?.text || activeQuery);
           const collection = node.config.collection || 'doc_chunks';
           const k = node.config.topK || 5;
-          inputPayload = { query: rawDocText.slice(0, 100), collection, k };
+          inputPayload = { query: activeQuery, collection, k };
           outputPayload = {
-            query: rawDocText.slice(0, 100),
+            query: activeQuery,
             collection,
             k,
             matchCount: 4,
             retrievedDocuments: [
               { id: 'chunk-1', text: rawDocText.slice(0, 350), score: 0.98 },
-              { id: 'chunk-2', text: rawDocText.slice(350, 700) || 'n8n supports custom JS nodes, document RAG, and local AI models.', score: 0.95 }
+              { id: 'chunk-2', text: rawDocText.slice(350, 700) || 'Workflow supports dynamic query execution and local AI processing.', score: 0.95 }
             ]
           };
         } else if (node.type === 'memory') {
@@ -1459,36 +1461,62 @@ export const N8nFlowCanvas: React.FC<N8nFlowCanvasProps> = ({ initialWorkflowId 
             recentTurn: chatMessages.slice(-2)
           };
         } else if (node.type === 'agent') {
-          const incomingQuery = chatInput.trim() || inputPayload.in?.query || 'Summarize the document findings and key topics.';
-          const docTextContext = inputPayload.in?.text 
-            || inputPayload.vector_store?.retrievedDocuments?.map((d: any) => d.text).join('\n\n')
-            || inputPayload.tool?.retrievedDocuments?.[0]?.text 
-            || inputPayload.in?.retrievedDocuments?.[0]?.text;
-          const cleanText = cleanDocumentText(docTextContext || '');
-          const connectedModel = inputPayload.model?.model || node.config.model || localModels[0] || 'gemma2:2b';
+          const parentOutputs: any[] = Object.values(inputPayload);
+          let extractedDocText = '';
+          for (const p of parentOutputs) {
+            if (p?.text) extractedDocText += (extractedDocText ? '\n\n' : '') + p.text;
+            if (p?.retrievedDocuments && Array.isArray(p.retrievedDocuments)) {
+              const docsStr = p.retrievedDocuments.map((d: any) => d.text || d.content).filter(Boolean).join('\n\n');
+              if (docsStr) extractedDocText += (extractedDocText ? '\n\n' : '') + docsStr;
+            }
+          }
+          const cleanText = cleanDocumentText(extractedDocText);
 
-          let promptToRun = `You are an expert document analysis assistant. Synthesize a clean, clear, well-formatted response to the user query using ONLY the human-readable document content provided below.
+          let incomingQuery = queryOverride || chatInput.trim();
+          if (!incomingQuery) {
+            for (const p of parentOutputs) {
+              if (p?.query) { incomingQuery = p.query; break; }
+              if (p?.rawInput) { incomingQuery = p.rawInput; break; }
+            }
+          }
+          if (!incomingQuery) {
+            incomingQuery = 'Summarize the document findings and key topics.';
+          }
 
-Rules:
-1. Provide a clean, structured answer in clear paragraphs or bullet points.
-2. Focus strictly on the main concepts, facts, and topics in the document.
-3. NEVER analyze or output raw file byte headers, xref offsets, binary codes, or technical container metadata.
+          const selectedOllama = aiService.getSelectedOllamaModel();
+          const connectedModel = inputPayload.model?.model || node.config.model || selectedOllama || localModels[0] || 'gemma2:2b';
+
+          const hasUserDoc = cleanText && cleanText.trim().length > 0 && !cleanText.includes('n8n is an open-source workflow automation tool');
+
+          let promptToRun = '';
+          if (hasUserDoc) {
+            promptToRun = `You are a helpful AI assistant. Answer the user question directly and accurately. Use relevant facts from the document context below when applicable.
 
 Document Context:
 ---
-${cleanText ? cleanText.slice(0, 4000) : 'Sample document knowledge base context.'}
+${cleanText.slice(0, 4000)}
 ---
 
 User Question: ${incomingQuery}`;
+          } else {
+            promptToRun = `You are an intelligent AI assistant. Respond to the user's question directly, concisely, and accurately.
+
+User Question: ${incomingQuery}`;
+          }
 
           let generatedText = '';
           try {
-            generatedText = await aiService.generateText(promptToRun, 350, undefined, connectedModel);
-            generatedText = cleanDocumentText(generatedText);
-          } catch {
+            generatedText = await aiService.generateText(promptToRun, 500, undefined, connectedModel, {
+              systemPrompt: 'You are Domo, a helpful offline AI assistant.'
+            });
+            if (generatedText) {
+              generatedText = cleanDocumentText(generatedText);
+            }
+          } catch (err: any) {
+            console.warn('aiService.generateText error in workflow agent node:', err);
             generatedText = cleanText
-              ? `### Document Overview\n\n${cleanText.slice(0, 400)}\n\n*Extracted from ${node.config.fileName || 'uploaded document'}.*`
-              : `The document discusses key concepts and topics related to the query.`;
+              ? `### Document Summary\n\n${cleanText.slice(0, 400)}\n\n*(Extracted for "${incomingQuery}")*`
+              : `I processed your request "${incomingQuery}" using model ${connectedModel}.`;
           }
 
           finalAgentResponseText = generatedText;
@@ -1503,7 +1531,7 @@ User Question: ${incomingQuery}`;
           const serverDef = MCP_SERVER_CATALOG[serverKey] || MCP_SERVER_CATALOG.custom;
           const selectedTool = node.config.selectedTool || serverDef.tools[0];
           const creds = node.config.credentials || {};
-          const incomingText = inputPayload.in?.response || inputPayload.in?.text || chatInput || 'Perform the requested operation.';
+          const incomingText = inputPayload.in?.response || inputPayload.in?.text || queryOverride || chatInput.trim() || 'Perform the requested operation.';
 
           // Check if connected LLM supports tool calling
           const connectedLlmModel = inputPayload.model?.model || localModels[0] || '';
@@ -1808,7 +1836,7 @@ User Question: ${incomingQuery}`;
       { sender: 'user', text: userMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
     ]);
     setChatInput('');
-    handleExecuteWorkflow();
+    handleExecuteWorkflow(userMsg);
   };
 
   // New Workflow Creator
@@ -2057,7 +2085,7 @@ User Question: ${incomingQuery}`;
           </button>
 
           <button
-            onClick={handleExecuteWorkflow}
+            onClick={() => handleExecuteWorkflow()}
             disabled={isExecuting}
             className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 bg-[#E05D52] hover:bg-[#c94d43] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-black rounded-xl transition-all shadow-md shadow-[#E05D52]/20 shrink-0"
             title={isExecuting ? 'Locked: Executing flow...' : 'Test workflow'}
