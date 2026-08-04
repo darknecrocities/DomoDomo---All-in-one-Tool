@@ -3337,11 +3337,11 @@ ollama run llama3.2`}
 											</div>
 										) : (
 											/* Full Card representation during snap-back restore phase */
-											<div className="flex flex-col justify-between w-full h-full p-4 sm:p-5 lg:p-6 text-left pointer-events-none">
-												<div className="flex flex-col gap-4">
-													<div className="flex justify-between items-start">
+											<div className="flex flex-col justify-between w-full h-full p-3.5 sm:p-5 lg:p-6 text-left pointer-events-none">
+												<div className="flex flex-col gap-3 sm:gap-4">
+													<div className="flex justify-between items-start gap-2">
 														<div
-															className={`p-3 rounded-xl border ${
+															className={`p-2.5 sm:p-3 rounded-xl border shrink-0 ${
 																isReady && !isTeased
 																	? tool.popular
 																		? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37]"
@@ -3349,44 +3349,44 @@ ollama run llama3.2`}
 																	: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
 															}`}
 														>
-															<DynamicIcon name={tool.icon} size={18} />
+															<DynamicIcon name={tool.icon} size={16} className="sm:w-[18px] sm:h-[18px]" />
 														</div>
 														{isTeased ? (
-															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
-																<Cpu size={10} />
-																Requires Local LLM
+															<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1 shrink-0">
+																<Cpu size={10} className="shrink-0" />
+																<span className="hidden sm:inline">Requires </span>Local <span className="hidden sm:inline">LLM</span><span className="inline sm:hidden">AI</span>
 															</span>
 														) : isReady ? (
-															<div className="flex items-center gap-1.5">
+															<div className="flex flex-wrap items-center justify-end gap-1 sm:gap-1.5 shrink min-w-0">
 																{tool.popular && (
-																	<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
-																		<Star size={10} className="fill-[#D4AF37]" />
+																	<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1 shrink-0">
+																		<Star size={10} className="fill-[#D4AF37] shrink-0" />
 																		<span>Popular</span>
 																	</span>
 																)}
-																<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+																<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 shrink-0">
 																	Ready
 																</span>
 															</div>
 														) : (
-															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+															<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30] shrink-0">
 																Planned
 															</span>
 														)}
 													</div>
 
-													<div className="flex flex-col gap-1.5">
-														<h3 className="font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9]">
+													<div className="flex flex-col gap-1 sm:gap-1.5">
+														<h3 className="font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9] line-clamp-1 sm:line-clamp-2">
 															{tool.name}
 														</h3>
-														<p className="text-[#A3A09B] text-xs leading-relaxed">
+														<p className="text-[#A3A09B] text-[11px] sm:text-xs leading-relaxed line-clamp-2 sm:line-clamp-3">
 															{tool.description}
 														</p>
 													</div>
 												</div>
 
-												<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
-													<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+												<div className="flex justify-between items-center mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-[#2A2D30]/65 gap-1.5 sm:gap-2">
+													<span className="text-[9px] sm:text-[10px] uppercase font-semibold tracking-wider text-[#72706C] truncate min-w-0 flex-1">
 														{tool.categories
 															.map((cId: string) => {
 																const catObj = CATEGORIES.find((cat) => cat.id === cId);
@@ -3397,18 +3397,20 @@ ollama run llama3.2`}
 
 													{isReady && !isTeased && (
 														<span
-															className={`text-xs font-semibold ${
+															className={`text-[11px] sm:text-xs font-semibold ${
 																tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
-															} flex items-center gap-1`}
+															} flex items-center gap-1 shrink-0 ml-1`}
 														>
 															<span>Open</span>
 															<span>→</span>
 														</span>
 													)}
 													{isTeased && (
-														<span className="text-[11px] font-bold text-[#E29E2D] flex items-center gap-1">
-															<ShieldAlert size={12} />
-															Setup Local AI to Unlock →
+														<span className="text-[10px] sm:text-[11px] font-bold text-[#E29E2D] flex items-center gap-1 shrink-0 ml-1">
+															<ShieldAlert size={12} className="shrink-0" />
+															<span className="hidden sm:inline">Setup Local AI to Unlock</span>
+															<span className="inline sm:hidden">Unlock</span>
+															<span>→</span>
 														</span>
 													)}
 												</div>
@@ -3445,7 +3447,7 @@ ollama run llama3.2`}
 													navigate(`/tool/${tool.id}`);
 												}
 											}}
-											className={`glass-card emil-card-enter p-4 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
+											className={`glass-card emil-card-enter p-3.5 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
 												isReady && !isTeased
 													? tool.popular
 														? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)] bg-[#18191B]"
@@ -3453,10 +3455,10 @@ ollama run llama3.2`}
 													: "opacity-75 border-dashed border-[#E29E2D]/35 hover:border-[#E29E2D]/70 bg-[#111213]/60 cursor-pointer select-none"
 											}`}
 										>
-											<div className="flex flex-col gap-4">
-												<div className="flex justify-between items-start">
+											<div className="flex flex-col gap-3 sm:gap-4">
+												<div className="flex justify-between items-start gap-2">
 													<div
-														className={`p-3 rounded-xl border ${
+														className={`p-2.5 sm:p-3 rounded-xl border shrink-0 ${
 															isReady && !isTeased
 																? tool.popular
 																	? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
@@ -3464,33 +3466,33 @@ ollama run llama3.2`}
 																: "bg-[#E29E2D]/10 border-[#E29E2D]/20 text-[#E29E2D]"
 														}`}
 													>
-														<DynamicIcon name={tool.icon} size={18} />
+														<DynamicIcon name={tool.icon} size={16} className="sm:w-[18px] sm:h-[18px]" />
 													</div>
 													{isTeased ? (
-														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1">
-															<Cpu size={10} />
-															Requires Local LLM
+														<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20 flex items-center gap-1 shrink-0">
+															<Cpu size={10} className="shrink-0" />
+															<span className="hidden sm:inline">Requires </span>Local <span className="hidden sm:inline">LLM</span><span className="inline sm:hidden">AI</span>
 														</span>
 													) : isReady ? (
-														<div className="flex items-center gap-1.5">
+														<div className="flex flex-wrap items-center justify-end gap-1 sm:gap-1.5 shrink min-w-0">
 															{tool.popular && (
-																<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1">
-																	<Star size={10} className="fill-[#D4AF37]" />
+																<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1 shrink-0">
+																	<Star size={10} className="fill-[#D4AF37] shrink-0" />
 																	<span>Popular</span>
 																</span>
 															)}
-															<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+															<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 shrink-0">
 																Ready
 															</span>
 														</div>
 													) : (
-														<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30]">
+														<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#111213] text-[#72706C] border border-[#2A2D30] shrink-0">
 															Planned
 														</span>
 													)}
 												</div>
 
-												<div className="flex flex-col gap-1.5">
+												<div className="flex flex-col gap-1 sm:gap-1.5">
 													<h3
 														className={`font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9] ${
 															isTeased
@@ -3498,19 +3500,19 @@ ollama run llama3.2`}
 																: tool.popular
 																? "group-hover:text-[#D4AF37]"
 																: "group-hover:text-[#3C6B4D]"
-														} transition-colors`}
+														} transition-colors line-clamp-1 sm:line-clamp-2`}
 													>
 														{tool.name}
 													</h3>
-													<p className="text-[#A3A09B] text-xs leading-relaxed">
+													<p className="text-[#A3A09B] text-[11px] sm:text-xs leading-relaxed line-clamp-2 sm:line-clamp-3">
 														{tool.description}
 													</p>
 												</div>
 											</div>
 
 											{/* Card Footer badges */}
-											<div className="flex justify-between items-center mt-6 pt-4 border-t border-[#2A2D30]/65">
-												<span className="text-[10px] uppercase font-semibold tracking-wider text-[#72706C]">
+											<div className="flex justify-between items-center mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-[#2A2D30]/65 gap-1.5 sm:gap-2">
+												<span className="text-[9px] sm:text-[10px] uppercase font-semibold tracking-wider text-[#72706C] truncate min-w-0 flex-1">
 													{tool.categories
 														.map((cId: string) => {
 															const catObj = CATEGORIES.find((cat) => cat.id === cId);
@@ -3521,18 +3523,20 @@ ollama run llama3.2`}
 
 												{isReady && !isTeased && (
 													<span
-														className={`text-xs font-semibold ${
+														className={`text-[11px] sm:text-xs font-semibold ${
 															tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
-														} group-hover:translate-x-1 transition-transform flex items-center gap-1`}
+														} group-hover:translate-x-1 transition-transform flex items-center gap-1 shrink-0 ml-1`}
 													>
 														<span>Open</span>
 														<span>→</span>
 													</span>
 												)}
 												{isTeased && (
-													<span className="text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1">
-														<ShieldAlert size={12} />
-														Setup Local AI to Unlock →
+													<span className="text-[10px] sm:text-[11px] font-bold text-[#E29E2D] group-hover:underline flex items-center gap-1 shrink-0 ml-1">
+														<ShieldAlert size={12} className="shrink-0" />
+														<span className="hidden sm:inline">Setup Local AI to Unlock</span>
+														<span className="inline sm:hidden">Unlock</span>
+														<span>→</span>
 													</span>
 												)}
 											</div>
