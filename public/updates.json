@@ -1,5 +1,53 @@
 [
   {
+    "hash": "e7ea507",
+    "date": "2026-08-05",
+    "author": "darknecrocities",
+    "message": "docs(blog): add featured AppBuildersPH editorial review for DomoDomo"
+  },
+  {
+    "hash": "541b721",
+    "date": "2026-08-05",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "756dbce",
+    "date": "2026-08-05",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add 15 dynamic local AI tools, 5 categorized sidebar sections, expanded agent swarm orchestrator"
+  },
+  {
+    "hash": "5c2fbe0",
+    "date": "2026-08-05",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #66 from darknecrocities/docs/github-badges-update"
+  },
+  {
+    "hash": "f3336ad",
+    "date": "2026-08-05",
+    "author": "darknecrocities",
+    "message": "docs: add github badges verification marker"
+  },
+  {
+    "hash": "4fa21a2",
+    "date": "2026-08-04",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "e804481",
+    "date": "2026-08-04",
+    "author": "darknecrocities",
+    "message": "fix(dashboard): improve tool card and badge responsiveness on mobile screens"
+  },
+  {
+    "hash": "e8c98c0",
+    "date": "2026-08-03",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "95151ce",
     "date": "2026-08-03",
     "author": "darknecrocities",
@@ -40,53 +88,5 @@
     "date": "2026-08-03",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "be0b209",
-    "date": "2026-08-03",
-    "author": "darknecrocities",
-    "message": "feat: replace welcome splash animation with domotest.webm and update timing"
-  },
-  {
-    "hash": "77b3435",
-    "date": "2026-08-02",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "8013672",
-    "date": "2026-08-02",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "314ff72",
-    "date": "2026-08-02",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add HuggingFace Model Hub, 6 multi-method fine-tuning strategies, and expand 32-model catalog"
-  },
-  {
-    "hash": "41963b2",
-    "date": "2026-07-31",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "5d14461",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
-  },
-  {
-    "hash": "b0c1c04",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat(physics): align offsetParent positions and update bodiesRef synchronously to fix morph animation jump"
-  },
-  {
-    "hash": "f7d9b7b",
-    "date": "2026-07-31",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
