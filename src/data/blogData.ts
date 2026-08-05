@@ -13,6 +13,54 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'appbuildersph-editorial-featured-domodomo',
+    title: 'Featured on AppBuildersPH: DomoDomo — A Private, All-in-One Workspace for AI-Powered Work',
+    excerpt: 'AppBuildersPH features DomoDomo in an editorial review, highlighting its local-first privacy guarantees, multi-agent AI workspace capabilities, and all-in-one developer productivity suite.',
+    date: 'August 3, 2026',
+    readTime: '4 min read',
+    category: 'Featured Editorial',
+    author: 'AppBuildersPH Editorial',
+    keywords: 'appbuildersph, domodomo editorial, local ai, privacy, agentic ai, local-first, developer tools, open source',
+    content: `# Featured on AppBuildersPH: DomoDomo — A Private, All-in-One Workspace for AI-Powered Work
+
+*Originally published by AppBuildersPH Editorial on August 3, 2026. [Read original article on AppBuildersPH](https://www.appbuildersph.com/blog/editorial-seed-domodomo)*
+
+DomoDomo brings AI agents and practical tools into one flexible workspace, with a privacy-minded, local-first approach that makes ambitious work feel easier to begin.
+
+---
+
+DomoDomo is the kind of app that makes a big ambition feel surprisingly approachable. Its idea is easy to understand: bring useful AI agents and practical tools into one workspace, so everyday work does not have to be split across a long chain of separate places. What I like about the concept is that it feels less like a single-purpose novelty and more like a flexible environment for getting things done.
+
+## A Broad Toolkit with a Clear Center
+
+The listing describes DomoDomo as an open-source agentic AI platform, and that description gives the app a strong sense of direction. It is built around agents that can understand a goal, reason through a task, and help carry the work forward. That makes the experience sound more natural than simply choosing from a long menu of disconnected features. The center of the product is not one isolated trick. It is the idea of having capable assistance close at hand whenever a project changes shape.
+
+That range is one of the first things that makes DomoDomo stand out. The app brings together support for software development, light code generation, debugging, documentation, research, content creation, data analysis, file processing, PDF utilities, image processing, and automation. Those are very different kinds of tasks, but they all belong to the same broad rhythm of modern work: start with a goal, figure out the next step, and keep moving.
+
+## Built for Switching Less
+
+There is a real appeal in having one workspace that can follow a project through several stages. A developer might move from thinking through a problem to writing code and then documenting the result. A researcher might gather notes, process files, and turn the material into something easier to share. A creator might move between planning, writing, and visual work. DomoDomo is interesting because its multi-agent approach seems designed around those transitions rather than treating them as unrelated activities.
+
+I also like the plainness of the product promise. DomoDomo does not need to explain itself as a collection of tiny utilities. It offers a unified place for intelligent tools, and the listing gives enough examples to make that promise concrete. That combination of a simple center and a wide range of possible uses gives the app room to be useful in different ways without losing its identity.
+
+## The Local-First Detail Matters
+
+The most thoughtful part of DomoDomo may be its offline-first and local-first philosophy. The listing says the platform prioritizes privacy, security, and reliability by allowing users to run AI locally whenever possible. That is a meaningful detail for anyone who wants more control over their work. It also gives the product a practical quality: the workspace is designed with the reality of imperfect connections and sensitive information in mind.
+
+For an app that touches code, research, files, and personal projects, that emphasis makes the idea feel more complete. The value is not only in what the agents can help with, but also in how the product thinks about the environment where that work happens. DomoDomo feels more considered because it treats control and continuity as part of the experience.
+
+## A Good Fit for Curious Builders
+
+I can see DomoDomo appealing to developers, students, researchers, creators, and professionals who enjoy having one flexible place to explore ideas. It has the kind of breadth that rewards curiosity, while the individual capabilities give people clear starting points. You do not have to arrive with one perfectly defined workflow. You can begin with the task in front of you and discover where the rest of the workspace fits.
+
+That makes DomoDomo feel welcoming even though the technology behind it is ambitious. The product has a lot going on, but the reason to try it is simple: it wants to make useful help available across the work people already do. The open-source foundation adds another appealing layer, giving the project a community-minded character and leaving room for the platform to grow with the people who use it.
+
+## A Product that Invites Exploration
+
+DomoDomo leaves a strong impression because it connects several timely ideas into one coherent experience: agentic assistance, practical productivity tools, open-source collaboration, and more control over where work takes place. The result sounds like a workspace for people who want to move from idea to execution with less friction. Even before opening the full listing, it is easy to see why this is an app worth spending time with.
+`
+  },
+  {
     slug: 'ai-hub-15-dynamic-tools-expansion',
     title: 'Announcing 15 Dynamic Local AI Tools Expansion in DomoDomo AI Hub Studio',
     excerpt: 'DomoDomo releases 15 new fully dynamic local AI utilities in AI Hub Studio supporting Ollama REST streaming & HuggingFace Hub integrations: Agent Swarm Orchestrator, Prompt Auto-Tuner, Speech & Audio STT/TTS Studio, Synthetic Dataset Builder, RAG Vector Lab, Quantization Auditor, Context Shrinker, GGUF Modelfile Generator, Telemetry Profiler, JSON Schema Form Builder, Vision OCR Extractor, Agent Function Sandbox, Hallucination Auditor, Code Unit Test Studio, and Multilingual Translation Matrix.',
