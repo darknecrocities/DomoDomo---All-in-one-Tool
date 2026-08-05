@@ -13,6 +13,40 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'ai-hub-15-dynamic-tools-expansion',
+    title: 'Announcing 15 Dynamic Local AI Tools Expansion in DomoDomo AI Hub Studio',
+    excerpt: 'DomoDomo releases 15 new fully dynamic local AI utilities in AI Hub Studio supporting Ollama REST streaming & HuggingFace Hub integrations: Agent Swarm Orchestrator, Prompt Auto-Tuner, Speech & Audio STT/TTS Studio, Synthetic Dataset Builder, RAG Vector Lab, Quantization Auditor, Context Shrinker, GGUF Modelfile Generator, Telemetry Profiler, JSON Schema Form Builder, Vision OCR Extractor, Agent Function Sandbox, Hallucination Auditor, Code Unit Test Studio, and Multilingual Translation Matrix.',
+    date: 'August 5, 2026',
+    readTime: '8 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'local ai, ollama, huggingface, agent swarm, prompt optimization, whisper stt, tts, synthetic data, rag vector search, perplexity, gguf modelfile, json schema, vision ocr, hallucination audit, domodomo',
+    content: `# Announcing 15 Dynamic Local AI Tools Expansion in DomoDomo AI Hub Studio
+
+DomoDomo is thrilled to release a massive update to **AI Hub Studio** (\`/ai-hub\`), introducing **15 brand-new, 100% dynamic local AI utilities** powering advanced agent workflows, speech recognition, synthetic dataset generation, RAG vector analysis, model telemetry, and security audits—all running client-side with zero data leakage.
+
+---
+
+## 🛠️ The 15 New AI Hub Studio Tools
+
+1. **Local Agent Swarm Orchestrator**: Multi-agent collaborative networks with role assignment (Researcher, Coder, Critic) and DAG execution traces.
+2. **Automated Prompt Optimization Studio**: DSPy/APE-style prompt auto-tuning with LLM-as-a-Judge scoring.
+3. **Multimodal Audio & Speech Intelligence Studio**: Client-side Speech-To-Text (Whisper ONNX) and Neural TTS voice synthesis with subtitle exporters.
+4. **Synthetic Data Generator**: Create Alpaca/ShareGPT instruction-following dataset pairs for local LLM fine-tuning.
+5. **Semantic Document QA & Chunking Visualizer**: Document chunking lab & vector similarity top-k retrieval matrix.
+6. **Model Quantization & Perplexity Benchmark**: Measure tokens/sec, TTFT latency, and VRAM footprints across GGUF quants.
+7. **Context Window Shrinker**: Compress long prompts by 40-70% while maintaining core semantic intent.
+8. **Local AI Model Conversion & GGUF Modelfile Generator**: Visual Modelfile builder for 1-click Ollama registry deployments.
+9. **Live Model Monitor & Token Telemetry Dashboard**: Real-time VRAM allocation profiler and memory cleanup tool.
+10. **JSON Schema to UI Form Auto-Generator**: Auto-build interactive forms from JSON schemas for structured LLM responses.
+11. **Local Vision & OCR Document Extractor**: Multimodal table parser and OCR with interactive canvas zoom controls.
+12. **AI Tool & Function Calling Playground**: Sandboxed RPC execution trace logger for custom function tools.
+13. **Local AI Security Audit & Hallucination Detector**: Audit factual consistency against ground-truth documents.
+14. **Local AI Code Refactor & Unit Test Generator**: Automated Vitest, Jest, and PyTest unit test suite builder.
+15. **Multilingual Localization & Translation Matrix**: Translate text across 50+ languages simultaneously with BLEU quality scoring.
+`
+  },
+  {
     slug: 'huggingface-hub-advanced-finetune-studio',
     title: 'Introducing HuggingFace Model Hub & Advanced Multi-Method Fine-Tune Studio',
     excerpt: 'DomoDomo expands its AI Hub with HuggingFace Hub integration (token authentication, model search, GGUF variant browser, 1-click pull) and Advanced Fine-Tune Studio supporting 6 training strategies (QLoRA, LoRA, Full Fine-Tune, Prefix, Adapter, DPO) with downloadable Python scripts, Modelfiles, and training packages.',
