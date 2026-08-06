@@ -2,12 +2,25 @@ User-agent: *
 Allow: /
 Crawl-delay: 1
 
-# Host
+# Explicit Allow for Search Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Host & Sitemap
 Host: https://domodomo.site
-
-# Sitemaps
 Sitemap: https://domodomo.site/sitemap.xml
-
-# Block crawlers from internal assets
-Disallow: /assets/
-Disallow: /node_modules/

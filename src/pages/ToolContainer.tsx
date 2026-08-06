@@ -123,6 +123,37 @@ export const ToolContainer = () => {
     ]
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `Is ${toolName} free to use?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `Yes, ${toolName} on DomoDomo is 100% free with no account creation, subscription, or usage limits.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `Does ${toolName} upload my files or data to an external server?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `No. ${toolName} runs 100% client-side in your browser using WebAssembly, Canvas, or local AI APIs. Your files and data never leave your device.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `Can I use ${toolName} offline?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `Yes! Once loaded, DomoDomo tools run completely offline in your browser sandbox without requiring an active internet connection.`
+        }
+      }
+    ]
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <Helmet>
@@ -145,6 +176,9 @@ export const ToolContainer = () => {
         </script>
         <script type="application/ld+json">
           {JSON.stringify(breadcrumbSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
         </script>
       </Helmet>
 
