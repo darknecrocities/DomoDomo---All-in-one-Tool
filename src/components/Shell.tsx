@@ -828,6 +828,29 @@ export const Shell = () => {
                         </span>
                       </div>
                     </a>
+
+                    {/* AppBuildersPH Featured Badge */}
+                    <Link
+                      to="/blog/appbuildersph-editorial-featured-domodomo"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/appbuildersph w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      title="Featured on AppBuildersPH"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
+                        <img
+                          src="/appbuildersph_logo.png"
+                          alt="AppBuildersPH Logo"
+                          className="w-7 h-7 object-contain rounded-md"
+                        />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
+                          As Featured on
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/appbuildersph:text-[#4E8E5E] transition-colors">
+                          AppBuildersPH
+                        </span>
+                      </div>
+                    </Link>
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">

@@ -125,8 +125,8 @@ export const BlogContainer = () => {
             </div>
           </div>
 
-          {/* 3-Column Horizontal Row for As Featured On Badges */}
-          <div className="grid grid-cols-3 gap-2 mt-0.5">
+          {/* 4-Column Horizontal Row for As Featured On Badges */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-0.5">
             <a
               href="https://web.facebook.com/share/p/17HgfjZoPk/"
               target="_blank"
@@ -168,6 +168,18 @@ export const BlogContainer = () => {
               </div>
               <ExternalLink size={12} className="text-[#72706C] group-hover/stagebyant:text-[#ECEBE9] shrink-0 ml-1" />
             </a>
+
+            <Link
+              to="/blog/appbuildersph-editorial-featured-domodomo"
+              className="group/appbuildersph flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-sm"
+              title="Featured on AppBuildersPH"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-6 h-6 object-contain rounded shrink-0" />
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/appbuildersph:text-white transition-colors truncate">AppBuildersPH</span>
+              </div>
+              <ExternalLink size={12} className="text-[#72706C] group-hover/appbuildersph:text-[#ECEBE9] shrink-0 ml-1" />
+            </Link>
           </div>
         </div>
       </div>
