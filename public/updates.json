@@ -1,5 +1,29 @@
 [
   {
+    "hash": "ecb824d",
+    "date": "2026-08-06",
+    "author": "darknecrocities",
+    "message": "fix(seo): add static page prerendering for ai-hub, about, docs, blog, download, library-api to resolve discovered not indexed GSC status"
+  },
+  {
+    "hash": "f82c7a4",
+    "date": "2026-08-06",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "27e174f",
+    "date": "2026-08-06",
+    "author": "darknecrocities",
+    "message": "seo(optimization): add FAQPage JSON-LD schemas, canonical links, robots.txt crawler accessibility, and sitemap expansion"
+  },
+  {
+    "hash": "b02d7bf",
+    "date": "2026-08-06",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "9b40081",
     "date": "2026-08-06",
     "author": "darknecrocities",
@@ -64,29 +88,5 @@
     "date": "2026-08-04",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "e804481",
-    "date": "2026-08-04",
-    "author": "darknecrocities",
-    "message": "fix(dashboard): improve tool card and badge responsiveness on mobile screens"
-  },
-  {
-    "hash": "e8c98c0",
-    "date": "2026-08-03",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "95151ce",
-    "date": "2026-08-03",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): remove static sample text fallbacks from Flow Automation nodes for 100% dynamic AI responses"
-  },
-  {
-    "hash": "7603f4e",
-    "date": "2026-08-03",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
