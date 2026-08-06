@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
 	Search,
 	Cpu,
@@ -2506,14 +2506,16 @@ export const Dashboard = () => {
 
 						{/* AppBuildersPH */}
 						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
-							<Link
-								to="/blog/appbuildersph-editorial-featured-domodomo"
+							<a
+								href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
+								target="_blank"
+								rel="noopener noreferrer"
 								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
-								title="Featured on AppBuildersPH"
+								title="Featured on AppBuildersPH Daily Top Apps"
 							>
 								<img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-4 h-4 object-contain rounded-sm" />
 								<span>AppBuildersPH</span>
-							</Link>
+							</a>
 						</TiltContainer>
 					</div>
 

@@ -830,10 +830,12 @@ export const Shell = () => {
                     </a>
 
                     {/* AppBuildersPH Featured Badge */}
-                    <Link
-                      to="/blog/appbuildersph-editorial-featured-domodomo"
+                    <a
+                      href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/appbuildersph w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
-                      title="Featured on AppBuildersPH"
+                      title="Featured on AppBuildersPH Daily Top Apps"
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
                         <img
@@ -850,7 +852,7 @@ export const Shell = () => {
                           AppBuildersPH
                         </span>
                       </div>
-                    </Link>
+                    </a>
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">

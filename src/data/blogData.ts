@@ -23,7 +23,7 @@ export const BLOG_POSTS: BlogPost[] = [
     keywords: 'appbuildersph, domodomo editorial, local ai, privacy, agentic ai, local-first, developer tools, open source',
     content: `# Featured on AppBuildersPH: DomoDomo — A Private, All-in-One Workspace for AI-Powered Work
 
-*Originally published by AppBuildersPH Editorial on August 3, 2026. [Read original article on AppBuildersPH](https://www.appbuildersph.com/blog/editorial-seed-domodomo)*
+*Originally published by AppBuildersPH Editorial on August 6, 2026. [Read original article on AppBuildersPH](https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06)*
 
 DomoDomo brings AI agents and practical tools into one flexible workspace, with a privacy-minded, local-first approach that makes ambitious work feel easier to begin.
 

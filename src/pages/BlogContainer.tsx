@@ -169,17 +169,19 @@ export const BlogContainer = () => {
               <ExternalLink size={12} className="text-[#72706C] group-hover/stagebyant:text-[#ECEBE9] shrink-0 ml-1" />
             </a>
 
-            <Link
-              to="/blog/appbuildersph-editorial-featured-domodomo"
+            <a
+              href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group/appbuildersph flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-sm"
-              title="Featured on AppBuildersPH"
+              title="Featured on AppBuildersPH Daily Top Apps"
             >
               <div className="flex items-center gap-2 min-w-0">
                 <img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-6 h-6 object-contain rounded shrink-0" />
                 <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/appbuildersph:text-white transition-colors truncate">AppBuildersPH</span>
               </div>
               <ExternalLink size={12} className="text-[#72706C] group-hover/appbuildersph:text-[#ECEBE9] shrink-0 ml-1" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>
