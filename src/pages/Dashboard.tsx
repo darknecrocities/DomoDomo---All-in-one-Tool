@@ -2462,6 +2462,20 @@ export const Dashboard = () => {
 					<div className="flex flex-wrap items-center gap-2">
 						<span className="text-[10px] font-bold uppercase tracking-wider text-[#72706C] mr-1">Featured On:</span>
 						
+						{/* Abakada.org */}
+						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
+							<a
+								href="https://www.facebook.com/share/p/19NcmGKzVJ/"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								title="Featured on Abakada.org"
+							>
+								<img src="/abakada.jpg" alt="Abakada.org" className="w-4 h-4 object-cover rounded-sm" />
+								<span>Abakada.org</span>
+							</a>
+						</TiltContainer>
+
 						{/* BetterGov PH */}
 						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
 							<a

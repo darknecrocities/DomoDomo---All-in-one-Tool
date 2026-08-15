@@ -754,6 +754,31 @@ export const Shell = () => {
                       <span>#1 in Developer Tools</span>
                     </div>
 
+                    {/* Abakada.org Featured Badge */}
+                    <a
+                      href="https://www.facebook.com/share/p/19NcmGKzVJ/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/abakada w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      title="As Featured on Abakada.org"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
+                        <img
+                          src="/abakada.jpg"
+                          alt="Abakada.org Logo"
+                          className="w-7 h-7 object-cover rounded-md"
+                        />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
+                          As Featured on
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/abakada:text-[#4E8E5E] transition-colors">
+                          Abakada.org
+                        </span>
+                      </div>
+                    </a>
+
                     {/* BetterGov PH */}
                     <a
                       href="https://bettergov.ph"

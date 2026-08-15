@@ -13,6 +13,47 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'abakada-org-supports-domodomo-library-addition',
+    title: 'Featured on Abakada.org: Supporting DomoDomo in the Free & Open-Source Digital Library',
+    excerpt: 'Abakada.org supports DomoDomo by adding it to their library, making another practical, free, and open-source tool easier for Filipino students and community members to discover and use.',
+    date: 'August 15, 2026',
+    readTime: '3 min read',
+    category: 'Featured Editorial',
+    author: 'Abakada.org Editorial',
+    keywords: 'abakada.org, domodomo library, filipino students, open source, foss tools, community, free digital tools, developer tools',
+    content: `# Featured on Abakada.org: Supporting DomoDomo in the Free & Open-Source Digital Library
+
+*Originally published by Abakada.org on August 15, 2026. [View original post on Facebook](https://www.facebook.com/share/p/19NcmGKzVJ/)*
+
+Abakada.org has officially added **DomoDomo** to their digital library, spotlighting practical, free, and open-source software (FOSS) for Filipino students, educators, creators, and developers.
+
+![Abakada.org supports DomoDomo](/abakada.jpg)
+
+---
+
+## Empowering Filipino Students & Developers with Free Open-Source Tools
+
+Abakada.org is dedicated to making useful digital tools and learning resources more accessible to the community. By adding DomoDomo to the Abakada.org Library, more Filipino students and self-starters can discover and use a privacy-first, all-in-one web utility suite completely free of charge.
+
+> *"Abakada.org supports DomoDomo by adding it to our library, making another practical, free, and open-source tool easier for Filipino students to discover and use.*  
+> *We’re happy to support projects that make useful digital tools more accessible to the community. More FOSS tools and community-built projects will be added to the Abakada.org Library along the way."*  
+> — **Abakada.org Announcement**
+
+---
+
+## Why Local-First Utilities Matter for Learners
+
+DomoDomo provides 100+ browser-sandboxed utilities—ranging from PDF editing, image conversion, and media processing to Local AI models and code generators—that operate 100% offline inside the user's browser. 
+
+For students and makers across the Philippines with variable internet connectivity or privacy constraints, local-first processing ensures:
+- **Zero Cloud Costs or Paywalls:** Accessible on any modern browser without subscription barriers.
+- **Complete Privacy & Data Ownership:** Files, documents, and code never leave the local device.
+- **Offline Reliability:** Tools continue executing even when internet connectivity is intermittent.
+
+We are deeply honored by Abakada.org's support and look forward to empowering more students and open-source advocates together!
+`
+  },
+  {
     slug: 'appbuildersph-editorial-featured-domodomo',
     title: 'Featured on AppBuildersPH: DomoDomo — A Private, All-in-One Workspace for AI-Powered Work',
     excerpt: 'AppBuildersPH features DomoDomo in an editorial review, highlighting its local-first privacy guarantees, multi-agent AI workspace capabilities, and all-in-one developer productivity suite.',
