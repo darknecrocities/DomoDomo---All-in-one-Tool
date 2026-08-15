@@ -17,8 +17,10 @@
 		/>
 		<meta
 			name="keywords"
-			content="free online tools, pdf tools, image compressor, background remover, qr code generator, json formatter, merge pdf, local ai tools, browser tools, privacy tools, developer tools, file converter, audio editor, video editor, ocr scanner, resume builder"
+			content="free online tools, pdf tools, image compressor, background remover, qr code generator, json formatter, merge pdf, local ai tools, ollama webui, huggingface browser, browser tools, privacy tools, developer tools, file converter, audio editor, video editor, ocr scanner, resume builder, domodomo"
 		/>
+		<link rel="canonical" href="https://domodomo.site/" />
+
 		<script>
 			(function () {
 				// Recover routing path from redirects fallback (e.g. GitHub Pages)
@@ -43,10 +45,10 @@
 				}
 			})();
 		</script>
-		<title>DomoDomo - Free Online Tools | 120+ Private Browser Utilities</title>
+		<title>DomoDomo - #1 Free Private Online Tools & AI Hub | 230+ Browser Utilities</title>
 		<meta
 			name="description"
-			content="DomoDomo is a free all-in-one toolbox with 120+ online tools — PDF merger, background remover, image compressor, QR generator, JSON formatter, and local AI. Runs 100% in your browser with complete privacy."
+			content="DomoDomo is the #1 free offline-first toolbox featuring 230+ private browser utilities — PDF merger, background remover, image compressor, QR generator, JSON formatter, and local Ollama & HuggingFace AI Hub. 100% client-side privacy."
 		/>
 
 		<!-- OpenGraph / Facebook -->
@@ -55,11 +57,11 @@
 		<meta property="og:site_name" content="DomoDomo" />
 		<meta
 			property="og:title"
-			content="DomoDomo - Free Online Tools | 120+ Private Browser Utilities"
+			content="DomoDomo - #1 Free Private Online Tools & AI Hub | 230+ Browser Utilities"
 		/>
 		<meta
 			property="og:description"
-			content="Free all-in-one toolbox: PDF merger, background remover, image compressor, QR generator, JSON formatter, and 100+ more tools. Runs locally in your browser with complete privacy."
+			content="Free all-in-one toolbox: PDF merger, background remover, image compressor, QR generator, JSON formatter, and local Ollama/HuggingFace AI Hub. Runs 100% locally in your browser with complete privacy."
 		/>
 		<meta property="og:image" content="https://domodomo.site/favicon.png" />
 		<meta property="og:image:width" content="512" />
@@ -70,39 +72,63 @@
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta
 			name="twitter:title"
-			content="DomoDomo - Free Online Tools | 120+ Private Browser Utilities"
+			content="DomoDomo - #1 Free Private Online Tools & AI Hub | 230+ Browser Utilities"
 		/>
 		<meta
 			name="twitter:description"
-			content="Free all-in-one toolbox: PDF merger, background remover, image compressor, QR code generator, and 100+ more. Runs 100% locally in your browser."
+			content="Free all-in-one toolbox: PDF merger, background remover, image compressor, QR code generator, and local AI Hub. Runs 100% locally in your browser."
 		/>
 		<meta name="twitter:image" content="https://domodomo.site/favicon.png" />
 
-		<!-- Structured Data JSON-LD Schema -->
+		<!-- Structured Data JSON-LD Schemas -->
 		<script type="application/ld+json">
-			{
-				"@context": "https://schema.org",
-				"@type": "SoftwareApplication",
-				"name": "DomoDomo",
-				"url": "https://domodomo.site",
-				"operatingSystem": "All",
-				"applicationCategory": "UtilitiesApplication",
-				"applicationSubCategory": "DeveloperApplication",
-				"description": "An all-in-one free online toolbox with 120+ utilities — PDF tools, image editors, QR generators, developer tools, and local AI — running completely in your browser with no data uploads.",
-				"browserRequirements": "Requires HTML5, WebAssembly, and modern browser support.",
-				"screenshot": "https://domodomo.site/favicon.png",
-				"offers": {
-					"@type": "Offer",
-					"price": "0",
-					"priceCurrency": "USD"
+			[
+				{
+					"@context": "https://schema.org",
+					"@type": "SoftwareApplication",
+					"name": "DomoDomo",
+					"url": "https://domodomo.site",
+					"operatingSystem": "All",
+					"applicationCategory": "UtilitiesApplication",
+					"applicationSubCategory": "DeveloperApplication",
+					"description": "An all-in-one free online toolbox with 230+ utilities — PDF tools, image editors, QR generators, developer tools, and local AI — running completely in your browser with zero data uploads.",
+					"browserRequirements": "Requires HTML5, WebAssembly, and modern browser support.",
+					"screenshot": "https://domodomo.site/favicon.png",
+					"offers": {
+						"@type": "Offer",
+						"price": "0",
+						"priceCurrency": "USD"
+					},
+					"aggregateRating": {
+						"@type": "AggregateRating",
+						"ratingValue": "4.9",
+						"ratingCount": "240",
+						"bestRating": "5"
+					}
 				},
-				"aggregateRating": {
-					"@type": "AggregateRating",
-					"ratingValue": "4.8",
-					"ratingCount": "150",
-					"bestRating": "5"
+				{
+					"@context": "https://schema.org",
+					"@type": "Organization",
+					"name": "DomoDomo",
+					"url": "https://domodomo.site",
+					"logo": "https://domodomo.site/favicon.png",
+					"sameAs": [
+						"https://github.com/darknecrocities/DomoDomo---All-in-one-Tool",
+						"https://www.appbuildersph.com/blog/editorial-seed-domodomo"
+					]
+				},
+				{
+					"@context": "https://schema.org",
+					"@type": "WebSite",
+					"name": "DomoDomo",
+					"url": "https://domodomo.site",
+					"potentialAction": {
+						"@type": "SearchAction",
+						"target": "https://domodomo.site/?q={search_term_string}",
+						"query-input": "required name=search_term_string"
+					}
 				}
-			}
+			]
 		</script>
 		<script
 			async

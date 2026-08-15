@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 const BASE_URL = 'https://domodomo.site';
-const staticRoutes = ['', 'about', 'docs', 'library-api', 'download'];
+const staticRoutes = ['', 'ai-hub', 'about', 'docs', 'blog', 'library-api', 'download'];
 
 // High priority tools to boost SEO ranking
 const HIGH_PRIORITY_TOOLS = [
@@ -20,7 +20,22 @@ const HIGH_PRIORITY_TOOLS = [
   'wifi-qr',
   'json-format',
   'regex-tester',
-  'diff-checker'
+  'diff-checker',
+  'swarm',
+  'prompt-opt',
+  'audio-speech',
+  'synth-data',
+  'rag-lab',
+  'quant-bench',
+  'context-shrink',
+  'gguf-gen',
+  'telemetry',
+  'schema-form',
+  'doc-extractor',
+  'agent-func',
+  'hallucination',
+  'code-refactor',
+  'multilingual'
 ];
 
 // Read the registry file to extract tool IDs via regex

@@ -641,32 +641,37 @@ variations.forEach((v) => {
 	fs.writeFileSync(path.resolve(varDir, "index.html"), pageHtml);
 });
 
-// 5. Prerender static main pages (About, Docs, Library API, Blog)
+// 5. Prerender static main pages (AI Hub, About, Docs, Library API, Blog, Download)
 const staticPages = [
 	{
+		path: "ai-hub",
+		title: "Local AI Hub Studio - Private Ollama & HuggingFace Browser UI | DomoDomo",
+		desc: "Private local AI workspace supporting Ollama REST streaming, HuggingFace Hub, Agent Swarms, Whisper Speech-to-Text, RAG Vector Search, Vision OCR, and DSPy Prompt Tuning. 100% offline client-side execution.",
+	},
+	{
 		path: "about",
-		title: "About DomoDomo - All-in-One Local Toolbox",
-		desc: "DomoDomo is a privacy-first local toolbox running 120+ secure developer, media, and document utilities inside a client-side browser tab sandbox.",
+		title: "About DomoDomo - All-in-One Local Toolbox & AI Workspace",
+		desc: "DomoDomo is a privacy-first local toolbox running 230+ secure developer, media, document, and AI agent utilities inside a client-side browser tab sandbox.",
 	},
 	{
 		path: "docs",
 		title: "DomoDomo Documentation - Setup and API Reference",
-		desc: "Read the developer guides, architectural setup, and documentation for DomoDomo local tools.",
+		desc: "Read the developer guides, architectural setup, and technical tool documentation for DomoDomo local tools.",
 	},
 	{
 		path: "library-api",
 		title: "Domo Local AI Library API Reference",
-		desc: "Integrate and call local AI model APIs (Ollama, WebNN) directly from DomoDomo dashboard.",
+		desc: "Integrate and call local AI model APIs (Ollama, WebNN, MCP Server) directly from DomoDomo dashboard.",
 	},
 	{
 		path: "blog",
-		title: "DomoDomo SEO Content Hub & Guides | 120+ Local Tools",
-		desc: "Read our technical guides on file security, image background removal, PDF compression, and local offline AI setups. DomoDomo guides hub.",
+		title: "DomoDomo SEO Content Hub, Guides & Featured Reviews | 230+ Local Tools",
+		desc: "Read our technical guides on file security, image background removal, PDF compression, and local offline AI setups alongside featured reviews from AppBuildersPH, BetterGov.ph, Upamate, and Stage by Ant.",
 	},
 	{
 		path: "download",
 		title: "Download DomoDomo - Offline PWA App",
-		desc: "Download DomoDomo as a Progressive Web App (PWA) on Windows & macOS. Access 120+ secure developer, text, and media utilities offline.",
+		desc: "Download DomoDomo as a Progressive Web App (PWA) on Windows & macOS. Access 230+ secure developer, text, and media utilities offline.",
 	},
 ];
 
@@ -828,5 +833,7 @@ blogPosts.forEach((post) => {
 	fs.mkdirSync(postDir, { recursive: true });
 	fs.writeFileSync(path.resolve(postDir, "index.html"), pageHtml);
 });
+
+console.log("✅ Static Snapshot Prerendering completed successfully.");
 
 console.log("✅ Static Snapshot Prerendering completed successfully.");

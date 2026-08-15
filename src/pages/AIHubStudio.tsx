@@ -44,7 +44,9 @@ import {
   Lock,
   Code,
   Eye,
-  Globe
+  Globe,
+  Activity,
+  Network
 } from 'lucide-react';
 import { aiService } from '../utils/aiService';
 import { Logo } from '../components/Logo';
@@ -58,6 +60,21 @@ import { CodePatchStudio } from '../tools/ai/components/CodePatchStudio';
 import { MultiModelRouter } from '../tools/ai/components/MultiModelRouter';
 import { KnowledgeGraphVisualizer } from '../tools/ai/components/KnowledgeGraphVisualizer';
 import { VisionInspectionStudio } from '../tools/ai/components/VisionInspectionStudio';
+import { LocalAgentSwarmOrchestrator } from '../tools/ai/components/LocalAgentSwarmOrchestrator';
+import { PromptOptimizationStudio } from '../tools/ai/components/PromptOptimizationStudio';
+import { AudioSpeechStudio } from '../tools/ai/components/AudioSpeechStudio';
+import { SyntheticDataGenerator } from '../tools/ai/components/SyntheticDataGenerator';
+import { RAGVectorLabVisualizer } from '../tools/ai/components/RAGVectorLabVisualizer';
+import { ModelQuantizationBenchmark } from '../tools/ai/components/ModelQuantizationBenchmark';
+import { ContextWindowCompressor } from '../tools/ai/components/ContextWindowCompressor';
+import { GGUFModelfileGenerator } from '../tools/ai/components/GGUFModelfileGenerator';
+import { ModelTelemetryDashboard } from '../tools/ai/components/ModelTelemetryDashboard';
+import { JsonSchemaFormGenerator } from '../tools/ai/components/JsonSchemaFormGenerator';
+import { MultimodalDocumentExtractor } from '../tools/ai/components/MultimodalDocumentExtractor';
+import { AgentFunctionPlayground } from '../tools/ai/components/AgentFunctionPlayground';
+import { HallucinationAuditStudio } from '../tools/ai/components/HallucinationAuditStudio';
+import { CodeRefactorTestStudio } from '../tools/ai/components/CodeRefactorTestStudio';
+import { MultilingualTranslationMatrix } from '../tools/ai/components/MultilingualTranslationMatrix';
 import { HardwareQuantCalculator } from '../tools/ai/components/HardwareQuantCalculator';
 import { ModelManagerStudio } from '../tools/ai/components/ModelManagerStudio';
 import { HuggingFaceModelHub } from '../tools/ai/components/HuggingFaceModelHub';
@@ -479,7 +496,9 @@ export const AIHubStudio = () => {
   const [activeTab, setActiveTab] = useState<
     'chat' | 'library' | 'huggingface' | 'train' | 'eval' | 'workflow' | 'docs' |
     'rag' | 'prompts' | 'extractor' | 'function-calling' | 'guardrails' |
-    'code-patch' | 'router' | 'knowledge-graph' | 'vision-studio' | 'quant-calc' | 'model-settings'
+    'code-patch' | 'router' | 'knowledge-graph' | 'vision-studio' | 'quant-calc' | 'model-settings' |
+    'swarm' | 'prompt-opt' | 'audio-speech' | 'synth-data' | 'rag-lab' | 'quant-bench' | 'context-shrink' |
+    'gguf-gen' | 'telemetry' | 'schema-form' | 'doc-extractor' | 'agent-func' | 'hallucination' | 'code-refactor' | 'multilingual'
   >('chat');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -654,6 +673,11 @@ export const AIHubStudio = () => {
     vector: false,
     agent: false,
     safety: false,
+    category_agents: false,
+    category_prompt_data: false,
+    category_multimodal: false,
+    category_hardware: false,
+    category_security_code: false,
     recents: false,
   });
 
@@ -1850,6 +1874,236 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             </div>
           </div>
 
+          {/* Section 1: Multi-Agent & Orchestration */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => toggleSection('category_agents')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <Network size={12} className="text-purple-400 shrink-0" />
+                  <span className="truncate">AGENT SWARMS</span>
+                </div>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
+                    collapsedSections.category_agents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
+            )}
+            <div className={`emil-accordion-grid ${collapsedSections.category_agents && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                {[
+                  { id: 'swarm', label: 'Agent Swarm', icon: Network, color: 'text-purple-400' },
+                  { id: 'agent-func', label: 'Function Sandbox', icon: Zap, color: 'text-[#3C6B4D]' },
+                ].map((tool) => {
+                  const IconC = tool.icon;
+                  const isActive = activeTab === tool.id;
+                  return (
+                    <button
+                      key={tool.id}
+                      onClick={() => setActiveTab(tool.id as any)}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
+                      title={tool.label}
+                    >
+                      <IconC size={14} className={`shrink-0 ${tool.color}`} />
+                      {!sidebarCollapsed && <span>{tool.label}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Prompt & Data Engineering */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => toggleSection('category_prompt_data')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <Wand2 size={12} className="text-[#3C6B4D] shrink-0" />
+                  <span className="truncate">PROMPT &amp; DATA</span>
+                </div>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
+                    collapsedSections.category_prompt_data ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
+            )}
+            <div className={`emil-accordion-grid ${collapsedSections.category_prompt_data && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                {[
+                  { id: 'prompt-opt', label: 'Prompt Auto-Tuner', icon: Wand2, color: 'text-[#3C6B4D]' },
+                  { id: 'synth-data', label: 'Dataset Synthesizer', icon: Database, color: 'text-blue-400' },
+                  { id: 'schema-form', label: 'JSON Form Generator', icon: FileCode, color: 'text-teal-400' },
+                ].map((tool) => {
+                  const IconC = tool.icon;
+                  const isActive = activeTab === tool.id;
+                  return (
+                    <button
+                      key={tool.id}
+                      onClick={() => setActiveTab(tool.id as any)}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
+                      title={tool.label}
+                    >
+                      <IconC size={14} className={`shrink-0 ${tool.color}`} />
+                      {!sidebarCollapsed && <span>{tool.label}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: RAG, Multimodal & Speech */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => toggleSection('category_multimodal')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <Layers size={12} className="text-emerald-400 shrink-0" />
+                  <span className="truncate">RAG &amp; MULTIMODAL</span>
+                </div>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
+                    collapsedSections.category_multimodal ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
+            )}
+            <div className={`emil-accordion-grid ${collapsedSections.category_multimodal && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                {[
+                  { id: 'rag-lab', label: 'RAG Vector Lab', icon: Layers, color: 'text-emerald-400' },
+                  { id: 'audio-speech', label: 'Audio & STT/TTS', icon: Mic, color: 'text-amber-400' },
+                  { id: 'doc-extractor', label: 'Vision OCR Parser', icon: Eye, color: 'text-indigo-400' },
+                ].map((tool) => {
+                  const IconC = tool.icon;
+                  const isActive = activeTab === tool.id;
+                  return (
+                    <button
+                      key={tool.id}
+                      onClick={() => setActiveTab(tool.id as any)}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
+                      title={tool.label}
+                    >
+                      <IconC size={14} className={`shrink-0 ${tool.color}`} />
+                      {!sidebarCollapsed && <span>{tool.label}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Hardware & Telemetry Profiling */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => toggleSection('category_hardware')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <Activity size={12} className="text-[#3C6B4D] shrink-0" />
+                  <span className="truncate">HARDWARE &amp; TELEMETRY</span>
+                </div>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
+                    collapsedSections.category_hardware ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
+            )}
+            <div className={`emil-accordion-grid ${collapsedSections.category_hardware && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                {[
+                  { id: 'telemetry', label: 'VRAM Telemetry', icon: Activity, color: 'text-[#3C6B4D]' },
+                  { id: 'quant-bench', label: 'Quant Auditor', icon: Gauge, color: 'text-rose-400' },
+                  { id: 'context-shrink', label: 'Context Shrinker', icon: Sliders, color: 'text-[#3C6B4D]' },
+                  { id: 'gguf-gen', label: 'Modelfile Generator', icon: Terminal, color: 'text-cyan-400' },
+                ].map((tool) => {
+                  const IconC = tool.icon;
+                  const isActive = activeTab === tool.id;
+                  return (
+                    <button
+                      key={tool.id}
+                      onClick={() => setActiveTab(tool.id as any)}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
+                      title={tool.label}
+                    >
+                      <IconC size={14} className={`shrink-0 ${tool.color}`} />
+                      {!sidebarCollapsed && <span>{tool.label}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 5: Security, Code & Localization */}
+          <div className="px-2 mt-2">
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => toggleSection('category_security_code')}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-1.5 truncate">
+                  <ShieldCheck size={12} className="text-rose-400 shrink-0" />
+                  <span className="truncate">SECURITY &amp; CODE</span>
+                </div>
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
+                    collapsedSections.category_security_code ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                  }`}
+                />
+              </button>
+            )}
+            <div className={`emil-accordion-grid ${collapsedSections.category_security_code && !sidebarCollapsed ? 'collapsed' : ''}`}>
+              <div className="emil-accordion-content flex flex-col gap-0.5">
+                {[
+                  { id: 'hallucination', label: 'Hallucination Audit', icon: ShieldCheck, color: 'text-rose-400' },
+                  { id: 'code-refactor', label: 'Code & Unit Tests', icon: Code, color: 'text-blue-400' },
+                  { id: 'multilingual', label: 'Translation Matrix', icon: Globe, color: 'text-purple-400' },
+                ].map((tool) => {
+                  const IconC = tool.icon;
+                  const isActive = activeTab === tool.id;
+                  return (
+                    <button
+                      key={tool.id}
+                      onClick={() => setActiveTab(tool.id as any)}
+                      className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                      }`}
+                      title={tool.label}
+                    >
+                      <IconC size={14} className={`shrink-0 ${tool.color}`} />
+                      {!sidebarCollapsed && <span>{tool.label}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Recents Sessions */}
           {!sidebarCollapsed && (
             <div className="px-2 mt-3 flex-1 overflow-y-auto">
@@ -2937,6 +3191,21 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 onRefreshModels={() => checkOllama(true)}
               />
             )}
+            {activeTab === 'swarm' && <LocalAgentSwarmOrchestrator selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'prompt-opt' && <PromptOptimizationStudio selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'audio-speech' && <AudioSpeechStudio selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'synth-data' && <SyntheticDataGenerator selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'rag-lab' && <RAGVectorLabVisualizer selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'quant-bench' && <ModelQuantizationBenchmark selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'context-shrink' && <ContextWindowCompressor selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'gguf-gen' && <GGUFModelfileGenerator selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'telemetry' && <ModelTelemetryDashboard selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'schema-form' && <JsonSchemaFormGenerator selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'doc-extractor' && <MultimodalDocumentExtractor selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'agent-func' && <AgentFunctionPlayground selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'hallucination' && <HallucinationAuditStudio selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'code-refactor' && <CodeRefactorTestStudio selectedModel={selectedModel} models={models.map(m => m.name)} />}
+            {activeTab === 'multilingual' && <MultilingualTranslationMatrix selectedModel={selectedModel} models={models.map(m => m.name)} />}
 
           </div>
         </main>

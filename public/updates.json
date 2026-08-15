@@ -1,92 +1,92 @@
 [
   {
-    "hash": "95151ce",
-    "date": "2026-08-03",
+    "hash": "ecb824d",
+    "date": "2026-08-06",
     "author": "darknecrocities",
-    "message": "fix(ai-hub): remove static sample text fallbacks from Flow Automation nodes for 100% dynamic AI responses"
+    "message": "fix(seo): add static page prerendering for ai-hub, about, docs, blog, download, library-api to resolve discovered not indexed GSC status"
   },
   {
-    "hash": "7603f4e",
-    "date": "2026-08-03",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "6d81081",
-    "date": "2026-08-03",
-    "author": "darknecrocities",
-    "message": "fix(ai-hub): fix static response issue in flow automation chat console with dynamic query execution"
-  },
-  {
-    "hash": "e3c0c44",
-    "date": "2026-08-03",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "6f68465",
-    "date": "2026-08-03",
-    "author": "darknecrocities",
-    "message": "chore: update profile sync"
-  },
-  {
-    "hash": "47ce913",
-    "date": "2026-08-03",
-    "author": "darknecrocities",
-    "message": "chore: update profile sync timestamp"
-  },
-  {
-    "hash": "b626b28",
-    "date": "2026-08-03",
+    "hash": "f82c7a4",
+    "date": "2026-08-06",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "be0b209",
-    "date": "2026-08-03",
+    "hash": "27e174f",
+    "date": "2026-08-06",
     "author": "darknecrocities",
-    "message": "feat: replace welcome splash animation with domotest.webm and update timing"
+    "message": "seo(optimization): add FAQPage JSON-LD schemas, canonical links, robots.txt crawler accessibility, and sitemap expansion"
   },
   {
-    "hash": "77b3435",
-    "date": "2026-08-02",
+    "hash": "b02d7bf",
+    "date": "2026-08-06",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
+    "hash": "9b40081",
+    "date": "2026-08-06",
+    "author": "darknecrocities",
+    "message": "chore(assets): add appbuildersph_logo.png and updated sitemap"
+  },
+  {
+    "hash": "eb74d24",
+    "date": "2026-08-06",
+    "author": "darknecrocities",
+    "message": "fix(branding): update AppBuildersPH badge target link to daily top apps 2026-08-06"
+  },
+  {
+    "hash": "e1d8713",
+    "date": "2026-08-06",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
   },
   {
-    "hash": "8013672",
-    "date": "2026-08-02",
+    "hash": "98e3e9e",
+    "date": "2026-08-06",
     "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+    "message": "feat(branding): add AppBuildersPH featured badge linking to featured blog post"
   },
   {
-    "hash": "314ff72",
-    "date": "2026-08-02",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add HuggingFace Model Hub, 6 multi-method fine-tuning strategies, and expand 32-model catalog"
-  },
-  {
-    "hash": "41963b2",
-    "date": "2026-07-31",
+    "hash": "08dd5ab",
+    "date": "2026-08-05",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
   },
   {
-    "hash": "5d14461",
-    "date": "2026-07-31",
+    "hash": "e7ea507",
+    "date": "2026-08-05",
     "author": "darknecrocities",
-    "message": "Merge branch 'feat/ai-hub-prompt-lab-expansion'"
+    "message": "docs(blog): add featured AppBuildersPH editorial review for DomoDomo"
   },
   {
-    "hash": "b0c1c04",
-    "date": "2026-07-31",
-    "author": "darknecrocities",
-    "message": "feat(physics): align offsetParent positions and update bodiesRef synchronously to fix morph animation jump"
-  },
-  {
-    "hash": "f7d9b7b",
-    "date": "2026-07-31",
+    "hash": "541b721",
+    "date": "2026-08-05",
     "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "756dbce",
+    "date": "2026-08-05",
+    "author": "darknecrocities",
+    "message": "feat(ai-hub): add 15 dynamic local AI tools, 5 categorized sidebar sections, expanded agent swarm orchestrator"
+  },
+  {
+    "hash": "5c2fbe0",
+    "date": "2026-08-05",
+    "author": "RhonzKieee",
+    "message": "Merge pull request #66 from darknecrocities/docs/github-badges-update"
+  },
+  {
+    "hash": "f3336ad",
+    "date": "2026-08-05",
+    "author": "darknecrocities",
+    "message": "docs: add github badges verification marker"
+  },
+  {
+    "hash": "4fa21a2",
+    "date": "2026-08-04",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]

@@ -125,8 +125,22 @@ export const BlogContainer = () => {
             </div>
           </div>
 
-          {/* 3-Column Horizontal Row for As Featured On Badges */}
-          <div className="grid grid-cols-3 gap-2 mt-0.5">
+          {/* 5-Column Horizontal Row for As Featured On Badges */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-0.5">
+            <a
+              href="https://www.facebook.com/share/p/19NcmGKzVJ/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/abakada flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-sm"
+              title="Featured on Abakada.org"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <img src="/abakada.jpg" alt="Abakada.org" className="w-6 h-6 object-cover rounded shrink-0" />
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/abakada:text-white transition-colors truncate">Abakada.org</span>
+              </div>
+              <ExternalLink size={12} className="text-[#72706C] group-hover/abakada:text-[#ECEBE9] shrink-0 ml-1" />
+            </a>
+
             <a
               href="https://web.facebook.com/share/p/17HgfjZoPk/"
               target="_blank"
@@ -167,6 +181,20 @@ export const BlogContainer = () => {
                 <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/stagebyant:text-white transition-colors truncate">Stage by Ant</span>
               </div>
               <ExternalLink size={12} className="text-[#72706C] group-hover/stagebyant:text-[#ECEBE9] shrink-0 ml-1" />
+            </a>
+
+            <a
+              href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/appbuildersph flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-sm"
+              title="Featured on AppBuildersPH Daily Top Apps"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-6 h-6 object-contain rounded shrink-0" />
+                <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/appbuildersph:text-white transition-colors truncate">AppBuildersPH</span>
+              </div>
+              <ExternalLink size={12} className="text-[#72706C] group-hover/appbuildersph:text-[#ECEBE9] shrink-0 ml-1" />
             </a>
           </div>
         </div>

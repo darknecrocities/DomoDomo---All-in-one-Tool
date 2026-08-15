@@ -13,6 +13,129 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'abakada-org-supports-domodomo-library-addition',
+    title: 'Featured on Abakada.org: Supporting DomoDomo in the Free & Open-Source Digital Library',
+    excerpt: 'Abakada.org supports DomoDomo by adding it to their library, making another practical, free, and open-source tool easier for Filipino students and community members to discover and use.',
+    date: 'August 15, 2026',
+    readTime: '3 min read',
+    category: 'Featured Editorial',
+    author: 'Abakada.org Editorial',
+    keywords: 'abakada.org, domodomo library, filipino students, open source, foss tools, community, free digital tools, developer tools',
+    content: `# Featured on Abakada.org: Supporting DomoDomo in the Free & Open-Source Digital Library
+
+*Originally published by Abakada.org on August 15, 2026. [View original post on Facebook](https://www.facebook.com/share/p/19NcmGKzVJ/)*
+
+Abakada.org has officially added **DomoDomo** to their digital library, spotlighting practical, free, and open-source software (FOSS) for Filipino students, educators, creators, and developers.
+
+![Abakada.org supports DomoDomo](/abakada.jpg)
+
+---
+
+## Empowering Filipino Students & Developers with Free Open-Source Tools
+
+Abakada.org is dedicated to making useful digital tools and learning resources more accessible to the community. By adding DomoDomo to the Abakada.org Library, more Filipino students and self-starters can discover and use a privacy-first, all-in-one web utility suite completely free of charge.
+
+> *"Abakada.org supports DomoDomo by adding it to our library, making another practical, free, and open-source tool easier for Filipino students to discover and use.*  
+> *We’re happy to support projects that make useful digital tools more accessible to the community. More FOSS tools and community-built projects will be added to the Abakada.org Library along the way."*  
+> — **Abakada.org Announcement**
+
+---
+
+## Why Local-First Utilities Matter for Learners
+
+DomoDomo provides 100+ browser-sandboxed utilities—ranging from PDF editing, image conversion, and media processing to Local AI models and code generators—that operate 100% offline inside the user's browser. 
+
+For students and makers across the Philippines with variable internet connectivity or privacy constraints, local-first processing ensures:
+- **Zero Cloud Costs or Paywalls:** Accessible on any modern browser without subscription barriers.
+- **Complete Privacy & Data Ownership:** Files, documents, and code never leave the local device.
+- **Offline Reliability:** Tools continue executing even when internet connectivity is intermittent.
+
+We are deeply honored by Abakada.org's support and look forward to empowering more students and open-source advocates together!
+`
+  },
+  {
+    slug: 'appbuildersph-editorial-featured-domodomo',
+    title: 'Featured on AppBuildersPH: DomoDomo — A Private, All-in-One Workspace for AI-Powered Work',
+    excerpt: 'AppBuildersPH features DomoDomo in an editorial review, highlighting its local-first privacy guarantees, multi-agent AI workspace capabilities, and all-in-one developer productivity suite.',
+    date: 'August 3, 2026',
+    readTime: '4 min read',
+    category: 'Featured Editorial',
+    author: 'AppBuildersPH Editorial',
+    keywords: 'appbuildersph, domodomo editorial, local ai, privacy, agentic ai, local-first, developer tools, open source',
+    content: `# Featured on AppBuildersPH: DomoDomo — A Private, All-in-One Workspace for AI-Powered Work
+
+*Originally published by AppBuildersPH Editorial on August 6, 2026. [Read original article on AppBuildersPH](https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06)*
+
+DomoDomo brings AI agents and practical tools into one flexible workspace, with a privacy-minded, local-first approach that makes ambitious work feel easier to begin.
+
+---
+
+DomoDomo is the kind of app that makes a big ambition feel surprisingly approachable. Its idea is easy to understand: bring useful AI agents and practical tools into one workspace, so everyday work does not have to be split across a long chain of separate places. What I like about the concept is that it feels less like a single-purpose novelty and more like a flexible environment for getting things done.
+
+## A Broad Toolkit with a Clear Center
+
+The listing describes DomoDomo as an open-source agentic AI platform, and that description gives the app a strong sense of direction. It is built around agents that can understand a goal, reason through a task, and help carry the work forward. That makes the experience sound more natural than simply choosing from a long menu of disconnected features. The center of the product is not one isolated trick. It is the idea of having capable assistance close at hand whenever a project changes shape.
+
+That range is one of the first things that makes DomoDomo stand out. The app brings together support for software development, light code generation, debugging, documentation, research, content creation, data analysis, file processing, PDF utilities, image processing, and automation. Those are very different kinds of tasks, but they all belong to the same broad rhythm of modern work: start with a goal, figure out the next step, and keep moving.
+
+## Built for Switching Less
+
+There is a real appeal in having one workspace that can follow a project through several stages. A developer might move from thinking through a problem to writing code and then documenting the result. A researcher might gather notes, process files, and turn the material into something easier to share. A creator might move between planning, writing, and visual work. DomoDomo is interesting because its multi-agent approach seems designed around those transitions rather than treating them as unrelated activities.
+
+I also like the plainness of the product promise. DomoDomo does not need to explain itself as a collection of tiny utilities. It offers a unified place for intelligent tools, and the listing gives enough examples to make that promise concrete. That combination of a simple center and a wide range of possible uses gives the app room to be useful in different ways without losing its identity.
+
+## The Local-First Detail Matters
+
+The most thoughtful part of DomoDomo may be its offline-first and local-first philosophy. The listing says the platform prioritizes privacy, security, and reliability by allowing users to run AI locally whenever possible. That is a meaningful detail for anyone who wants more control over their work. It also gives the product a practical quality: the workspace is designed with the reality of imperfect connections and sensitive information in mind.
+
+For an app that touches code, research, files, and personal projects, that emphasis makes the idea feel more complete. The value is not only in what the agents can help with, but also in how the product thinks about the environment where that work happens. DomoDomo feels more considered because it treats control and continuity as part of the experience.
+
+## A Good Fit for Curious Builders
+
+I can see DomoDomo appealing to developers, students, researchers, creators, and professionals who enjoy having one flexible place to explore ideas. It has the kind of breadth that rewards curiosity, while the individual capabilities give people clear starting points. You do not have to arrive with one perfectly defined workflow. You can begin with the task in front of you and discover where the rest of the workspace fits.
+
+That makes DomoDomo feel welcoming even though the technology behind it is ambitious. The product has a lot going on, but the reason to try it is simple: it wants to make useful help available across the work people already do. The open-source foundation adds another appealing layer, giving the project a community-minded character and leaving room for the platform to grow with the people who use it.
+
+## A Product that Invites Exploration
+
+DomoDomo leaves a strong impression because it connects several timely ideas into one coherent experience: agentic assistance, practical productivity tools, open-source collaboration, and more control over where work takes place. The result sounds like a workspace for people who want to move from idea to execution with less friction. Even before opening the full listing, it is easy to see why this is an app worth spending time with.
+`
+  },
+  {
+    slug: 'ai-hub-15-dynamic-tools-expansion',
+    title: 'Announcing 15 Dynamic Local AI Tools Expansion in DomoDomo AI Hub Studio',
+    excerpt: 'DomoDomo releases 15 new fully dynamic local AI utilities in AI Hub Studio supporting Ollama REST streaming & HuggingFace Hub integrations: Agent Swarm Orchestrator, Prompt Auto-Tuner, Speech & Audio STT/TTS Studio, Synthetic Dataset Builder, RAG Vector Lab, Quantization Auditor, Context Shrinker, GGUF Modelfile Generator, Telemetry Profiler, JSON Schema Form Builder, Vision OCR Extractor, Agent Function Sandbox, Hallucination Auditor, Code Unit Test Studio, and Multilingual Translation Matrix.',
+    date: 'August 5, 2026',
+    readTime: '8 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'local ai, ollama, huggingface, agent swarm, prompt optimization, whisper stt, tts, synthetic data, rag vector search, perplexity, gguf modelfile, json schema, vision ocr, hallucination audit, domodomo',
+    content: `# Announcing 15 Dynamic Local AI Tools Expansion in DomoDomo AI Hub Studio
+
+DomoDomo is thrilled to release a massive update to **AI Hub Studio** (\`/ai-hub\`), introducing **15 brand-new, 100% dynamic local AI utilities** powering advanced agent workflows, speech recognition, synthetic dataset generation, RAG vector analysis, model telemetry, and security audits—all running client-side with zero data leakage.
+
+---
+
+## 🛠️ The 15 New AI Hub Studio Tools
+
+1. **Local Agent Swarm Orchestrator**: Multi-agent collaborative networks with role assignment (Researcher, Coder, Critic) and DAG execution traces.
+2. **Automated Prompt Optimization Studio**: DSPy/APE-style prompt auto-tuning with LLM-as-a-Judge scoring.
+3. **Multimodal Audio & Speech Intelligence Studio**: Client-side Speech-To-Text (Whisper ONNX) and Neural TTS voice synthesis with subtitle exporters.
+4. **Synthetic Data Generator**: Create Alpaca/ShareGPT instruction-following dataset pairs for local LLM fine-tuning.
+5. **Semantic Document QA & Chunking Visualizer**: Document chunking lab & vector similarity top-k retrieval matrix.
+6. **Model Quantization & Perplexity Benchmark**: Measure tokens/sec, TTFT latency, and VRAM footprints across GGUF quants.
+7. **Context Window Shrinker**: Compress long prompts by 40-70% while maintaining core semantic intent.
+8. **Local AI Model Conversion & GGUF Modelfile Generator**: Visual Modelfile builder for 1-click Ollama registry deployments.
+9. **Live Model Monitor & Token Telemetry Dashboard**: Real-time VRAM allocation profiler and memory cleanup tool.
+10. **JSON Schema to UI Form Auto-Generator**: Auto-build interactive forms from JSON schemas for structured LLM responses.
+11. **Local Vision & OCR Document Extractor**: Multimodal table parser and OCR with interactive canvas zoom controls.
+12. **AI Tool & Function Calling Playground**: Sandboxed RPC execution trace logger for custom function tools.
+13. **Local AI Security Audit & Hallucination Detector**: Audit factual consistency against ground-truth documents.
+14. **Local AI Code Refactor & Unit Test Generator**: Automated Vitest, Jest, and PyTest unit test suite builder.
+15. **Multilingual Localization & Translation Matrix**: Translate text across 50+ languages simultaneously with BLEU quality scoring.
+`
+  },
+  {
     slug: 'huggingface-hub-advanced-finetune-studio',
     title: 'Introducing HuggingFace Model Hub & Advanced Multi-Method Fine-Tune Studio',
     excerpt: 'DomoDomo expands its AI Hub with HuggingFace Hub integration (token authentication, model search, GGUF variant browser, 1-click pull) and Advanced Fine-Tune Studio supporting 6 training strategies (QLoRA, LoRA, Full Fine-Tune, Prefix, Adapter, DPO) with downloadable Python scripts, Modelfiles, and training packages.',
