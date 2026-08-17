@@ -1,5 +1,17 @@
 [
   {
+    "hash": "585137d",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "feat(audio): add unified white-emerald glowing nodes, 3D parallax tilt, and spatial stereo panning HUD to acoustic matrix"
+  },
+  {
+    "hash": "48e58af",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "bfa1261",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-15",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "39a7160",
-    "date": "2026-08-15",
-    "author": "darknecrocities",
-    "message": "feat(branding): add Abakada.org featured badge and blog post"
-  },
-  {
-    "hash": "8a8fb3e",
-    "date": "2026-08-06",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]

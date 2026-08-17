@@ -632,6 +632,23 @@ export const AudioSettingsModal: React.FC<AudioSettingsModalProps> = ({ isOpen, 
               </button>
 
               <button
+                onClick={() => updateSettings({ typingEnabled: !settings.typingEnabled })}
+                className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex items-center justify-between ${
+                  settings.typingEnabled
+                    ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/40 text-[#ECEBE9]'
+                    : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B]'
+                }`}
+              >
+                <div>
+                  <p className="text-xs font-bold">Typing SFX</p>
+                  <p className="text-[10px] text-[#A3A09B] mt-0.5">Play mechanical switch sound when typing</p>
+                </div>
+                <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full ${settings.typingEnabled ? 'bg-[#3C6B4D] text-white' : 'bg-[#2A2D30] text-[#A3A09B]'}`}>
+                  {settings.typingEnabled ? 'ON' : 'OFF'}
+                </span>
+              </button>
+
+              <button
                 onClick={() => updateSettings({ pitchVariance: !settings.pitchVariance })}
                 className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex items-center justify-between ${
                   settings.pitchVariance
