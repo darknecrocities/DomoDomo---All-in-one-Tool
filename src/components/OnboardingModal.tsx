@@ -86,12 +86,15 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
         {step === 1 && (
           <div className="flex flex-col gap-5 py-2">
             <div className="flex flex-col items-center text-center gap-3">
-              <div className="relative">
-                <img 
-                  src={pandaOnboarding} 
-                  alt="Domo Panda Mascot" 
-                  className="w-32 h-32 object-contain rounded-2xl border border-[#2A2D30] bg-[#111213]/40 p-2 shadow-lg"
-                />
+              <div className="relative group">
+                <div className="w-32 h-32 flex items-center justify-center rounded-3xl border border-[#2A2D30] bg-[#111213]/80 p-3 shadow-2xl backdrop-blur-md relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#3C6B4D]/15 via-transparent to-[#3C6B4D]/5 pointer-events-none" />
+                  <img 
+                    src={pandaOnboarding} 
+                    alt="Domo Panda Mascot" 
+                    className="w-full h-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
                 <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3C6B4D] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-4 w-4 bg-[#3C6B4D]"></span>

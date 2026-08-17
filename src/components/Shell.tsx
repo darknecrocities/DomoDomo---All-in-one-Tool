@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award, Volume2, VolumeX } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
 import { unifiedMemory } from '../utils/unifiedMemory';
+import { getExperienceSettings, type ExperienceSettings } from '../utils/experienceSettings';
 import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
@@ -105,6 +106,22 @@ export const Shell = () => {
     if (saved === 'light') return 'light';
     return 'dark'; // default to dark mode
   });
+
+  const [sfxSettings, setSfxSettings] = useState<ExperienceSettings>(getExperienceSettings());
+
+  useEffect(() => {
+    const handleSfxUpdate = (e: CustomEvent<ExperienceSettings>) => {
+      setSfxSettings(e.detail || getExperienceSettings());
+    };
+    window.addEventListener('domodomo_sfx_update' as any, handleSfxUpdate as any);
+    return () => window.removeEventListener('domodomo_sfx_update' as any, handleSfxUpdate as any);
+  }, []);
+
+  const isSfxMuted = sfxSettings.profile === 'mute' || sfxSettings.volume === 0;
+
+  const handleOpenSfxModal = () => {
+    window.dispatchEvent(new CustomEvent('open_sfx_settings'));
+  };
 
   useEffect(() => {
     if (theme === 'light') {
@@ -392,6 +409,19 @@ export const Shell = () => {
             {/* Divider */}
             <div className="hidden md:block h-5 w-px bg-[#2A2D30] mx-0.5" />
 
+            {/* SFX Studio shortcut */}
+            <button
+              onClick={handleOpenSfxModal}
+              className={`hidden sm:flex items-center justify-center h-8 w-8 rounded-lg border transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] ${
+                !isSfxMuted
+                  ? 'border-[#3C6B4D]/50 text-[#3C6B4D] bg-[#3C6B4D]/10 hover:bg-[#3C6B4D]/20'
+                  : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 hover:bg-[#1E2022]'
+              }`}
+              title={isSfxMuted ? 'Mechanical SFX Muted (Click to configure)' : `Mechanical SFX Active: ${sfxSettings.profile} (Click to configure)`}
+            >
+              {isSfxMuted ? <VolumeX size={15} /> : <Volume2 size={15} className="animate-pulse" />}
+            </button>
+
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
@@ -488,6 +518,22 @@ export const Shell = () => {
                   {label}
                 </NavLink>
               ))}
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleOpenSfxModal();
+                }}
+                className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Volume2 size={15} className="text-[#3C6B4D]" />
+                  <span>Acoustic SFX Studio</span>
+                </div>
+                <span className="text-[9px] font-mono font-bold text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded">
+                  40 SFX
+                </span>
+              </button>
             </nav>
 
             {/* Quick action buttons */}
