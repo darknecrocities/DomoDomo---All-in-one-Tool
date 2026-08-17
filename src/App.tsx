@@ -15,6 +15,7 @@ import { FloatingAutoPilot } from './tools/autopilot/components/FloatingAutoPilo
 import { ScrollToTop } from './components/ScrollToTop';
 import { DomoSettings } from './pages/DomoSettings';
 import { FloatingDomo } from './components/FloatingDomo';
+import { GlobalSFXController } from './components/GlobalSFXController';
 import { AIHubStudio } from './pages/AIHubStudio';
 import { useVisitCounter } from './utils/visitCounter';
 
@@ -41,6 +42,7 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <FloatingDomo />
+        <GlobalSFXController />
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />

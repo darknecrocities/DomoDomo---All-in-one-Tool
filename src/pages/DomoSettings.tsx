@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { aiService } from '../utils/aiService';
-import { Settings, Cpu, Brain, Monitor, Download, ShieldAlert, CheckCircle, RefreshCw } from 'lucide-react';
+import { Settings, Cpu, Brain, Monitor, Download, ShieldAlert, CheckCircle, RefreshCw, Volume2, Sliders } from 'lucide-react';
+import { SWITCH_PROFILES, previewSoundProfile } from '../utils/soundEffects';
+import { getExperienceSettings, saveExperienceSettings, type SoundProfile, type ExperienceSettings } from '../utils/experienceSettings';
 
 export const DomoSettings: React.FC = () => {
   const isOnlineProd = 
     window.location.hostname.endsWith('.vercel.app') || 
     window.location.hostname === 'domodomo.site' ||
     (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && !window.location.hostname.startsWith('192.168.'));
+
+  // Mechanical switch audio settings state
+  const [sfxSettings, setSfxSettings] = useState<ExperienceSettings>(getExperienceSettings());
 
   const [ollamaEndpoint, setOllamaEndpoint] = useState('http://localhost:11434');
   const [ollamaStatus, setOllamaStatus] = useState<'checking' | 'online' | 'offline'>('checking');
@@ -322,6 +327,138 @@ export const DomoSettings: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Acoustic SFX & Mechanical Switch Audio Settings */}
+        <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-4 justify-between w-full">
+              <div className="flex items-center gap-2">
+                <Volume2 size={18} className="text-[#3C6B4D]" />
+                <h2 className="text-sm font-bold tracking-wide">Acoustic SFX & Mechanical Switches</h2>
+              </div>
+              <span className="text-[8px] font-black tracking-widest text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded border border-[#3C6B4D]/25 uppercase">
+                40 Profiles
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Active Switch Acoustic Profile</label>
+                <select
+                  value={sfxSettings.profile}
+                  onChange={(e) => {
+                    const newProfile = e.target.value as SoundProfile;
+                    const updated = { ...sfxSettings, profile: newProfile };
+                    setSfxSettings(updated);
+                    saveExperienceSettings(updated);
+                    if (newProfile !== 'mute') {
+                      previewSoundProfile(newProfile);
+                    }
+                  }}
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                >
+                  <optgroup label="Linear (8)">
+                    {SWITCH_PROFILES.filter(s => s.category === 'Linear').map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.tag})</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Tactile (7)">
+                    {SWITCH_PROFILES.filter(s => s.category === 'Tactile').map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.tag})</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Clicky (7)">
+                    {SWITCH_PROFILES.filter(s => s.category === 'Clicky').map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.tag})</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Silent & Dampened (4)">
+                    {SWITCH_PROFILES.filter(s => s.category === 'Silent').map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.tag})</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Vintage & Hall Effect (7)">
+                    {SWITCH_PROFILES.filter(s => s.category === 'Vintage / Hall Effect').map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.tag})</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Special & Sci-Fi (7)">
+                    {SWITCH_PROFILES.filter(s => s.category === 'Special' && s.id !== 'mute').map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.tag})</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Mute">
+                    <option value="mute">Mute (Disable all sounds)</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="text-[10px] font-bold text-[#A3A09B]">Switch Master Volume</label>
+                  <span className="text-xs font-mono font-bold text-[#3C6B4D]">
+                    {Math.round(sfxSettings.volume * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={sfxSettings.volume}
+                  onChange={(e) => {
+                    const vol = parseFloat(e.target.value);
+                    const updated = { ...sfxSettings, volume: vol };
+                    setSfxSettings(updated);
+                    saveExperienceSettings(updated);
+                  }}
+                  className="w-full h-1.5 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] cursor-pointer">
+                  <span className="text-[11px] font-bold text-[#ECEBE9]">Hover Thocks</span>
+                  <input
+                    type="checkbox"
+                    checked={sfxSettings.hoverEnabled}
+                    onChange={(e) => {
+                      const updated = { ...sfxSettings, hoverEnabled: e.target.checked };
+                      setSfxSettings(updated);
+                      saveExperienceSettings(updated);
+                    }}
+                    className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] cursor-pointer">
+                  <span className="text-[11px] font-bold text-[#ECEBE9]">Click Thocks</span>
+                  <input
+                    type="checkbox"
+                    checked={sfxSettings.clickEnabled}
+                    onChange={(e) => {
+                      const updated = { ...sfxSettings, clickEnabled: e.target.checked };
+                      setSfxSettings(updated);
+                      saveExperienceSettings(updated);
+                    }}
+                    className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 pt-3 border-t border-[#2A2D30]/60 flex items-center justify-between">
+            <span className="text-[10px] text-[#A3A09B]">Typing HUD & Ambient</span>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open_sfx_settings'))}
+              className="px-3 py-1.5 rounded-xl bg-[#3C6B4D]/15 hover:bg-[#3C6B4D]/25 border border-[#3C6B4D]/40 text-[#3C6B4D] text-[11px] font-bold transition-all flex items-center gap-1.5"
+            >
+              <Sliders size={12} />
+              <span>Open SFX Studio</span>
+            </button>
           </div>
         </div>
 
