@@ -612,10 +612,18 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
 
         {/* 3D Spatial Stereo Soundstage Field HUD */}
         <div className="pt-2 border-t border-[#2A2D30]/60 flex items-center justify-between gap-4 text-[10px] font-mono">
-          <span className="text-[#72706C] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0">
-            <span className="w-2 h-2 rounded-full bg-[#3C6B4D] animate-pulse" />
-            3D Spatial Audio Pan
-          </span>
+          <button
+            onClick={() => {
+              const updated = { ...settings, spatialAudioEnabled: settings.spatialAudioEnabled === false ? true : false };
+              saveExperienceSettings(updated);
+              setSettings(updated);
+            }}
+            className="text-[#72706C] hover:text-[#ECEBE9] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 cursor-pointer transition-colors"
+            title="Click to toggle 3D Spatial Audio stereo panning"
+          >
+            <span className={`w-2 h-2 rounded-full ${settings.spatialAudioEnabled !== false ? 'bg-[#3C6B4D] animate-pulse shadow-[0_0_8px_#3C6B4D]' : 'bg-[#72706C]'}`} />
+            3D Spatial: <span className={settings.spatialAudioEnabled !== false ? 'text-[#6EC48E]' : 'text-[#72706C]'}>{settings.spatialAudioEnabled !== false ? 'ON' : 'OFF'}</span>
+          </button>
 
           <div className="flex items-center gap-2 flex-1 max-w-xs">
             <span className="text-[#72706C] font-bold">L</span>

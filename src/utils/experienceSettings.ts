@@ -65,6 +65,7 @@ export interface ExperienceSettings {
   clickEnabled: boolean;
   typingEnabled: boolean;
   pitchVariance: boolean;
+  spatialAudioEnabled: boolean; // 3D Spatial Audio Stereo Panning based on screen/key coordinates
 
   // 2D Custom Acoustic Matrix Coordinates Persistence
   customMatrixEnabled: boolean;
@@ -86,6 +87,7 @@ export const DEFAULT_EXPERIENCE_SETTINGS: ExperienceSettings = {
   clickEnabled: true,
   typingEnabled: true,
   pitchVariance: true,
+  spatialAudioEnabled: true,
 
   customMatrixEnabled: false,
   matrixCoords: { x: 12, y: 92 },

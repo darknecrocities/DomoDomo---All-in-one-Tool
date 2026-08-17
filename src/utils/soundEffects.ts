@@ -532,15 +532,40 @@ export function getAudioAnalyser(): AnalyserNode | null {
   return analyserNode;
 }
 
-/** Direct connect to destination + analyser node for reliable visualizer feedback */
-function connectToBus(ctx: AudioContext, node: AudioNode) {
+let currentSpatialPan = 0;
+
+export function setSpatialPan(pan: number) {
+  currentSpatialPan = Math.max(-0.85, Math.min(0.85, pan));
+}
+
+export function resetSpatialPan() {
+  currentSpatialPan = 0;
+}
+
+/** Direct connect to destination + analyser node for reliable visualizer feedback, with active 3D spatial panning */
+function connectToBus(ctx: AudioContext, node: AudioNode, customPan?: number) {
+  const settings = getExperienceSettings();
+  const panValue = customPan !== undefined ? customPan : currentSpatialPan;
+
   try {
-    node.connect(ctx.destination);
     const analyser = getAudioAnalyser();
     if (analyser) {
-      node.connect(analyser);
+      try { node.connect(analyser); } catch {}
     }
-  } catch {}
+
+    if (settings.spatialAudioEnabled !== false && typeof ctx.createStereoPanner === 'function') {
+      const panner = ctx.createStereoPanner();
+      panner.pan.setValueAtTime(panValue, ctx.currentTime);
+      node.connect(panner);
+      panner.connect(ctx.destination);
+    } else {
+      node.connect(ctx.destination);
+    }
+  } catch {
+    try {
+      node.connect(ctx.destination);
+    } catch {}
+  }
 }
 
 function getPitchRandomizer(): number {
@@ -1866,6 +1891,44 @@ export function playSwitchSound(profile: SoundProfile, isClick = false, isPrevie
   executeSwitchSynth(ctx, profile, isClick, isPreview, settings);
 }
 
+const KEY_SPATIAL_COLUMNS: Record<string, number> = {
+  // Left Column (Pan: -0.75 to -0.45)
+  '`': -0.75, '~': -0.75, '1': -0.75, '!': -0.75,
+  'q': -0.75, 'Q': -0.75, 'a': -0.75, 'A': -0.75, 'z': -0.75, 'Z': -0.75,
+  'Escape': -0.8, 'Tab': -0.75, 'CapsLock': -0.75, 'Shift': -0.7, 'Control': -0.75, 'Meta': -0.7, 'Alt': -0.65,
+  '2': -0.6, '@': -0.6, 'w': -0.6, 'W': -0.6, 's': -0.6, 'S': -0.6, 'x': -0.6, 'X': -0.6,
+  '3': -0.45, '#': -0.45, 'e': -0.45, 'E': -0.45, 'd': -0.45, 'D': -0.45, 'c': -0.45, 'C': -0.45,
+  '4': -0.3, '$': -0.3, 'r': -0.3, 'R': -0.3, 'f': -0.3, 'F': -0.3, 'v': -0.3, 'V': -0.3,
+  '5': -0.15, '%': -0.15, 't': -0.15, 'T': -0.15, 'g': -0.15, 'G': -0.15, 'b': -0.15, 'B': -0.15,
+
+  // Center (Pan: 0.0)
+  '6': 0.0, '^': 0.0, 'y': 0.0, 'Y': 0.0, 'h': 0.0, 'H': 0.0, ' ': 0.0, 'Spacebar': 0.0,
+
+  // Right Column (Pan: +0.15 to +0.8)
+  '7': 0.15, '&': 0.15, 'u': 0.15, 'U': 0.15, 'j': 0.15, 'J': 0.15, 'n': 0.15, 'N': 0.15,
+  '8': 0.35, '*': 0.35, 'i': 0.35, 'I': 0.35, 'k': 0.35, 'K': 0.35, 'm': 0.35, 'M': 0.35,
+  '9': 0.5, '(': 0.5, 'o': 0.5, 'O': 0.5, 'l': 0.5, 'L': 0.5, ',': 0.5, '<': 0.5,
+  '0': 0.65, ')': 0.65, 'p': 0.65, 'P': 0.65, ';': 0.65, ':': 0.65, '.': 0.65, '>': 0.65,
+  '-': 0.75, '_': 0.75, '=': 0.75, '+': 0.75, '[': 0.75, '{': 0.75, ']': 0.8, '}': 0.8, '\\': 0.8, '|': 0.8,
+  "'": 0.75, '"': 0.75, 'Enter': 0.75, 'Return': 0.75, '/': 0.7, '?': 0.7,
+  'Backspace': 0.8, 'Delete': 0.8, 'ArrowLeft': 0.4, 'ArrowRight': 0.8, 'ArrowUp': 0.6, 'ArrowDown': 0.6
+};
+
+/** Calculate spatial stereo panning (-0.85 Left to +0.85 Right) based on element screen position */
+export function calcElementSpatialPan(element?: HTMLElement | null, clientX?: number): number {
+  if (typeof window === 'undefined') return 0;
+  if (clientX !== undefined && clientX > 0 && window.innerWidth > 0) {
+    const ratio = clientX / window.innerWidth;
+    return Math.max(-0.85, Math.min(0.85, (ratio - 0.5) * 1.7));
+  }
+  if (!element) return 0;
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const screenWidth = window.innerWidth || 1000;
+  const ratio = centerX / screenWidth;
+  return Math.max(-0.85, Math.min(0.85, (ratio - 0.5) * 1.7));
+}
+
 let lastKeySoundTime = 0;
 
 export function playKeySound(keyEvent?: KeyboardEvent) {
@@ -1888,6 +1951,12 @@ export function playKeySound(keyEvent?: KeyboardEvent) {
   const isSpace = key === ' ' || key === 'Spacebar';
   const isEnter = key === 'Enter';
   const isBackspace = key === 'Backspace' || key === 'Delete';
+
+  // Spatial Panning based on physical keyboard layout
+  if (settings.spatialAudioEnabled !== false) {
+    const keyPan = KEY_SPATIAL_COLUMNS[key] ?? ((Math.random() - 0.5) * 0.35);
+    setSpatialPan(keyPan);
+  }
 
   if (settings.customMatrixEnabled && settings.matrixCoords) {
     let x = settings.matrixCoords.x;
@@ -1997,13 +2066,15 @@ export function setupThockAudioListener(): () => void {
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
-    const interactive = target.closest(INTERACTIVE_SELECTOR);
+    const interactive = target.closest(INTERACTIVE_SELECTOR) as HTMLElement | null;
 
     if (interactive && interactive !== lastHoveredElement) {
       lastHoveredElement = interactive;
       const now = performance.now();
       if (now - lastHoverSoundTime > 35) {
         lastHoverSoundTime = now;
+        const pan = calcElementSpatialPan(interactive, e.clientX);
+        setSpatialPan(pan);
         playHoverSound();
       }
     }
@@ -2015,8 +2086,11 @@ export function setupThockAudioListener(): () => void {
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
-    const interactive = target.closest(INTERACTIVE_SELECTOR);
+    const interactive = target.closest(INTERACTIVE_SELECTOR) as HTMLElement | null;
     if (interactive) {
+      const touch = e.touches[0];
+      const pan = calcElementSpatialPan(interactive, touch ? touch.clientX : undefined);
+      setSpatialPan(pan);
       playClickSound();
       triggerHaptic('medium');
     }
@@ -2031,8 +2105,10 @@ export function setupThockAudioListener(): () => void {
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
-    const interactive = target.closest(INTERACTIVE_SELECTOR);
+    const interactive = target.closest(INTERACTIVE_SELECTOR) as HTMLElement | null;
     if (interactive) {
+      const pan = calcElementSpatialPan(interactive, e.clientX);
+      setSpatialPan(pan);
       playClickSound();
     }
   };
