@@ -15,25 +15,30 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'introducing-acoustic-sfx-keeby-inspired-mechanical-sound-studio',
     title: 'Introducing Acoustic SFX Studio: 40 Mechanical Keyboard Switches, 2D Sound Matrix & Keeby-Inspired Audio Synthesis',
-    excerpt: 'DomoDomo releases the Acoustic SFX & Mechanical Switch Studio, drawing inspiration from Keeby to bring 40 enthusiast switch profiles, an interactive 2D Acoustic Matrix, real-time stereo VU meter, and 100% client-side Web Audio synthesis to your browser.',
+    excerpt: 'DomoDomo releases the Acoustic SFX & Mechanical Switch Studio, drawing inspiration from Keeby (created by Adrian Angelo Abelarde at getkeeby.com) to bring 40 enthusiast switch profiles, an interactive 2D Acoustic Matrix, real-time stereo VU meter, and 100% client-side Web Audio synthesis to your browser.',
     date: 'August 17, 2026',
     readTime: '5 min read',
     category: 'Product Updates',
     author: 'DomoDomo Engineering',
-    keywords: 'keeby, mechanical keyboard sounds, thock, clack, gateron oil king, holy panda, boba u4t, 2d acoustic matrix, sfx studio, web audio api, domodomo',
+    keywords: 'keeby, getkeeby, adrian angelo abelarde, mechanical keyboard sounds, thock, clack, gateron oil king, holy panda, boba u4t, 2d acoustic matrix, sfx studio, web audio api, domodomo',
     content: `# Introducing Acoustic SFX Studio: 40 Mechanical Keyboard Switches, 2D Sound Matrix & Keeby-Inspired Audio Synthesis
 
 We are thrilled to launch the **Acoustic SFX & Mechanical Switch Studio**, a major upgrade to DomoDomo that transforms everyday browser navigation into a deeply satisfying, tactile acoustic experience!
 
-Drawing inspiration from **Keeby** (*keeb.gg*), the beloved community mechanical keyboard sound simulator, DomoDomo now features **40 procedurally synthesized switch profiles**, an interactive **2D Acoustic Matrix Pad**, a **Real-Time Stereo LED VU Volume Meter**, and **Generative Ambient Focus Soundscapes**—all executing **100% client-side** using the native Web Audio API with zero latency and zero cloud assets.
+This feature is directly inspired by **[Keeby](https://getkeeby.com/)**, the acclaimed mechanical keyboard sound app created by **[Adrian Angelo Abelarde](https://getkeeby.com/)**. Keeby demonstrated to thousands of creators and developers just how transformative authentic mechanical switch acoustics, reactive visualizers, and spatial feedback can be for daily productivity.
+
+Building upon that inspiration, DomoDomo now features **40 procedurally synthesized switch profiles**, an interactive **2D Acoustic Matrix Pad**, a **Real-Time Stereo LED VU Volume Meter**, and **Generative Ambient Focus Soundscapes**—all executing **100% client-side** using the native Web Audio API with zero latency and zero cloud assets.
 
 ---
 
-## ⌨️ Inspired by Keeby & The Enthusiast Sound Experience
+## ⌨️ Inspired by Keeby by Adrian Angelo Abelarde
 
-For software engineers, writers, and power users, the acoustic signature of a finely tuned mechanical keyboard—the deep marbly *thock* of a lubed nylon switch, the snappy pop of a tactile bump, or the crisp chime of a steel clickbar—brings focus, tactile rhythm, and sheer satisfaction to long sessions at the terminal.
+If you haven't checked out **[Keeby (getkeeby.com)](https://getkeeby.com/)**, it is a beautifully designed macOS application that delivers satisfying mechanical keyboard sounds with spatial audio, reactive visualizers, and customizable sound profiles. Created by developer **Adrian Angelo Abelarde**, Keeby highlighted the profound connection between auditory feedback and typing rhythm.
 
-We built the **Acoustic SFX Studio** to celebrate that culture, bringing high-fidelity, real-time keyboard acoustic synthesis directly into your browser workflow. Every button click, tab switch, card hover, and keypress across DomoDomo's 230+ tools can now respond with authentic acoustic feedback.
+We wanted to bring that same tactile acoustic joy directly into DomoDomo's web workspace:
+- **Zero Installation Required:** Pure browser-native Web Audio API synthesis running seamlessly on Mac, Windows, Linux, and mobile devices.
+- **Global UI Tactility:** Interactive feedback across all 230+ local tools, buttons, cards, tabs, and navigation links.
+- **Parametric Acoustic Space:** Fine-tune your desired switch tone along a 2D coordinate plane.
 
 ---
 
@@ -128,7 +133,7 @@ Need to drown out background noise while coding or reading? The SFX Studio inclu
 
 Like all DomoDomo utilities, the Acoustic SFX Studio is **100% local-first**. There are no heavy MP3/WAV audio files downloaded from external servers. Every sound is generated mathematically on-the-fly inside your browser's Web Audio sandbox using oscillators, biquad filters, and envelope shapers.
 
-Try it out today! Click the **SFX Hub** icon in the bottom-right corner or the speaker icon in the top navigation bar to tune your mechanical switch workspace.
+Try it out today! Click the **SFX Hub** icon in the bottom-right corner or the speaker icon in the top navigation bar to tune your mechanical switch workspace. And be sure to check out **[Keeby by Adrian Angelo Abelarde at getkeeby.com](https://getkeeby.com/)** for system-wide mechanical typing sounds on Mac!
 `
   },
   {
