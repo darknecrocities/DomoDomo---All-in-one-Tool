@@ -815,6 +815,7 @@ blogPosts.forEach((post) => {
 						/# (.*?)\n/g,
 						'<h1 style="color:#ecebe9; margin-top:2.5rem;">$1</h1>',
 					)
+					.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #6EC48E; text-decoration: underline; font-weight: bold;">$1</a>')
 					.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}
       </div>
       

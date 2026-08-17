@@ -103,21 +103,22 @@ export const BlogPost = () => {
     });
   };
 
-  // Basic parser to render inline bold, links, and code blocks
-  const parseInlineMarkup = (text: string) => {
+  // Parser to render inline bold, links, italic, and code blocks with recursive nesting
+  const parseInlineMarkup = (text: string): React.ReactNode[] => {
     const tokens: React.ReactNode[] = [];
     let current = text;
     let key = 0;
 
     while (current) {
+      // Prioritize link detection [text](url), bold **text**, and code `text`
+      const linkMatch = current.match(/\[(.*?)\]\((.*?)\)/);
       const boldMatch = current.match(/\*\*(.*?)\*\*/);
       const codeMatch = current.match(/`(.*?)`/);
-      const linkMatch = current.match(/\[(.*?)\]\((.*?)\)/);
 
       const matches = [
+        { type: 'link', index: linkMatch ? linkMatch.index : -1, length: linkMatch ? linkMatch[0].length : 0, content: linkMatch ? linkMatch[1] : '', url: linkMatch ? linkMatch[2] : '' },
         { type: 'bold', index: boldMatch ? boldMatch.index : -1, length: boldMatch ? boldMatch[0].length : 0, content: boldMatch ? boldMatch[1] : '' },
-        { type: 'code', index: codeMatch ? codeMatch.index : -1, length: codeMatch ? codeMatch[0].length : 0, content: codeMatch ? codeMatch[1] : '' },
-        { type: 'link', index: linkMatch ? linkMatch.index : -1, length: linkMatch ? linkMatch[0].length : 0, content: linkMatch ? linkMatch[1] : '', url: linkMatch ? linkMatch[2] : '' }
+        { type: 'code', index: codeMatch ? codeMatch.index : -1, length: codeMatch ? codeMatch[0].length : 0, content: codeMatch ? codeMatch[1] : '' }
       ].filter(m => m.index !== undefined && m.index >= 0);
 
       if (matches.length === 0) {
@@ -132,25 +133,43 @@ export const BlogPost = () => {
         tokens.push(<span key={key++}>{current.slice(0, first.index)}</span>);
       }
 
-      if (first.type === 'bold') {
-        tokens.push(<strong key={key++} className="font-extrabold text-[#ECEBE9]">{first.content}</strong>);
-      } else if (first.type === 'code') {
-        tokens.push(<code key={key++} className="bg-[#1D2022] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-[#ECEBE9]">{first.content}</code>);
-      } else if (first.type === 'link') {
+      if (first.type === 'link') {
         const isExternal = first.url!.startsWith('http');
         if (isExternal) {
           tokens.push(
-            <a key={key++} href={first.url} target="_blank" rel="noopener noreferrer" className="text-[#ECEBE9] hover:underline font-bold">
+            <a
+              key={key++}
+              href={first.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#6EC48E] hover:text-[#ECEBE9] underline font-bold transition-colors cursor-pointer"
+            >
               {first.content}
             </a>
           );
         } else {
           tokens.push(
-            <Link key={key++} to={first.url!} className="text-[#ECEBE9] hover:underline font-bold">
+            <Link
+              key={key++}
+              to={first.url!}
+              className="text-[#6EC48E] hover:text-[#ECEBE9] underline font-bold transition-colors cursor-pointer"
+            >
               {first.content}
             </Link>
           );
         }
+      } else if (first.type === 'bold') {
+        tokens.push(
+          <strong key={key++} className="font-extrabold text-[#ECEBE9]">
+            {parseInlineMarkup(first.content)}
+          </strong>
+        );
+      } else if (first.type === 'code') {
+        tokens.push(
+          <code key={key++} className="bg-[#1D2022] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-[#ECEBE9]">
+            {first.content}
+          </code>
+        );
       }
 
       current = current.slice(first.index! + first.length!);
