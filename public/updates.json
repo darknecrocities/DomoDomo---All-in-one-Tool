@@ -1,5 +1,17 @@
 [
   {
+    "hash": "86ba342",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "docs(blog): add Keeby-inspired Acoustic SFX Studio launch announcement and update MCP CORS allowlist"
+  },
+  {
+    "hash": "1c9cbf1",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "7f49c3f",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-06",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "27e174f",
-    "date": "2026-08-06",
-    "author": "darknecrocities",
-    "message": "seo(optimization): add FAQPage JSON-LD schemas, canonical links, robots.txt crawler accessibility, and sitemap expansion"
-  },
-  {
-    "hash": "b02d7bf",
-    "date": "2026-08-06",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
