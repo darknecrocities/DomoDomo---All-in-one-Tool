@@ -1866,6 +1866,55 @@ export function playSwitchSound(profile: SoundProfile, isClick = false, isPrevie
   executeSwitchSynth(ctx, profile, isClick, isPreview, settings);
 }
 
+let lastKeySoundTime = 0;
+
+export function playKeySound(keyEvent?: KeyboardEvent) {
+  const settings = getExperienceSettings();
+  if (!settings.typingEnabled || settings.profile === 'mute') return;
+
+  const now = performance.now();
+  if (now - lastKeySoundTime < 16) return; // 16ms throttle supports ultra-fast 150+ WPM typing with zero delay
+  lastKeySoundTime = now;
+
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+
+  const boost = settings.gainBoost || 1.25;
+  let vol = Math.min(settings.volume * boost, 1.8);
+  if (vol <= 0) return;
+
+  const key = keyEvent?.key || '';
+  const isSpace = key === ' ' || key === 'Spacebar';
+  const isEnter = key === 'Enter';
+  const isBackspace = key === 'Backspace' || key === 'Delete';
+
+  if (settings.customMatrixEnabled && settings.matrixCoords) {
+    let x = settings.matrixCoords.x;
+    let y = settings.matrixCoords.y;
+
+    if (isSpace) {
+      x = Math.max(0, x - 12);
+      y = Math.min(100, y + 15);
+      vol *= 1.15;
+    } else if (isEnter) {
+      x = Math.max(0, x - 6);
+      y = Math.min(100, y + 10);
+      vol *= 1.1;
+    } else if (isBackspace) {
+      x = Math.min(100, x + 8);
+    } else if (settings.pitchVariance) {
+      x = Math.max(0, Math.min(100, x + (Math.random() - 0.5) * 6));
+    }
+
+    synthParametricXY(ctx, ctx.currentTime, vol, x, y, true);
+    return;
+  }
+
+  // Preset Switch profile synthesis
+  executeSwitchSynth(ctx, settings.profile, true, false, settings);
+}
+
 export function playHoverSound(overrideProfile?: SoundProfile) {
   const settings = getExperienceSettings();
   playSwitchSound(overrideProfile || settings.profile, false, false);
@@ -1961,6 +2010,15 @@ export function setupThockAudioListener(): () => void {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    forceUnlockAudio();
+    // Skip duplicate repeat ticks on held modifier keys
+    if (e.repeat && ['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) {
+      return;
+    }
+    playKeySound(e);
+  };
+
   // Eager global unlockers across all potential user events
   const unlockEvents = [
     'pointerdown',
@@ -1981,11 +2039,12 @@ export function setupThockAudioListener(): () => void {
     document.addEventListener(evt, forceUnlockAudio, { passive: true, capture: true });
   });
 
-  // Continuous hover & click interaction listeners
+  // Continuous interaction & typing listeners
   window.addEventListener('mouseover', handlePointerOver, { passive: true, capture: true });
   window.addEventListener('pointerover', handlePointerOver as any, { passive: true, capture: true });
   window.addEventListener('mousedown', handlePointerDown, { passive: true, capture: true });
   window.addEventListener('touchstart', handlePointerDown, { passive: true, capture: true });
+  window.addEventListener('keydown', handleKeyDown, { passive: true, capture: true });
 
   return () => {
     unlockEvents.forEach((evt) => {
@@ -1996,6 +2055,7 @@ export function setupThockAudioListener(): () => void {
     window.removeEventListener('pointerover', handlePointerOver as any, { capture: true } as any);
     window.removeEventListener('mousedown', handlePointerDown, { capture: true } as any);
     window.removeEventListener('touchstart', handlePointerDown, { capture: true } as any);
+    window.removeEventListener('keydown', handleKeyDown, { capture: true } as any);
   };
 }
 
