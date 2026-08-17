@@ -1,5 +1,17 @@
 [
   {
+    "hash": "bfa1261",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "docs(blog): credit Keeby creator Adrian Angelo Abelarde and link to getkeeby.com in SFX launch post"
+  },
+  {
+    "hash": "00a82c7",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "86ba342",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-06",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "ecb824d",
-    "date": "2026-08-06",
-    "author": "darknecrocities",
-    "message": "fix(seo): add static page prerendering for ai-hub, about, docs, blog, download, library-api to resolve discovered not indexed GSC status"
-  },
-  {
-    "hash": "f82c7a4",
-    "date": "2026-08-06",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
