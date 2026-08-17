@@ -19,7 +19,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: 'August 17, 2026',
     readTime: '5 min read',
     category: 'Product Updates',
-    author: 'DomoDomo Engineering',
+    author: 'Arron Parejas',
     keywords: 'keeby, getkeeby, adrian angelo abelarde, mechanical keyboard sounds, thock, clack, gateron oil king, holy panda, boba u4t, 2d acoustic matrix, sfx studio, web audio api, domodomo',
     content: `# Introducing Acoustic SFX Studio: 40 Mechanical Keyboard Switches, 2D Sound Matrix & Keeby-Inspired Audio Synthesis
 
