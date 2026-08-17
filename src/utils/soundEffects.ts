@@ -474,7 +474,8 @@ export function playCoordinateSound(x: number, y: number, isClick = false) {
   const ctx = getAudioContext();
   if (!ctx || settings.profile === 'mute') return;
   if (ctx.state === 'suspended') ctx.resume().catch(() => {});
-  const vol = settings.volume;
+  const boost = settings.gainBoost || 1.25;
+  const vol = Math.min(settings.volume * boost, 1.8);
   if (vol <= 0) return;
   synthParametricXY(ctx, ctx.currentTime, vol, x, y, isClick);
 }
@@ -1690,11 +1691,19 @@ function executeSwitchSynth(
   settings: ReturnType<typeof getExperienceSettings>
 ) {
   const now = ctx.currentTime;
-  const vol = isPreview ? Math.max(settings.volume, 0.85) : settings.volume;
+  const baseVol = isPreview ? Math.max(settings.volume, 0.85) : settings.volume;
+  const boost = settings.gainBoost || 1.25;
+  const vol = Math.min(baseVol * boost, 1.8);
   if (vol <= 0) return;
 
   if (isClick) {
     triggerHaptic('light');
+  }
+
+  // If custom 2D matrix mode is active and not in an explicit switch preview, synthesize directly using saved (X, Y) coordinates
+  if (settings.customMatrixEnabled && !isPreview && settings.matrixCoords) {
+    synthParametricXY(ctx, now, vol, settings.matrixCoords.x, settings.matrixCoords.y, isClick);
+    return;
   }
 
   switch (profile) {

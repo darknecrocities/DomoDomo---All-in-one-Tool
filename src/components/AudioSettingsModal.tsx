@@ -64,6 +64,15 @@ export const AudioSettingsModal: React.FC<AudioSettingsModalProps> = ({ isOpen, 
     if (isOpen) {
       setSettings(getExperienceSettings());
     }
+    const handleSfxUpdate = (e: CustomEvent<ExperienceSettings>) => {
+      if (e.detail) {
+        setSettings(e.detail);
+      }
+    };
+    window.addEventListener('domodomo_sfx_update' as any, handleSfxUpdate as any);
+    return () => {
+      window.removeEventListener('domodomo_sfx_update' as any, handleSfxUpdate as any);
+    };
   }, [isOpen]);
 
   useEffect(() => {
