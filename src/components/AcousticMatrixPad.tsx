@@ -30,15 +30,6 @@ interface AcousticMatrixPadProps {
   activeProfile?: SoundProfile;
 }
 
-const CATEGORY_COLORS: Record<string, { dot: string; glow: string; text: string; bg: string }> = {
-  Linear: { dot: '#3C6B4D', glow: 'rgba(60, 107, 77, 0.6)', text: '#6EC48E', bg: 'rgba(60, 107, 77, 0.15)' },
-  Tactile: { dot: '#E29E2D', glow: 'rgba(226, 158, 45, 0.6)', text: '#F59E0B', bg: 'rgba(226, 158, 45, 0.15)' },
-  Clicky: { dot: '#38BDF8', glow: 'rgba(56, 189, 248, 0.6)', text: '#38BDF8', bg: 'rgba(56, 189, 248, 0.15)' },
-  Silent: { dot: '#A855F7', glow: 'rgba(168, 85, 247, 0.6)', text: '#C084FC', bg: 'rgba(168, 85, 247, 0.15)' },
-  'Vintage / Hall Effect': { dot: '#F43F5E', glow: 'rgba(244, 63, 94, 0.6)', text: '#FB7185', bg: 'rgba(244, 63, 94, 0.15)' },
-  Special: { dot: '#06B6D4', glow: 'rgba(6, 182, 212, 0.6)', text: '#22D3EE', bg: 'rgba(6, 182, 212, 0.15)' },
-};
-
 const CATEGORIES = ['All', 'Linear', 'Tactile', 'Clicky', 'Silent', 'Vintage / Hall Effect', 'Special'];
 
 export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSwitch, activeProfile }) => {
@@ -119,29 +110,37 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
     }, 1800);
   }, []);
 
-  const handlePointerUpdate = useCallback(
-    (clientX: number, clientY: number, isFinal = false) => {
-      const pad = padRef.current;
-      if (!pad) return;
+  const [padTilt, setPadTilt] = useState<{ rotateX: number; rotateY: number }>({ rotateX: 0, rotateY: 0 });
 
-      const rect = pad.getBoundingClientRect();
-      const rawX = ((clientX - rect.left) / rect.width) * 100;
-      // Invert Y so that top is 100 (Thick / Heavy) and bottom is 0 (Light / Soft)
-      const rawY = (1 - (clientY - rect.top) / rect.height) * 100;
+  const handlePointerUpdate = useCallback(
+    (clientX: number, clientY: number, persist = false) => {
+      if (!padRef.current) return;
+      const rect = padRef.current.getBoundingClientRect();
+      const xPx = clientX - rect.left;
+      const yPx = clientY - rect.top;
+
+      const rawX = (xPx / rect.width) * 100;
+      const rawY = 100 - (yPx / rect.height) * 100;
 
       const clampedX = Math.max(0, Math.min(100, Math.round(rawX)));
       const clampedY = Math.max(0, Math.min(100, Math.round(rawY)));
 
       setCoords({ x: clampedX, y: clampedY });
 
+      // Spatial 3D Parallax Tilt calculation (-6deg to +6deg)
+      const tiltY = ((rawX - 50) / 50) * 5;
+      const tiltX = -((rawY - 50) / 50) * 5;
+      setPadTilt({ rotateX: Math.round(tiltX * 10) / 10, rotateY: Math.round(tiltY * 10) / 10 });
+
+      // Audition sound on continuous drag or touch
       const now = performance.now();
-      if (now - lastSoundTimeRef.current > 35 || isFinal) {
+      if (now - lastSoundTimeRef.current > 65) {
         lastSoundTimeRef.current = now;
-        playCoordinateSound(clampedX, clampedY, isFinal);
+        playCoordinateSound(clampedX, clampedY, false);
       }
 
-      // Automatically persist coordinate point and custom mode
-      if (isFinal) {
+      // Auto-save and persist custom matrix coordinates to localStorage
+      if (persist) {
         const closest = findClosestSwitch(clampedX, clampedY);
         saveExperienceSettings({
           matrixCoords: { x: clampedX, y: clampedY },
@@ -161,14 +160,29 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
-    handlePointerUpdate(e.clientX, e.clientY, false);
+    if (!padRef.current) return;
+    if (isDragging) {
+      handlePointerUpdate(e.clientX, e.clientY, false);
+    } else {
+      const rect = padRef.current.getBoundingClientRect();
+      const rawX = ((e.clientX - rect.left) / rect.width) * 100;
+      const rawY = 100 - ((e.clientY - rect.top) / rect.height) * 100;
+      const tiltY = ((rawX - 50) / 50) * 4;
+      const tiltX = -((rawY - 50) / 50) * 4;
+      setPadTilt({ rotateX: Math.round(tiltX * 10) / 10, rotateY: Math.round(tiltY * 10) / 10 });
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     setIsDragging(false);
     handlePointerUpdate(e.clientX, e.clientY, true);
+  };
+
+  const handlePadLeave = () => {
+    if (!isDragging) {
+      setPadTilt({ rotateX: 0, rotateY: 0 });
+    }
   };
 
   const applySwitch = (sw: SwitchCoordinate) => {
@@ -206,6 +220,15 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
   const estimatedForce = Math.round(35 + (coords.y / 100) * 45); // 35g to 80g
   const estimatedPitchHz = Math.round(120 + Math.pow(coords.x / 100, 1.8) * 2000);
 
+  // Spatial Stereo Pan Value (-100 to +100)
+  const spatialPanPercent = Math.round((coords.x - 50) * 2);
+  const spatialPanLabel =
+    spatialPanPercent < -8
+      ? `◀ Left ${Math.abs(spatialPanPercent)}%`
+      : spatialPanPercent > 8
+      ? `Right ${spatialPanPercent}% ▶`
+      : `● Center (0%)`;
+
   // VU Meter segment count (18 total: 10 green, 5 yellow, 3 red)
   const totalBars = 18;
   const activeBars = Math.round((peakLevel / 100) * totalBars);
@@ -219,10 +242,10 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-[#3C6B4D] text-white shadow-sm'
-                  : 'bg-[#18191B] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30]'
+                  ? 'bg-[#3C6B4D] text-white shadow-md shadow-[#3C6B4D]/30 border border-[#3C6B4D]'
+                  : 'bg-[#18191B] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 border border-[#2A2D30]'
               }`}
             >
               {cat}
@@ -233,8 +256,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
         <div className="flex items-center gap-3 ml-auto">
           {/* Live Auto-Saved Indicator */}
           {justSaved && (
-            <span className="flex items-center gap-1 text-[10px] font-bold text-[#3C6B4D] bg-[#3C6B4D]/15 px-2.5 py-0.5 rounded-full border border-[#3C6B4D]/30 animate-in fade-in zoom-in-95 duration-150">
-              <CheckCircle2 className="w-3 h-3 text-[#3C6B4D]" />
+            <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#6EC48E] bg-[#3C6B4D]/20 px-3 py-0.5 rounded-full border border-[#3C6B4D]/40 animate-in fade-in zoom-in-95 duration-150 shadow-[0_0_12px_rgba(60,107,77,0.3)]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#6EC48E]" />
               <span>Location Saved & Active</span>
             </span>
           )}
@@ -253,37 +276,46 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
       </div>
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* 2D ACOUSTIC MATRIX PAD WITH DOT-DOT WALLS BACKGROUND */}
+      {/* 2D ACOUSTIC MATRIX PAD WITH 3D SPATIAL PARALLAX & GLOW */}
       {/* ════════════════════════════════════════════════════════════ */}
-      <div className="relative w-full rounded-2xl sm:rounded-3xl border border-[#2A2D30] bg-[#111213] p-4 sm:p-6 overflow-hidden shadow-2xl select-none">
-        {/* Dotted Grid Wallpaper Background */}
+      <div
+        className="relative w-full rounded-2xl sm:rounded-3xl border border-[#2A2D30] bg-[#111213] p-4 sm:p-6 overflow-hidden shadow-2xl select-none transition-transform duration-300 ease-out"
+        style={{
+          perspective: '1000px',
+          transform: `perspective(1000px) rotateX(${padTilt.rotateX}deg) rotateY(${padTilt.rotateY}deg)`,
+        }}
+      >
+        {/* Dotted Grid Wallpaper Background with Ambient Vignette */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-65"
+          className="absolute inset-0 pointer-events-none opacity-60"
           style={{
             backgroundImage: `
-              radial-gradient(circle, rgba(60, 107, 77, 0.4) 1.5px, transparent 1.5px),
-              radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
+              radial-gradient(circle, rgba(255, 255, 255, 0.25) 1.2px, transparent 1.2px),
+              radial-gradient(circle, rgba(60, 107, 77, 0.45) 1.8px, transparent 1.8px)
             `,
-            backgroundSize: '24px 24px, 12px 12px',
-            backgroundPosition: '0 0, 6px 6px',
+            backgroundSize: '20px 20px, 40px 40px',
+            backgroundPosition: '0 0, 10px 10px',
           }}
         />
 
+        {/* Ambient Radial Center Glow */}
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(60,107,77,0.18)_0%,transparent_70%)]" />
+
         {/* Quadrant Axis Lines */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#2A2D30]/80 pointer-events-none" />
-        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#2A2D30]/80 pointer-events-none" />
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#2A2D30] to-transparent pointer-events-none" />
+        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[1px] bg-gradient-to-b from-transparent via-[#2A2D30] to-transparent pointer-events-none" />
 
         {/* Quadrant Watermark Labels */}
-        <div className="absolute top-3 left-4 text-[9px] font-mono font-bold tracking-widest text-[#3C6B4D]/60 uppercase pointer-events-none">
+        <div className="absolute top-3 left-4 text-[9px] font-mono font-bold tracking-widest text-white/40 uppercase pointer-events-none">
           Deep Thock • Thick Heavy (80g)
         </div>
-        <div className="absolute top-3 right-4 text-[9px] font-mono font-bold tracking-widest text-[#38BDF8]/60 uppercase pointer-events-none text-right">
+        <div className="absolute top-3 right-4 text-[9px] font-mono font-bold tracking-widest text-white/40 uppercase pointer-events-none text-right">
           Crisp Clack • High Force
         </div>
-        <div className="absolute bottom-3 left-4 text-[9px] font-mono font-bold tracking-widest text-[#A855F7]/60 uppercase pointer-events-none">
+        <div className="absolute bottom-3 left-4 text-[9px] font-mono font-bold tracking-widest text-white/40 uppercase pointer-events-none">
           Muted Stealth • Soft Cushion (35g)
         </div>
-        <div className="absolute bottom-3 right-4 text-[9px] font-mono font-bold tracking-widest text-[#06B6D4]/60 uppercase pointer-events-none text-right">
+        <div className="absolute bottom-3 right-4 text-[9px] font-mono font-bold tracking-widest text-white/40 uppercase pointer-events-none text-right">
           Rapid Chime • Ultra Light
         </div>
 
@@ -301,23 +333,29 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onPointerLeave={handlePadLeave}
           className="relative w-full h-[280px] sm:h-[340px] cursor-crosshair touch-none"
         >
           {/* Laser Crosshairs Tracking Active Puck */}
           <div
-            className="absolute inset-y-0 w-[1px] bg-[#3C6B4D]/40 pointer-events-none transition-all duration-75"
+            className="absolute inset-y-0 w-[1px] bg-gradient-to-b from-transparent via-[#6EC48E]/70 to-transparent pointer-events-none transition-all duration-75 shadow-[0_0_8px_#3C6B4D]"
             style={{ left: `${coords.x}%` }}
           />
           <div
-            className="absolute inset-x-0 h-[1px] bg-[#3C6B4D]/40 pointer-events-none transition-all duration-75"
+            className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#6EC48E]/70 to-transparent pointer-events-none transition-all duration-75 shadow-[0_0_8px_#3C6B4D]"
             style={{ top: `${100 - coords.y}%` }}
           />
 
-          {/* 40 Plotted Switch Pins */}
+          {/* 40 Plotted Switch Pins with Unified Premium White Glow */}
           {filteredSwitches.map((sw) => {
             const isCurrent = (activeProfile || settings.profile) === sw.id;
             const isNearest = nearestSwitch.id === sw.id;
-            const color = CATEGORY_COLORS[sw.category] || CATEGORY_COLORS.Linear;
+            
+            // Calculate Euclidean distance to puck for proximity lighting
+            const dx = sw.x - coords.x;
+            const dy = sw.y - coords.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const isClose = dist < 14;
 
             return (
               <div
@@ -334,29 +372,29 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
                   top: `${100 - sw.y}%`,
                 }}
               >
-                {/* Node Dot */}
+                {/* Unified Luminous Node Dot */}
                 <div
-                  className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  className={`relative rounded-full flex items-center justify-center transition-all duration-300 ${
                     isCurrent
-                      ? 'scale-125 ring-4 ring-[#3C6B4D]/60 shadow-[0_0_15px_#3C6B4D]'
-                      : isNearest
-                      ? 'scale-110 ring-2 ring-white/50'
-                      : 'hover:scale-125'
+                      ? 'w-4 h-4 sm:w-5 sm:h-5 bg-[#3C6B4D] ring-4 ring-white/40 shadow-[0_0_18px_#ffffff,0_0_30px_#3C6B4D]'
+                      : isNearest || isClose
+                      ? 'w-3.5 h-3.5 sm:w-4 sm:h-4 bg-white ring-2 ring-[#3C6B4D]/80 shadow-[0_0_14px_#ffffff,0_0_24px_rgba(60,107,77,0.7)] scale-110'
+                      : 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white/80 border border-white/60 hover:bg-white hover:scale-125 shadow-[0_0_8px_rgba(255,255,255,0.7),0_0_16px_rgba(60,107,77,0.35)]'
                   }`}
-                  style={{
-                    backgroundColor: isCurrent ? '#3C6B4D' : color.dot,
-                    boxShadow: isCurrent ? '0 0 12px #3C6B4D' : `0 0 6px ${color.glow}`,
-                  }}
                 >
-                  {isCurrent && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
+                  {isCurrent ? (
+                    <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
+                  ) : (
+                    <div className="w-1 h-1 rounded-full bg-white/90" />
+                  )}
                 </div>
 
                 {/* Subtle Mini Label on Node */}
                 <span
-                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold whitespace-nowrap pointer-events-none transition-opacity duration-150 ${
+                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-0.5 rounded-md text-[8px] font-mono font-bold whitespace-nowrap pointer-events-none transition-all duration-150 backdrop-blur-md ${
                     isCurrent || isNearest
-                      ? 'opacity-100 bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] shadow-md z-20'
-                      : 'opacity-0 group-hover:opacity-100 bg-[#18191B]/95 text-[#A3A09B] border border-[#2A2D30] z-20'
+                      ? 'opacity-100 bg-[#18191B]/95 border border-[#3C6B4D]/60 text-[#ECEBE9] shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 scale-105'
+                      : 'opacity-0 group-hover:opacity-100 bg-[#18191B]/90 text-[#ECEBE9] border border-[#2A2D30] z-20'
                   }`}
                 >
                   {sw.name.replace('Gateron ', '').replace('Cherry MX ', 'MX ')}
@@ -365,7 +403,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             );
           })}
 
-          {/* Active Draggable Crosshair Puck */}
+          {/* Active Draggable 3D Spatial Crosshair Puck */}
           <div
             className={`absolute -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none transition-transform duration-75 ${
               isDragging ? 'scale-125' : 'scale-100'
@@ -376,11 +414,13 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             }}
           >
             <div className="relative flex items-center justify-center">
-              {/* Outer pulsing radar ring */}
-              <div className="absolute w-8 h-8 rounded-full border border-[#3C6B4D] animate-ping opacity-75" />
-              {/* Inner control puck */}
-              <div className="w-6 h-6 rounded-full bg-[#3C6B4D] border-2 border-white text-white flex items-center justify-center shadow-[0_0_20px_#3C6B4D]">
-                <Target className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '10s' }} />
+              {/* Outer pulsing spatial radar wave rings */}
+              <div className="absolute w-12 h-12 rounded-full border border-white/40 animate-ping opacity-60" />
+              <div className="absolute w-8 h-8 rounded-full border-2 border-[#6EC48E] animate-pulse opacity-80" />
+              
+              {/* Center Holographic Target Puck */}
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#3C6B4D] to-[#56976d] border-2 border-white text-white flex items-center justify-center shadow-[0_0_24px_#ffffff,0_0_30px_#3C6B4D]">
+                <Target className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '8s' }} />
               </div>
             </div>
           </div>
@@ -503,69 +543,97 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
       </div>
 
       {/* ════════════════════════════════════════════════════════════ */}
-      {/* REAL-TIME TELEMETRY & NEAREST MATCH BAR */}
+      {/* REAL-TIME TELEMETRY & 3D SPATIAL AUDIO HUD */}
       {/* ════════════════════════════════════════════════════════════ */}
-      <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        {/* Telemetry Metrics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full sm:w-auto">
-          <div>
-            <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Tone / Pitch (X)</span>
-            <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1">
-              <span className="text-[#3C6B4D] font-mono">{coords.x}%</span>
-              <span>{toneLabel}</span>
-            </span>
+      <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] flex flex-col space-y-3.5">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Telemetry Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full sm:w-auto">
+            <div>
+              <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Tone / Pitch (X)</span>
+              <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1">
+                <span className="text-[#3C6B4D] font-mono">{coords.x}%</span>
+                <span>{toneLabel}</span>
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Density / Weight (Y)</span>
+              <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1">
+                <span className="text-[#3C6B4D] font-mono">{coords.y}%</span>
+                <span>{densityLabel}</span>
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Actuation Force</span>
+              <span className="text-xs font-bold text-[#ECEBE9] font-mono">
+                ~{estimatedForce}g
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Center Freq</span>
+              <span className="text-xs font-bold text-[#ECEBE9] font-mono">
+                {estimatedPitchHz} Hz
+              </span>
+            </div>
           </div>
 
-          <div>
-            <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Density / Weight (Y)</span>
-            <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1">
-              <span className="text-[#3C6B4D] font-mono">{coords.y}%</span>
-              <span>{densityLabel}</span>
-            </span>
-          </div>
+          {/* Nearest Switch Match & Action */}
+          <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[#2A2D30]">
+            <div className="text-left sm:text-right">
+              <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Closest Switch</span>
+              <span className="text-xs font-black text-[#3C6B4D] flex items-center sm:justify-end gap-1">
+                <Sparkles className="w-3 h-3 text-[#3C6B4D]" />
+                {nearestSwitch.name}
+              </span>
+            </div>
 
-          <div>
-            <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Actuation Force</span>
-            <span className="text-xs font-bold text-[#ECEBE9] font-mono">
-              ~{estimatedForce}g
-            </span>
-          </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => playCoordinateSound(coords.x, coords.y, true)}
+                className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#ECEBE9] hover:text-[#3C6B4D] transition-colors cursor-pointer"
+                title="Audition synthesized acoustic tone at current (X, Y)"
+              >
+                <Volume2 className="w-4 h-4" />
+              </button>
 
-          <div>
-            <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Center Freq</span>
-            <span className="text-xs font-bold text-[#ECEBE9] font-mono">
-              {estimatedPitchHz} Hz
-            </span>
+              <button
+                onClick={() => applySwitch(nearestSwitch)}
+                className="px-3.5 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#477e5b] text-white text-xs font-extrabold transition-all cursor-pointer shadow-md shadow-[#3C6B4D]/20 flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Apply Switch</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Nearest Switch Match & Action */}
-        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[#2A2D30]">
-          <div className="text-left sm:text-right">
-            <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Closest Switch</span>
-            <span className="text-xs font-black text-[#3C6B4D] flex items-center sm:justify-end gap-1">
-              <Sparkles className="w-3 h-3 text-[#3C6B4D]" />
-              {nearestSwitch.name}
-            </span>
+        {/* 3D Spatial Stereo Soundstage Field HUD */}
+        <div className="pt-2 border-t border-[#2A2D30]/60 flex items-center justify-between gap-4 text-[10px] font-mono">
+          <span className="text-[#72706C] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0">
+            <span className="w-2 h-2 rounded-full bg-[#3C6B4D] animate-pulse" />
+            3D Spatial Audio Pan
+          </span>
+
+          <div className="flex items-center gap-2 flex-1 max-w-xs">
+            <span className="text-[#72706C] font-bold">L</span>
+            <div className="relative flex-1 h-1.5 bg-[#111213] rounded-full border border-[#2A2D30] overflow-hidden">
+              {/* Center divider notch */}
+              <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-[#2A2D30]" />
+              {/* Spatial Balance Dot */}
+              <div
+                className="absolute top-0 bottom-0 w-2.5 rounded-full bg-gradient-to-r from-[#6EC48E] to-white shadow-[0_0_8px_#ffffff] -translate-x-1/2 transition-all duration-75"
+                style={{ left: `${coords.x}%` }}
+              />
+            </div>
+            <span className="text-[#72706C] font-bold">R</span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => playCoordinateSound(coords.x, coords.y, true)}
-              className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#ECEBE9] hover:text-[#3C6B4D] transition-colors cursor-pointer"
-              title="Audition synthesized acoustic tone at current (X, Y)"
-            >
-              <Volume2 className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => applySwitch(nearestSwitch)}
-              className="px-3.5 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#477e5b] text-white text-xs font-extrabold transition-all cursor-pointer shadow-md shadow-[#3C6B4D]/20 flex items-center gap-1.5"
-            >
-              <Check className="w-3.5 h-3.5" />
-              <span>Apply Switch</span>
-            </button>
-          </div>
+          <span className="font-bold text-[#6EC48E] shrink-0 text-right min-w-[95px]">
+            {spatialPanLabel}
+          </span>
         </div>
       </div>
 
