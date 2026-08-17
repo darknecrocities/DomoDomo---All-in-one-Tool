@@ -1,5 +1,17 @@
 [
   {
+    "hash": "dea8390",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "fix(audio): decouple matrix coordinates from spatial pan to ensure 100% dynamic stereo tracking across card positions"
+  },
+  {
+    "hash": "23e7570",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "1272792",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-17",
     "author": "darknecrocities",
     "message": "docs(blog): credit Keeby creator Adrian Angelo Abelarde and link to getkeeby.com in SFX launch post"
-  },
-  {
-    "hash": "00a82c7",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "86ba342",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "docs(blog): add Keeby-inspired Acoustic SFX Studio launch announcement and update MCP CORS allowlist"
   }
 ]
