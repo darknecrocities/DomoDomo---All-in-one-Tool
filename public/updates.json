@@ -1,5 +1,29 @@
 [
   {
+    "hash": "0001c88",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "feat(audio): add Global Mechanical Switch SFX Engine, 2D Acoustic Matrix Pad, and transparent onboarding mascot"
+  },
+  {
+    "hash": "102c263",
+    "date": "2026-08-15",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "39a7160",
+    "date": "2026-08-15",
+    "author": "darknecrocities",
+    "message": "feat(branding): add Abakada.org featured badge and blog post"
+  },
+  {
+    "hash": "8a8fb3e",
+    "date": "2026-08-06",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "ecb824d",
     "date": "2026-08-06",
     "author": "darknecrocities",
@@ -62,30 +86,6 @@
   {
     "hash": "541b721",
     "date": "2026-08-05",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "756dbce",
-    "date": "2026-08-05",
-    "author": "darknecrocities",
-    "message": "feat(ai-hub): add 15 dynamic local AI tools, 5 categorized sidebar sections, expanded agent swarm orchestrator"
-  },
-  {
-    "hash": "5c2fbe0",
-    "date": "2026-08-05",
-    "author": "RhonzKieee",
-    "message": "Merge pull request #66 from darknecrocities/docs/github-badges-update"
-  },
-  {
-    "hash": "f3336ad",
-    "date": "2026-08-05",
-    "author": "darknecrocities",
-    "message": "docs: add github badges verification marker"
-  },
-  {
-    "hash": "4fa21a2",
-    "date": "2026-08-04",
     "author": "github-actions[bot]",
     "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
