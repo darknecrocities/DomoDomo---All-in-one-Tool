@@ -60,10 +60,15 @@ export interface ExperienceSettings {
   // Mechanical Switch SFX
   profile: SoundProfile;
   volume: number; // 0.0 to 1.0
+  gainBoost: number; // 1.0 to 2.5 (Volume level amplifier if sound is too weak)
   hoverEnabled: boolean;
   clickEnabled: boolean;
   typingEnabled: boolean;
   pitchVariance: boolean;
+
+  // 2D Custom Acoustic Matrix Coordinates Persistence
+  customMatrixEnabled: boolean;
+  matrixCoords: { x: number; y: number };
 
   // Ambient Focus Soundscapes
   ambientType: AmbientType;
@@ -75,11 +80,15 @@ export interface ExperienceSettings {
 
 export const DEFAULT_EXPERIENCE_SETTINGS: ExperienceSettings = {
   profile: 'oil_king',
-  volume: 0.75,
+  volume: 0.85,
+  gainBoost: 1.25,
   hoverEnabled: true,
   clickEnabled: true,
   typingEnabled: true,
   pitchVariance: true,
+
+  customMatrixEnabled: false,
+  matrixCoords: { x: 12, y: 92 },
 
   ambientType: 'off',
   ambientVolume: 0.35,

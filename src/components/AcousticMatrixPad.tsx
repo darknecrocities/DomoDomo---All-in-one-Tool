@@ -5,18 +5,24 @@ import {
   Check,
   Target,
   RotateCcw,
+  VolumeX,
+  Gauge,
+  Zap,
+  CheckCircle2,
 } from 'lucide-react';
 import {
   SWITCH_COORDINATES,
   findClosestSwitch,
   playCoordinateSound,
   previewSoundProfile,
+  getAudioAnalyser,
   type SwitchCoordinate,
   type SoundProfile,
 } from '../utils/soundEffects';
 import {
   getExperienceSettings,
   saveExperienceSettings,
+  type ExperienceSettings,
 } from '../utils/experienceSettings';
 
 interface AcousticMatrixPadProps {
@@ -36,29 +42,82 @@ const CATEGORY_COLORS: Record<string, { dot: string; glow: string; text: string;
 const CATEGORIES = ['All', 'Linear', 'Tactile', 'Clicky', 'Silent', 'Vintage / Hall Effect', 'Special'];
 
 export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSwitch, activeProfile }) => {
-  const settings = getExperienceSettings();
-  const currentSwitch = SWITCH_COORDINATES.find((s) => s.id === (activeProfile || settings.profile)) || SWITCH_COORDINATES[0];
+  const [settings, setSettings] = useState<ExperienceSettings>(getExperienceSettings());
 
-  const [coords, setCoords] = useState<{ x: number; y: number }>({
-    x: currentSwitch.x,
-    y: currentSwitch.y,
+  // Initialize coords from saved matrixCoords if available, otherwise match current switch profile
+  const initialSwitch = SWITCH_COORDINATES.find((s) => s.id === (activeProfile || settings.profile)) || SWITCH_COORDINATES[0];
+  const [coords, setCoords] = useState<{ x: number; y: number }>(() => {
+    return settings.matrixCoords ? { ...settings.matrixCoords } : { x: initialSwitch.x, y: initialSwitch.y };
   });
 
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [hoveredSwitch, setHoveredSwitch] = useState<SwitchCoordinate | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const padRef = useRef<HTMLDivElement | null>(null);
   const lastSoundTimeRef = useRef(0);
 
-  // Sync coords if activeProfile changes externally
+  // Real-time VU Meter Peak Level State
+  const [peakLevel, setPeakLevel] = useState<number>(0);
+
+  // Listen to external settings changes
   useEffect(() => {
-    const sw = SWITCH_COORDINATES.find((s) => s.id === (activeProfile || settings.profile));
-    if (sw) {
-      setCoords({ x: sw.x, y: sw.y });
-    }
-  }, [activeProfile, settings.profile]);
+    const handleUpdate = (e: CustomEvent<ExperienceSettings>) => {
+      const updated = e.detail || getExperienceSettings();
+      setSettings(updated);
+      if (updated.matrixCoords && !isDragging) {
+        setCoords({ ...updated.matrixCoords });
+      }
+    };
+    window.addEventListener('domodomo_sfx_update' as any, handleUpdate as any);
+    return () => {
+      window.removeEventListener('domodomo_sfx_update' as any, handleUpdate as any);
+    };
+  }, [isDragging]);
+
+  // Real-time Audio Level & VU Meter Animation Frame
+  useEffect(() => {
+    let animId: number;
+    const analyser = getAudioAnalyser();
+
+    const checkLevel = () => {
+      animId = requestAnimationFrame(checkLevel);
+      if (!analyser) {
+        setPeakLevel(0);
+        return;
+      }
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+
+      let maxVal = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i];
+        if (v > maxVal) maxVal = v;
+      }
+
+      const normalizedPeak = Math.min(100, Math.round((maxVal / 255) * 100));
+      setPeakLevel((prev) => Math.max(normalizedPeak, Math.round(prev * 0.92)));
+    };
+
+    animId = requestAnimationFrame(checkLevel);
+    return () => {
+      cancelAnimationFrame(animId);
+    };
+  }, []);
 
   const nearestSwitch = findClosestSwitch(coords.x, coords.y);
+
+  const notifySaved = useCallback(() => {
+    setJustSaved(true);
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      setJustSaved(false);
+    }, 1800);
+  }, []);
 
   const handlePointerUpdate = useCallback(
     (clientX: number, clientY: number, isFinal = false) => {
@@ -76,12 +135,23 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
       setCoords({ x: clampedX, y: clampedY });
 
       const now = performance.now();
-      if (now - lastSoundTimeRef.current > 40 || isFinal) {
+      if (now - lastSoundTimeRef.current > 35 || isFinal) {
         lastSoundTimeRef.current = now;
         playCoordinateSound(clampedX, clampedY, isFinal);
       }
+
+      // Automatically persist coordinate point and custom mode
+      if (isFinal) {
+        const closest = findClosestSwitch(clampedX, clampedY);
+        saveExperienceSettings({
+          matrixCoords: { x: clampedX, y: clampedY },
+          customMatrixEnabled: true,
+          profile: closest.id,
+        });
+        notifySaved();
+      }
     },
-    []
+    [notifySaved]
   );
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -104,10 +174,26 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
   const applySwitch = (sw: SwitchCoordinate) => {
     setCoords({ x: sw.x, y: sw.y });
     previewSoundProfile(sw.id);
-    saveExperienceSettings({ profile: sw.id });
+    saveExperienceSettings({
+      profile: sw.id,
+      matrixCoords: { x: sw.x, y: sw.y },
+      customMatrixEnabled: false,
+    });
+    notifySaved();
     if (onSelectSwitch) {
       onSelectSwitch(sw.id);
     }
+  };
+
+  const handleVolumeChange = (newVol: number) => {
+    const val = Math.max(0, Math.min(1, newVol));
+    saveExperienceSettings({ volume: val });
+  };
+
+  const handleGainBoostChange = (newBoost: number) => {
+    saveExperienceSettings({ gainBoost: newBoost });
+    playCoordinateSound(coords.x, coords.y, true);
+    notifySaved();
   };
 
   const filteredSwitches = SWITCH_COORDINATES.filter(
@@ -120,9 +206,13 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
   const estimatedForce = Math.round(35 + (coords.y / 100) * 45); // 35g to 80g
   const estimatedPitchHz = Math.round(120 + Math.pow(coords.x / 100, 1.8) * 2000);
 
+  // VU Meter segment count (18 total: 10 green, 5 yellow, 3 red)
+  const totalBars = 18;
+  const activeBars = Math.round((peakLevel / 100) * totalBars);
+
   return (
     <div className="flex flex-col space-y-4">
-      {/* Category Filter Chips */}
+      {/* Category Filter Chips & Persistence Status */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
           {CATEGORIES.map((cat) => (
@@ -140,16 +230,26 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           ))}
         </div>
 
-        <button
-          onClick={() => {
-            const def = SWITCH_COORDINATES.find((s) => s.id === 'oil_king') || SWITCH_COORDINATES[0];
-            applySwitch(def);
-          }}
-          className="text-[10px] text-[#A3A09B] hover:text-[#ECEBE9] flex items-center gap-1 transition-colors ml-auto"
-        >
-          <RotateCcw className="w-3 h-3" />
-          <span>Reset Grid</span>
-        </button>
+        <div className="flex items-center gap-3 ml-auto">
+          {/* Live Auto-Saved Indicator */}
+          {justSaved && (
+            <span className="flex items-center gap-1 text-[10px] font-bold text-[#3C6B4D] bg-[#3C6B4D]/15 px-2.5 py-0.5 rounded-full border border-[#3C6B4D]/30 animate-in fade-in zoom-in-95 duration-150">
+              <CheckCircle2 className="w-3 h-3 text-[#3C6B4D]" />
+              <span>Location Saved & Active</span>
+            </span>
+          )}
+
+          <button
+            onClick={() => {
+              const def = SWITCH_COORDINATES.find((s) => s.id === 'oil_king') || SWITCH_COORDINATES[0];
+              applySwitch(def);
+            }}
+            className="text-[10px] text-[#A3A09B] hover:text-[#ECEBE9] flex items-center gap-1 transition-colors cursor-pointer"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Reset Grid</span>
+          </button>
+        </div>
       </div>
 
       {/* ════════════════════════════════════════════════════════════ */}
@@ -288,6 +388,121 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
       </div>
 
       {/* ════════════════════════════════════════════════════════════ */}
+      {/* REAL-TIME AUDIO VOLUME METER & GAIN BOOSTER BAR */}
+      {/* ════════════════════════════════════════════════════════════ */}
+      <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] space-y-3.5">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <Gauge className="w-4 h-4 text-[#3C6B4D]" />
+            <h4 className="text-xs font-bold text-[#ECEBE9]">Real-Time Audio Output Level (VU Meter)</h4>
+          </div>
+
+          <div className="flex items-center gap-2 text-[10px] font-mono">
+            {settings.volume === 0 ? (
+              <span className="text-red-400 font-bold flex items-center gap-1">
+                <VolumeX className="w-3 h-3" /> Muted
+              </span>
+            ) : peakLevel < 15 ? (
+              <span className="text-amber-400 font-semibold">
+                ⚠️ Low Level (Weak) — Increase Booster Below
+              </span>
+            ) : (
+              <span className="text-[#6EC48E] font-semibold flex items-center gap-1">
+                <Check className="w-3 h-3 text-[#3C6B4D]" /> Optimal Resonance ({peakLevel}%)
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* 18-Segment High-Precision Stereo LED VU Meter */}
+        <div className="flex items-center gap-1 p-2 rounded-xl bg-[#111213] border border-[#2A2D30]">
+          {Array.from({ length: totalBars }).map((_, i) => {
+            const isLit = i < activeBars;
+            // First 10 bars: Green, Next 5 bars: Yellow/Amber, Last 3 bars: Red
+            let color = '#3C6B4D';
+            let glow = 'rgba(60, 107, 77, 0.8)';
+            if (i >= 15) {
+              color = '#EF4444';
+              glow = 'rgba(239, 68, 68, 0.8)';
+            } else if (i >= 10) {
+              color = '#F59E0B';
+              glow = 'rgba(245, 158, 11, 0.8)';
+            }
+
+            return (
+              <div
+                key={i}
+                className="flex-1 h-3 rounded-sm transition-all duration-75"
+                style={{
+                  backgroundColor: isLit ? color : 'rgba(255, 255, 255, 0.05)',
+                  boxShadow: isLit ? `0 0 6px ${glow}` : 'none',
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Volume & Audio Gain Multiplier Controls */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          {/* Master Volume Slider */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                <Volume2 className="w-3.5 h-3.5 text-[#3C6B4D]" />
+                Master Volume Level
+              </span>
+              <span className="font-mono text-[11px] text-[#A3A09B]">
+                {Math.round(settings.volume * 100)}%
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={settings.volume}
+              onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+              className="w-full h-2 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D] border border-[#2A2D30]"
+            />
+          </div>
+
+          {/* Audio Output Booster Multiplier */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-[#ECEBE9] flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                Audio Gain Booster (If Weak)
+              </span>
+              <span className="font-mono text-[11px] text-amber-400 font-bold">
+                {settings.gainBoost || 1.25}x Boost
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              {[
+                { label: '1.0x (Normal)', val: 1.0 },
+                { label: '1.25x (Crisp)', val: 1.25 },
+                { label: '1.5x (Loud)', val: 1.5 },
+                { label: '2.0x (Max)', val: 2.0 },
+              ].map((btn) => (
+                <button
+                  key={btn.val}
+                  onClick={() => handleGainBoostChange(btn.val)}
+                  className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer border ${
+                    (settings.gainBoost || 1.25) === btn.val
+                      ? 'bg-[#3C6B4D] text-white border-[#3C6B4D] shadow-sm'
+                      : 'bg-[#111213] text-[#A3A09B] hover:text-[#ECEBE9] border-[#2A2D30]'
+                  }`}
+                >
+                  {btn.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════ */}
       {/* REAL-TIME TELEMETRY & NEAREST MATCH BAR */}
       {/* ════════════════════════════════════════════════════════════ */}
       <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -368,7 +583,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           </div>
           <button
             onClick={() => applySwitch(hoveredSwitch)}
-            className="text-[10px] font-bold text-[#3C6B4D] hover:underline"
+            className="text-[10px] font-bold text-[#3C6B4D] hover:underline cursor-pointer"
           >
             Select
           </button>
