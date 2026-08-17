@@ -1879,6 +1879,7 @@ const INTERACTIVE_SELECTOR = [
   '[data-thock="true"]',
   '.tool-card',
   '.glass-card',
+  '.glass-card-hover',
   '.category-pill',
   'nav a',
   'header button',
@@ -1889,21 +1890,37 @@ const INTERACTIVE_SELECTOR = [
   'summary',
   '[tabindex]',
   '.interactive',
+  '.emil-card-enter',
 ].join(', ');
+
+let audioUnlocked = false;
+
+export function forceUnlockAudio() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+
+  if (!audioUnlocked) {
+    try {
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+      audioUnlocked = true;
+    } catch {}
+  }
+}
 
 /** Attach global listener to trigger sound effects across all DOM interactions */
 export function setupThockAudioListener(): () => void {
   if (typeof window === 'undefined') return () => {};
 
-  const unlock = () => {
-    const ctx = getAudioContext();
-    if (ctx && ctx.state === 'suspended') {
-      ctx.resume().catch(() => {});
-    }
-  };
-
   const handlePointerOver = (e: MouseEvent) => {
-    unlock();
+    forceUnlockAudio();
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
@@ -1920,7 +1937,7 @@ export function setupThockAudioListener(): () => void {
   };
 
   const handlePointerDown = (e: MouseEvent | TouchEvent) => {
-    unlock();
+    forceUnlockAudio();
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
@@ -1946,23 +1963,25 @@ export function setupThockAudioListener(): () => void {
   ];
 
   unlockEvents.forEach((evt) => {
-    window.addEventListener(evt, unlock, { passive: true, capture: true, once: true });
+    window.addEventListener(evt, forceUnlockAudio, { passive: true, capture: true });
+    document.addEventListener(evt, forceUnlockAudio, { passive: true, capture: true });
   });
 
   // Continuous hover & click interaction listeners
-  window.addEventListener('mouseover', handlePointerOver, { passive: true });
-  window.addEventListener('pointerover', handlePointerOver as any, { passive: true });
-  window.addEventListener('mousedown', handlePointerDown, { passive: true });
-  window.addEventListener('touchstart', handlePointerDown, { passive: true });
+  window.addEventListener('mouseover', handlePointerOver, { passive: true, capture: true });
+  window.addEventListener('pointerover', handlePointerOver as any, { passive: true, capture: true });
+  window.addEventListener('mousedown', handlePointerDown, { passive: true, capture: true });
+  window.addEventListener('touchstart', handlePointerDown, { passive: true, capture: true });
 
   return () => {
     unlockEvents.forEach((evt) => {
-      window.removeEventListener(evt, unlock, { capture: true } as any);
+      window.removeEventListener(evt, forceUnlockAudio, { capture: true } as any);
+      document.removeEventListener(evt, forceUnlockAudio, { capture: true } as any);
     });
-    window.removeEventListener('mouseover', handlePointerOver);
-    window.removeEventListener('pointerover', handlePointerOver as any);
-    window.removeEventListener('mousedown', handlePointerDown);
-    window.removeEventListener('touchstart', handlePointerDown);
+    window.removeEventListener('mouseover', handlePointerOver, { capture: true } as any);
+    window.removeEventListener('pointerover', handlePointerOver as any, { capture: true } as any);
+    window.removeEventListener('mousedown', handlePointerDown, { capture: true } as any);
+    window.removeEventListener('touchstart', handlePointerDown, { capture: true } as any);
   };
 }
 
