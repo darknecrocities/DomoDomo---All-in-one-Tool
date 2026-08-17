@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TransparentVideoMascot } from './TransparentVideoMascot';
 import welcomeDomo from '../assets/domotest.webm';
+import { forceUnlockAudio } from '../utils/soundEffects';
 
 export const DoorSplash = () => {
   const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>('walk');
@@ -46,6 +47,7 @@ export const DoorSplash = () => {
 
   return (
     <div 
+      onPointerDown={forceUnlockAudio}
       className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none"
       style={{
         backgroundColor: '#0d0e0f',
@@ -58,6 +60,7 @@ export const DoorSplash = () => {
 
       {/* Left Door */}
       <div
+        onPointerDown={forceUnlockAudio}
         className="absolute top-0 left-0 w-1/2 h-full border-r-2 transition-transform pointer-events-auto flex items-center justify-end"
         style={{
           transform: areDoorsOpen ? 'translateX(-100%)' : 'translateX(0)',
@@ -109,6 +112,7 @@ export const DoorSplash = () => {
 
       {/* Right Door */}
       <div
+        onPointerDown={forceUnlockAudio}
         className="absolute top-0 right-0 w-1/2 h-full border-l-2 transition-transform pointer-events-auto flex items-center justify-start"
         style={{
           transform: areDoorsOpen ? 'translateX(100%)' : 'translateX(0)',

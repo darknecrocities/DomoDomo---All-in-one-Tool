@@ -1,5 +1,35 @@
 [
   {
+    "hash": "1e95be4",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "chore(sw): update service worker cache timestamp"
+  },
+  {
+    "hash": "0a8bc37",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "feat(audio): add 2D acoustic matrix coordinate persistence, live stereo VU meter, and audio gain booster"
+  },
+  {
+    "hash": "7f20d81",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "e880a45",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "fix(audio): auto-unlock audio on first mouse move / interaction and prevent dropped initial sounds"
+  },
+  {
+    "hash": "cb6759a",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "0001c88",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -58,35 +88,5 @@
     "date": "2026-08-06",
     "author": "darknecrocities",
     "message": "fix(branding): update AppBuildersPH badge target link to daily top apps 2026-08-06"
-  },
-  {
-    "hash": "e1d8713",
-    "date": "2026-08-06",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "98e3e9e",
-    "date": "2026-08-06",
-    "author": "darknecrocities",
-    "message": "feat(branding): add AppBuildersPH featured badge linking to featured blog post"
-  },
-  {
-    "hash": "08dd5ab",
-    "date": "2026-08-05",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "e7ea507",
-    "date": "2026-08-05",
-    "author": "darknecrocities",
-    "message": "docs(blog): add featured AppBuildersPH editorial review for DomoDomo"
-  },
-  {
-    "hash": "541b721",
-    "date": "2026-08-05",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]
