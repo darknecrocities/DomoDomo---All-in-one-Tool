@@ -13,6 +13,125 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'introducing-acoustic-sfx-keeby-inspired-mechanical-sound-studio',
+    title: 'Introducing Acoustic SFX Studio: 40 Mechanical Keyboard Switches, 2D Sound Matrix & Keeby-Inspired Audio Synthesis',
+    excerpt: 'DomoDomo releases the Acoustic SFX & Mechanical Switch Studio, drawing inspiration from Keeby to bring 40 enthusiast switch profiles, an interactive 2D Acoustic Matrix, real-time stereo VU meter, and 100% client-side Web Audio synthesis to your browser.',
+    date: 'August 17, 2026',
+    readTime: '5 min read',
+    category: 'Product Updates',
+    author: 'DomoDomo Engineering',
+    keywords: 'keeby, mechanical keyboard sounds, thock, clack, gateron oil king, holy panda, boba u4t, 2d acoustic matrix, sfx studio, web audio api, domodomo',
+    content: `# Introducing Acoustic SFX Studio: 40 Mechanical Keyboard Switches, 2D Sound Matrix & Keeby-Inspired Audio Synthesis
+
+We are thrilled to launch the **Acoustic SFX & Mechanical Switch Studio**, a major upgrade to DomoDomo that transforms everyday browser navigation into a deeply satisfying, tactile acoustic experience!
+
+Drawing inspiration from **Keeby** (*keeb.gg*), the beloved community mechanical keyboard sound simulator, DomoDomo now features **40 procedurally synthesized switch profiles**, an interactive **2D Acoustic Matrix Pad**, a **Real-Time Stereo LED VU Volume Meter**, and **Generative Ambient Focus Soundscapes**—all executing **100% client-side** using the native Web Audio API with zero latency and zero cloud assets.
+
+---
+
+## ⌨️ Inspired by Keeby & The Enthusiast Sound Experience
+
+For software engineers, writers, and power users, the acoustic signature of a finely tuned mechanical keyboard—the deep marbly *thock* of a lubed nylon switch, the snappy pop of a tactile bump, or the crisp chime of a steel clickbar—brings focus, tactile rhythm, and sheer satisfaction to long sessions at the terminal.
+
+We built the **Acoustic SFX Studio** to celebrate that culture, bringing high-fidelity, real-time keyboard acoustic synthesis directly into your browser workflow. Every button click, tab switch, card hover, and keypress across DomoDomo's 230+ tools can now respond with authentic acoustic feedback.
+
+---
+
+## 🎛️ 40 Real-World Enthusiast Switch Profiles
+
+Modeled precisely after community-favorite custom switches, our client-side synthesis engine features 40 distinct profiles across 6 dedicated categories:
+
+### 1. Linear (Smooth & Deep Bottom-Out)
+- **Gateron Oil King:** Deep, heavy, factory-lubed ultra-thocky bottom-out acoustic.
+- **Gateron Ink Black V2:** Resonant smoky housing with deep low-end pitch.
+- **NK Creamsicle:** POM Cream stem in Tangerine housing for sharp marbly clack.
+- **C3 Banana Split (Macho):** Creamy nylon/polycarbonate blend with distinctive balanced pop.
+- **C3 Tangerine 67g:** High-pitched crisp UHMWPE housing clack with rapid rebound.
+- **Everglide Aqua King:** Clear polycarbonate housing with solid glassy clack.
+- **Gateron CJ:** Snappy POM stem with bright distinctive clack.
+- **Gateron Milky Yellow:** Warm, buttery smooth nylon-housing gentle pop.
+
+### 2. Tactile (Rounded & Sharp D-Bumps)
+- **Holy Panda:** Iconic snappy tactile bump with explosive rounded bottom-out pop.
+- **Gazzew Boba U4T:** Dense, creamy acoustic signature with distinct tactile D-bump.
+- **Durock T1:** Sharp tactile bump with aggressive bottom-out clack.
+- **Drop Halo True:** Heavy progressive spring with firm bottom cushion.
+- **Zealios V2 67g:** Ultra-crisp metallic leaf snap and high tactile definition.
+- **Cherry MX Brown:** Subtle tactile bump with light spring weight.
+- **Epomaker Wisteria:** Hollow woody thock with snappy return.
+
+### 3. Clicky (Crisp Clickbars & Vintage Jackets)
+- **Kailh Box Jade:** Explosive thick clickbar snap with sharp gunshot signature.
+- **Kailh Box Navy:** Extra-thick clickbar with heavy steel spring thud.
+- **Kailh Box White:** Light, delicate, crisp clickbar chime.
+- **Cherry MX Blue:** Classic click-jacket rattle and high-pitch snap.
+- **Matias / ALPS Click:** Vintage ALPS leaf chime with hollow chamber resonance.
+- **Akko CS Jelly Blue:** Modern stiff high-frequency clack.
+- **Sanwa Arcade Microswitch:** Japanese arcade cabinet button slap.
+
+### 4. Silent (Cushioned Velvet Stealth)
+- **Gazzew Boba U4 Silent:** Silicone cushioned ultra-quiet stealth thud.
+- **Outemu Silent Peach V2:** Whisper-soft silicone pad landing.
+- **Durock Silent Linear:** Muted linear glide with silent dampening.
+- **ASMR Velvet Whisper:** Ultra-soft velvet feather cushion.
+
+### 5. Vintage & Hall Effect (Historical Relics & Magnetic Hall Sensors)
+- **IBM Model M Buckling Spring:** Resonant steel spring buckling ping and heavy barrel strike.
+- **IBM 5251 Beam Spring:** 1970s holy grail with magnetic solenoid punch and beam click.
+- **Topre 45g Electro-Capacitive:** Pillowy rubber-dome thock with deep hollow pop.
+- **Symbolics Space Cadet:** 1980s LISP machine inductive switch with heavy punch.
+- **Wooting Lekker Hall Effect:** Frictionless magnetic linear with soft magnetic chime.
+- **Vintage Typewriter:** Mechanical steel lever strike on ribbon platen.
+- **Curta Mechanical Gear:** Precision brass ratchet gear click with clockwork chime.
+
+### 6. Special & Sci-Fi (Futuristic & Natural UI Tones)
+- **Bubble Pebble:** Organic liquid water droplet pop.
+- **Cyberpunk Pulse:** Futuristic hologram laser pulse.
+- **Quantum Computing Relay:** Plasma-charged subatomic micro-tick.
+- **Minimal Neo Glass:** Modern UI crystal glass ping.
+- **Vintage Cassette Deck:** Plastic tape transport mechanism latch.
+- **Zen Bamboo Tap:** Natural hollow bamboo water garden tap.
+- **Sub-Bass Haptic Thump:** Cinematic 45Hz sub-bass pressure pulse.
+
+---
+
+## 🌐 The 2D Acoustic Matrix Pad (X-Y Sound Graph)
+
+At the heart of the SFX Studio is the **2D Acoustic Matrix Pad**, rendered over an architectural **dot-dot walls background**:
+
+- **X Axis (Pitch & Tone Spectrum):** Smoothly transitions from **Deep Low Thock (120Hz Bass)** on the left, through **Creamy Mid-Pop (500Hz)**, to **Crisp High Clack & Click (2.5kHz)** on the right.
+- **Y Axis (Density & Actuation Weight):** Ranges from **Ultra Light & Cushioned (35g)** at the bottom to **Thick, Heavy Solid Bottom-Out (80g+)** at the top.
+- **Draggable Crosshair Puck:** Drag or click anywhere across the dot grid to continuously synthesize parametric thocks and clacks in real time.
+- **Automatic Persistence:** Placing the puck anywhere on the grid automatically persists your custom coordinates to \`localStorage\`, so every button and card interaction across DomoDomo uses your exact custom tone!
+
+---
+
+## 📊 Real-Time Stereo LED VU Meter & Gain Booster
+
+To guarantee optimal acoustics across all laptop speakers, studio monitors, and headphones:
+- **18-Segment Hardware-Grade VU Meter:** Live multi-color LED ladder (Green $\\to$ Yellow $\\to$ Red) analyzing output frequency and peak resonance in real time.
+- **Audio Gain Multipliers (1.0x to 2.0x):** If your device's audio output is quiet, tap the quick Gain Booster pills (*1.0x Normal*, *1.25x Crisp*, *1.5x Loud*, *2.0x Max*) to instantly amplify presence.
+
+---
+
+## 🌧️ Generative Ambient Focus Soundscapes
+
+Need to drown out background noise while coding or reading? The SFX Studio includes 4 generative, infinite procedural audio environments:
+1. **Lo-Fi Rain:** Pink noise filtered through dual lowpass resonance curves to simulate cozy window rain.
+2. **Cozy Coffee:** Multi-band ambient cafe atmosphere.
+3. **Server Drone:** Resonant 60Hz/120Hz datacenter harmonic hum.
+4. **Binaural Alpha (432Hz):** Phase-offset sine wave carrier tuned for deep cognitive focus.
+
+---
+
+## 🔒 100% Client-Side Privacy Guarantee
+
+Like all DomoDomo utilities, the Acoustic SFX Studio is **100% local-first**. There are no heavy MP3/WAV audio files downloaded from external servers. Every sound is generated mathematically on-the-fly inside your browser's Web Audio sandbox using oscillators, biquad filters, and envelope shapers.
+
+Try it out today! Click the **SFX Hub** icon in the bottom-right corner or the speaker icon in the top navigation bar to tune your mechanical switch workspace.
+`
+  },
+  {
     slug: 'abakada-org-supports-domodomo-library-addition',
     title: 'Featured on Abakada.org: Supporting DomoDomo in the Free & Open-Source Digital Library',
     excerpt: 'Abakada.org supports DomoDomo by adding it to their library, making another practical, free, and open-source tool easier for Filipino students and community members to discover and use.',

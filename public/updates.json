@@ -1,5 +1,17 @@
 [
   {
+    "hash": "7f49c3f",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "fix(audio): add silent buffer priming, glass card hover matching, and door splash unlock on fresh load"
+  },
+  {
+    "hash": "ac9f3e5",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "1e95be4",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-06",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "9b40081",
-    "date": "2026-08-06",
-    "author": "darknecrocities",
-    "message": "chore(assets): add appbuildersph_logo.png and updated sitemap"
-  },
-  {
-    "hash": "eb74d24",
-    "date": "2026-08-06",
-    "author": "darknecrocities",
-    "message": "fix(branding): update AppBuildersPH badge target link to daily top apps 2026-08-06"
   }
 ]
