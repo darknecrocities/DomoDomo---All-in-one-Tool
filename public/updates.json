@@ -1,5 +1,17 @@
 [
   {
+    "hash": "fceb182",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "feat(audio): add real-time mechanical typing sound effects with key-specific pitch tuning and settings toggle"
+  },
+  {
+    "hash": "75b5c12",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "585137d",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-17",
     "author": "github-actions[bot]",
     "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "0001c88",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "feat(audio): add Global Mechanical Switch SFX Engine, 2D Acoustic Matrix Pad, and transparent onboarding mascot"
-  },
-  {
-    "hash": "102c263",
-    "date": "2026-08-15",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
   }
 ]

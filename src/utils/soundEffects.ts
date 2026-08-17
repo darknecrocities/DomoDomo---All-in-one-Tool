@@ -1915,12 +1915,18 @@ export function playKeySound(keyEvent?: KeyboardEvent) {
   executeSwitchSynth(ctx, settings.profile, true, false, settings);
 }
 
+let lastClickSoundTime = 0;
+let lastTouchTimestamp = 0;
+
 export function playHoverSound(overrideProfile?: SoundProfile) {
   const settings = getExperienceSettings();
   playSwitchSound(overrideProfile || settings.profile, false, false);
 }
 
 export function playClickSound(overrideProfile?: SoundProfile) {
+  const now = performance.now();
+  if (now - lastClickSoundTime < 45) return; // Prevent duplicate multi-event click bursts
+  lastClickSoundTime = now;
   const settings = getExperienceSettings();
   playSwitchSound(overrideProfile || settings.profile, true, false);
 }
@@ -1983,6 +1989,10 @@ export function setupThockAudioListener(): () => void {
   if (typeof window === 'undefined') return () => {};
 
   const handlePointerOver = (e: MouseEvent) => {
+    // Ignore emulated mouseover on mobile touch devices or right after a touch tap
+    if (performance.now() - lastTouchTimestamp < 800) {
+      return;
+    }
     forceUnlockAudio();
     const target = e.target as HTMLElement | null;
     if (!target) return;
@@ -1999,7 +2009,24 @@ export function setupThockAudioListener(): () => void {
     }
   };
 
-  const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+  const handleTouchStart = (e: TouchEvent) => {
+    lastTouchTimestamp = performance.now();
+    forceUnlockAudio();
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+
+    const interactive = target.closest(INTERACTIVE_SELECTOR);
+    if (interactive) {
+      playClickSound();
+      triggerHaptic('medium');
+    }
+  };
+
+  const handleMouseDown = (e: MouseEvent) => {
+    // If a touch tap occurred within 800ms, ignore this synthesized mouse click to prevent double audio
+    if (performance.now() - lastTouchTimestamp < 800) {
+      return;
+    }
     forceUnlockAudio();
     const target = e.target as HTMLElement | null;
     if (!target) return;
@@ -2039,11 +2066,10 @@ export function setupThockAudioListener(): () => void {
     document.addEventListener(evt, forceUnlockAudio, { passive: true, capture: true });
   });
 
-  // Continuous interaction & typing listeners
+  // Clean separation of touch, mouse, and typing events
   window.addEventListener('mouseover', handlePointerOver, { passive: true, capture: true });
-  window.addEventListener('pointerover', handlePointerOver as any, { passive: true, capture: true });
-  window.addEventListener('mousedown', handlePointerDown, { passive: true, capture: true });
-  window.addEventListener('touchstart', handlePointerDown, { passive: true, capture: true });
+  window.addEventListener('touchstart', handleTouchStart, { passive: true, capture: true });
+  window.addEventListener('mousedown', handleMouseDown, { passive: true, capture: true });
   window.addEventListener('keydown', handleKeyDown, { passive: true, capture: true });
 
   return () => {
@@ -2052,9 +2078,8 @@ export function setupThockAudioListener(): () => void {
       document.removeEventListener(evt, forceUnlockAudio, { capture: true } as any);
     });
     window.removeEventListener('mouseover', handlePointerOver, { capture: true } as any);
-    window.removeEventListener('pointerover', handlePointerOver as any, { capture: true } as any);
-    window.removeEventListener('mousedown', handlePointerDown, { capture: true } as any);
-    window.removeEventListener('touchstart', handlePointerDown, { capture: true } as any);
+    window.removeEventListener('touchstart', handleTouchStart, { capture: true } as any);
+    window.removeEventListener('mousedown', handleMouseDown, { capture: true } as any);
     window.removeEventListener('keydown', handleKeyDown, { capture: true } as any);
   };
 }
