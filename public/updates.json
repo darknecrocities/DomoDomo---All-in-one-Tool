@@ -1,5 +1,17 @@
 [
   {
+    "hash": "41fad23",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "fix(blog): support nested markdown link parsing in BlogPost renderer and prerender scripts"
+  },
+  {
+    "hash": "142dd68",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "28370b4",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -76,17 +88,5 @@
     "date": "2026-08-17",
     "author": "darknecrocities",
     "message": "fix(audio): add silent buffer priming, glass card hover matching, and door splash unlock on fresh load"
-  },
-  {
-    "hash": "ac9f3e5",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "1e95be4",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "chore(sw): update service worker cache timestamp"
   }
 ]
