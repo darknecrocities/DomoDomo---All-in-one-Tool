@@ -415,7 +415,7 @@ export function findClosestSwitch(x: number, y: number): SwitchCoordinate {
  * x: 0 (Deep Thock / low pitch) -> 100 (Crisp Clack / high pitch)
  * y: 0 (Light cushion) -> 100 (Thick heavy solid bottom)
  */
-export function synthParametricXY(ctx: AudioContext, now: number, vol: number, x: number, y: number, isClick = false) {
+export function synthParametricXY(ctx: AudioContext, now: number, vol: number, x: number, y: number, isClick = false, customPan?: number) {
   const normX = Math.max(0, Math.min(100, x)) / 100;
   const normY = Math.max(0, Math.min(100, y)) / 100;
 
@@ -464,20 +464,7 @@ export function synthParametricXY(ctx: AudioContext, now: number, vol: number, x
   osc.connect(filter);
   filter.connect(gain);
 
-  // 3D Spatial Stereo Panning: map x coordinate (0..100) to stereo pan (-0.85 Left to +0.85 Right)
-  if (typeof ctx.createStereoPanner === 'function') {
-    try {
-      const panner = ctx.createStereoPanner();
-      const panValue = Math.max(-0.85, Math.min(0.85, (normX - 0.5) * 1.7));
-      panner.pan.setValueAtTime(panValue, now);
-      gain.connect(panner);
-      connectToBus(ctx, panner);
-    } catch {
-      connectToBus(ctx, gain);
-    }
-  } else {
-    connectToBus(ctx, gain);
-  }
+  connectToBus(ctx, gain, customPan);
 
   osc.start(now);
   osc.stop(now + duration + 0.01);
@@ -491,7 +478,9 @@ export function playCoordinateSound(x: number, y: number, isClick = false) {
   const boost = settings.gainBoost || 1.25;
   const vol = Math.min(settings.volume * boost, 1.8);
   if (vol <= 0) return;
-  synthParametricXY(ctx, ctx.currentTime, vol, x, y, isClick);
+  const normX = Math.max(0, Math.min(100, x)) / 100;
+  const padPan = Math.max(-0.85, Math.min(0.85, (normX - 0.5) * 1.7));
+  synthParametricXY(ctx, ctx.currentTime, vol, x, y, isClick, padPan);
 }
 
 let audioCtx: AudioContext | null = null;
@@ -2122,6 +2111,14 @@ export function setupThockAudioListener(): () => void {
     playKeySound(e);
   };
 
+  const handlePointerMove = (e: MouseEvent | PointerEvent) => {
+    if (e.clientX > 0 && typeof window !== 'undefined' && window.innerWidth > 0) {
+      const ratio = e.clientX / window.innerWidth;
+      const dynamicPan = Math.max(-0.85, Math.min(0.85, (ratio - 0.5) * 1.7));
+      setSpatialPan(dynamicPan);
+    }
+  };
+
   // Eager global unlockers across all potential user events
   const unlockEvents = [
     'pointerdown',
@@ -2142,7 +2139,9 @@ export function setupThockAudioListener(): () => void {
     document.addEventListener(evt, forceUnlockAudio, { passive: true, capture: true });
   });
 
-  // Clean separation of touch, mouse, and typing events
+  // Clean separation of touch, mouse, and typing events with active spatial tracking
+  window.addEventListener('mousemove', handlePointerMove, { passive: true, capture: true });
+  window.addEventListener('pointermove', handlePointerMove, { passive: true, capture: true });
   window.addEventListener('mouseover', handlePointerOver, { passive: true, capture: true });
   window.addEventListener('touchstart', handleTouchStart, { passive: true, capture: true });
   window.addEventListener('mousedown', handleMouseDown, { passive: true, capture: true });
@@ -2153,6 +2152,8 @@ export function setupThockAudioListener(): () => void {
       window.removeEventListener(evt, forceUnlockAudio, { capture: true } as any);
       document.removeEventListener(evt, forceUnlockAudio, { capture: true } as any);
     });
+    window.removeEventListener('mousemove', handlePointerMove, { capture: true } as any);
+    window.removeEventListener('pointermove', handlePointerMove, { capture: true } as any);
     window.removeEventListener('mouseover', handlePointerOver, { capture: true } as any);
     window.removeEventListener('touchstart', handleTouchStart, { capture: true } as any);
     window.removeEventListener('mousedown', handleMouseDown, { capture: true } as any);
