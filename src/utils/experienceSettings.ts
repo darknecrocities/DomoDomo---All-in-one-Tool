@@ -127,14 +127,15 @@ export function getExperienceSettings(): ExperienceSettings {
   return { ...currentSettings };
 }
 
-/** Trigger mobile haptic feedback vibration if supported by device */
-export function triggerHaptic(type: 'light' | 'medium' | 'heavy' = 'light') {
+/** Trigger mobile web haptic feedback vibration if supported by device */
+export function triggerHaptic(type: 'light' | 'medium' | 'heavy' | 'selection' = 'light') {
   if (typeof window === 'undefined' || !currentSettings.hapticsEnabled) return;
   try {
-    if ('vibrate' in navigator) {
-      if (type === 'light') navigator.vibrate(8);
-      else if (type === 'medium') navigator.vibrate(16);
-      else if (type === 'heavy') navigator.vibrate([12, 24, 12]);
+    if ('vibrate' in navigator && typeof navigator.vibrate === 'function') {
+      if (type === 'selection') navigator.vibrate(6);
+      else if (type === 'light') navigator.vibrate(10);
+      else if (type === 'medium') navigator.vibrate(18);
+      else if (type === 'heavy') navigator.vibrate([24, 14, 24]);
     }
   } catch {}
 }
