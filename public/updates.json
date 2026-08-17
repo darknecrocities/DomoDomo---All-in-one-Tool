@@ -1,5 +1,29 @@
 [
   {
+    "hash": "28370b4",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "docs(blog): update SFX launch post author to Arron Parejas"
+  },
+  {
+    "hash": "8a86f8f",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "docs: update CONTRIBUTORS.md [skip ci]"
+  },
+  {
+    "hash": "ef4b269",
+    "date": "2026-08-17",
+    "author": "darknecrocities",
+    "message": "fix(audio): eliminate mobile double SFX bug by separating touch and synthetic mouse events, and enhance Web Haptics"
+  },
+  {
+    "hash": "d3ad27b",
+    "date": "2026-08-17",
+    "author": "github-actions[bot]",
+    "message": "chore: auto-generate public/updates.json [skip ci]"
+  },
+  {
     "hash": "fceb182",
     "date": "2026-08-17",
     "author": "darknecrocities",
@@ -64,29 +88,5 @@
     "date": "2026-08-17",
     "author": "darknecrocities",
     "message": "chore(sw): update service worker cache timestamp"
-  },
-  {
-    "hash": "0a8bc37",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "feat(audio): add 2D acoustic matrix coordinate persistence, live stereo VU meter, and audio gain booster"
-  },
-  {
-    "hash": "7f20d81",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "e880a45",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "fix(audio): auto-unlock audio on first mouse move / interaction and prevent dropped initial sounds"
-  },
-  {
-    "hash": "cb6759a",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
   }
 ]
