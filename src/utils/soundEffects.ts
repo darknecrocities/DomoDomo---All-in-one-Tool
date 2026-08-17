@@ -463,7 +463,21 @@ export function synthParametricXY(ctx: AudioContext, now: number, vol: number, x
 
   osc.connect(filter);
   filter.connect(gain);
-  connectToBus(ctx, gain);
+
+  // 3D Spatial Stereo Panning: map x coordinate (0..100) to stereo pan (-0.85 Left to +0.85 Right)
+  if (typeof ctx.createStereoPanner === 'function') {
+    try {
+      const panner = ctx.createStereoPanner();
+      const panValue = Math.max(-0.85, Math.min(0.85, (normX - 0.5) * 1.7));
+      panner.pan.setValueAtTime(panValue, now);
+      gain.connect(panner);
+      connectToBus(ctx, panner);
+    } catch {
+      connectToBus(ctx, gain);
+    }
+  } else {
+    connectToBus(ctx, gain);
+  }
 
   osc.start(now);
   osc.stop(now + duration + 0.01);
