@@ -1682,21 +1682,13 @@ export function startAmbientSoundscape(type: AmbientType, volume: number = 0.35)
 // PLAYBACK DISPATCHER (All 40 Switch Profiles)
 // ══════════════════════════════════════════════════════════════════════
 
-export function playSwitchSound(profile: SoundProfile, isClick = false, isPreview = false) {
-  if (profile === 'mute') return;
-
-  const settings = getExperienceSettings();
-  if (!isPreview) {
-    if (isClick && !settings.clickEnabled) return;
-    if (!isClick && !settings.hoverEnabled) return;
-  }
-
-  const ctx = getAudioContext();
-  if (!ctx) return;
-  if (ctx.state === 'suspended') {
-    ctx.resume().catch(() => {});
-  }
-
+function executeSwitchSynth(
+  ctx: AudioContext,
+  profile: SoundProfile,
+  isClick: boolean,
+  isPreview: boolean,
+  settings: ReturnType<typeof getExperienceSettings>
+) {
   const now = ctx.currentTime;
   const vol = isPreview ? Math.max(settings.volume, 0.85) : settings.volume;
   if (vol <= 0) return;
@@ -1829,6 +1821,28 @@ export function playSwitchSound(profile: SoundProfile, isClick = false, isPrevie
   }
 }
 
+export function playSwitchSound(profile: SoundProfile, isClick = false, isPreview = false) {
+  if (profile === 'mute') return;
+
+  const settings = getExperienceSettings();
+  if (!isPreview) {
+    if (isClick && !settings.clickEnabled) return;
+    if (!isClick && !settings.hoverEnabled) return;
+  }
+
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  if (ctx.state === 'suspended') {
+    ctx.resume().then(() => {
+      executeSwitchSynth(ctx, profile, isClick, isPreview, settings);
+    }).catch(() => {});
+    return;
+  }
+
+  executeSwitchSynth(ctx, profile, isClick, isPreview, settings);
+}
+
 export function playHoverSound(overrideProfile?: SoundProfile) {
   const settings = getExperienceSettings();
   playSwitchSound(overrideProfile || settings.profile, false, false);
@@ -1851,18 +1865,28 @@ const INTERACTIVE_SELECTOR = [
   'select',
   '.cursor-pointer',
   '[role="button"]',
+  '[role="tab"]',
+  '[role="link"]',
   '[data-thock="true"]',
   '.tool-card',
   '.glass-card',
   '.category-pill',
   'nav a',
+  'header button',
+  'header a',
+  '.btn-primary',
+  '.btn-secondary',
+  'label',
+  'summary',
+  '[tabindex]',
+  '.interactive',
 ].join(', ');
 
 /** Attach global listener to trigger sound effects across all DOM interactions */
 export function setupThockAudioListener(): () => void {
   if (typeof window === 'undefined') return () => {};
 
-  const unlockAudio = () => {
+  const unlock = () => {
     const ctx = getAudioContext();
     if (ctx && ctx.state === 'suspended') {
       ctx.resume().catch(() => {});
@@ -1870,6 +1894,7 @@ export function setupThockAudioListener(): () => void {
   };
 
   const handlePointerOver = (e: MouseEvent) => {
+    unlock();
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
@@ -1886,7 +1911,7 @@ export function setupThockAudioListener(): () => void {
   };
 
   const handlePointerDown = (e: MouseEvent | TouchEvent) => {
-    unlockAudio();
+    unlock();
     const target = e.target as HTMLElement | null;
     if (!target) return;
 
@@ -1896,17 +1921,43 @@ export function setupThockAudioListener(): () => void {
     }
   };
 
+  // Eager global unlockers across all potential user events
+  const unlockEvents = [
+    'pointerdown',
+    'mousedown',
+    'touchstart',
+    'touchend',
+    'keydown',
+    'wheel',
+    'scroll',
+    'focus',
+    'click',
+    'mousemove',
+    'pointermove',
+  ];
+
+  unlockEvents.forEach((evt) => {
+    window.addEventListener(evt, unlock, { passive: true, capture: true, once: true });
+  });
+
+  // Continuous hover & click interaction listeners
   window.addEventListener('mouseover', handlePointerOver, { passive: true });
+  window.addEventListener('pointerover', handlePointerOver as any, { passive: true });
   window.addEventListener('mousedown', handlePointerDown, { passive: true });
   window.addEventListener('touchstart', handlePointerDown, { passive: true });
-  window.addEventListener('click', unlockAudio, { passive: true });
-  window.addEventListener('keydown', unlockAudio, { passive: true });
 
   return () => {
+    unlockEvents.forEach((evt) => {
+      window.removeEventListener(evt, unlock, { capture: true } as any);
+    });
     window.removeEventListener('mouseover', handlePointerOver);
+    window.removeEventListener('pointerover', handlePointerOver as any);
     window.removeEventListener('mousedown', handlePointerDown);
     window.removeEventListener('touchstart', handlePointerDown);
-    window.removeEventListener('click', unlockAudio);
-    window.removeEventListener('keydown', unlockAudio);
   };
+}
+
+// Eager auto-initialization at module load time
+if (typeof window !== 'undefined') {
+  setupThockAudioListener();
 }
