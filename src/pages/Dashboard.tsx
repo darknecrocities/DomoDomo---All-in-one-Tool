@@ -24,6 +24,8 @@ import { aiService } from "../utils/aiService";
 import { LocalAISetupModal } from "../components/LocalAISetupModal";
 import { TransparentVideoMascot } from "../components/TransparentVideoMascot";
 import domoLaptopWebm from "../assets/domolaptop.webm";
+import domoLaptopMov from "../assets/domolaptop.mov";
+import domoLaptopGif from "../assets/domolaptop.gif";
 import betterGovLogo from "../assets/bettergovph.jpg";
 import upamateLogo from "../assets/upamate.png";
 import stageByAntLogo from "../assets/stagebyant.png";
@@ -2692,9 +2694,10 @@ export const Dashboard = () => {
 						>
 							<TransparentVideoMascot
 								src={domoLaptopWebm}
+								movSrc={domoLaptopMov}
+								gifSrc={domoLaptopGif}
 								className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 lg:w-60 lg:h-60 drop-shadow-2xl transition-transform duration-200 ease-[var(--ease-out)] hover:scale-105"
 								clickable={true}
-								isNativeTransparent={true}
 							/>
 						</div>
 					</TiltContainer>

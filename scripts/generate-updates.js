@@ -20,8 +20,20 @@ try {
     return { hash, date, author, message };
   });
 
+  const updateData = {
+    version: '2.5.0',
+    buildTime: new Date().toISOString(),
+    commits
+  };
+
   const targetPath = path.join(__dirname, '../public/updates.json');
-  fs.writeFileSync(targetPath, JSON.stringify(commits, null, 2));
+  fs.writeFileSync(targetPath, JSON.stringify(updateData, null, 2));
+
+  const distPath = path.join(__dirname, '../dist/updates.json');
+  if (fs.existsSync(path.dirname(distPath))) {
+    fs.writeFileSync(distPath, JSON.stringify(updateData, null, 2));
+  }
+
   console.log(`✅ Successfully generated updates.json with ${commits.length} entries at ${targetPath}`);
 } catch (error) {
   console.error('❌ Failed to generate updates.json:', error);

@@ -629,7 +629,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.3.0 (Latest)",
+                    version: "v2.5.0 (Latest)",
+                    date: "August 21, 2026",
+                    title: "Multi-Platform Desktop Download Hub, Windows (.exe), macOS (.dmg) & Permissions Sandbox",
+                    changes: [
+                      "Universal Desktop Installer Hub: Enhanced /download with direct downloads for Windows (.exe & portable JSZip package), macOS (.dmg & universal app bundle), Linux (.AppImage & .deb), and 1-click PWA installer.",
+                      "Automated Local AI & Ollama Setup: Integrated live Ollama status ping, 1-click official installer downloads for Windows and macOS, automated CORS launcher scripts (OLLAMA_ORIGINS=\"*\"), and direct in-page model puller with real-time progress.",
+                      "Desktop & Hardware Permissions Modal: Interactive card popup allowing users to inspect, test, and grant local permissions (Local AI CORS, Persistent Storage/IndexedDB, WebGPU/SIMD, Camera, Microphone, Clipboard, Notifications).",
+                      "High-Resolution App Assets: Downloadable official DomoDomo mascot panda icons in PNG (512px, 256px, 128px), Windows .ico, and vector SVG."
+                    ]
+                  },
+                  {
+                    version: "v2.3.0",
                     date: "July 30, 2026",
                     title: "Model Settings Manager & 100% Dynamic AI Hub Expansion",
                     changes: [

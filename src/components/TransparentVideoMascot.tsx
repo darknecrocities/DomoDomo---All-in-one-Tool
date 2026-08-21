@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 interface TransparentVideoMascotProps {
-  src: string;
+  src?: string;
+  gifSrc?: string;
+  movSrc?: string;
   className?: string;
   clickable?: boolean;
   isNativeTransparent?: boolean;
@@ -34,153 +36,40 @@ const CUTE_MESSAGES = [
 
 export const TransparentVideoMascot = ({
   src,
+  gifSrc,
+  movSrc,
   className = '',
   clickable = true,
-  isNativeTransparent = false,
   objectFit = 'contain',
 }: TransparentVideoMascotProps) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastMsgRef = useRef<string | null>(null);
-
-  const useNative = isNativeTransparent || (typeof src === 'string' && src.toLowerCase().includes('.webm'));
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.play().catch(() => { });
-
-    if (useNative) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return;
-
-    let animFrameId: number;
-
-    // Fast Flood Fill to remove ONLY connected outer background pixels
-    const removeConnectedBackground = (data: Uint8ClampedArray, w: number, h: number) => {
-      const visited = new Uint8Array(w * h);
-      const queue = new Int32Array(w * h);
-      let head = 0;
-      let tail = 0;
-
-      // Seed all border pixels into the queue
-      for (let x = 0; x < w; x++) {
-        queue[tail++] = x;
-        visited[x] = 1;
-        const bottomIdx = (h - 1) * w + x;
-        queue[tail++] = bottomIdx;
-        visited[bottomIdx] = 1;
-      }
-      for (let y = 1; y < h - 1; y++) {
-        const leftIdx = y * w;
-        queue[tail++] = leftIdx;
-        visited[leftIdx] = 1;
-        const rightIdx = y * w + (w - 1);
-        queue[tail++] = rightIdx;
-        visited[rightIdx] = 1;
-      }
-
-      // Border background color sample (top-left 0,0)
-      const bgR = data[0];
-      const bgG = data[1];
-      const bgB = data[2];
-
-      while (head < tail) {
-        const idx = queue[head++];
-        const pixelIdx = idx * 4;
-
-        const r = data[pixelIdx];
-        const g = data[pixelIdx + 1];
-        const b = data[pixelIdx + 2];
-
-        const distSq = Math.pow(r - bgR, 2) + Math.pow(g - bgG, 2) + Math.pow(b - bgB, 2);
-
-        // Flood fill matching background pixels
-        if (distSq < 2800 || (r > 215 && g > 215 && b > 215)) {
-          data[pixelIdx + 3] = 0; // Make 100% transparent
-
-          const x = idx % w;
-          const y = (idx / w) | 0;
-
-          if (x > 0) {
-            const nIdx = idx - 1;
-            if (!visited[nIdx]) { visited[nIdx] = 1; queue[tail++] = nIdx; }
-          }
-          if (x < w - 1) {
-            const nIdx = idx + 1;
-            if (!visited[nIdx]) { visited[nIdx] = 1; queue[tail++] = nIdx; }
-          }
-          if (y > 0) {
-            const nIdx = idx - w;
-            if (!visited[nIdx]) { visited[nIdx] = 1; queue[tail++] = nIdx; }
-          }
-          if (y < h - 1) {
-            const nIdx = idx + w;
-            if (!visited[nIdx]) { visited[nIdx] = 1; queue[tail++] = nIdx; }
-          }
-        }
-      }
-    };
-
-    const processFrame = () => {
-      if (!video.paused && !video.ended && video.readyState >= 2) {
-        const vw = video.videoWidth || 640;
-        const vh = video.videoHeight || 360;
-
-        if (canvas.width !== vw || canvas.height !== vh) {
-          canvas.width = vw;
-          canvas.height = vh;
-        }
-
-        ctx.drawImage(video, 0, 0, vw, vh);
-
-        if (!isNativeTransparent) {
-          const frame = ctx.getImageData(0, 0, vw, vh);
-          removeConnectedBackground(frame.data, vw, vh);
-          ctx.putImageData(frame, 0, 0);
-        }
-      }
-      animFrameId = requestAnimationFrame(processFrame);
-    };
-
-    animFrameId = requestAnimationFrame(processFrame);
-
-    return () => {
-      cancelAnimationFrame(animFrameId);
-    };
-  }, [src, isNativeTransparent]);
+  const [lastMsg, setLastMsg] = useState<string | null>(null);
 
   const handleClick = useCallback(() => {
     if (!clickable) return;
-
-    // Pick a random message different from the last one
-    let pool = CUTE_MESSAGES.filter(m => m !== lastMsgRef.current);
+    let pool = CUTE_MESSAGES.filter(m => m !== lastMsg);
     const picked = pool[Math.floor(Math.random() * pool.length)];
-    lastMsgRef.current = picked;
-
-    // Clear any pending dismiss timer
-    if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    setLastMsg(picked);
 
     setMessage(picked);
     setIsVisible(true);
 
-    // Auto-dismiss after 3.2s
-    dismissTimerRef.current = setTimeout(() => {
+    setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => setMessage(null), 400); // wait for fade-out
+      setTimeout(() => setMessage(null), 400);
     }, 3200);
-  }, [clickable]);
+  }, [clickable, lastMsg]);
+
+  // If gifSrc is provided, render native transparent animated GIF directly
+  const imageSource = gifSrc || (typeof src === 'string' && src.endsWith('.gif') ? src : undefined);
 
   return (
-    <div className={`relative ${className} transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 active:scale-[0.94]`} style={{ cursor: clickable ? 'pointer' : 'default' }}>
-      {/* Speech bubble — overlaid directly ON the video canvas at the top */}
+    <div
+      className={`relative ${className} transition-transform duration-200 ease-[var(--ease-out)] hover:-translate-y-1 active:scale-[0.94] select-none`}
+      style={{ cursor: clickable ? 'pointer' : 'default' }}
+    >
+      {/* Speech bubble */}
       {message && (
         <div
           style={{
@@ -208,33 +97,36 @@ export const TransparentVideoMascot = ({
               display: 'inline-block',
             }}
           >
-            <span style={{
-              fontSize: '12px',
-              fontWeight: 700,
-              color: '#111213',
-              fontFamily: 'Inter, system-ui, sans-serif',
-              lineHeight: 1.4,
-            }}>
+            <span
+              style={{
+                fontSize: '12px',
+                fontWeight: 700,
+                color: '#111213',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                lineHeight: 1.4,
+              }}
+            >
               {message}
             </span>
-            {/* Triangle tail pointing downward toward head */}
-            <span style={{
-              position: 'absolute',
-              bottom: '-8px',
-              left: '50%',
-              marginLeft: '-8px',
-              width: 0,
-              height: 0,
-              borderLeft: '8px solid transparent',
-              borderRight: '8px solid transparent',
-              borderTop: '8px solid #ffffff',
-              filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.10))',
-            }} />
+            <span
+              style={{
+                position: 'absolute',
+                bottom: '-8px',
+                left: '50%',
+                marginLeft: '-8px',
+                width: 0,
+                height: 0,
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderTop: '8px solid #ffffff',
+                filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.10))',
+              }}
+            />
           </div>
         </div>
       )}
 
-      {/* Invisible click zone over the canvas */}
+      {/* Click zone */}
       {clickable && (
         <div
           className="absolute inset-0 z-40"
@@ -247,22 +139,29 @@ export const TransparentVideoMascot = ({
         />
       )}
 
-      <video
-        ref={videoRef}
-        src={src}
-        autoPlay
-        loop
-        muted
-        playsInline
-        crossOrigin="anonymous"
-        className={useNative ? `w-full h-full object-${objectFit} pointer-events-none` : "hidden"}
-      />
-      {!useNative && (
-        <canvas
-          ref={canvasRef}
-          className={`w-full h-full object-${objectFit} pointer-events-none`}
+      {imageSource ? (
+        <img
+          src={imageSource}
+          alt="Domo Mascot Animation"
+          className={`w-full h-full object-${objectFit} pointer-events-none select-none`}
+          loading="eager"
         />
+      ) : (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          crossOrigin="anonymous"
+          className={`w-full h-full object-${objectFit} pointer-events-none`}
+        >
+          {movSrc && <source src={movSrc} type='video/mp4; codecs="hvc1"' />}
+          {src && <source src={src} type="video/webm" />}
+        </video>
       )}
     </div>
   );
 };
+
+export default TransparentVideoMascot;

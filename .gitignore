@@ -40,3 +40,10 @@ domo_journal.md
 __pycache__/
 *.pyc
 **/__pycache__/
+
+# Desktop build temporary artifacts
+tmp_mac_staging/
+public/*.dmg
+public/*.AppImage
+public/*.deb
+

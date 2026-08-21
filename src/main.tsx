@@ -22,13 +22,15 @@ if ('serviceWorker' in navigator && !import.meta.env.DEV) {
         if (installingWorker) {
           installingWorker.onstatechange = () => {
             if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              if (window.confirm('A new version of DomoDomo is available. Reload now to update?')) {
-                window.location.reload();
-              }
+              window.dispatchEvent(new CustomEvent('domodomo:update-available'));
             }
           };
         }
       };
+
+      if (reg.waiting) {
+        window.dispatchEvent(new CustomEvent('domodomo:update-available'));
+      }
     }).catch(err => {
       console.error('Service Worker registration failed:', err);
     });

@@ -21,6 +21,8 @@ import PUBLIC_APIS_DATA from '../assets/public-apis.json';
 import PH_APIS_DATA from '../assets/philippine-apis.json';
 import { TransparentVideoMascot } from '../components/TransparentVideoMascot';
 import domoReadingWebm from '../assets/domoreading.webm';
+import domoReadingMov from '../assets/domoreading.mov';
+import domoReadingGif from '../assets/domoreading.gif';
 
 
 interface APIEntry {
@@ -203,9 +205,10 @@ curl -X GET "${endpoint}" \\
         <div className="relative z-20 shrink-0 flex items-center justify-center -my-4 md:-my-6">
           <TransparentVideoMascot
             src={domoReadingWebm}
+            movSrc={domoReadingMov}
+            gifSrc={domoReadingGif}
             className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 drop-shadow-2xl transition-transform duration-200 ease-[var(--ease-out)] hover:scale-105"
             clickable={true}
-            isNativeTransparent={true}
           />
         </div>
       </div>

@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "node scripts/auto-update.js && concurrently --names \"vite,mcp,backend\" --prefix-colors \"cyan,green,magenta\" \"vite\" \"npm --prefix mcp-server run build && npm --prefix mcp-server start\" \"node scripts/start-backend.cjs\"",
     "mcp": "npm --prefix mcp-server start",
-    "build": "tsc -b && vite build",
-    "postbuild": "node scripts/generate-sitemap.js && node scripts/prerender.js",
+    "build": "tsc -b && vite build && node scripts/build-desktop-installers.js",
+    "postbuild": "node scripts/generate-updates.js && node scripts/generate-sitemap.js && node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

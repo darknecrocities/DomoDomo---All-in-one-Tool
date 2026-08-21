@@ -1,92 +1,96 @@
-[
-  {
-    "hash": "dea8390",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "fix(audio): decouple matrix coordinates from spatial pan to ensure 100% dynamic stereo tracking across card positions"
-  },
-  {
-    "hash": "23e7570",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "1272792",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "feat(audio): implement global 3D spatial audio with real-time stereo panning, keyboard column positioning, and settings toggle"
-  },
-  {
-    "hash": "ba9ea9c",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "41fad23",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "fix(blog): support nested markdown link parsing in BlogPost renderer and prerender scripts"
-  },
-  {
-    "hash": "142dd68",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "28370b4",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "docs(blog): update SFX launch post author to Arron Parejas"
-  },
-  {
-    "hash": "8a86f8f",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "docs: update CONTRIBUTORS.md [skip ci]"
-  },
-  {
-    "hash": "ef4b269",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "fix(audio): eliminate mobile double SFX bug by separating touch and synthetic mouse events, and enhance Web Haptics"
-  },
-  {
-    "hash": "d3ad27b",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "fceb182",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "feat(audio): add real-time mechanical typing sound effects with key-specific pitch tuning and settings toggle"
-  },
-  {
-    "hash": "75b5c12",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "585137d",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "feat(audio): add unified white-emerald glowing nodes, 3D parallax tilt, and spatial stereo panning HUD to acoustic matrix"
-  },
-  {
-    "hash": "48e58af",
-    "date": "2026-08-17",
-    "author": "github-actions[bot]",
-    "message": "chore: auto-generate public/updates.json [skip ci]"
-  },
-  {
-    "hash": "bfa1261",
-    "date": "2026-08-17",
-    "author": "darknecrocities",
-    "message": "docs(blog): credit Keeby creator Adrian Angelo Abelarde and link to getkeeby.com in SFX launch post"
-  }
-]
+{
+  "version": "2.5.0",
+  "buildTime": "2026-08-21T12:48:51.616Z",
+  "commits": [
+    {
+      "hash": "8b8c3f4",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "dea8390",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "fix(audio): decouple matrix coordinates from spatial pan to ensure 100% dynamic stereo tracking across card positions"
+    },
+    {
+      "hash": "23e7570",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "1272792",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "feat(audio): implement global 3D spatial audio with real-time stereo panning, keyboard column positioning, and settings toggle"
+    },
+    {
+      "hash": "ba9ea9c",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "41fad23",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "fix(blog): support nested markdown link parsing in BlogPost renderer and prerender scripts"
+    },
+    {
+      "hash": "142dd68",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "28370b4",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "docs(blog): update SFX launch post author to Arron Parejas"
+    },
+    {
+      "hash": "8a86f8f",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "ef4b269",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "fix(audio): eliminate mobile double SFX bug by separating touch and synthetic mouse events, and enhance Web Haptics"
+    },
+    {
+      "hash": "d3ad27b",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "fceb182",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "feat(audio): add real-time mechanical typing sound effects with key-specific pitch tuning and settings toggle"
+    },
+    {
+      "hash": "75b5c12",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "585137d",
+      "date": "2026-08-17",
+      "author": "darknecrocities",
+      "message": "feat(audio): add unified white-emerald glowing nodes, 3D parallax tilt, and spatial stereo panning HUD to acoustic matrix"
+    },
+    {
+      "hash": "48e58af",
+      "date": "2026-08-17",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    }
+  ]
+}

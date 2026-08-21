@@ -18,6 +18,7 @@ import { FloatingDomo } from './components/FloatingDomo';
 import { GlobalSFXController } from './components/GlobalSFXController';
 import { AIHubStudio } from './pages/AIHubStudio';
 import { useVisitCounter } from './utils/visitCounter';
+import { UpdateNotificationToast } from './components/UpdateNotificationToast';
 
 function App() {
   useVisitCounter(false);
@@ -43,6 +44,7 @@ function App() {
         <ScrollToTop />
         <FloatingDomo />
         <GlobalSFXController />
+        <UpdateNotificationToast />
         <Routes>
           <Route path="/" element={<Shell />}>
             <Route index element={<Dashboard />} />
