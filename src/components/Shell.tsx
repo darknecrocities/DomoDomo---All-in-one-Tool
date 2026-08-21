@@ -394,17 +394,21 @@ export const Shell = () => {
               <span className="font-mono text-[11px]">{stars !== null ? stars : '—'}</span>
             </a>
 
-            {/* Install PWA — only when available */}
-            {isInstallable && (
-              <button
-                onClick={handleInstallClick}
-                className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 hover:bg-[#3C6B4D]/25 hover:border-[#3C6B4D]/60 text-[#3C6B4D] transition-all text-[12px] font-semibold"
-                title="Install as desktop app"
-              >
-                <Download size={13} />
-                <span>Install</span>
-              </button>
-            )}
+            {/* Unified Install App button */}
+            <NavLink
+              to="/download"
+              className={({ isActive }) =>
+                `hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg transition-all text-[12px] font-semibold ${
+                  isActive
+                    ? 'bg-[#3C6B4D] text-white shadow-[0_0_12px_rgba(60,107,77,0.4)]'
+                    : 'bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 hover:bg-[#3C6B4D]/25 hover:border-[#3C6B4D]/60 text-[#3C6B4D]'
+                }`
+              }
+              title="Install DomoDomo (Windows, macOS, Linux, PWA, Mobile)"
+            >
+              <Download size={13} />
+              <span>Install</span>
+            </NavLink>
 
             {/* Divider */}
             <div className="hidden md:block h-5 w-px bg-[#2A2D30] mx-0.5" />
@@ -497,7 +501,7 @@ export const Shell = () => {
 
               {[
                 { to: '/about', label: 'About' },
-                { to: '/download', label: 'Download' },
+                { to: '/download', label: 'Install App' },
                 { to: '/library-api', label: 'API Library' },
                 { to: '/docs', label: 'Documentation' },
                 { to: '/blog', label: 'Blog & News' },

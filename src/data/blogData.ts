@@ -13,6 +13,68 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-multi-platform-desktop-download-hub-windows-exe-mac-dmg-permissions-modal',
+    title: 'Announcing Multi-Platform Desktop Download Hub: Windows (.exe), macOS (.dmg), Auto-Ollama Setup & Permissions Sandbox',
+    excerpt: 'DomoDomo releases its comprehensive Desktop Download Hub (/download), offering native Windows (.exe installer & portable bundle), macOS (.dmg & universal app package), Linux (AppImage & deb), automated Ollama local AI background setup with CORS configuration, and an interactive Desktop & Hardware Permissions sandbox modal.',
+    date: 'August 21, 2026',
+    readTime: '4 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'domodomo desktop, windows exe installer, mac dmg download, portable launcher, ollama auto setup, desktop permissions modal, local ai cors, pwa standalone, domodomo',
+    content: `# Announcing Multi-Platform Desktop Download Hub: Windows (.exe), macOS (.dmg), Auto-Ollama Setup & Permissions Sandbox
+
+We are excited to unveil the upgraded **DomoDomo Desktop Download Hub** (\`/download\`), bringing native installer packages, automated launcher generators, official high-resolution icon assets, seamless Ollama local AI background setup, and an interactive **Desktop & Hardware Permissions** sandbox modal to all users across Windows, macOS, Linux, and Mobile!
+
+---
+
+## 💻 Universal Desktop & Mobile Installers
+
+DomoDomo is now available across every major operating system with OS auto-detection and dedicated installer suites:
+
+### 1. 🪟 Windows Desktop Client (\`.exe\` & Portable Bundle)
+- **Windows Executable Setup (\`DomoDomo-Setup-x64.exe\`)**: Complete installer with automatic desktop and start menu shortcuts.
+- **Portable Launcher Package (\`.zip\`)**: Generated directly in-browser using JSZip, containing \`start-domodomo.bat\`, \`start-with-ollama.bat\`, \`install-ollama.ps1\`, and official panda mascot icons.
+- **Auto-Configured CORS**: Automatically starts Ollama with \`OLLAMA_ORIGINS="*"\` and launches DomoDomo in standalone app mode.
+
+### 2. 🍎 macOS Desktop Suite (\`.dmg\` & Universal App Bundle)
+- **Universal Disk Image (\`DomoDomo-Universal.dmg\`)**: Built for both Apple Silicon (M1/M2/M3/M4) and Intel x64 architectures.
+- **Native Command Launcher (\`DomoDomo.command\` & \`install-ollama.sh\`)**: Shell scripts that background-daemonize Ollama, pull starter models, and open the toolbox.
+- **Hardware Acceleration**: Full support for Apple Metal and WebGPU hardware-accelerated local inference.
+
+### 3. 🐧 Linux & Web PWA
+- **Linux AppImage & Debian (\`.deb\`)**: Universal single-file binary compatible with Ubuntu, Arch, Fedora, Debian, and Pop!_OS.
+- **1-Click PWA Desktop**: Installs seamlessly into Chrome, Edge, Brave, and Safari with offline caching via service workers.
+- **Mobile (iOS & Android)**: Visual step-by-step guides for adding DomoDomo to your iOS and Android home screens.
+
+---
+
+## 🤖 Automated Ollama Local AI & Model Puller
+
+DomoDomo integrates with your local Ollama setup to guarantee 100% data privacy without cloud subscriptions:
+- **Live Health Ping**: Real-time status indicator showing whether Ollama is active on \`localhost:11434\`.
+- **1-Click Model Puller**: Download recommended starter models (\`llama3.2:1b\`, \`qwen2.5:1.5b\`, \`gemma2:2b\`, \`deepseek-r1:1.5b\`, and \`llava:7b\` Vision) directly from the download page with live streaming progress.
+- **1-Click Official Downloader**: Direct download links for official Windows (\`OllamaSetup.exe\`) and macOS installers.
+
+---
+
+## 🛡️ Interactive Desktop Permissions & Hardware Sandbox Modal
+
+A brand new **Desktop & Hardware Permissions** modal allows users to inspect, test, and grant local permissions with zero cloud tracking:
+1. **Local AI & Ollama CORS Access**: Checks \`localhost:11434\` connection.
+2. **Persistent File Storage & IndexedDB**: Tests storage quotas and requests non-volatile offline persistence.
+3. **WebGPU & SIMD Acceleration**: Detects GPU device adapters for high-speed local inference.
+4. **Camera & Visual Scanning**: Pre-grants permissions for OCR Document Scanner, QR/Barcode reader, and Vision AI.
+5. **Microphone & Web Audio**: Enables voice recording and acoustic SFX playback.
+6. **System Clipboard Access**: Powers 1-click code copying and JSON/SQL formatting.
+7. **Desktop Notifications**: Alerts when offline AI model downloads and heavy batch conversions finish.
+
+---
+
+## 📦 Download Now
+Head over to **[/download](file:///download)** to download DomoDomo for your device or configure your desktop permissions!
+`
+  },
+  {
     slug: 'introducing-acoustic-sfx-keeby-inspired-mechanical-sound-studio',
     title: 'Introducing Acoustic SFX Studio: 40 Mechanical Keyboard Switches, 2D Sound Matrix & Keeby-Inspired Audio Synthesis',
     excerpt: 'DomoDomo releases the Acoustic SFX & Mechanical Switch Studio, drawing inspiration from Keeby (created by Adrian Angelo Abelarde at getkeeby.com) to bring 40 enthusiast switch profiles, an interactive 2D Acoustic Matrix, real-time stereo VU meter, and 100% client-side Web Audio synthesis to your browser.',

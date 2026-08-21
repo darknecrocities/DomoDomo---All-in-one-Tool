@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { TransparentVideoMascot } from './TransparentVideoMascot';
 import welcomeDomo from '../assets/domotest.webm';
+import welcomeDomoMov from '../assets/domotest.mov';
+import welcomeDomoGif from '../assets/domotest.gif';
 import { forceUnlockAudio } from '../utils/soundEffects';
 
 export const DoorSplash = () => {
@@ -176,6 +178,8 @@ export const DoorSplash = () => {
         >
           <TransparentVideoMascot
             src={welcomeDomo}
+            movSrc={welcomeDomoMov}
+            gifSrc={welcomeDomoGif}
             clickable={false}
             objectFit="cover"
             className="w-full h-full"
