@@ -1,7 +1,19 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-08-21T12:48:51.616Z",
+  "buildTime": "2026-08-22T08:26:15.377Z",
   "commits": [
+    {
+      "hash": "6fea9d9",
+      "date": "2026-08-21",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "66933ea",
+      "date": "2026-08-21",
+      "author": "darknecrocities",
+      "message": "feat(desktop): native macOS & Windows installers, offline server, transparent mascot GIFs, and live update notification toast"
+    },
     {
       "hash": "8b8c3f4",
       "date": "2026-08-17",
@@ -76,18 +88,6 @@
     },
     {
       "hash": "75b5c12",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "585137d",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "feat(audio): add unified white-emerald glowing nodes, 3D parallax tilt, and spatial stereo panning HUD to acoustic matrix"
-    },
-    {
-      "hash": "48e58af",
       "date": "2026-08-17",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"

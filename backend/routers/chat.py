@@ -14,6 +14,13 @@ prompt_cache = {}
 async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
     system_instruction = req.system_prompt or "You are a helpful local assistant."
 
+    target_num_predict = req.num_predict or req.max_tokens
+    ollama_options = {
+        "temperature": req.temperature
+    }
+    if target_num_predict and target_num_predict > 0:
+        ollama_options["num_predict"] = target_num_predict
+
     if req.stream:
         async def stream_generator():
             full_response = ""
@@ -23,9 +30,7 @@ async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
                         "model": req.model,
                         "prompt": f"{system_instruction}\n\nUser: {req.prompt}\nAssistant:",
                         "stream": True,
-                        "options": {
-                            "temperature": req.temperature
-                        }
+                        "options": ollama_options
                     }) as r:
                         if r.status_code != 200:
                             yield f"data: {json.dumps({'error': 'Ollama error status ' + str(r.status_code)})}\n\n"
@@ -62,9 +67,7 @@ async def chat_proxy(req: ChatRequest, background_tasks: BackgroundTasks):
         "model": req.model,
         "prompt": f"{system_instruction}\n\nUser: {req.prompt}\nAssistant:",
         "stream": False,
-        "options": {
-            "temperature": req.temperature
-        }
+        "options": ollama_options
     }
 
     try:

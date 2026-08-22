@@ -20,9 +20,9 @@
   "habitsSummary": {
     "key": "habits_summary",
     "preferredTools": [
-      "AI Research Orchestration Hub",
       "Video Background Remover",
       "Domo Model Library",
+      "AI Research Orchestration Hub",
       "Bounding Box & Polygon Image Annotator",
       "You are an expert document analysis assistant. Synthesize a ..."
     ],
@@ -36,8 +36,8 @@
       "23:00 - 24:00",
       "22:00 - 23:00"
     ],
-    "profileSummary": "The user frequently works on projects involving ai, Local AI, cv categories. Their favorite tool utilities include: AI Research Orchestration Hub, Video Background Remover, Domo Model Library, Bounding Box & Polygon Image Annotator, You are an expert document analysis assistant. Synthesize a .... They are typically active around 16:00 - 17:00, 23:00 - 24:00, 22:00 - 23:00.",
-    "lastUpdated": "2026-08-08T14:57:18.023Z"
+    "profileSummary": "The user frequently works on projects involving ai, Local AI, cv categories. Their favorite tool utilities include: Video Background Remover, Domo Model Library, AI Research Orchestration Hub, Bounding Box & Polygon Image Annotator, You are an expert document analysis assistant. Synthesize a .... They are typically active around 16:00 - 17:00, 23:00 - 24:00, 22:00 - 23:00.",
+    "lastUpdated": "2026-08-22T08:20:37.859Z"
   },
-  "lastUpdated": "2026-08-21T12:38:42.391Z"
+  "lastUpdated": "2026-08-22T08:20:37.860Z"
 }

@@ -46,6 +46,8 @@ class ChatRequest(BaseModel):
     system_prompt: Optional[str] = None
     temperature: Optional[float] = 0.7
     stream: Optional[bool] = False
+    max_tokens: Optional[int] = None
+    num_predict: Optional[int] = None
 
 class ChunkPayload(BaseModel):
     text: str

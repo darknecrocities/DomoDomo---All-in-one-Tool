@@ -7,7 +7,7 @@ export interface AIConfigOptions {
   model: string;
   systemPrompt: string;
   temperature: number;
-  maxTokens: number;
+  maxTokens?: number;
 }
 
 interface LocalAIConfigPanelProps {
@@ -15,8 +15,8 @@ interface LocalAIConfigPanelProps {
   onSystemPromptChange?: (val: string) => void;
   temperature: number;
   onTemperatureChange?: (val: number) => void;
-  maxTokens: number;
-  onMaxTokensChange?: (val: number) => void;
+  maxTokens?: number;
+  onMaxTokensChange?: (val: any) => void;
   selectedModel: string;
   onModelChange?: (val: string) => void;
   defaultMaxTokens?: number;
@@ -208,25 +208,110 @@ export const LocalAIConfigPanel = ({
 
             {/* Max Output Token Slider */}
             {onMaxTokensChange && (
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[11px] font-semibold text-slate-450">
                   <span className="flex items-center gap-1">
                     <Sliders size={12} className="text-teal-400" /> Max Tokens Limit
                   </span>
-                  <span className="text-slate-300 font-mono bg-slate-900 px-1 rounded">{maxTokens} tokens</span>
+                  {maxTokens && maxTokens > 0 ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-teal-300 font-mono bg-teal-950/50 border border-teal-900/40 px-1.5 py-0.5 rounded text-[10px]">
+                        {maxTokens} tokens
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onMaxTokensChange(undefined)}
+                        className="text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded transition-colors"
+                        title="Remove token limit for unrestricted generation"
+                      >
+                        Set Unlimited
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-emerald-400 font-mono bg-emerald-950/50 border border-emerald-900/40 px-1.5 py-0.5 rounded text-[10px] flex items-center gap-1 font-bold">
+                        <span>∞</span> Unlimited
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onMaxTokensChange(2048)}
+                        className="text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded transition-colors"
+                        title="Set a custom maximum token limit"
+                      >
+                        Limit Tokens
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <input
-                  type="range"
-                  min="50"
-                  max="500"
-                  step="10"
-                  value={maxTokens}
-                  onChange={(e) => onMaxTokensChange(parseInt(e.target.value))}
-                  className="w-full accent-teal-500 bg-slate-900 rounded-lg appearance-none h-1 cursor-pointer"
-                />
-                <span className="text-[9px] text-slate-500">
-                  Limits the maximum characters/length of generated response.
-                </span>
+
+                {maxTokens && maxTokens > 0 ? (
+                  <div className="flex flex-col gap-2 pt-1">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="range"
+                        min="64"
+                        max="8192"
+                        step="64"
+                        value={maxTokens}
+                        onChange={(e) => onMaxTokensChange(parseInt(e.target.value))}
+                        className="flex-1 accent-teal-500 bg-slate-900 rounded-lg appearance-none h-1.5 cursor-pointer"
+                      />
+                      <input
+                        type="number"
+                        min="1"
+                        max="32768"
+                        value={maxTokens}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          onMaxTokensChange(isNaN(val) || val <= 0 ? undefined : val);
+                        }}
+                        className="w-16 bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-right font-mono text-[10px] text-slate-200 focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                    
+                    {/* Preset quick buttons */}
+                    <div className="flex flex-wrap gap-1 items-center text-[9px] font-mono">
+                      <span className="text-slate-500 mr-1 text-[8px] uppercase tracking-wider">Presets:</span>
+                      {[256, 512, 1024, 2048, 4096, 8192].map((preset) => (
+                        <button
+                          key={preset}
+                          type="button"
+                          onClick={() => onMaxTokensChange(preset)}
+                          className={`px-1.5 py-0.5 rounded border transition-colors ${
+                            maxTokens === preset
+                              ? 'bg-teal-950 border-teal-700 text-teal-300 font-bold'
+                              : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                          }`}
+                        >
+                          {preset}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => onMaxTokensChange(undefined)}
+                        className="px-1.5 py-0.5 rounded border bg-emerald-950/40 border-emerald-900/40 text-emerald-400 hover:bg-emerald-900/50 font-bold transition-colors ml-auto"
+                      >
+                        ∞ Unlimited
+                      </button>
+                    </div>
+                    <span className="text-[9px] text-slate-500">
+                      Limits maximum output length. Choose Unlimited for full, uninterrupted model responses.
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-emerald-950/20 border border-emerald-900/30 rounded-lg p-2 text-[10px] text-emerald-300/90">
+                    <span className="leading-snug">
+                      ✨ Model outputs are <strong>unrestricted</strong>. The AI will generate complete answers without artificial token cutoffs.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onMaxTokensChange(2048)}
+                      className="ml-2 shrink-0 bg-slate-900 hover:bg-slate-850 text-slate-300 border border-slate-800 px-2 py-1 rounded text-[9px]"
+                    >
+                      Add Limit
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
