@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-08-22T08:26:15.377Z",
+  "buildTime": "2026-08-23T15:03:18.403Z",
   "commits": [
+    {
+      "hash": "13c7c86",
+      "date": "2026-08-22",
+      "author": "darknecrocities",
+      "message": "feat(ai-chat): enable unrestricted generation by default with optional token limit controls"
+    },
     {
       "hash": "6fea9d9",
       "date": "2026-08-21",
@@ -85,12 +91,6 @@
       "date": "2026-08-17",
       "author": "darknecrocities",
       "message": "feat(audio): add real-time mechanical typing sound effects with key-specific pitch tuning and settings toggle"
-    },
-    {
-      "hash": "75b5c12",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
     }
   ]
 }

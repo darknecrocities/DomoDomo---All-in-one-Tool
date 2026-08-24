@@ -1,17 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Sparkles, RefreshCw, X } from 'lucide-react';
+import { APP_VERSION, BUILD_TIME, isNewerVersion } from '../utils/version';
 
 export const UpdateNotificationToast: React.FC = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [newVersion, setNewVersion] = useState<string | null>(null);
+  const [targetBuildTime, setTargetBuildTime] = useState<string | null>(null);
+
+  // Check if a specific version update has been dismissed recently
+  const isVersionDismissed = useCallback((version: string | null): boolean => {
+    if (!version) return false;
+    const sessionDismissed = sessionStorage.getItem(`domodomo_dismissed_update_${version}`);
+    if (sessionDismissed === 'true') return true;
+
+    const localDismissedTime = localStorage.getItem(`domodomo_dismissed_update_${version}`);
+    if (localDismissedTime) {
+      const elapsed = Date.now() - parseInt(localDismissedTime, 10);
+      // Suppress for 12 hours once dismissed
+      if (elapsed < 1000 * 60 * 60 * 12) {
+        return true;
+      }
+    }
+    return false;
+  }, []);
+
+  const checkUpdatesJson = useCallback(async () => {
+    try {
+      const res = await fetch(`/updates.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) return;
+
+      const data = await res.json();
+      const remoteVersion: string | undefined = data.version;
+      const remoteBuildTime: string | undefined = data.buildTime;
+
+      // 1. If remote version is strictly newer (e.g. 2.5.1 > 2.5.0)
+      if (remoteVersion && isNewerVersion(remoteVersion, APP_VERSION)) {
+        if (!isVersionDismissed(remoteVersion)) {
+          setNewVersion(remoteVersion);
+          if (remoteBuildTime) setTargetBuildTime(remoteBuildTime);
+          setUpdateAvailable(true);
+        }
+        return;
+      }
+
+      // 2. If version is identical or older (already on latest or matching release)
+      // Sync local storage and prevent false positives
+      if (remoteBuildTime) {
+        localStorage.setItem('domodomo_last_build_time', remoteBuildTime);
+      }
+      localStorage.setItem('domodomo_app_version', APP_VERSION);
+      setUpdateAvailable(false);
+    } catch (_) {}
+  }, [isVersionDismissed]);
 
   useEffect(() => {
-    // 1. Listen to Service Worker updates
+    // Sync current running app metadata on load
+    localStorage.setItem('domodomo_app_version', APP_VERSION);
+    if (!localStorage.getItem('domodomo_last_build_time')) {
+      localStorage.setItem('domodomo_last_build_time', BUILD_TIME);
+    }
+
+    // 1. Service Worker update check
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        // Automatically reload if controlled worker changes
         if (isUpdating) {
           window.location.reload();
         }
@@ -21,56 +74,64 @@ export const UpdateNotificationToast: React.FC = () => {
         try {
           const reg = await navigator.serviceWorker.getRegistration();
           if (reg) {
-            reg.update().catch(() => {});
+            await reg.update().catch(() => {});
+            // If a service worker is waiting, verify with updates.json first
             if (reg.waiting) {
-              setUpdateAvailable(true);
+              checkUpdatesJson();
             }
           }
         } catch (_) {}
       };
 
-      // Check on load and focus
+      // Check on initial load
       checkForSwUpdate();
       window.addEventListener('focus', checkForSwUpdate);
     }
 
     // 2. Listen to custom update event from main.tsx
     const handleUpdateEvent = (e: any) => {
-      setUpdateAvailable(true);
-      if (e?.detail?.version) {
-        setNewVersion(e.detail.version);
+      const ver = e?.detail?.version;
+      if (ver && isNewerVersion(ver, APP_VERSION)) {
+        if (!isVersionDismissed(ver)) {
+          setNewVersion(ver);
+          setUpdateAvailable(true);
+        }
+      } else {
+        // Double check against updates.json
+        checkUpdatesJson();
       }
     };
     window.addEventListener('domodomo:update-available', handleUpdateEvent);
 
-    // 3. Periodic lightweight check against updates.json
-    const checkUpdatesJson = async () => {
-      try {
-        const res = await fetch(`/updates.json?t=${Date.now()}`, { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          const currentBuildTime = localStorage.getItem('domodomo_last_build_time');
-          if (data.buildTime && currentBuildTime && data.buildTime !== currentBuildTime) {
-            setUpdateAvailable(true);
-            if (data.version) setNewVersion(data.version);
-          } else if (data.buildTime && !currentBuildTime) {
-            localStorage.setItem('domodomo_last_build_time', data.buildTime);
-          }
-        }
-      } catch (_) {}
-    };
-
-    const interval = setInterval(checkUpdatesJson, 1000 * 60 * 5); // Check every 5 minutes
+    // 3. Initial and periodic check against updates.json (every 10 minutes)
+    checkUpdatesJson();
+    const interval = setInterval(checkUpdatesJson, 1000 * 60 * 10);
 
     return () => {
       window.removeEventListener('domodomo:update-available', handleUpdateEvent);
       clearInterval(interval);
     };
-  }, [isUpdating]);
+  }, [isUpdating, checkUpdatesJson, isVersionDismissed]);
+
+  const handleDismiss = () => {
+    const versionKey = newVersion || APP_VERSION;
+    sessionStorage.setItem(`domodomo_dismissed_update_${versionKey}`, 'true');
+    localStorage.setItem(`domodomo_dismissed_update_${versionKey}`, Date.now().toString());
+    setDismissed(true);
+  };
 
   const handleApplyUpdate = async () => {
     setIsUpdating(true);
     try {
+      // 1. Sync localStorage so reload doesn't trigger old comparison
+      if (targetBuildTime) {
+        localStorage.setItem('domodomo_last_build_time', targetBuildTime);
+      }
+      if (newVersion) {
+        localStorage.setItem('domodomo_app_version', newVersion);
+      }
+
+      // 2. Message all service workers to activate immediately
       if ('serviceWorker' in navigator) {
         const regs = await navigator.serviceWorker.getRegistrations();
         for (const reg of regs) {
@@ -80,16 +141,18 @@ export const UpdateNotificationToast: React.FC = () => {
           await reg.update().catch(() => {});
         }
       }
+
+      // 3. Purge CacheStorage caches
       if ('caches' in window) {
         const keys = await caches.keys();
         await Promise.all(keys.map(key => caches.delete(key)));
       }
     } catch (_) {}
 
-    // Hard reload
+    // 4. Force hard reload with timestamp bypass
     setTimeout(() => {
       window.location.reload();
-    }, 400);
+    }, 300);
   };
 
   if (!updateAvailable || dismissed) return null;
@@ -114,8 +177,8 @@ export const UpdateNotificationToast: React.FC = () => {
               )}
             </h2>
             <button
-              onClick={() => setDismissed(true)}
-              className="text-[#72706C] hover:text-[#ECEBE9] transition-colors p-1 rounded-lg hover:bg-[#2A2D30]"
+              onClick={handleDismiss}
+              className="text-[#72706C] hover:text-[#ECEBE9] transition-colors p-1 rounded-lg hover:bg-[#2A2D30] cursor-pointer"
               aria-label="Dismiss notification"
             >
               <X size={15} />
@@ -134,8 +197,8 @@ export const UpdateNotificationToast: React.FC = () => {
               <span>{isUpdating ? 'Updating...' : 'Update & Reload'}</span>
             </button>
             <button
-              onClick={() => setDismissed(true)}
-              className="px-3 py-2 rounded-xl bg-[#202225] hover:bg-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-medium transition-colors"
+              onClick={handleDismiss}
+              className="px-3 py-2 rounded-xl bg-[#202225] hover:bg-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] text-xs font-medium transition-colors cursor-pointer"
             >
               Later
             </button>

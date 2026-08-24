@@ -1,7 +1,7 @@
 {
-  "name": "temp-vite",
+  "name": "domodomo",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.5.0",
   "type": "module",
   "scripts": {
     "dev": "node scripts/auto-update.js && concurrently --names \"vite,mcp,backend\" --prefix-colors \"cyan,green,magenta\" \"vite\" \"npm --prefix mcp-server run build && npm --prefix mcp-server start\" \"node scripts/start-backend.cjs\"",

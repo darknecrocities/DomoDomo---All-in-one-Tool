@@ -20,8 +20,12 @@ try {
     return { hash, date, author, message };
   });
 
+  const pkgPath = path.join(__dirname, '../package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+  const version = pkg.version || '2.5.0';
+
   const updateData = {
-    version: '2.5.0',
+    version,
     buildTime: new Date().toISOString(),
     commits
   };
