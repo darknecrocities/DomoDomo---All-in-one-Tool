@@ -1,7 +1,31 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-08-27T08:16:54.304Z",
+  "buildTime": "2026-08-27T08:19:05.457Z",
   "commits": [
+    {
+      "hash": "baa94f0",
+      "date": "2026-08-27",
+      "author": "darknecrocities",
+      "message": "chore(pwa): update service worker cache hash"
+    },
+    {
+      "hash": "4efc139",
+      "date": "2026-08-27",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "2330d4b",
+      "date": "2026-08-27",
+      "author": "darknecrocities",
+      "message": "fix(desktop/ai): auto-run ollama with CORS, unlock all AI tools, and fix video resolution"
+    },
+    {
+      "hash": "8330c2d",
+      "date": "2026-08-24",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "2569c2c",
       "date": "2026-08-24",
@@ -67,30 +91,6 @@
       "date": "2026-08-17",
       "author": "darknecrocities",
       "message": "fix(blog): support nested markdown link parsing in BlogPost renderer and prerender scripts"
-    },
-    {
-      "hash": "142dd68",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "28370b4",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "docs(blog): update SFX launch post author to Arron Parejas"
-    },
-    {
-      "hash": "8a86f8f",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "ef4b269",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "fix(audio): eliminate mobile double SFX bug by separating touch and synthetic mouse events, and enhance Web Haptics"
     }
   ]
 }
