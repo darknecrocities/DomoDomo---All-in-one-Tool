@@ -89,11 +89,42 @@ function ensureOllamaRunning() {
 
   req.on('error', () => {
     console.log('🦙 Ollama is not responding on port 11434. Auto-launching local Ollama server...');
-    const checkOllamaCli = spawnSync(isWindows ? 'where' : 'which', ['ollama']);
-    if (checkOllamaCli.status === 0) {
-      console.log('🚀 Starting: OLLAMA_ORIGINS="*" ollama serve');
-      const env = { ...process.env, OLLAMA_ORIGINS: '*' };
-      const ollamaProcess = spawn('ollama', ['serve'], {
+    
+    let ollamaBin = null;
+    const candidates = isWindows ? [
+      path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Ollama', 'ollama.exe'),
+      path.join(process.env.ProgramFiles || '', 'Ollama', 'ollama.exe'),
+      path.join(process.env['ProgramFiles(x86)'] || '', 'Ollama', 'ollama.exe'),
+    ] : [
+      '/opt/homebrew/bin/ollama',
+      '/usr/local/bin/ollama',
+      '/usr/bin/ollama',
+      path.join(process.env.HOME || '', '.ollama', 'bin', 'ollama'),
+      '/Applications/Ollama.app/Contents/Resources/ollama'
+    ];
+
+    for (const cand of candidates) {
+      if (fs.existsSync(cand)) {
+        ollamaBin = cand;
+        break;
+      }
+    }
+
+    if (!ollamaBin) {
+      const checkOllamaCli = spawnSync(isWindows ? 'where' : 'which', ['ollama']);
+      if (checkOllamaCli.status === 0) {
+        ollamaBin = 'ollama';
+      }
+    }
+
+    if (ollamaBin) {
+      console.log(`🚀 Starting: OLLAMA_ORIGINS="*" ${ollamaBin} serve`);
+      const env = { 
+        ...process.env, 
+        OLLAMA_ORIGINS: '*',
+        PATH: `/opt/homebrew/bin:/usr/local/bin:${process.env.PATH || ''}`
+      };
+      const ollamaProcess = spawn(ollamaBin, ['serve'], {
         env,
         stdio: 'ignore',
         detached: true
@@ -101,7 +132,7 @@ function ensureOllamaRunning() {
       ollamaProcess.unref();
       console.log('✅ Local Ollama service launched in background!');
     } else {
-      console.warn('⚠️ Ollama CLI not found on system PATH. Install Ollama from https://ollama.ai for local LLM inference.');
+      console.warn('⚠️ Ollama CLI not found on standard paths. Install Ollama from https://ollama.ai for local LLM inference.');
     }
   });
 }

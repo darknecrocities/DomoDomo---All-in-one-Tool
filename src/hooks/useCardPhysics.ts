@@ -27,8 +27,8 @@ export function useCardPhysics(
 	filteredTools: any[],
 	activeCategory: string,
 	visibleCount: number,
-	isLocal: boolean,
-	hasOllama: boolean
+	_isLocal?: boolean,
+	_hasOllama?: boolean
 ) {
 	const gridContainerRef = useRef<HTMLDivElement>(null);
 	const [isPhysicsActive, setIsPhysicsActive] = useState(false);
@@ -110,10 +110,7 @@ export function useCardPhysics(
 						angle: 0,
 						angularVelocity: 0,
 						isReady: tool.status === "functional",
-						isTeased: (tool.requiresOllama ||
-							tool.categories[0] === "ai" ||
-							tool.categories[0] === "investigation") &&
-							(!isLocal || !hasOllama),
+						isTeased: false,
 						morphProgress: 0, // start at 0 (animates from grid cards to cubes)
 					});
 				}
