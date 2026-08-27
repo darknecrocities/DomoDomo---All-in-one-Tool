@@ -12,7 +12,7 @@ interface Message {
 }
 
 const SYSTEM_PRESETS: Record<string, string> = {
-  general: "You are Domo, a helpful offline AI Assistant. Respond briefly and friendly.",
+  general: "You are Domo, a helpful and knowledgeable offline AI Assistant. Provide thorough, complete, and insightful answers with no artificial length constraints.",
   coder: "You are a professional software engineering mentor. Provide clean, correct, and modern code examples with clear explanations.",
   writer: "You are an imaginative and creative writer. Provide engaging, expressive, and detailed creative responses.",
   interviewer: "You are a senior technical interviewer. Ask insightful follow-up questions and evaluate candidate responses critically but constructively."
@@ -20,7 +20,7 @@ const SYSTEM_PRESETS: Record<string, string> = {
 
 export const LocalAIChatTool = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { sender: 'ai', text: 'Hello! I am Domo, your offline AI Assistant powered by local Ollama. Ask me anything!', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+    { sender: 'ai', text: 'Hello! I am Domo, your offline AI Assistant powered by local Ollama. Ask me anything! I can generate complete, unrestricted responses without token limits.', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export const LocalAIChatTool = () => {
   const [selectedModel, setSelectedModel] = useState('');
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PRESETS.general);
   const [temperature, setTemperature] = useState(0.7);
-  const [maxTokens, setMaxTokens] = useState(120);
+  const [maxTokens, setMaxTokens] = useState<number | undefined>(undefined);
 
   // Appearance & metrics states
   const [activePreset, setActivePreset] = useState('general');
@@ -230,6 +230,15 @@ export const LocalAIChatTool = () => {
           <div className="flex items-center gap-2">
             <Cpu size={16} className="text-teal-400 animate-pulse" />
             <h3 className="font-bold text-teal-400 text-sm">Domo Local Chat</h3>
+            {maxTokens && maxTokens > 0 ? (
+              <span className="text-[9px] font-mono text-teal-400 bg-teal-950/40 border border-teal-900/30 px-1.5 py-0.5 rounded">
+                {maxTokens} tok limit
+              </span>
+            ) : (
+              <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-900/30 px-1.5 py-0.5 rounded flex items-center gap-0.5 font-semibold">
+                <span>∞</span> Unlimited
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">

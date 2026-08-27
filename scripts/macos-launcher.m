@@ -159,34 +159,95 @@
 
 - (void)startOllamaCORS {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSTask *checkTask = [[NSTask alloc] init];
-        [checkTask setLaunchPath:@"/usr/bin/which"];
-        [checkTask setArguments:@[@"ollama"]];
-        NSPipe *pipe = [NSPipe pipe];
-        [checkTask setStandardOutput:pipe];
         @try {
-            [checkTask launch];
-            [checkTask waitUntilExit];
-            if ([checkTask terminationStatus] == 0) {
-                NSTask *pgrep = [[NSTask alloc] init];
-                [pgrep setLaunchPath:@"/usr/bin/pgrep"];
-                [pgrep setArguments:@[@"-x", @"ollama"]];
-                [pgrep launch];
-                [pgrep waitUntilExit];
-                if ([pgrep terminationStatus] != 0) {
-                    NSTask *serveTask = [[NSTask alloc] init];
-                    NSString *ollamaPath = [[[NSString alloc] initWithData:[[pipe fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    if (ollamaPath.length > 0) {
-                        [serveTask setLaunchPath:ollamaPath];
-                        [serveTask setArguments:@[@"serve"]];
-                        NSMutableDictionary *env = [[[NSProcessInfo processInfo] environment] mutableCopy];
-                        env[@"OLLAMA_ORIGINS"] = @"*";
-                        [serveTask setEnvironment:env];
-                        [serveTask launch];
+            // 1. Set launchctl system environment variable for macOS Ollama processes
+            NSTask *launchctlTask = [[NSTask alloc] init];
+            [launchctlTask setLaunchPath:@"/bin/launchctl"];
+            [launchctlTask setArguments:@[@"setenv", @"OLLAMA_ORIGINS", @"*"]];
+            [launchctlTask launch];
+            [launchctlTask waitUntilExit];
+        } @catch (NSException *e) {}
+
+        // 2. Check if Ollama is already responding on port 11434
+        int testSock = socket(AF_INET, SOCK_STREAM, 0);
+        if (testSock >= 0) {
+            struct sockaddr_in serverAddr;
+            memset(&serverAddr, 0, sizeof(serverAddr));
+            serverAddr.sin_family = AF_INET;
+            serverAddr.sin_port = htons(11434);
+            serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+            // Set 1s timeout
+            struct timeval tv;
+            tv.tv_sec = 1;
+            tv.tv_usec = 0;
+            setsockopt(testSock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+            setsockopt(testSock, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof(tv));
+
+            if (connect(testSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == 0) {
+                close(testSock);
+                // Ollama is already running and listening
+                return;
+            }
+            close(testSock);
+        }
+
+        // 3. Find Ollama binary path
+        NSArray *candidatePaths = @[
+            @"/opt/homebrew/bin/ollama",
+            @"/usr/local/bin/ollama",
+            @"/usr/bin/ollama",
+            [NSHomeDirectory() stringByAppendingPathComponent:@".ollama/bin/ollama"],
+            @"/Applications/Ollama.app/Contents/Resources/ollama"
+        ];
+
+        NSString *foundOllamaPath = nil;
+        for (NSString *candidate in candidatePaths) {
+            if ([[NSFileManager defaultManager] isExecutableFileAtPath:candidate]) {
+                foundOllamaPath = candidate;
+                break;
+            }
+        }
+
+        // Fallback: check which ollama using custom PATH
+        if (!foundOllamaPath) {
+            @try {
+                NSTask *whichTask = [[NSTask alloc] init];
+                [whichTask setLaunchPath:@"/bin/sh"];
+                [whichTask setArguments:@[@"-c", @"export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"; which ollama"]];
+                NSPipe *pipe = [NSPipe pipe];
+                [whichTask setStandardOutput:pipe];
+                [whichTask launch];
+                [whichTask waitUntilExit];
+                if ([whichTask terminationStatus] == 0) {
+                    NSString *outPath = [[[NSString alloc] initWithData:[[pipe fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    if (outPath.length > 0 && [[NSFileManager defaultManager] isExecutableFileAtPath:outPath]) {
+                        foundOllamaPath = outPath;
                     }
                 }
-            }
-        } @catch (NSException *e) {}
+            } @catch (NSException *e) {}
+        }
+
+        if (foundOllamaPath) {
+            @try {
+                NSTask *serveTask = [[NSTask alloc] init];
+                [serveTask setLaunchPath:foundOllamaPath];
+                [serveTask setArguments:@[@"serve"]];
+                NSMutableDictionary *env = [[[NSProcessInfo processInfo] environment] mutableCopy];
+                env[@"OLLAMA_ORIGINS"] = @"*";
+                NSString *currPath = env[@"PATH"] ?: @"/usr/bin:/bin:/usr/sbin:/sbin";
+                env[@"PATH"] = [NSString stringWithFormat:@"/opt/homebrew/bin:/usr/local/bin:%@", currPath];
+                [serveTask setEnvironment:env];
+                [serveTask launch];
+            } @catch (NSException *e) {}
+        } else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/Ollama.app"]) {
+            @try {
+                NSTask *openApp = [[NSTask alloc] init];
+                [openApp setLaunchPath:@"/usr/bin/open"];
+                [openApp setArguments:@[@"-g", @"-a", @"Ollama"]];
+                [openApp launch];
+            } @catch (NSException *e) {}
+        }
     });
 }
 

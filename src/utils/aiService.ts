@@ -698,7 +698,7 @@ export const aiService = {
   // Fallback chain & call dispatcher
   async generateText(
     prompt: string,
-    maxTokens: number = 800,
+    maxTokens?: number,
     onProgress?: LoadingProgressCallback,
     modelOverride?: string,
     options?: {
@@ -828,7 +828,7 @@ export const aiService = {
   async generateTextOllama(
     model: string,
     prompt: string,
-    numPredict: number = 800,
+    numPredict?: number,
     systemPrompt?: string,
     options?: { temperature?: number; topK?: number; topP?: number; images?: string[]; onStream?: (chunk: string) => void }
   ): Promise<string> {
@@ -844,7 +844,8 @@ export const aiService = {
           prompt: prompt,
           system_prompt: systemPrompt,
           temperature: options?.temperature || 0.7,
-          stream: isStreaming
+          stream: isStreaming,
+          ...(numPredict && numPredict > 0 ? { num_predict: numPredict } : {})
         })
       }, 300000);
 
@@ -885,6 +886,15 @@ export const aiService = {
 
     // 2. Direct fallback to Ollama endpoint (Port 11434)
     const endpoint = this.getCustomEndpoint('ollama') || 'http://localhost:11434';
+    const ollamaOptions: any = {
+      temperature: options?.temperature || 0.7,
+      top_k: options?.topK,
+      top_p: options?.topP
+    };
+    if (numPredict && numPredict > 0) {
+      ollamaOptions.num_predict = numPredict;
+    }
+
     const res = await fetchWithTimeout(`${endpoint}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -894,12 +904,7 @@ export const aiService = {
         system: systemPrompt,
         images: options?.images,
         stream: isStreaming,
-        options: {
-          num_predict: numPredict,
-          temperature: options?.temperature || 0.7,
-          top_k: options?.topK,
-          top_p: options?.topP
-        }
+        options: ollamaOptions
       })
     }, 300000);
 
@@ -936,7 +941,7 @@ export const aiService = {
     }
   },
 
-  async callOpenAICompatible(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens: number, systemPrompt?: string, options?: any) {
+  async callOpenAICompatible(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens?: number, systemPrompt?: string, options?: any) {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
     
@@ -944,26 +949,37 @@ export const aiService = {
     if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
     messages.push({ role: 'user', content: prompt });
 
+    const payload: any = {
+      model,
+      messages,
+      temperature: options?.temperature || 0.7
+    };
+    if (maxTokens && maxTokens > 0) {
+      payload.max_tokens = maxTokens;
+    }
+
     const res = await fetchWithTimeout(`${endpoint}/chat/completions`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({
-        model,
-        messages,
-        max_tokens: maxTokens,
-        temperature: options?.temperature || 0.7
-      })
+      body: JSON.stringify(payload)
     }, 120000);
     if (!res.ok) throw new Error(`OpenAI compatibility endpoint failed: ${res.statusText}`);
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '';
   },
 
-  async callGemini(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens: number, systemPrompt?: string) {
+  async callGemini(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens?: number, systemPrompt?: string) {
     // gemini API format
     const url = `${endpoint}/models/${model}:generateContent?key=${apiKey}`;
     const contents = [{ parts: [{ text: prompt }] }];
     const systemInstruction = systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined;
+
+    const generationConfig: any = {
+      temperature: 0.7
+    };
+    if (maxTokens && maxTokens > 0) {
+      generationConfig.maxOutputTokens = maxTokens;
+    }
 
     const res = await fetchWithTimeout(url, {
       method: 'POST',
@@ -971,10 +987,7 @@ export const aiService = {
       body: JSON.stringify({
         contents,
         systemInstruction,
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          temperature: 0.7
-        }
+        generationConfig
       })
     }, 120000);
     if (!res.ok) throw new Error(`Gemini API failed: ${res.statusText}`);
@@ -982,7 +995,7 @@ export const aiService = {
     return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   },
 
-  async callAnthropic(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens: number, systemPrompt?: string) {
+  async callAnthropic(endpoint: string, apiKey: string, model: string, prompt: string, maxTokens?: number, systemPrompt?: string) {
     // Note: Browser fetch to Anthropic usually triggers CORS block. We implement this for completeness.
     const res = await fetchWithTimeout(`${endpoint}/messages`, {
       method: 'POST',
@@ -994,7 +1007,7 @@ export const aiService = {
       },
       body: JSON.stringify({
         model,
-        max_tokens: maxTokens,
+        max_tokens: maxTokens && maxTokens > 0 ? maxTokens : 8192,
         system: systemPrompt,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -1004,14 +1017,14 @@ export const aiService = {
     return data.content?.[0]?.text || '';
   },
 
-  async callLlamaCpp(endpoint: string, prompt: string, maxTokens: number, systemPrompt?: string) {
+  async callLlamaCpp(endpoint: string, prompt: string, maxTokens?: number, systemPrompt?: string) {
     const fullPrompt = systemPrompt ? `${systemPrompt}\n\nUser: ${prompt}\nAssistant:` : prompt;
     const res = await fetchWithTimeout(`${endpoint}/completion`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: fullPrompt,
-        n_predict: maxTokens
+        n_predict: maxTokens && maxTokens > 0 ? maxTokens : -1
       })
     }, 120000);
     if (!res.ok) throw new Error(`llama.cpp completion failed: ${res.statusText}`);

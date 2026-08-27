@@ -1,7 +1,37 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-08-21T12:48:51.616Z",
+  "buildTime": "2026-08-27T08:16:54.304Z",
   "commits": [
+    {
+      "hash": "2569c2c",
+      "date": "2026-08-24",
+      "author": "darknecrocities",
+      "message": "fix(pwa): resolve persistent update toast with semver checking, SW message handling, and storage sync"
+    },
+    {
+      "hash": "f887282",
+      "date": "2026-08-22",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "13c7c86",
+      "date": "2026-08-22",
+      "author": "darknecrocities",
+      "message": "feat(ai-chat): enable unrestricted generation by default with optional token limit controls"
+    },
+    {
+      "hash": "6fea9d9",
+      "date": "2026-08-21",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "66933ea",
+      "date": "2026-08-21",
+      "author": "darknecrocities",
+      "message": "feat(desktop): native macOS & Windows installers, offline server, transparent mascot GIFs, and live update notification toast"
+    },
     {
       "hash": "8b8c3f4",
       "date": "2026-08-17",
@@ -61,36 +91,6 @@
       "date": "2026-08-17",
       "author": "darknecrocities",
       "message": "fix(audio): eliminate mobile double SFX bug by separating touch and synthetic mouse events, and enhance Web Haptics"
-    },
-    {
-      "hash": "d3ad27b",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "fceb182",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "feat(audio): add real-time mechanical typing sound effects with key-specific pitch tuning and settings toggle"
-    },
-    {
-      "hash": "75b5c12",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "585137d",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "feat(audio): add unified white-emerald glowing nodes, 3D parallax tilt, and spatial stereo panning HUD to acoustic matrix"
-    },
-    {
-      "hash": "48e58af",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
     }
   ]
 }

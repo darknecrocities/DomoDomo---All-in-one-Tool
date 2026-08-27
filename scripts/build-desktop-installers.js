@@ -113,9 +113,27 @@ const buildMacDMG = () => {
   } catch (err) {
     console.warn('  ⚠️ Clang compilation fallback:', err.message);
     const macLauncherScript = `#!/bin/bash
+launchctl setenv OLLAMA_ORIGINS "*" 2>/dev/null
 export OLLAMA_ORIGINS="*"
-if command -v ollama >/dev/null 2>&1; then
-    ollama serve >/dev/null 2>&1 &
+
+OLLAMA_BIN=""
+for candidate in "/opt/homebrew/bin/ollama" "/usr/local/bin/ollama" "/usr/bin/ollama" "$HOME/.ollama/bin/ollama" "/Applications/Ollama.app/Contents/Resources/ollama"; do
+    if [ -x "$candidate" ]; then
+        OLLAMA_BIN="$candidate"
+        break
+    fi
+done
+
+if [ -z "$OLLAMA_BIN" ] && command -v ollama >/dev/null 2>&1; then
+    OLLAMA_BIN=$(command -v ollama)
+fi
+
+if [ -n "$OLLAMA_BIN" ]; then
+    if ! nc -z 127.0.0.1 11434 2>/dev/null; then
+        "$OLLAMA_BIN" serve >/dev/null 2>&1 &
+    fi
+elif [ -d "/Applications/Ollama.app" ]; then
+    open -g -a Ollama 2>/dev/null
 fi
 open "https://domodomo.app"
 `;
@@ -238,16 +256,34 @@ del "%ICO_B64%" >nul 2>&1
 (
 echo @echo off
 echo title DomoDomo Desktop
-echo :: Check ^& Start Ollama with CORS
-echo where ollama ^>nul 2^>^&1
-echo if %%ERRORLEVEL%% equ 0 (
-echo     tasklist /FI "IMAGENAME eq ollama.exe" 2^^^>NUL ^| find /I /N "ollama.exe" ^>NUL
-echo     if %%ERRORLEVEL%% neq 0 (
-echo         set "OLLAMA_ORIGINS=*"
-echo         start "" /B ollama serve
+echo :: 1. Configure Persistent CORS for Ollama
+echo setx OLLAMA_ORIGINS "*" ^>nul 2^>^&1
+echo set "OLLAMA_ORIGINS=*"
+echo.
+echo :: 2. Locate Ollama executable
+echo set "OLLAMA_EXE="
+echo if exist "%%LOCALAPPDATA%%\\Programs\\Ollama\\ollama.exe" (
+echo     set "OLLAMA_EXE=%%LOCALAPPDATA%%\\Programs\\Ollama\\ollama.exe"
+echo ) else if exist "%%ProgramFiles%%\\Ollama\\ollama.exe" (
+echo     set "OLLAMA_EXE=%%ProgramFiles%%\\Ollama\\ollama.exe"
+echo ) else if exist "%%ProgramFiles(x86)%%\\Ollama\\ollama.exe" (
+echo     set "OLLAMA_EXE=%%ProgramFiles(x86)%%\\Ollama\\ollama.exe"
+echo ) else (
+echo     where ollama ^>nul 2^>^&1
+echo     if %%ERRORLEVEL%% equ 0 (
+echo         set "OLLAMA_EXE=ollama"
 echo     )
 echo )
-echo :: Launch Standalone Window
+echo.
+echo :: 3. Check ^& Auto-start Ollama Service
+echo if defined OLLAMA_EXE (
+echo     tasklist /FI "IMAGENAME eq ollama.exe" 2^^^>NUL ^| find /I /N "ollama.exe" ^>NUL
+echo     if %%ERRORLEVEL%% neq 0 (
+echo         start "" /B "%%OLLAMA_EXE%%" serve
+echo     )
+echo )
+echo.
+echo :: 4. Launch Standalone App Window
 echo if exist "%%ProgramFiles%%\\Google\\Chrome\\Application\\chrome.exe" (
 echo     start "" "%%ProgramFiles%%\\Google\\Chrome\\Application\\chrome.exe" --app="https://domodomo.app" --enable-features=WebGPU
 echo ) else if exist "%%ProgramFiles(x86)%%\\Microsoft\\Edge\\Application\\msedge.exe" (
@@ -378,10 +414,23 @@ const buildLinuxPackage = () => {
 # DomoDomo Linux AppImage / Launcher
 echo "🐼 Launching DomoDomo for Linux..."
 
-if command -v ollama >/dev/null 2>&1; then
+export OLLAMA_ORIGINS="*"
+
+OLLAMA_BIN=""
+for candidate in "/usr/local/bin/ollama" "/usr/bin/ollama" "$HOME/.ollama/bin/ollama" "/var/lib/ollama"; do
+    if [ -x "$candidate" ]; then
+        OLLAMA_BIN="$candidate"
+        break
+    fi
+done
+
+if [ -z "$OLLAMA_BIN" ] && command -v ollama >/dev/null 2>&1; then
+    OLLAMA_BIN=$(command -v ollama)
+fi
+
+if [ -n "$OLLAMA_BIN" ]; then
     if ! pgrep -x "ollama" >/dev/null 2>&1; then
-        export OLLAMA_ORIGINS="*"
-        ollama serve >/dev/null 2>&1 &
+        "$OLLAMA_BIN" serve >/dev/null 2>&1 &
     fi
 fi
 

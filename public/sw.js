@@ -1,5 +1,5 @@
 // DomoDomo PWA Service Worker (Auto-generated on build)
-const CACHE_NAME = 'domodomo-cache-dea8390';
+const CACHE_NAME = 'domodomo-cache-2569c2c';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -31,13 +31,26 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data && (event.data.type === 'SKIP_WAITING' || event.data === 'skipWaiting')) {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
-  // Skip caching for backend/mcp APIs
-  if (event.request.url.includes('/api/')) {
+  const url = new URL(event.request.url);
+
+  // Skip caching for backend/mcp APIs, updates.json, sw.js, and browser extension URLs
+  if (
+    url.pathname.startsWith('/api/') ||
+    url.pathname === '/updates.json' ||
+    url.pathname === '/sw.js' ||
+    url.pathname.includes('chrome-extension')
+  ) {
     return;
   }
 

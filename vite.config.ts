@@ -4,8 +4,23 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { exec, execSync } from 'child_process';
 
+const packageJson = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'));
+const appVersion = packageJson.version || '2.5.0';
+let gitCommitHash = 'v1';
+try {
+  gitCommitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+} catch (_) {
+  gitCommitHash = `build-${Date.now()}`;
+}
+const buildTimestamp = new Date().toISOString();
+
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(appVersion),
+    __BUILD_TIME__: JSON.stringify(buildTimestamp),
+    __COMMIT_HASH__: JSON.stringify(gitCommitHash),
+  },
   server: {
     host: process.env.HOST || '127.0.0.1',
     watch: {
@@ -34,12 +49,7 @@ export default defineConfig({
     {
       name: 'pwa-service-worker-generator',
       buildStart() {
-        let commitHash = 'v1';
-        try {
-          commitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
-        } catch (e) {
-          commitHash = `build-${Date.now()}`;
-        }
+        let commitHash = gitCommitHash;
         
         const swContent = `// DomoDomo PWA Service Worker (Auto-generated on build)
 const CACHE_NAME = 'domodomo-cache-${commitHash}';
@@ -74,13 +84,26 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data && (event.data.type === 'SKIP_WAITING' || event.data === 'skipWaiting')) {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
-  // Skip caching for backend/mcp APIs
-  if (event.request.url.includes('/api/')) {
+  const url = new URL(event.request.url);
+
+  // Skip caching for backend/mcp APIs, updates.json, sw.js, and browser extension URLs
+  if (
+    url.pathname.startsWith('/api/') ||
+    url.pathname === '/updates.json' ||
+    url.pathname === '/sw.js' ||
+    url.pathname.includes('chrome-extension')
+  ) {
     return;
   }
 

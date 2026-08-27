@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 interface TransparentVideoMascotProps {
   src?: string;
@@ -45,10 +45,12 @@ export const TransparentVideoMascot = ({
   const [message, setMessage] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [lastMsg, setLastMsg] = useState<string | null>(null);
+  const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleClick = useCallback(() => {
     if (!clickable) return;
-    let pool = CUTE_MESSAGES.filter(m => m !== lastMsg);
+    const pool = CUTE_MESSAGES.filter(m => m !== lastMsg);
     const picked = pool[Math.floor(Math.random() * pool.length)];
     setLastMsg(picked);
 
@@ -61,8 +63,17 @@ export const TransparentVideoMascot = ({
     }, 3200);
   }, [clickable, lastMsg]);
 
-  // If gifSrc is provided, render native transparent animated GIF directly
-  const imageSource = gifSrc || (typeof src === 'string' && src.endsWith('.gif') ? src : undefined);
+  const hasVideoSource = Boolean(src || movSrc);
+  const fallbackImage = gifSrc || (typeof src === 'string' && src.endsWith('.gif') ? src : undefined);
+  const shouldRenderVideo = hasVideoSource && !videoError;
+
+  useEffect(() => {
+    if (shouldRenderVideo && videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Autoplay may need muted attribute which is set
+      });
+    }
+  }, [shouldRenderVideo, src, movSrc]);
 
   return (
     <div
@@ -139,27 +150,29 @@ export const TransparentVideoMascot = ({
         />
       )}
 
-      {imageSource ? (
-        <img
-          src={imageSource}
-          alt="Domo Mascot Animation"
-          className={`w-full h-full object-${objectFit} pointer-events-none select-none`}
-          loading="eager"
-        />
-      ) : (
+      {shouldRenderVideo ? (
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
           crossOrigin="anonymous"
+          onError={() => setVideoError(true)}
           className={`w-full h-full object-${objectFit} pointer-events-none`}
         >
           {movSrc && <source src={movSrc} type='video/mp4; codecs="hvc1"' />}
           {src && <source src={src} type="video/webm" />}
         </video>
-      )}
+      ) : fallbackImage ? (
+        <img
+          src={fallbackImage}
+          alt="Domo Mascot Animation"
+          className={`w-full h-full object-${objectFit} pointer-events-none select-none`}
+          loading="eager"
+        />
+      ) : null}
     </div>
   );
 };
