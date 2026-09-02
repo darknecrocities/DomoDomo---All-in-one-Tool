@@ -1,7 +1,19 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-02T09:06:32.976Z",
+  "buildTime": "2026-09-02T09:10:50.800Z",
   "commits": [
+    {
+      "hash": "923db51",
+      "date": "2026-09-02",
+      "author": "darknecrocities",
+      "message": "feat(nav): streamline navbar with dropdown menus and unclutter header UI"
+    },
+    {
+      "hash": "359ae4f",
+      "date": "2026-09-02",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "607dd33",
       "date": "2026-09-02",
@@ -79,18 +91,6 @@
       "date": "2026-08-17",
       "author": "darknecrocities",
       "message": "fix(audio): decouple matrix coordinates from spatial pan to ensure 100% dynamic stereo tracking across card positions"
-    },
-    {
-      "hash": "23e7570",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "1272792",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "feat(audio): implement global 3D spatial audio with real-time stereo panning, keyboard column positioning, and settings toggle"
     }
   ]
 }
