@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-08-27T08:19:05.457Z",
+  "buildTime": "2026-09-02T09:03:47.260Z",
   "commits": [
+    {
+      "hash": "bb838c7",
+      "date": "2026-08-27",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
     {
       "hash": "baa94f0",
       "date": "2026-08-27",
@@ -85,12 +91,6 @@
       "date": "2026-08-17",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "41fad23",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "fix(blog): support nested markdown link parsing in BlogPost renderer and prerender scripts"
     }
   ]
 }

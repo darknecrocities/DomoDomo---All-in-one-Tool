@@ -629,7 +629,18 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.5.0 (Latest)",
+                    version: "v2.6.0 (Latest)",
+                    date: "September 2, 2026",
+                    title: "DomoSkills Agent Marketplace Integration & Open Ecosystem Synchronization",
+                    changes: [
+                      "DomoSkills Agent Marketplace: Official integration with https://web-beta-six-81.vercel.app/ — the open-source capability registry for AI coding agents (Google Antigravity, Claude Code, Cursor, OpenCode, Codex, Gemini CLI).",
+                      "In-App Tool Hub (/tool/domoskills): Interactive workspace featuring embedded live marketplace browsing, viewport zoom controls (70%–150%), responsive iframe canvas, and category deep-links.",
+                      "CLI Generator & Capability Stacker: Generate one-command installations (npx domoskills add <skills>) with automated target workspace paths and simulated terminal output.",
+                      "Ecosystem Cross-Linking: Seamlessly linked across top navigation, Dashboard spotlight banner, Domo Skill Creator, AI Hub Studio, and platform footer."
+                    ]
+                  },
+                  {
+                    version: "v2.5.0",
                     date: "August 21, 2026",
                     title: "Multi-Platform Desktop Download Hub, Windows (.exe), macOS (.dmg) & Permissions Sandbox",
                     changes: [

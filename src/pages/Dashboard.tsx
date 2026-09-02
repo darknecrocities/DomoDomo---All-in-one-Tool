@@ -15,6 +15,9 @@ import {
 	Award as AwardIcon,
 	Bomb,
 	Hammer,
+	Sparkles,
+	ArrowUpRight,
+	Terminal,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
@@ -1200,6 +1203,16 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		status: "functional",
 	},
 	{
+		id: "domoskills",
+		name: "DomoSkills Marketplace",
+		categories: ["ai", "dev", "popular"],
+		description:
+			"Discover, inspect, and install 200+ verified modular capabilities for AI coding agents via live catalog and CLI.",
+		icon: "Sparkles",
+		status: "functional",
+		popular: true,
+	},
+	{
 		id: "auto-pilot",
 		name: "Auto-Pilot Workspace",
 		categories: ["ai"],
@@ -2187,6 +2200,13 @@ export const Dashboard = () => {
 		setTimeout(() => setCopiedTerminalIndex(null), 1500);
 	};
 
+	const [copiedDomoSkillsCli, setCopiedDomoSkillsCli] = useState(false);
+	const handleCopyDomoSkillsCli = () => {
+		navigator.clipboard.writeText("npx domoskills add react-performance owasp-agent-guardian");
+		setCopiedDomoSkillsCli(true);
+		setTimeout(() => setCopiedDomoSkillsCli(false), 2000);
+	};
+
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const categoryScrollRef = useRef<HTMLDivElement>(null);
 
@@ -2699,6 +2719,91 @@ export const Dashboard = () => {
 							/>
 						</div>
 					</TiltContainer>
+				</div>
+			</div>
+
+			{/* DomoSkills Ecosystem Spotlight Banner */}
+			<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/domoskills text-left">
+				<div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+				<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+					<div className="space-y-3 max-w-3xl">
+						<div className="flex flex-wrap items-center gap-2">
+							<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3C6B4D]/20 text-emerald-400 border border-[#3C6B4D]/40 text-[11px] font-bold uppercase tracking-wider">
+								<span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+								Official Domo Ecosystem Project
+							</span>
+							<span className="text-[11px] font-mono text-[#A3A09B] bg-[#111213] border border-[#2A2D30] px-2.5 py-0.5 rounded-full">
+								v1.0.0 Live on Vercel
+							</span>
+						</div>
+
+						<div>
+							<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
+								<span>DomoSkills — The Open Agent Skills Marketplace</span>
+								<Sparkles size={18} className="text-emerald-400 shrink-0" />
+							</h2>
+							<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
+								Supercharge your AI coding agents with 200+ verified capabilities. Single-command CLI installation for <span className="text-[#ECEBE9] font-semibold">Google Antigravity</span>, <span className="text-[#ECEBE9] font-semibold">Claude Code</span>, <span className="text-[#ECEBE9] font-semibold">Cursor</span>, <span className="text-[#ECEBE9] font-semibold">OpenCode</span>, <span className="text-[#ECEBE9] font-semibold">Codex</span>, and <span className="text-[#ECEBE9] font-semibold">Gemini CLI</span>.
+							</p>
+						</div>
+
+						{/* Supported Agent Tags */}
+						<div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-[#72706C]">
+							<span className="text-[#A3A09B] font-semibold">Supported:</span>
+							{['Antigravity', 'Claude Code', 'Cursor', 'OpenCode', 'Codex', 'Gemini CLI', 'Windsurf'].map((agent) => (
+								<span key={agent} className="px-2 py-0.5 rounded-md bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]">
+									{agent}
+								</span>
+							))}
+						</div>
+
+						{/* Quick Copy Command Snippet */}
+						<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
+							<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-emerald-400 font-bold flex items-center gap-1.5">
+								<Terminal size={12} />
+								<span>CLI</span>
+							</div>
+							<span className="text-[#ECEBE9] text-[11px] sm:text-xs">npx domoskills add react-performance owasp-agent-guardian</span>
+							<button
+								onClick={handleCopyDomoSkillsCli}
+								className="p-1 rounded bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#72706C] hover:text-[#ECEBE9] transition-all ml-1"
+								title="Copy installation command"
+							>
+								{copiedDomoSkillsCli ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+							</button>
+						</div>
+					</div>
+
+					{/* Action Buttons */}
+					<div className="flex flex-wrap lg:flex-col sm:flex-row items-stretch gap-2.5 shrink-0 w-full lg:w-auto">
+						<a
+							href="https://web-beta-six-81.vercel.app/"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all shadow-md shadow-[#3C6B4D]/20 group/btn"
+						>
+							<span>Explore Marketplace</span>
+							<ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+						</a>
+
+						<button
+							onClick={() => navigate('/tool/domoskills')}
+							className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all"
+						>
+							<Sparkles size={13} className="text-emerald-400" />
+							<span>In-App Tool Hub</span>
+						</button>
+
+						<a
+							href="https://github.com/darknecrocities/DomoSkills"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-xs font-semibold transition-all"
+						>
+							<Code size={13} />
+							<span>GitHub Repository</span>
+						</a>
+					</div>
 				</div>
 			</div>
 

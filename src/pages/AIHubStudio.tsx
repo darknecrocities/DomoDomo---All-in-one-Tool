@@ -46,7 +46,8 @@ import {
   Eye,
   Globe,
   Activity,
-  Network
+  Network,
+  ExternalLink
 } from 'lucide-react';
 import { aiService } from '../utils/aiService';
 import { Logo } from '../components/Logo';
@@ -1602,6 +1603,28 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <Layers size={15} className="shrink-0" />
               {!sidebarCollapsed && <span>Docs & Integration</span>}
             </button>
+
+            {/* DomoSkills Marketplace */}
+            <a
+              href="https://web-beta-six-81.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all group"
+              title="DomoSkills — The Open Agent Skills Marketplace (External Webapp)"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Sparkles size={15} className="shrink-0 text-emerald-400 group-hover:rotate-12 transition-transform" />
+                {!sidebarCollapsed && <span className="truncate">DomoSkills</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <div className="flex items-center gap-1">
+                  <span className="text-[9px] font-mono font-bold bg-[#3C6B4D]/25 text-emerald-400 border border-[#3C6B4D]/40 px-1.5 py-0.2 rounded-full">
+                    MARKET
+                  </span>
+                  <ExternalLink size={11} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
+                </div>
+              )}
+            </a>
           </nav>
 
           {/* Section: Train & Flow */}

@@ -13,6 +13,65 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-domoskills-open-agent-skills-marketplace',
+    title: 'Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents',
+    excerpt: 'DomoDomo officially integrates DomoSkills (https://web-beta-six-81.vercel.app/), the developer-native open-source skills marketplace for AI coding agents. Install modular capabilities for Google Antigravity, Claude Code, Cursor, OpenCode, Codex, and Gemini in a single CLI command.',
+    date: 'September 2, 2026',
+    readTime: '3 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'domoskills, agent skills marketplace, ai coding agents, antigravity, claude code, cursor rules, opencode, codex, skill.md, open source',
+    content: `# Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents
+
+We are thrilled to introduce **DomoSkills** ([https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)), an official sibling product in the Domo ecosystem! DomoSkills is the open-source capability registry and CLI package manager designed specifically for the new era of autonomous AI coding agents.
+
+---
+
+## ⚡ What is DomoSkills?
+
+As coding agents like **Google Antigravity**, **Claude Code**, **Cursor**, **OpenCode**, **OpenAI Codex**, **Windsurf**, and **Gemini CLI** become daily programming companions, developers need modular, verified capabilities to guide them. 
+
+Instead of writing custom system prompts, tool schemas, and project constraints from scratch every time, **DomoSkills** provides a curated, developer-native marketplace of **200+ verified capabilities** (\`SKILL.md\`) that can be discovered and installed in one command.
+
+---
+
+## 🛠️ One-Command CLI Installation
+
+DomoSkills includes a zero-friction CLI that automatically recognizes your workspace and installs skills directly into the correct directory:
+
+\`\`\`bash
+# Install frontend performance and OWASP security capabilities
+npx domoskills add react-performance owasp-agent-guardian
+
+# Install backend and containerization architectures
+npx domoskills add fastapi-pro docker-architect
+\`\`\`
+
+The CLI inspects your active agent environment and places the generated skill definitions:
+- **Google Antigravity**: \`.agents/skills/<skill-name>/SKILL.md\`
+- **Claude Code**: \`.claude/skills/<skill-name>/SKILL.md\`
+- **Cursor IDE**: \`.cursor/rules/<skill-name>.mdc\`
+- **OpenCode**: \`.opencode/skills/<skill-name>/SKILL.md\`
+- **OpenAI Codex**: \`.codex/skills/<skill-name>/SKILL.md\`
+
+---
+
+## 🌐 Deep DomoDomo Integration
+
+DomoDomo now features full two-way synchronization with DomoSkills:
+1. **Top Navigation & Mobile Drawer**: Instant access to the DomoSkills webapp right from the main navbar.
+2. **Dashboard Spotlight**: Interactive CLI command generator and agent compatibility tags right on the DomoDomo dashboard.
+3. **In-App Tool Hub (\`/tool/domoskills\`)**: View and browse the live marketplace in an embedded sandbox with zoom controls, CLI builders, and domain shortcuts.
+4. **Domo Skill Creator Bridge**: Export your visual skills and submit them to the community at [DomoSkills Submit](https://web-beta-six-81.vercel.app/submit).
+5. **AI Hub Studio**: Quick-access shortcuts inside the offline AI developer studio.
+
+---
+
+## 🚀 Explore DomoSkills Today
+
+Experience the marketplace live at [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/) and contribute on GitHub at [https://github.com/darknecrocities/DomoSkills](https://github.com/darknecrocities/DomoSkills)!`
+  },
+  {
     slug: 'announcing-multi-platform-desktop-download-hub-windows-exe-mac-dmg-permissions-modal',
     title: 'Announcing Multi-Platform Desktop Download Hub: Windows (.exe), macOS (.dmg), Auto-Ollama Setup & Permissions Sandbox',
     excerpt: 'DomoDomo releases its comprehensive Desktop Download Hub (/download), offering native Windows (.exe installer & portable bundle), macOS (.dmg & universal app package), Linux (AppImage & deb), automated Ollama local AI background setup with CORS configuration, and an interactive Desktop & Hardware Permissions sandbox modal.',

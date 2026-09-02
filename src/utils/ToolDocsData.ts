@@ -1285,6 +1285,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         technicalSpecs: 'Outputs YAML frontmatter-delimited Markdown skillsets.'
       },
       {
+        id: 'domoskills',
+        name: 'DomoSkills Marketplace',
+        engine: 'DomoSkills Open Agent Registry Integration',
+        details: 'Official hub for discovering, configuring, and installing modular open-source skills for AI coding agents (Google Antigravity, Claude Code, Cursor, OpenCode, Codex, Gemini CLI).',
+        functionality: 'Browse live marketplace catalog, generate custom CLI commands (npx domoskills add ...), inspect agent installation paths, and deep-link into domain categories.',
+        howItWorks: '1. Selects target agent and skill stack. 2. Synthesizes commandline install syntax. 3. Interactively previews workspace integration. 4. Directly connects to https://web-beta-six-81.vercel.app/.',
+        technicalSpecs: 'Pure client-side zero-storage sandbox with responsive viewport controls and iframe embedding.'
+      },
+      {
         id: 'domo-companion',
         name: 'Domo Companion (Floating AI Assistant)',
         engine: 'Ollama Client Context Pipeline',

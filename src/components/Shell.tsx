@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award, Volume2, VolumeX } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink } from 'lucide-react';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
 import { unifiedMemory } from '../utils/unifiedMemory';
 import { getExperienceSettings, type ExperienceSettings } from '../utils/experienceSettings';
+import { TOOLS } from '../engine/registry';
 import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
@@ -319,6 +320,22 @@ export const Shell = () => {
               </span>
             </NavLink>
 
+            {/* DomoSkills Marketplace Link */}
+            <a
+              href="https://web-beta-six-81.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-1 px-2.5 py-1.5 rounded-lg tracking-wide transition-all flex items-center gap-1.5 text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30] hover:border-[#3C6B4D]/60 group shadow-sm"
+              title="DomoSkills — The Open Agent Skills Marketplace (External Webapp)"
+            >
+              <Sparkles size={12} className="text-emerald-400 group-hover:rotate-12 transition-transform" />
+              <span>DomoSkills</span>
+              <span className="text-[9px] font-mono font-bold bg-[#3C6B4D]/20 text-emerald-400 border border-[#3C6B4D]/35 px-1.5 py-0.2 rounded-full leading-none">
+                APP
+              </span>
+              <ExternalLink size={10} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
+            </a>
+
             {[
               { to: '/about', label: 'About' },
               { to: '/library-api', label: 'API Library' },
@@ -480,7 +497,7 @@ export const Shell = () => {
                 }
               >
                 <span>Tools</span>
-                <span className="text-[10px] font-mono text-[#3C6B4D]">229 tools</span>
+                <span className="text-[10px] font-mono text-[#3C6B4D]">{TOOLS.length} tools</span>
               </NavLink>
 
               <NavLink
@@ -498,6 +515,25 @@ export const Shell = () => {
                 <span>AI Hub Studio</span>
                 <span className="ml-auto text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-2 py-0.5 rounded-full">NEW</span>
               </NavLink>
+
+              <a
+                href="https://web-beta-six-81.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles size={15} className="text-emerald-400" />
+                  <span>DomoSkills Marketplace</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-mono font-bold bg-[#3C6B4D]/25 text-emerald-400 border border-[#3C6B4D]/40 px-2 py-0.5 rounded-full">
+                    APP
+                  </span>
+                  <ExternalLink size={12} className="text-[#72706C]" />
+                </div>
+              </a>
 
               {[
                 { to: '/about', label: 'About' },
@@ -928,6 +964,27 @@ export const Shell = () => {
                         </span>
                       </div>
                     </a>
+                    {/* DomoSkills Marketplace Badge */}
+                    <a
+                      href="https://web-beta-six-81.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/domoskills w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/60"
+                      title="DomoSkills — The Open Agent Skills Marketplace"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-emerald-400 group-hover/domoskills:scale-105 transition-transform">
+                        <Sparkles size={15} />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-emerald-400 font-bold uppercase">
+                          Domo Ecosystem
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/domoskills:text-emerald-400 transition-colors flex items-center gap-1">
+                          <span>DomoSkills</span>
+                          <ExternalLink size={10} className="text-[#72706C]" />
+                        </span>
+                      </div>
+                    </a>
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
@@ -951,6 +1008,17 @@ export const Shell = () => {
                   <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
                     <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
                     <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li>
+                      <a
+                        href="https://web-beta-six-81.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1 text-emerald-400 font-bold"
+                      >
+                        <span>DomoSkills</span>
+                        <ExternalLink size={10} className="text-emerald-500" />
+                      </a>
+                    </li>
                     <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
                     <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Docs</Link></li>
                     <li><Link to="/blog" className="hover:text-[#ECEBE9] transition-colors">Blog</Link></li>
@@ -963,6 +1031,17 @@ export const Shell = () => {
                   <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
                     <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link></li>
                     <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link></li>
+                    <li>
+                      <a
+                        href="https://github.com/darknecrocities/DomoSkills"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
+                      >
+                        <span>DomoSkills GitHub</span>
+                        <ExternalLink size={10} className="text-[#72706C]" />
+                      </a>
+                    </li>
                     <li>
                       <a
                         href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"

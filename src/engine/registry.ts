@@ -198,6 +198,7 @@ import { AIDomoAgentHub } from '../tools/ai/AIDomoAgentHub';
 import { AIDomoSelection } from '../tools/ai/AIDomoSelection';
 import { AIDomoModelLibrary } from '../tools/ai/AIDomoModelLibrary';
 import { DomoSkillCreatorTool } from '../tools/ai/DomoSkillCreator';
+import { DomoSkillsMarketplaceTool } from '../tools/ai/DomoSkillsMarketplace';
 import { AutoPilotWorkspace } from '../tools/autopilot/AutoPilotWorkspace';
 import { ModelMigrator } from '../tools/ai/ModelMigrator';
 import { DomoBrainControlCenter } from '../tools/ai/DomoBrainControlCenter';
@@ -442,6 +443,7 @@ export const TOOLS: Tool[] = [
   { id: 'domo-cognitive-mapper', name: 'Domo Brain Mind Mapper', categories: ['ai'], description: 'Explore the interconnecting neural network of Domo\'s mind. Interact, search, and manage skills, knowledge bases, recent activities, and system tools in 3D.', icon: 'Brain', run: async (i) => i, component: DomoMindMapperTool },
   { id: 'ollama-library', name: 'Domo Model Library', categories: ['ai'], description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', run: async (i) => i, component: AIDomoModelLibrary },
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', categories: ['ai'], description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool },
+  { id: 'domoskills', name: 'DomoSkills Marketplace', categories: ['ai', 'dev'], description: 'Discover, inspect, and install 200+ verified capabilities for AI coding agents via live catalog and CLI.', icon: 'Sparkles', run: async (i) => i, component: DomoSkillsMarketplaceTool },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', categories: ['ai'], description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', run: async (i) => i, component: AutoPilotWorkspace },
   { id: 'model-migrator', name: 'Ollama Model Migrator', categories: ['ai'], description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', run: async (i) => i, component: ModelMigrator },
   { id: 'domo-neural-atlas', name: 'Domo Neural Atlas', categories: ['ai'], description: 'Interactive 2D visual layout map of local AI context memories, RAG chunks, and user habit nodes.', icon: 'Brain', run: async (i) => i, component: DomoNeuralAtlas },
