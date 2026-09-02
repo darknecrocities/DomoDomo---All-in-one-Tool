@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-02T09:13:58.135Z",
+  "buildTime": "2026-09-02T09:14:28.091Z",
   "commits": [
+    {
+      "hash": "3e0619b",
+      "date": "2026-09-02",
+      "author": "darknecrocities",
+      "message": "refactor(ui): remove ecosystem project and vercel badges from domoskills cards"
+    },
     {
       "hash": "c43549a",
       "date": "2026-09-02",
@@ -85,12 +91,6 @@
       "date": "2026-08-21",
       "author": "darknecrocities",
       "message": "feat(desktop): native macOS & Windows installers, offline server, transparent mascot GIFs, and live update notification toast"
-    },
-    {
-      "hash": "8b8c3f4",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
     }
   ]
 }
