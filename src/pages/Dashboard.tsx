@@ -2727,16 +2727,6 @@ export const Dashboard = () => {
 				<div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 				<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
 					<div className="space-y-3 max-w-3xl">
-						<div className="flex flex-wrap items-center gap-2">
-							<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3C6B4D]/20 text-emerald-400 border border-[#3C6B4D]/40 text-[11px] font-bold uppercase tracking-wider">
-								<span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-								Official Domo Ecosystem Project
-							</span>
-							<span className="text-[11px] font-mono text-[#A3A09B] bg-[#111213] border border-[#2A2D30] px-2.5 py-0.5 rounded-full">
-								v1.0.0 Live on Vercel
-							</span>
-						</div>
-
 						<div>
 							<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
 								<span>DomoSkills — The Open Agent Skills Marketplace</span>

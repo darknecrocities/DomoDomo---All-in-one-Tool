@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-02T09:10:50.800Z",
+  "buildTime": "2026-09-02T09:13:58.135Z",
   "commits": [
+    {
+      "hash": "c43549a",
+      "date": "2026-09-02",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
     {
       "hash": "923db51",
       "date": "2026-09-02",
@@ -85,12 +91,6 @@
       "date": "2026-08-17",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "dea8390",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "fix(audio): decouple matrix coordinates from spatial pan to ensure 100% dynamic stereo tracking across card positions"
     }
   ]
 }

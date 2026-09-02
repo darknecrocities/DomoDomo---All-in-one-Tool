@@ -105,16 +105,6 @@ export const DomoSkillsMarketplaceTool: React.FC = () => {
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-3xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3C6B4D]/20 text-emerald-400 border border-[#3C6B4D]/40 text-[11px] font-bold uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Official Domo Ecosystem Partner
-              </span>
-              <span className="text-[11px] font-mono text-[#72706C] border border-[#2A2D30] bg-[#111213] px-2.5 py-0.5 rounded-full">
-                200+ Verified Agent Skills
-              </span>
-            </div>
-
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-3">
               <span>DOMOSKILLS<span className="text-[#3C6B4D]">_</span></span>
               <span className="text-xs font-mono font-normal text-[#A3A09B] bg-[#111213] border border-[#2A2D30] px-2.5 py-1 rounded-lg hidden sm:inline">
