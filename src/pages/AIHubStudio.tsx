@@ -1617,12 +1617,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 {!sidebarCollapsed && <span className="truncate">DomoSkills</span>}
               </div>
               {!sidebarCollapsed && (
-                <div className="flex items-center gap-1">
-                  <span className="text-[9px] font-mono font-bold bg-[#3C6B4D]/25 text-emerald-400 border border-[#3C6B4D]/40 px-1.5 py-0.2 rounded-full">
-                    MARKET
-                  </span>
-                  <ExternalLink size={11} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
-                </div>
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
               )}
             </a>
           </nav>

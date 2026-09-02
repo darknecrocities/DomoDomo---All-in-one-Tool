@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-02T09:03:47.260Z",
+  "buildTime": "2026-09-02T09:06:32.976Z",
   "commits": [
+    {
+      "hash": "607dd33",
+      "date": "2026-09-02",
+      "author": "darknecrocities",
+      "message": "feat(ecosystem): integrate DomoSkills agent marketplace with matching theme and cross-links"
+    },
     {
       "hash": "bb838c7",
       "date": "2026-08-27",
@@ -85,12 +91,6 @@
       "date": "2026-08-17",
       "author": "darknecrocities",
       "message": "feat(audio): implement global 3D spatial audio with real-time stereo panning, keyboard column positioning, and settings toggle"
-    },
-    {
-      "hash": "ba9ea9c",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
     }
   ]
 }
