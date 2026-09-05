@@ -12,6 +12,7 @@ import { ColorPaletteExtractorTool } from '../tools/photo/ColorPaletteExtractor'
 import { CollageMakerTool } from '../tools/photo/CollageMaker';
 import { FormatConverterTool } from '../tools/photo/FormatConverter';
 import { TemplateStudioTool } from '../tools/photo/TemplateStudio';
+import { CR2ToPNGConverterTool } from '../tools/photo/CR2ToPNGConverter';
 
 // Security Suite Imports
 import { FileHashCheckerTool } from '../tools/security/FileHashChecker';
@@ -291,6 +292,7 @@ export const TOOLS: Tool[] = [
   { id: 'collage-maker', name: 'Collage Maker', categories: ['photo'], description: 'Combine multiple images in editable canvas grids.', icon: 'Image', run: async (i) => i, component: CollageMakerTool },
   { id: 'format-converter', name: 'Format Converter', categories: ['photo'], description: 'Convert images between JPG, PNG, WebP, BMP, and GIF formats free online. Batch convert with quality control — 100% local processing.', icon: 'Image', seoTitle: 'Convert Image Format Free Online — JPG PNG WebP | DomoDomo', keywords: 'convert image format, jpg to png, png to jpg, webp converter, image converter online free', run: async (i) => i, component: FormatConverterTool },
   { id: 'template-studio', name: 'Template Studio', categories: ['photo'], description: 'Create and fill reusable branded image templates with text.', icon: 'LayoutTemplate', run: async (i) => i, component: TemplateStudioTool },
+  { id: 'cr2-to-png', name: 'CR2 to PNG Converter', categories: ['photo', 'converter'], description: 'Convert Canon RAW (.cr2) camera images to lossless, high-quality PNGs with batch processing, zero corruption, and ZIP archive export.', icon: 'Camera', seoTitle: 'Convert CR2 to PNG Free Online — Canon RAW Batch Converter | DomoDomo', keywords: 'cr2 to png, convert cr2 to png, canon raw converter, batch cr2 converter, canon raw to png free', run: async (i) => i, component: CR2ToPNGConverterTool },
 
   // PDF Tools (10)
   { id: 'pdf-merge', name: 'Merge PDFs', categories: ['pdf'], description: 'Merge PDF files online free — no watermark, no file limit. Combine multiple PDFs into one document instantly in your browser without uploading to any server.', icon: 'FileText', seoTitle: 'Merge PDF Files Online Free — No Watermark | DomoDomo', keywords: 'merge pdf, combine pdf, merge pdf files online free, join pdf, pdf merger', run: async (i) => i, component: PDFMergeTool },

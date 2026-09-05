@@ -13,6 +13,59 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'introducing-canon-cr2-to-png-high-quality-batch-converter',
+    title: 'Introducing the Canon CR2 to PNG Converter: Lossless Batch Conversion with Zero Corruption',
+    excerpt: 'Convert Canon RAW (.CR2) camera photos to lossless, pristine PNGs directly inside your browser sandbox. Featuring a dual-strategy binary parsing engine, batch queue processing, camera Exif metadata extraction, interactive zoom viewports, and one-click ZIP packaging.',
+    date: 'September 4, 2026',
+    readTime: '3 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'cr2 to png, canon raw converter, batch cr2 to png, convert cr2 online free, client-side raw converter, canon photo tools, zero corruption',
+    content: `# Introducing the Canon CR2 to PNG Converter: Lossless Batch Conversion with Zero Corruption
+
+Photographers and visual creators have long faced a frustrating dilemma when handling Canon RAW (\`.CR2\`) camera files on the web. Standard online converters either require uploading massive multi-gigabyte photos to remote servers (violating client confidentiality and privacy), downscale images to blurry previews, or fail outright with corrupted pixel bands due to faulty TIFF offset handling.
+
+Today, we are thrilled to launch the **CR2 to PNG Converter** in DomoDomo's **Photo & Image** and **Converter** suites—a 100% client-side, professional-grade batch converter that transforms Canon RAW files into lossless 24-bit PNGs with **zero corruption** and zero server uploads.
+
+---
+
+## 📸 What is Canon CR2 and Why Do Web Converters Fail?
+
+Canon Raw Version 2 (\`.CR2\`) is a proprietary image container format built on top of the TIFF 6.0 standard. Inside each CR2 file, Canon cameras store multiple image representations:
+1. **Raw Bayer Sensor CFA Data**: Monochromatic photosite values that require heavy computational demosaicing.
+2. **Hardware-Rendered JPEG Stream**: A full-sensor-resolution picture rendered at capture time by Canon's dedicated DIGIC image processor, applying precise camera color matrices, white balance, tone curves, and lens profiles.
+3. **Exif Metadata & MakerNotes**: Detailed camera settings including ISO, exposure time, aperture, focal length, and camera orientation.
+
+Most generic web converters fail because they attempt naive TIFF decoding or rely on fixed byte offsets that break across different camera models (e.g. EOS 5D vs. Rebel series). When offsets shift, generic tools produce scrambled color blocks or crash with memory bounds errors.
+
+---
+
+## ⚡ The DomoDomo Zero-Corruption Engine
+
+To guarantee 100% reliability and pristine visual fidelity, DomoDomo implements a **dual-strategy client-side binary parser**:
+
+- **Primary TIFF IFD Directory Traversal**: Reads TIFF endianness (\`II\` or \`MM\`), validates the \`CR\` header signature, and traverses \`IFD0\`, \`IFD1\`, \`IFD2\`, and \`IFD3\` structures. It dynamically isolates the \`StripOffsets\` and \`JPEGInterchangeFormat\` pointers.
+- **Fail-Safe Binary Stream Carver**: If an SD card is partially degraded or file headers are damaged, a resilient secondary scanner verifies JPEG \`SOI\` (\`0xFF 0xD8\`), \`SOF0/SOF2\` frame segments, and \`EOI\` (\`0xFF 0xD9\`) boundaries, selecting the stream with the largest pixel area.
+- **Lossless Canvas 1:1 Rendering**: The extracted picture is rendered with \`imageSmoothingEnabled: false\` to eliminate resampling artifacts, auto-oriented using camera gyroscope sensors, and serialized into pure 24-bit PNG.
+
+---
+
+## 🚀 Key Features
+
+- **Batch Queue Conversion**: Drag and drop 1, 10, or 50 Canon RAW files at once. The converter handles files with concurrency management to preserve browser memory.
+- **One-Click ZIP Archive Download**: Export your entire batch of converted PNGs in a single compressed \`.zip\` archive powered by JSZip.
+- **Exif Camera Inspector**: View camera model (e.g., *Canon EOS 5D Mark IV*, *Canon EOS 400D DIGITAL*), ISO speed, shutter speed, f-stop, focal length, and shot timestamp.
+- **Interactive High-Resolution Viewport**: Conforms to DomoDomo's signature viewport standards with **Zoom In (+)**, **Zoom Out (-)**, **Reset Zoom (100%)**, **Fit-to-Screen**, dynamic **Zoom % Display**, and pan/drag navigation.
+- **100% Private & Offline-Capable**: Photos never leave your machine. No cloud uploads, no subscriptions, and no tracking.
+
+---
+
+## 🛠️ How to Try It
+
+Jump straight into the **CR2 to PNG Converter** from the DomoDomo dashboard under **Photo & Image** or **Converters**. If you don't have a Canon camera file handy, click the **"Load Sample CR2"** button to explore the conversion pipeline and viewport with a single click!
+`
+  },
+  {
     slug: 'announcing-domoskills-open-agent-skills-marketplace',
     title: 'Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents',
     excerpt: 'DomoDomo officially integrates DomoSkills (https://web-beta-six-81.vercel.app/), the developer-native open-source skills marketplace for AI coding agents. Install modular capabilities for Google Antigravity, Claude Code, Cursor, OpenCode, Codex, and Gemini in a single CLI command.',

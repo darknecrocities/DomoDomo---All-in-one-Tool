@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-02T09:14:28.091Z",
+  "buildTime": "2026-09-05T07:10:30.632Z",
   "commits": [
+    {
+      "hash": "b8727b7",
+      "date": "2026-09-02",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
     {
       "hash": "3e0619b",
       "date": "2026-09-02",
@@ -85,12 +91,6 @@
       "date": "2026-08-21",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "66933ea",
-      "date": "2026-08-21",
-      "author": "darknecrocities",
-      "message": "feat(desktop): native macOS & Windows installers, offline server, transparent mascot GIFs, and live update notification toast"
     }
   ]
 }

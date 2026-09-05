@@ -163,6 +163,15 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		icon: "LayoutTemplate",
 		status: "functional",
 	},
+	{
+		id: "cr2-to-png",
+		name: "CR2 to PNG Converter",
+		categories: ["photo", "converter"],
+		description: "Convert Canon RAW (.cr2) camera images to lossless, high-quality PNGs with batch processing, zero corruption, and ZIP archive export.",
+		icon: "Camera",
+		status: "functional",
+		popular: true,
+	},
 
 	// PDF (10)
 	{

@@ -640,6 +640,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                     ]
                   },
                   {
+                    version: "v2.5.1",
+                    date: "September 4, 2026",
+                    title: "Canon CR2 to PNG High-Quality Batch Converter & Zero-Corruption Engine",
+                    changes: [
+                      "CR2 to PNG Converter Launch: Integrated a professional-grade, 100% client-side Canon RAW (.CR2) batch converter to lossless PNG in the Photo & Image and Converter suites.",
+                      "Zero-Corruption Dual Engine: Features resilient TIFF IFD traversal and fail-safe binary JPEG stream carving to extract pristine full-resolution camera sensor pictures with zero compression corruption.",
+                      "Batch Queue & ZIP Archive Export: Upload multiple Canon CR2 photos simultaneously with live conversion progress and one-click ZIP archive packaging.",
+                      "Exif Camera Inspector & Interactive Viewport: Inspects camera make, model, ISO, shutter speed, aperture, and focal length, paired with DomoDomo viewport standards (Zoom In, Zoom Out, Reset 100%, and Pan)."
+                    ]
+                  },
+                  {
                     version: "v2.5.0",
                     date: "August 21, 2026",
                     title: "Multi-Platform Desktop Download Hub, Windows (.exe), macOS (.dmg) & Permissions Sandbox",

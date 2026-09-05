@@ -251,6 +251,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Converts images between PNG, JPEG, WebP, AVIF, and ICO formats. Supports bulk queue actions.',
         howItWorks: '1. Converts image files to URL structures. 2. Renders images to offscreen canvas configurations. 3. Serializes arrays using target export formats. 4. Downloads files.',
         technicalSpecs: 'AVIF and WebP exports require browser-native encoding support.'
+      },
+      {
+        id: 'cr2-to-png',
+        name: 'CR2 to PNG Converter',
+        engine: 'Native DataView Binary Parser + Canvas 2D + JSZip',
+        details: 'Parses Canon RAW version 2 (CR2) TIFF IFD structures (IFD0, IFD1, IFD2, IFD3, SubIFDs) and executes a fail-safe binary stream carver to isolate the maximum-resolution camera DIGIC image stream, decoding and rendering it losslessly into 24-bit PNG with Exif orientation preservation and bulk ZIP packaging.',
+        functionality: 'Converts single or batch Canon CR2 raw camera files to lossless PNG. Extracts camera metadata (Make, Model, ISO, Shutter Speed, Aperture, Focal Length, Timestamp), provides interactive Zoom In/Out/Reset pan viewport, and supports one-click ZIP packaging.',
+        howItWorks: '1. Reads CR2 file into ArrayBuffer. 2. Parses TIFF header endianness and CR2 magic (0x4352). 3. Traverses IFD directories (StripOffsets, StripByteCounts, JPEGInterchangeFormat) and validates SOI/SOF/EOI markers. 4. Extracts highest-resolution image stream and auto-corrects orientation via 2D transformation matrix. 5. Serializes lossless PNG blob and packages batch outputs with JSZip.',
+        technicalSpecs: '100% client-side. Zero server transmission. Compatible with Canon EOS Rebel, xxD, 5D, 6D, 7D, 1D series. Supports concurrent queue conversion and multi-megabyte raw buffer processing.'
       }
     ]
   },
