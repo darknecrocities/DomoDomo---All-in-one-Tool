@@ -84,10 +84,10 @@ Jump straight into the **CR2 to PNG Converter** from the DomoDomo dashboard unde
 
 We are thrilled to introduce **DomoSkills**, created and engineered by **Arron Parejas** as an official sister project in the Domo ecosystem! DomoSkills is the developer-native, open-source capability registry and CLI package manager designed specifically for the new era of autonomous AI coding agents.
 
-```text
+\`\`\`text
 DOMOSKILLS_
 Open skills. Smarter agents. Your stack.
-```
+\`\`\`
 
 ---
 
