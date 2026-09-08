@@ -68,51 +68,84 @@ Jump straight into the **CR2 to PNG Converter** from the DomoDomo dashboard unde
   {
     slug: 'announcing-domoskills-open-agent-skills-marketplace',
     title: 'Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents',
-    excerpt: 'DomoDomo officially integrates DomoSkills (https://web-beta-six-81.vercel.app/), the developer-native open-source skills marketplace for AI coding agents. Install modular capabilities for Google Antigravity, Claude Code, Cursor, OpenCode, Codex, and Gemini in a single CLI command.',
+    excerpt: 'Created by Arron Parejas, DomoSkills (https://web-beta-six-81.vercel.app/) is the developer-native open-source skills marketplace and CLI package manager for AI coding agents. Install 1,000+ modular capabilities for Google Antigravity, Claude Code, Cursor, OpenCode, Codex, Copilot, and Gemini in a single CLI command.',
     date: 'September 2, 2026',
-    readTime: '3 min read',
+    readTime: '4 min read',
     category: 'Ecosystem Announcements',
     author: 'Arron Parejas',
-    keywords: 'domoskills, agent skills marketplace, ai coding agents, antigravity, claude code, cursor rules, opencode, codex, skill.md, open source',
+    keywords: 'domoskills, agent skills marketplace, ai coding agents, arron parejas, antigravity, claude code, cursor rules, opencode, codex, copilot, skill.md, open source',
     content: `# Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents
 
-We are thrilled to introduce **DomoSkills** ([https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)), an official sibling product in the Domo ecosystem! DomoSkills is the open-source capability registry and CLI package manager designed specifically for the new era of autonomous AI coding agents.
+**Created by Arron Parejas ([@darknecrocities](https://github.com/darknecrocities))**  
+**Web Platform:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)  
+**GitHub Repository:** [https://github.com/darknecrocities/DomoSkills](https://github.com/darknecrocities/DomoSkills)  
+
+---
+
+We are thrilled to introduce **DomoSkills**, created and engineered by **Arron Parejas** as an official sister project in the Domo ecosystem! DomoSkills is the developer-native, open-source capability registry and CLI package manager designed specifically for the new era of autonomous AI coding agents.
+
+```text
+DOMOSKILLS_
+Open skills. Smarter agents. Your stack.
+```
 
 ---
 
 ## ⚡ What is DomoSkills?
 
-As coding agents like **Google Antigravity**, **Claude Code**, **Cursor**, **OpenCode**, **OpenAI Codex**, **Windsurf**, and **Gemini CLI** become daily programming companions, developers need modular, verified capabilities to guide them. 
+As AI coding assistants like **Google Antigravity**, **Claude Code**, **Cursor**, **OpenCode Interpreter**, **OpenAI Codex**, and **GitHub Copilot** become essential daily programming companions, engineering teams face a common roadblock: **Agent Capability Fragmentation**.
 
-Instead of writing custom system prompts, tool schemas, and project constraints from scratch every time, **DomoSkills** provides a curated, developer-native marketplace of **200+ verified capabilities** (\`SKILL.md\`) that can be discovered and installed in one command.
+Developers routinely find themselves re-writing prompt rules, copy-pasting undocumented markdown files across different workspace directories, and running untrusted community prompts with zero security validation.
+
+**DomoSkills** solves this by providing a unified, curated registry of **over 1,000+ verified capabilities** (\`SKILL.md\`) spanning 12 software domains—discoverable and installable with a single terminal command.
+
+---
+
+## 🛡️ Core Pillars of DomoSkills
+
+1. **Universal Multi-Agent Adapter Engine**: Native zero-configuration target directory mappings for 7 major AI environments:
+   - **Google Antigravity & Gemini CLI**: \`.gemini/skills/<name>/\`
+   - **Claude Code**: \`.claude/skills/<name>/\`
+   - **Cursor IDE**: \`.cursor/skills/<name>/\`
+   - **OpenCode Interpreter**: \`.opencode/skills/<name>/\`
+   - **OpenAI Codex / Agents**: \`.agents/skills/<name>/\`
+   - **GitHub Copilot**: \`.github/skills/<name>/\`
+   - **Universal Standard**: \`.agent/skills/<name>/\`
+
+2. **Zero-Execution AST Security Engine**: Every skill is statically analyzed against OWASP guidelines, checking for destructive commands (\`rm -rf /\`), piped downloads (\`curl | bash\`), reverse shells, encoded payloads, and exposed API keys with a transparent 100-point security score.
+
+3. **Reproducible \`domoskills.json\` Lockfile**: Lock down your team's agent capabilities into git version control. Teammates run \`npx domoskills install\` to guarantee identical agent behaviors across machines and CI/CD pipelines.
+
+4. **1,000+ Production-Ready Skills**: Covering Frontend, UI/UX, Backend, Fullstack, Security, DevOps, Cloud, AI/ML, Database, Testing, Mobile, and Developer Productivity.
 
 ---
 
 ## 🛠️ One-Command CLI Installation
 
-DomoSkills includes a zero-friction CLI that automatically recognizes your workspace and installs skills directly into the correct directory:
+DomoSkills includes a zero-friction CLI that automatically recognizes your workspace and installs skills directly into the designated target directory:
 
 \`\`\`bash
+# Initialize DomoSkills in your project
+npx domoskills init
+
 # Install frontend performance and OWASP security capabilities
 npx domoskills add react-performance owasp-agent-guardian
 
-# Install backend and containerization architectures
-npx domoskills add fastapi-pro docker-architect
-\`\`\`
+# Target a specific AI coding assistant
+npx domoskills add fastapi-clean-architecture --agent cursor
+npx domoskills add docker-architect --agent claude
 
-The CLI inspects your active agent environment and places the generated skill definitions:
-- **Google Antigravity**: \`.agents/skills/<skill-name>/SKILL.md\`
-- **Claude Code**: \`.claude/skills/<skill-name>/SKILL.md\`
-- **Cursor IDE**: \`.cursor/rules/<skill-name>.mdc\`
-- **OpenCode**: \`.opencode/skills/<skill-name>/SKILL.md\`
-- **OpenAI Codex**: \`.codex/skills/<skill-name>/SKILL.md\`
+# Run diagnostic health check and security audit
+npx domoskills doctor
+npx domoskills audit
+\`\`\`
 
 ---
 
 ## 🌐 Deep DomoDomo Integration
 
-DomoDomo now features full two-way synchronization with DomoSkills:
-1. **Top Navigation & Mobile Drawer**: Instant access to the DomoSkills webapp right from the main navbar.
+DomoDomo features seamless two-way integration with DomoSkills:
+1. **Top Navigation & Mobile Drawer**: Instant access to the DomoSkills web portal right from the main navbar.
 2. **Dashboard Spotlight**: Interactive CLI command generator and agent compatibility tags right on the DomoDomo dashboard.
 3. **In-App Tool Hub (\`/tool/domoskills\`)**: View and browse the live marketplace in an embedded sandbox with zoom controls, CLI builders, and domain shortcuts.
 4. **Domo Skill Creator Bridge**: Export your visual skills and submit them to the community at [DomoSkills Submit](https://web-beta-six-81.vercel.app/submit).
@@ -122,7 +155,9 @@ DomoDomo now features full two-way synchronization with DomoSkills:
 
 ## 🚀 Explore DomoSkills Today
 
-Experience the marketplace live at [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/) and contribute on GitHub at [https://github.com/darknecrocities/DomoSkills](https://github.com/darknecrocities/DomoSkills)!`
+Experience the marketplace live at [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/) and contribute to the open-source repository on GitHub at [https://github.com/darknecrocities/DomoSkills](https://github.com/darknecrocities/DomoSkills)!
+
+*DomoSkills was created by **Arron Parejas** to bring security, standards, and reproducibility to autonomous AI development.*`
   },
   {
     slug: 'announcing-multi-platform-desktop-download-hub-windows-exe-mac-dmg-permissions-modal',
