@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award, Volume2, VolumeX } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal } from 'lucide-react';
+import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
 import { unifiedMemory } from '../utils/unifiedMemory';
 import { getExperienceSettings, type ExperienceSettings } from '../utils/experienceSettings';
+import { TOOLS } from '../engine/registry';
 import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
@@ -101,6 +103,29 @@ export const Shell = () => {
   const isAIHub = location.pathname === '/ai-hub';
   const [stars, setStars] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<'ecosystem' | 'resources' | null>(null);
+  const ecosystemRef = useRef<HTMLDivElement>(null);
+  const resourcesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        (ecosystemRef.current && ecosystemRef.current.contains(target)) ||
+        (resourcesRef.current && resourcesRef.current.contains(target))
+      ) {
+        return;
+      }
+      setOpenDropdown(null);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setOpenDropdown(null);
+  }, [location.pathname]);
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('domo-theme');
     if (saved === 'light') return 'light';
@@ -286,7 +311,8 @@ export const Shell = () => {
           </Link>
 
           {/* Desktop nav links */}
-          <nav className="hidden lg:flex items-center gap-0.5 text-[13px] font-semibold">
+          <nav className="hidden lg:flex items-center gap-1 text-[13px] font-semibold">
+            {/* Tools direct link */}
             <NavLink
               to="/"
               end
@@ -301,44 +327,242 @@ export const Shell = () => {
               Tools
             </NavLink>
 
-            {/* AI Hub — always-on green pill */}
+            {/* Ecosystem Dropdown */}
+            <div className="relative" ref={ecosystemRef}>
+              <button
+                type="button"
+                onClick={() => setOpenDropdown(prev => prev === 'ecosystem' ? null : 'ecosystem')}
+                className={`px-3 py-1.5 rounded-lg tracking-wide transition-all flex items-center gap-1.5 cursor-pointer select-none ${
+                  openDropdown === 'ecosystem' || location.pathname === '/ai-hub' || location.pathname.startsWith('/tool/domoskills')
+                    ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                    : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                aria-expanded={openDropdown === 'ecosystem'}
+              >
+                <Sparkles size={13} className="text-emerald-400" />
+                <span>Ecosystem</span>
+                <ChevronDown size={12} className={`transition-transform duration-200 ${openDropdown === 'ecosystem' ? 'rotate-180 text-[#ECEBE9]' : 'text-[#72706C]'}`} />
+              </button>
+
+              {openDropdown === 'ecosystem' && (
+                <div className="absolute left-0 mt-2 w-88 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
+                  <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
+                    Domo Agent Ecosystem
+                  </div>
+
+                  {/* AI Hub */}
+                  <NavLink
+                    to="/ai-hub"
+                    onClick={() => setOpenDropdown(null)}
+                    className={({ isActive }) =>
+                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                      }`
+                    }
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-emerald-400 shrink-0 mt-0.5">
+                      <Bot size={15} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-xs text-[#ECEBE9]">AI Hub Studio</span>
+                        <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.2 rounded-full">
+                          NEW
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
+                        Local AI agents, RAG, prompt lab & models
+                      </p>
+                    </div>
+                  </NavLink>
+
+                  {/* Codepyne.io AI & ML Upskilling */}
+                  <a
+                    href="https://codepyne-io.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpenDropdown(null)}
+                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-emerald-400 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
+                      <GiSnake size={16} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-emerald-400 transition-colors">
+                            Codepyne.io
+                          </span>
+                          <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.2 rounded-full">
+                            NEW
+                          </span>
+                        </div>
+                        <ExternalLink size={11} className="text-[#72706C]" />
+                      </div>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-2">
+                        The AI &amp; Machine Learning upskilling platform — orchestrate, train &amp; deploy real models
+                      </p>
+                    </div>
+                  </a>
+
+                  {/* DomoSkills Marketplace */}
+                  <a
+                    href="https://web-beta-six-81.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpenDropdown(null)}
+                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-emerald-400 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
+                      <Sparkles size={15} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-emerald-400 transition-colors">
+                          DomoSkills Marketplace
+                        </span>
+                        <ExternalLink size={11} className="text-[#72706C]" />
+                      </div>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
+                        200+ open agent skills for Antigravity, Cursor, Claude
+                      </p>
+                    </div>
+                  </a>
+
+                  {/* In-App DomoSkills Hub */}
+                  <NavLink
+                    to="/tool/domoskills"
+                    onClick={() => setOpenDropdown(null)}
+                    className={({ isActive }) =>
+                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                      }`
+                    }
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#A3A09B] shrink-0 mt-0.5">
+                      <Terminal size={15} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-xs text-[#ECEBE9]">In-App Skills Hub</span>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
+                        Embedded catalog, CLI generator & zoom sandbox
+                      </p>
+                    </div>
+                  </NavLink>
+                </div>
+              )}
+            </div>
+
+            {/* Resources Dropdown */}
+            <div className="relative" ref={resourcesRef}>
+              <button
+                type="button"
+                onClick={() => setOpenDropdown(prev => prev === 'resources' ? null : 'resources')}
+                className={`px-3 py-1.5 rounded-lg tracking-wide transition-all flex items-center gap-1.5 cursor-pointer select-none ${
+                  openDropdown === 'resources' || ['/docs', '/library-api', '/blog', '/download'].includes(location.pathname)
+                    ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                    : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                }`}
+                aria-expanded={openDropdown === 'resources'}
+              >
+                <span>Resources</span>
+                <ChevronDown size={12} className={`transition-transform duration-200 ${openDropdown === 'resources' ? 'rotate-180 text-[#ECEBE9]' : 'text-[#72706C]'}`} />
+              </button>
+
+              {openDropdown === 'resources' && (
+                <div className="absolute left-0 mt-2 w-72 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
+                  <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
+                    Developer Docs & Tools
+                  </div>
+
+                  <NavLink
+                    to="/docs"
+                    onClick={() => setOpenDropdown(null)}
+                    className={({ isActive }) =>
+                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                      }`
+                    }
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#A3A09B] shrink-0 mt-0.5">
+                      <BookOpen size={14} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-xs text-[#ECEBE9]">Documentation</span>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Tool guides & local specs</p>
+                    </div>
+                  </NavLink>
+
+                  <NavLink
+                    to="/library-api"
+                    onClick={() => setOpenDropdown(null)}
+                    className={({ isActive }) =>
+                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                      }`
+                    }
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#A3A09B] shrink-0 mt-0.5">
+                      <Code size={14} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-xs text-[#ECEBE9]">API Library</span>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">WASM & client-side functions</p>
+                    </div>
+                  </NavLink>
+
+                  <NavLink
+                    to="/blog"
+                    onClick={() => setOpenDropdown(null)}
+                    className={({ isActive }) =>
+                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                      }`
+                    }
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#A3A09B] shrink-0 mt-0.5">
+                      <FileText size={14} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-xs text-[#ECEBE9]">Blog & News</span>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Changelogs & release updates</p>
+                    </div>
+                  </NavLink>
+
+                  <NavLink
+                    to="/download"
+                    onClick={() => setOpenDropdown(null)}
+                    className={({ isActive }) =>
+                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
+                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                      }`
+                    }
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#A3A09B] shrink-0 mt-0.5">
+                      <Download size={14} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-xs text-[#ECEBE9]">Download</span>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Windows (.exe), macOS (.dmg), Linux & PWA</p>
+                    </div>
+                  </NavLink>
+                </div>
+              )}
+            </div>
+
+            {/* About direct link */}
             <NavLink
-              to="/ai-hub"
+              to="/about"
               className={({ isActive }) =>
-                `mx-1 px-3 py-1.5 rounded-lg tracking-wide transition-all flex items-center gap-1.5 ${
+                `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
                   isActive
-                    ? 'text-[#3C6B4D] bg-[#3C6B4D]/20 ring-1 ring-[#3C6B4D]/40'
-                    : 'text-[#3C6B4D] bg-[#3C6B4D]/10 hover:bg-[#3C6B4D]/20 ring-1 ring-[#3C6B4D]/25 hover:ring-[#3C6B4D]/40'
+                    ? 'text-[#ECEBE9] bg-[#2A2D30]'
+                    : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                 }`
               }
             >
-              <Bot size={13} />
-              <span>AI Hub</span>
-              <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full leading-none">
-                NEW
-              </span>
+              About
             </NavLink>
-
-            {[
-              { to: '/about', label: 'About' },
-              { to: '/library-api', label: 'API Library' },
-              { to: '/docs', label: 'Docs' },
-              { to: '/blog', label: 'Blog' },
-            ].map(({ to, label }) => (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) =>
-                  `px-3 py-1.5 rounded-lg tracking-wide transition-all ${
-                    isActive
-                      ? 'text-[#ECEBE9] bg-[#2A2D30]'
-                      : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
-                  }`
-                }
-              >
-                {label}
-              </NavLink>
-            ))}
           </nav>
 
           {/* Right-side actions */}
@@ -393,22 +617,6 @@ export const Shell = () => {
               <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
               <span className="font-mono text-[11px]">{stars !== null ? stars : '—'}</span>
             </a>
-
-            {/* Unified Install App button */}
-            <NavLink
-              to="/download"
-              className={({ isActive }) =>
-                `hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg transition-all text-[12px] font-semibold ${
-                  isActive
-                    ? 'bg-[#3C6B4D] text-white shadow-[0_0_12px_rgba(60,107,77,0.4)]'
-                    : 'bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 hover:bg-[#3C6B4D]/25 hover:border-[#3C6B4D]/60 text-[#3C6B4D]'
-                }`
-              }
-              title="Install DomoDomo (Windows, macOS, Linux, PWA, Mobile)"
-            >
-              <Download size={13} />
-              <span>Install</span>
-            </NavLink>
 
             {/* Divider */}
             <div className="hidden md:block h-5 w-px bg-[#2A2D30] mx-0.5" />
@@ -480,7 +688,7 @@ export const Shell = () => {
                 }
               >
                 <span>Tools</span>
-                <span className="text-[10px] font-mono text-[#3C6B4D]">229 tools</span>
+                <span className="text-[10px] font-mono text-[#3C6B4D]">{TOOLS.length} tools</span>
               </NavLink>
 
               <NavLink
@@ -499,9 +707,39 @@ export const Shell = () => {
                 <span className="ml-auto text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-2 py-0.5 rounded-full">NEW</span>
               </NavLink>
 
+              {/* Codepyne.io Platform */}
+              <a
+                href="https://codepyne-io.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
+              >
+                <div className="flex items-center gap-2">
+                  <GiSnake size={16} className="text-emerald-400" />
+                  <span>Codepyne.io</span>
+                  <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.2 rounded-full">NEW</span>
+                </div>
+                <ExternalLink size={13} className="text-[#72706C]" />
+              </a>
+
+              <a
+                href="https://web-beta-six-81.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles size={15} className="text-emerald-400" />
+                  <span>DomoSkills Marketplace</span>
+                </div>
+                <ExternalLink size={13} className="text-[#72706C]" />
+              </a>
+
               {[
                 { to: '/about', label: 'About' },
-                { to: '/download', label: 'Install App' },
+                { to: '/download', label: 'Download' },
                 { to: '/library-api', label: 'API Library' },
                 { to: '/docs', label: 'Documentation' },
                 { to: '/blog', label: 'Blog & News' },
@@ -928,6 +1166,49 @@ export const Shell = () => {
                         </span>
                       </div>
                     </a>
+                    {/* DomoSkills Marketplace Badge */}
+                    <a
+                      href="https://web-beta-six-81.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/domoskills w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/60"
+                      title="DomoSkills — The Open Agent Skills Marketplace"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-emerald-400 group-hover/domoskills:scale-105 transition-transform">
+                        <Sparkles size={15} />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-emerald-400 font-bold uppercase">
+                          Domo Ecosystem
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/domoskills:text-emerald-400 transition-colors flex items-center gap-1">
+                          <span>DomoSkills</span>
+                          <ExternalLink size={10} className="text-[#72706C]" />
+                        </span>
+                      </div>
+                    </a>
+
+                    {/* Codepyne.io Upskilling Badge */}
+                    <a
+                      href="https://codepyne-io.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/codepyne w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/60"
+                      title="Codepyne.io — The AI & Machine Learning Upskilling Platform"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-emerald-400 group-hover/codepyne:scale-105 transition-transform">
+                        <GiSnake size={16} />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-emerald-400 font-bold uppercase">
+                          Domo Ecosystem
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/codepyne:text-emerald-400 transition-colors flex items-center gap-1">
+                          <span>Codepyne.io</span>
+                          <ExternalLink size={10} className="text-[#72706C]" />
+                        </span>
+                      </div>
+                    </a>
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
@@ -951,6 +1232,28 @@ export const Shell = () => {
                   <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
                     <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
                     <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li>
+                      <a
+                        href="https://codepyne-io.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1 text-emerald-400 font-bold"
+                      >
+                        <span>Codepyne.io</span>
+                        <ExternalLink size={10} className="text-emerald-500" />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="https://web-beta-six-81.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1 text-emerald-400 font-bold"
+                      >
+                        <span>DomoSkills</span>
+                        <ExternalLink size={10} className="text-emerald-500" />
+                      </a>
+                    </li>
                     <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
                     <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Docs</Link></li>
                     <li><Link to="/blog" className="hover:text-[#ECEBE9] transition-colors">Blog</Link></li>
@@ -963,6 +1266,17 @@ export const Shell = () => {
                   <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
                     <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Terms of Use</Link></li>
                     <li><Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link></li>
+                    <li>
+                      <a
+                        href="https://github.com/darknecrocities/DomoSkills"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1"
+                      >
+                        <span>DomoSkills GitHub</span>
+                        <ExternalLink size={10} className="text-[#72706C]" />
+                      </a>
+                    </li>
                     <li>
                       <a
                         href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"

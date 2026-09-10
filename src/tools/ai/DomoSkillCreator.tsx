@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Sliders, Download, Upload, BookOpen, Trash2, 
   Info, FileText, Check, Sparkles, AlertCircle,
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp, ExternalLink, Globe
 } from 'lucide-react';
 
 import { PREMADE_SKILLS } from './data/premadeSkills';
@@ -182,7 +182,29 @@ ${skillForm.systemInstructions}
             Design structured capabilities, restrictions, and behaviors to import into your local AI agents in Domo Agent Hub.
           </p>
         </div>
-        <div className="flex gap-2.5 z-10 shrink-0">
+        <div className="flex flex-wrap gap-2.5 z-10 shrink-0">
+          <a
+            href="https://web-beta-six-81.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-2 px-3 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 text-emerald-400 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+            title="Explore skills on DomoSkills Marketplace"
+          >
+            <Globe size={13} />
+            <span>DomoSkills Hub</span>
+            <ExternalLink size={10} />
+          </a>
+          <a
+            href="https://web-beta-six-81.vercel.app/submit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-2 px-3 bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/60 text-[#ECEBE9] rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all"
+            title="Submit your created skill to DomoSkills"
+          >
+            <Sparkles size={13} className="text-emerald-400" />
+            <span>Submit to Web</span>
+            <ExternalLink size={10} />
+          </a>
           <label className="py-2 px-3.5 bg-[#111213] border border-[#2A2D30] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-colors">
             <Upload size={14} className="text-[#3C6B4D]" />
             <span>Import MD</span>
@@ -204,6 +226,30 @@ ${skillForm.systemInstructions}
           </button>
         </div>
         <div className="absolute right-0 top-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16"></div>
+      </div>
+
+      {/* DomoSkills Community Callout Banner */}
+      <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-md">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 flex items-center justify-center text-emerald-400 shrink-0">
+            <Sparkles size={14} />
+          </div>
+          <div>
+            <span className="font-bold text-[#ECEBE9]">Looking for verified community skills?</span>
+            <p className="text-[#A3A09B] text-[11px]">
+              Browse 200+ modular capabilities for Antigravity, Claude Code, Cursor, and OpenCode on the live marketplace.
+            </p>
+          </div>
+        </div>
+        <a
+          href="https://web-beta-six-81.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#3C6B4D]/15 hover:bg-[#3C6B4D]/25 border border-[#3C6B4D]/40 text-emerald-400 font-bold text-xs shrink-0 transition-all"
+        >
+          <span>Browse DomoSkills Marketplace</span>
+          <ExternalLink size={12} />
+        </a>
       </div>
 
       {/* Main Workspace Layout */}

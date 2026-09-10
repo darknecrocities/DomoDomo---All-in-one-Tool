@@ -629,7 +629,39 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.5.0 (Latest)",
+                    version: "v2.6.1 (Latest)",
+                    date: "September 10, 2026",
+                    title: "Codepyne.io AI & ML Upskilling Platform Integration & Ecosystem Expansion",
+                    changes: [
+                      "Codepyne.io Ecosystem Partnership: Official integration with https://codepyne-io.vercel.app/ — the AI & Machine Learning upskilling platform where developers learn by orchestrating, training, and deploying real models.",
+                      "Curriculum Synchronization: Direct bridges for Python fundamentals, autograd engines, transformer fine-tuning, multi-agent systems, and verifiable AI certifications.",
+                      "Navigation & Menu Upgrades: Added Codepyne.io with snake icon to the Ecosystem dropdown, mobile drawer, and platform footer; streamlined desktop client resource label to 'Download'."
+                    ]
+                  },
+                  {
+                    version: "v2.6.0",
+                    date: "September 2, 2026",
+                    title: "DomoSkills Agent Marketplace Integration & Open Ecosystem Synchronization",
+                    changes: [
+                      "DomoSkills Agent Marketplace: Official integration with https://web-beta-six-81.vercel.app/ — the open-source capability registry for AI coding agents (Google Antigravity, Claude Code, Cursor, OpenCode, Codex, Gemini CLI).",
+                      "In-App Tool Hub (/tool/domoskills): Interactive workspace featuring embedded live marketplace browsing, viewport zoom controls (70%–150%), responsive iframe canvas, and category deep-links.",
+                      "CLI Generator & Capability Stacker: Generate one-command installations (npx domoskills add <skills>) with automated target workspace paths and simulated terminal output.",
+                      "Ecosystem Cross-Linking: Seamlessly linked across top navigation, Dashboard spotlight banner, Domo Skill Creator, AI Hub Studio, and platform footer."
+                    ]
+                  },
+                  {
+                    version: "v2.5.1",
+                    date: "September 4, 2026",
+                    title: "Canon CR2 to PNG High-Quality Batch Converter & Zero-Corruption Engine",
+                    changes: [
+                      "CR2 to PNG Converter Launch: Integrated a professional-grade, 100% client-side Canon RAW (.CR2) batch converter to lossless PNG in the Photo & Image and Converter suites.",
+                      "Zero-Corruption Dual Engine: Features resilient TIFF IFD traversal and fail-safe binary JPEG stream carving to extract pristine full-resolution camera sensor pictures with zero compression corruption.",
+                      "Batch Queue & ZIP Archive Export: Upload multiple Canon CR2 photos simultaneously with live conversion progress and one-click ZIP archive packaging.",
+                      "Exif Camera Inspector & Interactive Viewport: Inspects camera make, model, ISO, shutter speed, aperture, and focal length, paired with DomoDomo viewport standards (Zoom In, Zoom Out, Reset 100%, and Pan)."
+                    ]
+                  },
+                  {
+                    version: "v2.5.0",
                     date: "August 21, 2026",
                     title: "Multi-Platform Desktop Download Hub, Windows (.exe), macOS (.dmg) & Permissions Sandbox",
                     changes: [

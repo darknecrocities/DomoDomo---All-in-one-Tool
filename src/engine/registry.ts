@@ -12,6 +12,7 @@ import { ColorPaletteExtractorTool } from '../tools/photo/ColorPaletteExtractor'
 import { CollageMakerTool } from '../tools/photo/CollageMaker';
 import { FormatConverterTool } from '../tools/photo/FormatConverter';
 import { TemplateStudioTool } from '../tools/photo/TemplateStudio';
+import { CR2ToPNGConverterTool } from '../tools/photo/CR2ToPNGConverter';
 
 // Security Suite Imports
 import { FileHashCheckerTool } from '../tools/security/FileHashChecker';
@@ -198,6 +199,7 @@ import { AIDomoAgentHub } from '../tools/ai/AIDomoAgentHub';
 import { AIDomoSelection } from '../tools/ai/AIDomoSelection';
 import { AIDomoModelLibrary } from '../tools/ai/AIDomoModelLibrary';
 import { DomoSkillCreatorTool } from '../tools/ai/DomoSkillCreator';
+import { DomoSkillsMarketplaceTool } from '../tools/ai/DomoSkillsMarketplace';
 import { AutoPilotWorkspace } from '../tools/autopilot/AutoPilotWorkspace';
 import { ModelMigrator } from '../tools/ai/ModelMigrator';
 import { DomoBrainControlCenter } from '../tools/ai/DomoBrainControlCenter';
@@ -290,6 +292,7 @@ export const TOOLS: Tool[] = [
   { id: 'collage-maker', name: 'Collage Maker', categories: ['photo'], description: 'Combine multiple images in editable canvas grids.', icon: 'Image', run: async (i) => i, component: CollageMakerTool },
   { id: 'format-converter', name: 'Format Converter', categories: ['photo'], description: 'Convert images between JPG, PNG, WebP, BMP, and GIF formats free online. Batch convert with quality control — 100% local processing.', icon: 'Image', seoTitle: 'Convert Image Format Free Online — JPG PNG WebP | DomoDomo', keywords: 'convert image format, jpg to png, png to jpg, webp converter, image converter online free', run: async (i) => i, component: FormatConverterTool },
   { id: 'template-studio', name: 'Template Studio', categories: ['photo'], description: 'Create and fill reusable branded image templates with text.', icon: 'LayoutTemplate', run: async (i) => i, component: TemplateStudioTool },
+  { id: 'cr2-to-png', name: 'CR2 to PNG Converter', categories: ['photo', 'converter'], description: 'Convert Canon RAW (.cr2) camera images to lossless, high-quality PNGs with batch processing, zero corruption, and ZIP archive export.', icon: 'Camera', seoTitle: 'Convert CR2 to PNG Free Online — Canon RAW Batch Converter | DomoDomo', keywords: 'cr2 to png, convert cr2 to png, canon raw converter, batch cr2 converter, canon raw to png free', run: async (i) => i, component: CR2ToPNGConverterTool },
 
   // PDF Tools (10)
   { id: 'pdf-merge', name: 'Merge PDFs', categories: ['pdf'], description: 'Merge PDF files online free — no watermark, no file limit. Combine multiple PDFs into one document instantly in your browser without uploading to any server.', icon: 'FileText', seoTitle: 'Merge PDF Files Online Free — No Watermark | DomoDomo', keywords: 'merge pdf, combine pdf, merge pdf files online free, join pdf, pdf merger', run: async (i) => i, component: PDFMergeTool },
@@ -442,6 +445,7 @@ export const TOOLS: Tool[] = [
   { id: 'domo-cognitive-mapper', name: 'Domo Brain Mind Mapper', categories: ['ai'], description: 'Explore the interconnecting neural network of Domo\'s mind. Interact, search, and manage skills, knowledge bases, recent activities, and system tools in 3D.', icon: 'Brain', run: async (i) => i, component: DomoMindMapperTool },
   { id: 'ollama-library', name: 'Domo Model Library', categories: ['ai'], description: 'Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.', icon: 'Hammer', run: async (i) => i, component: AIDomoModelLibrary },
   { id: 'domo-skill-creator', name: 'Domo Skill Creator', categories: ['ai'], description: 'Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.', icon: 'Hammer', run: async (i) => i, component: DomoSkillCreatorTool },
+  { id: 'domoskills', name: 'DomoSkills Marketplace', categories: ['ai', 'dev'], description: 'Discover, inspect, and install 200+ verified capabilities for AI coding agents via live catalog and CLI.', icon: 'Sparkles', run: async (i) => i, component: DomoSkillsMarketplaceTool },
   { id: 'auto-pilot', name: 'Auto-Pilot Workspace', categories: ['ai'], description: 'Fully autonomous AI agent that executes workflows via voice.', icon: 'Cpu', run: async (i) => i, component: AutoPilotWorkspace },
   { id: 'model-migrator', name: 'Ollama Model Migrator', categories: ['ai'], description: 'Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.', icon: 'HardDrive', run: async (i) => i, component: ModelMigrator },
   { id: 'domo-neural-atlas', name: 'Domo Neural Atlas', categories: ['ai'], description: 'Interactive 2D visual layout map of local AI context memories, RAG chunks, and user habit nodes.', icon: 'Brain', run: async (i) => i, component: DomoNeuralAtlas },

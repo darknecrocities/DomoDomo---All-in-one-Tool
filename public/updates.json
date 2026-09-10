@@ -1,96 +1,96 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-08-27T08:16:54.304Z",
+  "buildTime": "2026-09-10T05:26:16.338Z",
   "commits": [
     {
-      "hash": "2569c2c",
-      "date": "2026-08-24",
+      "hash": "e6accbd",
+      "date": "2026-09-08",
       "author": "darknecrocities",
-      "message": "fix(pwa): resolve persistent update toast with semver checking, SW message handling, and storage sync"
+      "message": "fix(blog): escape code block backticks in DomoSkills announcement post"
     },
     {
-      "hash": "f887282",
-      "date": "2026-08-22",
+      "hash": "c1cac7f",
+      "date": "2026-09-08",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
     },
     {
-      "hash": "13c7c86",
-      "date": "2026-08-22",
+      "hash": "8fc3a77",
+      "date": "2026-09-08",
       "author": "darknecrocities",
-      "message": "feat(ai-chat): enable unrestricted generation by default with optional token limit controls"
+      "message": "docs: update DomoSkills announcement blog in DomoDomo credited to Arron Parejas"
     },
     {
-      "hash": "6fea9d9",
-      "date": "2026-08-21",
+      "hash": "abf7061",
+      "date": "2026-09-05",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
     },
     {
-      "hash": "66933ea",
-      "date": "2026-08-21",
+      "hash": "c4d1322",
+      "date": "2026-09-05",
       "author": "darknecrocities",
-      "message": "feat(desktop): native macOS & Windows installers, offline server, transparent mascot GIFs, and live update notification toast"
+      "message": "feat(photo,pdf): add Canon CR2 to PNG batch converter & multiline text alignment in PDF editor"
     },
     {
-      "hash": "8b8c3f4",
-      "date": "2026-08-17",
+      "hash": "b8727b7",
+      "date": "2026-09-02",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"
     },
     {
-      "hash": "dea8390",
-      "date": "2026-08-17",
+      "hash": "3e0619b",
+      "date": "2026-09-02",
       "author": "darknecrocities",
-      "message": "fix(audio): decouple matrix coordinates from spatial pan to ensure 100% dynamic stereo tracking across card positions"
+      "message": "refactor(ui): remove ecosystem project and vercel badges from domoskills cards"
     },
     {
-      "hash": "23e7570",
-      "date": "2026-08-17",
+      "hash": "c43549a",
+      "date": "2026-09-02",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"
     },
     {
-      "hash": "1272792",
-      "date": "2026-08-17",
+      "hash": "923db51",
+      "date": "2026-09-02",
       "author": "darknecrocities",
-      "message": "feat(audio): implement global 3D spatial audio with real-time stereo panning, keyboard column positioning, and settings toggle"
+      "message": "feat(nav): streamline navbar with dropdown menus and unclutter header UI"
     },
     {
-      "hash": "ba9ea9c",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "41fad23",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "fix(blog): support nested markdown link parsing in BlogPost renderer and prerender scripts"
-    },
-    {
-      "hash": "142dd68",
-      "date": "2026-08-17",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "28370b4",
-      "date": "2026-08-17",
-      "author": "darknecrocities",
-      "message": "docs(blog): update SFX launch post author to Arron Parejas"
-    },
-    {
-      "hash": "8a86f8f",
-      "date": "2026-08-17",
+      "hash": "359ae4f",
+      "date": "2026-09-02",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
     },
     {
-      "hash": "ef4b269",
-      "date": "2026-08-17",
+      "hash": "607dd33",
+      "date": "2026-09-02",
       "author": "darknecrocities",
-      "message": "fix(audio): eliminate mobile double SFX bug by separating touch and synthetic mouse events, and enhance Web Haptics"
+      "message": "feat(ecosystem): integrate DomoSkills agent marketplace with matching theme and cross-links"
+    },
+    {
+      "hash": "bb838c7",
+      "date": "2026-08-27",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "baa94f0",
+      "date": "2026-08-27",
+      "author": "darknecrocities",
+      "message": "chore(pwa): update service worker cache hash"
+    },
+    {
+      "hash": "4efc139",
+      "date": "2026-08-27",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "2330d4b",
+      "date": "2026-08-27",
+      "author": "darknecrocities",
+      "message": "fix(desktop/ai): auto-run ollama with CORS, unlock all AI tools, and fix video resolution"
     }
   ]
 }

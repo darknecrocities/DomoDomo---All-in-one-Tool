@@ -3,7 +3,8 @@ import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import { triggerBlobDownload } from '../../utils/sharedHelpers';
 import { 
   Upload, Check, ShieldAlert, Sliders, Search, 
-  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical, Paintbrush, Eraser, RotateCw
+  ChevronLeft, ChevronRight, Edit3, Download, Plus, Trash2, HelpCircle, GripVertical, Paintbrush, Eraser, RotateCw,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify, Bold, Italic
 } from 'lucide-react';
 
 // Dynamically load PDF.js script from CDN
@@ -39,6 +40,7 @@ interface TextItem {
   fontFamily: 'Helvetica' | 'Times-Roman' | 'Courier';
   fontStyle?: 'regular' | 'bold' | 'italic' | 'bold-italic';
   rotation?: number; // angle in degrees
+  textAlign?: 'left' | 'center' | 'right' | 'justify';
   isNew?: boolean;
   
   // Track original values to detect modifications on export
@@ -48,6 +50,7 @@ interface TextItem {
   originalFontSize?: number;
   originalFontFamily?: 'Helvetica' | 'Times-Roman' | 'Courier';
   originalFontStyle?: 'regular' | 'bold' | 'italic' | 'bold-italic';
+  originalTextAlign?: 'left' | 'center' | 'right' | 'justify';
 }
 
 interface DrawStroke {
@@ -65,8 +68,11 @@ const estimateWidth = (text: string, fontSize: number, fontFamily: string, fontS
   if (isBold) charRatio += 0.05;
   if (isItalic) charRatio += 0.02;
   
+  const lines = (text || '').split('\n');
+  const maxLineLength = Math.max(...lines.map(l => l.length), 0);
+  
   // Add extra padding boundary to prevent horizontal cutoffs completely
-  return (text.length * fontSize * charRatio) + 22;
+  return (maxLineLength * fontSize * charRatio) + 24;
 };
 
 export const PDFTextEditTool = () => {
@@ -102,6 +108,7 @@ export const PDFTextEditTool = () => {
   const [customFontSize, setCustomFontSize] = useState(12);
   const [customFontFamily, setCustomFontFamily] = useState<'Helvetica' | 'Times-Roman' | 'Courier'>('Helvetica');
   const [customFontStyle, setCustomFontStyle] = useState<'regular' | 'bold' | 'italic' | 'bold-italic'>('regular');
+  const [customTextAlign, setCustomTextAlign] = useState<'left' | 'center' | 'right' | 'justify'>('left');
   const [customRotation, setCustomRotation] = useState<number>(0);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -276,6 +283,7 @@ export const PDFTextEditTool = () => {
             fontFamily,
             fontStyle,
             rotation,
+            textAlign: 'left',
             
             // Store original values to track edits
             originalX: transform[4],
@@ -283,7 +291,8 @@ export const PDFTextEditTool = () => {
             originalRotation: rotation,
             originalFontSize: fontSize || 11,
             originalFontFamily: fontFamily,
-            originalFontStyle: fontStyle
+            originalFontStyle: fontStyle,
+            originalTextAlign: 'left'
           };
         });
 
@@ -388,6 +397,23 @@ export const PDFTextEditTool = () => {
           return {
             ...item,
             rotation: angle
+          };
+        }
+        return item;
+      });
+      return { ...prev, [pageIndex]: updated };
+    });
+  };
+
+  // Update text alignment
+  const handleTextAlignChange = (id: string, align: 'left' | 'center' | 'right' | 'justify') => {
+    const pageIndex = currentPage - 1;
+    setAllTextItems(prev => {
+      const updated = (prev[pageIndex] || []).map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            textAlign: align
           };
         }
         return item;
@@ -603,6 +629,7 @@ export const PDFTextEditTool = () => {
         setCustomRotation(closestItem.rotation || 0);
       }
 
+      const lineCount = Math.max((customText || '').split('\n').length, 1);
       const calculatedWidth = estimateWidth(customText, finalFontSize, finalFontFamily, finalFontStyle);
 
       const newItem: TextItem = {
@@ -614,10 +641,11 @@ export const PDFTextEditTool = () => {
         y: pdfY,
         fontSize: finalFontSize,
         width: calculatedWidth,
-        height: finalFontSize * 1.2,
+        height: finalFontSize * 1.25 * lineCount,
         fontName: 'Helvetica',
         fontFamily: finalFontFamily,
         fontStyle: finalFontStyle,
+        textAlign: customTextAlign,
         rotation: finalRotation,
         isNew: true
       };
@@ -732,16 +760,31 @@ export const PDFTextEditTool = () => {
             (item.rotation || 0) !== (item.originalRotation || 0) ||
             item.fontSize !== item.originalFontSize ||
             item.fontFamily !== item.originalFontFamily ||
-            item.fontStyle !== item.originalFontStyle;
+            item.fontStyle !== item.originalFontStyle ||
+            item.textAlign !== item.originalTextAlign;
 
           if (isChanged || item.isNew) {
-            // Always draw a white background rectangle behind any edited or new text block to match the editor UI behavior
-            // We rotate by -rotation because pdf-lib degrees() rotates counter-clockwise, but CSS rotates clockwise
+            const lines = item.text.split('\n');
+            const lineCount = lines.length;
+            const lineHeight = item.fontSize * 1.25;
+            const blockWidth = item.width;
+            const align = item.textAlign || 'left';
+            const rad = -((item.rotation || 0) * Math.PI) / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+
+            // Always draw a white background rectangle covering all text lines
+            const rectHeight = (lineCount - 1) * lineHeight + item.fontSize * 1.35;
+            const dx = -4;
+            const dy = -((lineCount - 1) * lineHeight) - 3;
+            const rectX = item.x + xOffset + dx * cos - dy * sin;
+            const rectY = item.y + yOffset + dx * sin + dy * cos;
+
             page.drawRectangle({
-              x: item.x + xOffset - 4,
-              y: item.y + yOffset - 3,
-              width: item.width + 8,
-              height: item.fontSize * 1.35,
+              x: rectX,
+              y: rectY,
+              width: blockWidth + 8,
+              height: rectHeight,
               color: rgb(1, 1, 1),
               rotate: degrees(-(item.rotation || 0))
             });
@@ -749,15 +792,58 @@ export const PDFTextEditTool = () => {
             if (item.text.trim().length > 0) {
               const familyMap = fontMap[item.fontFamily] || fontMap['Helvetica'];
               const selectedFont = familyMap[item.fontStyle || 'regular'] || familyMap['regular'];
-              
-              page.drawText(item.text, {
-                x: item.x + xOffset,
-                y: item.y + yOffset,
-                size: item.fontSize,
-                font: selectedFont,
-                color: rgb(0, 0, 0),
-                rotate: degrees(-(item.rotation || 0))
-              });
+
+              for (let i = 0; i < lineCount; i++) {
+                const lineText = lines[i];
+                if (!lineText) continue;
+                const offY = -i * lineHeight;
+
+                // Handle Justified text alignment by distributing space across words
+                if (align === 'justify' && i < lineCount - 1 && lineText.includes(' ')) {
+                  const words = lineText.trim().split(/\s+/);
+                  if (words.length > 1) {
+                    const wordsWidth = words.reduce((acc, w) => acc + selectedFont.widthOfTextAtSize(w, item.fontSize), 0);
+                    const totalSpace = Math.max(0, blockWidth - wordsWidth);
+                    const spaceGap = totalSpace / (words.length - 1);
+
+                    let curWordX = 0;
+                    for (const word of words) {
+                      const wx = item.x + xOffset + curWordX * cos - offY * sin;
+                      const wy = item.y + yOffset + curWordX * sin + offY * cos;
+                      page.drawText(word, {
+                        x: wx,
+                        y: wy,
+                        size: item.fontSize,
+                        font: selectedFont,
+                        color: rgb(0, 0, 0),
+                        rotate: degrees(-(item.rotation || 0))
+                      });
+                      curWordX += selectedFont.widthOfTextAtSize(word, item.fontSize) + spaceGap;
+                    }
+                    continue;
+                  }
+                }
+
+                const lineWidth = selectedFont.widthOfTextAtSize(lineText, item.fontSize);
+                let offX = 0;
+                if (align === 'center') {
+                  offX = Math.max(0, (blockWidth - lineWidth) / 2);
+                } else if (align === 'right') {
+                  offX = Math.max(0, blockWidth - lineWidth);
+                }
+
+                const lx = item.x + xOffset + offX * cos - offY * sin;
+                const ly = item.y + yOffset + offX * sin + offY * cos;
+
+                page.drawText(lineText, {
+                  x: lx,
+                  y: ly,
+                  size: item.fontSize,
+                  font: selectedFont,
+                  color: rgb(0, 0, 0),
+                  rotate: degrees(-(item.rotation || 0))
+                });
+              }
             }
           }
         }
@@ -806,10 +892,13 @@ export const PDFTextEditTool = () => {
       
       return currentPageItems.map((item) => {
         const [vx, vy] = viewport.convertToViewportPoint(item.x, item.y);
-        const itemHeight = item.fontSize * scale;
-        const itemWidth = item.width * scale;
+        const lines = (item.text || '').split('\n');
+        const lineCount = Math.max(lines.length, 1);
+        const lineHeight = item.fontSize * scale * 1.25;
+        const itemHeight = Math.max(lineHeight * lineCount + 6, 22);
+        const itemWidth = Math.max(item.width * scale, 85);
         const isActive = activeItemId === item.id;
-        const isChanged = item.text !== item.originalText;
+        const isChanged = item.text !== item.originalText || item.textAlign !== item.originalTextAlign;
         const shouldShowOpaque = isChanged || isActive || item.isNew;
 
         let inputClass = "";
@@ -830,16 +919,112 @@ export const PDFTextEditTool = () => {
             style={{
               position: 'absolute',
               left: `${vx}px`,
-              top: `${vy - itemHeight}px`,
-              width: `${Math.max(itemWidth, 75)}px`,
-              height: `${Math.max(itemHeight + 5, 20)}px`,
+              top: `${vy - (item.fontSize * scale)}px`,
+              width: `${itemWidth}px`,
+              height: `${itemHeight}px`,
               pointerEvents: drawMode ? 'none' : 'auto',
               // Apply rotation transform visually using CSS Origin at bottom-left coordinate
               transform: `rotate(${item.rotation || 0}deg)`,
-              transformOrigin: 'left bottom'
+              transformOrigin: 'left bottom',
+              zIndex: isActive ? 35 : 10
             }}
             className="group"
           >
+            {/* Floating Quick Formatting Bar for Active Block */}
+            {isActive && !drawMode && (
+              <div 
+                className="absolute -top-10 left-0 flex items-center gap-1 bg-[#18191B]/95 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-700 shadow-2xl z-50 animate-fadeIn select-none"
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                {/* Alignment buttons */}
+                <div className="flex items-center bg-slate-950/80 p-0.5 rounded border border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => handleTextAlignChange(item.id, 'left')}
+                    className={`p-1 rounded transition-colors ${
+                      (item.textAlign || 'left') === 'left' ? 'bg-[#3C6B4D] text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Align Left"
+                  >
+                    <AlignLeft size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTextAlignChange(item.id, 'center')}
+                    className={`p-1 rounded transition-colors ${
+                      item.textAlign === 'center' ? 'bg-[#3C6B4D] text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Align Center"
+                  >
+                    <AlignCenter size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTextAlignChange(item.id, 'right')}
+                    className={`p-1 rounded transition-colors ${
+                      item.textAlign === 'right' ? 'bg-[#3C6B4D] text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Align Right"
+                  >
+                    <AlignRight size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTextAlignChange(item.id, 'justify')}
+                    className={`p-1 rounded transition-colors ${
+                      item.textAlign === 'justify' ? 'bg-[#3C6B4D] text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                    title="Justify Text"
+                  >
+                    <AlignJustify size={11} />
+                  </button>
+                </div>
+
+                <div className="h-3 w-[1px] bg-slate-800" />
+
+                {/* Quick font style toggles */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newBold = !isBold;
+                    const newStyle = newBold 
+                      ? (isItalic ? 'bold-italic' : 'bold')
+                      : (isItalic ? 'italic' : 'regular');
+                    handleFontStyleChange(item.id, newStyle);
+                  }}
+                  className={`p-1 rounded transition-colors ${
+                    isBold ? 'bg-[#3C6B4D] text-white' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  title="Toggle Bold"
+                >
+                  <Bold size={11} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newItalic = !isItalic;
+                    const newStyle = newItalic 
+                      ? (isBold ? 'bold-italic' : 'italic')
+                      : (isBold ? 'bold' : 'regular');
+                    handleFontStyleChange(item.id, newStyle);
+                  }}
+                  className={`p-1 rounded transition-colors ${
+                    isItalic ? 'bg-[#3C6B4D] text-white' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  title="Toggle Italic"
+                >
+                  <Italic size={11} />
+                </button>
+
+                <div className="h-3 w-[1px] bg-slate-800" />
+
+                <span className="text-[10px] text-slate-400 font-mono px-1">
+                  {item.fontSize}pt
+                </span>
+              </div>
+            )}
+
             {/* Grab Drag Handle */}
             <div
               onMouseDown={(e) => handleDragStart(e, item)}
@@ -849,8 +1034,7 @@ export const PDFTextEditTool = () => {
               <GripVertical size={11} />
             </div>
 
-            <input
-              type="text"
+            <textarea
               value={item.text}
               onChange={(e) => handleTextChange(item.id, e.target.value)}
               onFocus={(e) => {
@@ -862,15 +1046,23 @@ export const PDFTextEditTool = () => {
                 fontFamily: item.fontFamily === 'Times-Roman' ? 'serif' : item.fontFamily === 'Courier' ? 'monospace' : 'sans-serif',
                 fontWeight: isBold ? 'bold' : 'normal',
                 fontStyle: isItalic ? 'italic' : 'normal',
-                paddingRight: '8px'
+                textAlign: item.textAlign || 'left',
+                lineHeight: 1.25,
+                resize: 'none',
+                overflow: 'hidden',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                padding: '1px 4px',
               }}
-              className={`w-full h-full font-medium px-1 py-0.5 rounded border transition-all focus:outline-none ${inputClass} ${
+              placeholder="Type text... (Enter/Shift+Enter for newline)"
+              className={`w-full h-full font-medium rounded border transition-all focus:outline-none ${inputClass} ${
                 isActive 
-                  ? 'ring-2 ring-[#4E8E5E]/20' 
+                  ? 'ring-2 ring-[#4E8E5E]/40 border-[#4E8E5E]' 
                   : item.isNew 
                     ? 'border-dotted border-violet-400 bg-violet-500/5' 
                     : ''
               }`}
+              rows={lineCount}
             />
             <button
               onClick={(e) => {
@@ -1087,12 +1279,40 @@ export const PDFTextEditTool = () => {
                   
                   <div className="flex flex-col gap-2.5">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-slate-400 font-bold">TEXT CONTENT</label>
+                      <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold">
+                        <span>TEXT CONTENT</span>
+                        <span className="text-[9px] text-slate-500 font-normal">Enter or Shift+Enter for new lines</span>
+                      </div>
                       <textarea
                         value={activeItem.text}
                         onChange={(e) => handleTextChange(activeItem.id, e.target.value)}
-                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none h-16 resize-none"
+                        placeholder="Enter text... (Enter/Shift+Enter for newline)"
+                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none h-20 resize-y"
                       />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] text-slate-400 font-bold">TEXT ALIGNMENT</label>
+                      <div className="grid grid-cols-4 gap-1 bg-[#151C2C] p-1 rounded-lg border border-slate-800">
+                        {(['left', 'center', 'right', 'justify'] as const).map((align) => (
+                          <button
+                            key={align}
+                            type="button"
+                            onClick={() => handleTextAlignChange(activeItem.id, align)}
+                            className={`py-1.5 flex items-center justify-center rounded text-xs transition-all ${
+                              (activeItem.textAlign || 'left') === align
+                                ? 'bg-[#3C6B4D] text-white shadow-sm font-semibold'
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                            }`}
+                            title={`Align ${align.charAt(0).toUpperCase() + align.slice(1)}`}
+                          >
+                            {align === 'left' && <AlignLeft size={13} />}
+                            {align === 'center' && <AlignCenter size={13} />}
+                            {align === 'right' && <AlignRight size={13} />}
+                            {align === 'justify' && <AlignJustify size={13} />}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -1179,13 +1399,41 @@ export const PDFTextEditTool = () => {
                   
                   <div className="flex flex-col gap-2.5">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-slate-500 font-semibold">ANNOTATION TEXT</label>
-                      <input
-                        type="text"
+                      <div className="flex justify-between items-center text-[10px] text-slate-500 font-semibold">
+                        <span>ANNOTATION TEXT</span>
+                        <span className="text-[9px] text-slate-500">Enter or Shift+Enter for new lines</span>
+                      </div>
+                      <textarea
                         value={customText}
                         onChange={(e) => setCustomText(e.target.value)}
-                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+                        placeholder="Enter text block..."
+                        rows={2}
+                        className="w-full bg-[#151C2C] border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none resize-none"
                       />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] text-slate-500 font-semibold">TEXT ALIGNMENT</label>
+                      <div className="grid grid-cols-4 gap-1 bg-[#151C2C] p-1 rounded-lg border border-slate-800">
+                        {(['left', 'center', 'right', 'justify'] as const).map((align) => (
+                          <button
+                            key={align}
+                            type="button"
+                            onClick={() => setCustomTextAlign(align)}
+                            className={`py-1.5 flex items-center justify-center rounded text-xs transition-all ${
+                              customTextAlign === align
+                                ? 'bg-[#3C6B4D] text-white shadow-sm font-semibold'
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-850'
+                            }`}
+                            title={`Default ${align.charAt(0).toUpperCase() + align.slice(1)}`}
+                          >
+                            {align === 'left' && <AlignLeft size={13} />}
+                            {align === 'center' && <AlignCenter size={13} />}
+                            {align === 'right' && <AlignRight size={13} />}
+                            {align === 'justify' && <AlignJustify size={13} />}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-1">

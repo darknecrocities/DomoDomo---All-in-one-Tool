@@ -13,6 +13,248 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-codepyne-io-ai-machine-learning-upskilling-platform',
+    title: 'Announcing Codepyne.io: The AI & Machine Learning Upskilling Platform Joins the Domo Ecosystem',
+    excerpt: 'Codepyne.io (https://codepyne-io.vercel.app/) officially joins the Domo ecosystem as our premier AI & Machine Learning upskilling partner. Learn by orchestrating, training, and deploying real models — from Python fundamentals and autograd engines to transformer fine-tuning, multi-agent systems, and verifiable AI certifications.',
+    date: 'September 10, 2026',
+    readTime: '4 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'codepyne, codepyne.io, ai machine learning upskilling, learn machine learning, autograd engine, transformer fine-tuning, multi-agent systems, verifiable ai certifications, python fundamentals, domo ecosystem',
+    content: `# Announcing Codepyne.io: The AI & Machine Learning Upskilling Platform Joins the Domo Ecosystem
+
+**Platform:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)  
+**Ecosystem Partner:** Codepyne.io × DomoDomo × DomoSkills  
+**Category:** Ecosystem Announcements  
+
+---
+
+We are thrilled to welcome **Codepyne.io** into the official Domo developer ecosystem!
+
+As the AI landscape evolves at breakneck speed, understanding machine learning from the ground up is no longer optional for software engineers. While **DomoDomo** delivers private, client-side developer tooling and local AI execution, and **DomoSkills** provides modular capabilities for autonomous coding agents, **Codepyne.io** delivers the critical learning pillar: **interactive, hands-on mastery of foundational and frontier machine learning systems.**
+
+\`\`\`text
+CODEPYNE.IO_
+Orchestrate. Train. Deploy.
+From Python Fundamentals & Autograd to Transformer Fine-Tuning & Multi-Agent Systems.
+\`\`\`
+
+---
+
+## 🐍 What is Codepyne.io?
+
+[**Codepyne.io**](https://codepyne-io.vercel.app/) is a dedicated AI & Machine Learning upskilling platform where you don't just watch videos or read theory—you learn by **orchestrating, training, and deploying real models**.
+
+Traditional ML education often falls into two extremes: either overly abstract mathematics without runnable code, or superficial high-level wrapper APIs that hide the underlying mechanics. Codepyne.io bridges this divide with an interactive, code-first engineering curriculum.
+
+---
+
+## 📚 Core Learning Pathways
+
+Codepyne.io takes developers through an end-to-end learning journey:
+
+### 1. 🐍 Python Fundamentals & Numerical Foundations
+Build an ironclad foundation with clean, idiomatic Python. Master tensor representations, NumPy matrix operations, vectorized broadcasting, memory layouts, and high-performance computing basics.
+
+### 2. ⚙️ Autograd Engines & Backpropagation from Scratch
+Stop treating gradient calculation as magic. Code your own computational graph engine, automatic differentiation tape, topological sorting, and reverse-mode autodiff—unlocking deep intuition for how neural networks actually update weights.
+
+### 3. 🤖 Transformer Architectures & Attention Heads
+Deconstruct modern Large Language Models layer by layer:
+- Scaled Dot-Product Attention & Multi-Head Projections
+- Positional Encodings (Sinusoidal & Rotary / RoPE)
+- Tokenization pipelines (Byte-Pair Encoding, WordPiece)
+- Feed-Forward layers, LayerNorm / RMSNorm, and residual connections
+- Causal decoder loops and KV caching
+
+### 4. 🎛️ Transformer Fine-Tuning & Quantization
+Move from architecture theory to real-world deployment:
+- Parameter-Efficient Fine-Tuning (PEFT) using LoRA and QLoRA
+- Instruction-tuning and conversational dataset preparation
+- Model quantization (FP16, 8-bit, 4-bit GGUF Q4_K_M)
+- Local model deployment with Ollama, llama.cpp, and vLLM
+
+### 5. 🐝 Multi-Agent Systems & Tool Orchestration
+Orchestrate autonomous multi-agent networks:
+- ReAct loops (Reasoning + Action)
+- Function calling, OpenAPI specs, and Model Context Protocol (MCP) integrations
+- Multi-agent debate, hierarchical manager-worker workflows, and consensus loops
+- Tool authorization, sandboxing, and runtime guardrails
+
+### 6. 🎓 Verifiable AI Certifications
+Complete rigorous code-level assignments and real-world benchmark evaluations to earn cryptographically verifiable AI certifications that validate your engineering expertise.
+
+---
+
+## 🌐 Seamless Domo Ecosystem Synergy
+
+The addition of Codepyne.io creates an integrated triumvirate for AI developers:
+
+| Platform | Role in Ecosystem | Key Capabilities |
+| :--- | :--- | :--- |
+| **Codepyne.io** | AI/ML Upskilling & Training | Autograd, Transformers, Multi-Agent, Fine-Tuning, Certifications |
+| **DomoDomo** | Sandboxed Execution & Utilities | AI Hub Studio, GGUF Generator, Quantization Benchmark, 100+ Tools |
+| **DomoSkills** | Agent Skills Registry & CLI | 200+ Skills for Antigravity, Claude Code, Cursor, Codex |
+
+---
+
+## 🚀 Explore Codepyne.io Today
+
+Whether you are a developer looking to break into machine learning, a software engineer wanting to build custom transformer architectures, or an AI practitioner orchestrating multi-agent systems, Codepyne.io is built for you.
+
+- 🌐 **Start Upskilling on Codepyne.io:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)
+- 📦 **Explore DomoSkills:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)
+- 🛠️ **Launch DomoDomo AI Hub:** [/ai-hub](/ai-hub)
+`
+  },
+  {
+    slug: 'introducing-canon-cr2-to-png-high-quality-batch-converter',
+    title: 'Introducing the Canon CR2 to PNG Converter: Lossless Batch Conversion with Zero Corruption',
+    excerpt: 'Convert Canon RAW (.CR2) camera photos to lossless, pristine PNGs directly inside your browser sandbox. Featuring a dual-strategy binary parsing engine, batch queue processing, camera Exif metadata extraction, interactive zoom viewports, and one-click ZIP packaging.',
+    date: 'September 4, 2026',
+    readTime: '3 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'cr2 to png, canon raw converter, batch cr2 to png, convert cr2 online free, client-side raw converter, canon photo tools, zero corruption',
+    content: `# Introducing the Canon CR2 to PNG Converter: Lossless Batch Conversion with Zero Corruption
+
+Photographers and visual creators have long faced a frustrating dilemma when handling Canon RAW (\`.CR2\`) camera files on the web. Standard online converters either require uploading massive multi-gigabyte photos to remote servers (violating client confidentiality and privacy), downscale images to blurry previews, or fail outright with corrupted pixel bands due to faulty TIFF offset handling.
+
+Today, we are thrilled to launch the **CR2 to PNG Converter** in DomoDomo's **Photo & Image** and **Converter** suites—a 100% client-side, professional-grade batch converter that transforms Canon RAW files into lossless 24-bit PNGs with **zero corruption** and zero server uploads.
+
+---
+
+## 📸 What is Canon CR2 and Why Do Web Converters Fail?
+
+Canon Raw Version 2 (\`.CR2\`) is a proprietary image container format built on top of the TIFF 6.0 standard. Inside each CR2 file, Canon cameras store multiple image representations:
+1. **Raw Bayer Sensor CFA Data**: Monochromatic photosite values that require heavy computational demosaicing.
+2. **Hardware-Rendered JPEG Stream**: A full-sensor-resolution picture rendered at capture time by Canon's dedicated DIGIC image processor, applying precise camera color matrices, white balance, tone curves, and lens profiles.
+3. **Exif Metadata & MakerNotes**: Detailed camera settings including ISO, exposure time, aperture, focal length, and camera orientation.
+
+Most generic web converters fail because they attempt naive TIFF decoding or rely on fixed byte offsets that break across different camera models (e.g. EOS 5D vs. Rebel series). When offsets shift, generic tools produce scrambled color blocks or crash with memory bounds errors.
+
+---
+
+## ⚡ The DomoDomo Zero-Corruption Engine
+
+To guarantee 100% reliability and pristine visual fidelity, DomoDomo implements a **dual-strategy client-side binary parser**:
+
+- **Primary TIFF IFD Directory Traversal**: Reads TIFF endianness (\`II\` or \`MM\`), validates the \`CR\` header signature, and traverses \`IFD0\`, \`IFD1\`, \`IFD2\`, and \`IFD3\` structures. It dynamically isolates the \`StripOffsets\` and \`JPEGInterchangeFormat\` pointers.
+- **Fail-Safe Binary Stream Carver**: If an SD card is partially degraded or file headers are damaged, a resilient secondary scanner verifies JPEG \`SOI\` (\`0xFF 0xD8\`), \`SOF0/SOF2\` frame segments, and \`EOI\` (\`0xFF 0xD9\`) boundaries, selecting the stream with the largest pixel area.
+- **Lossless Canvas 1:1 Rendering**: The extracted picture is rendered with \`imageSmoothingEnabled: false\` to eliminate resampling artifacts, auto-oriented using camera gyroscope sensors, and serialized into pure 24-bit PNG.
+
+---
+
+## 🚀 Key Features
+
+- **Batch Queue Conversion**: Drag and drop 1, 10, or 50 Canon RAW files at once. The converter handles files with concurrency management to preserve browser memory.
+- **One-Click ZIP Archive Download**: Export your entire batch of converted PNGs in a single compressed \`.zip\` archive powered by JSZip.
+- **Exif Camera Inspector**: View camera model (e.g., *Canon EOS 5D Mark IV*, *Canon EOS 400D DIGITAL*), ISO speed, shutter speed, f-stop, focal length, and shot timestamp.
+- **Interactive High-Resolution Viewport**: Conforms to DomoDomo's signature viewport standards with **Zoom In (+)**, **Zoom Out (-)**, **Reset Zoom (100%)**, **Fit-to-Screen**, dynamic **Zoom % Display**, and pan/drag navigation.
+- **100% Private & Offline-Capable**: Photos never leave your machine. No cloud uploads, no subscriptions, and no tracking.
+
+---
+
+## 🛠️ How to Try It
+
+Jump straight into the **CR2 to PNG Converter** from the DomoDomo dashboard under **Photo & Image** or **Converters**. If you don't have a Canon camera file handy, click the **"Load Sample CR2"** button to explore the conversion pipeline and viewport with a single click!
+`
+  },
+  {
+    slug: 'announcing-domoskills-open-agent-skills-marketplace',
+    title: 'Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents',
+    excerpt: 'Created by Arron Parejas, DomoSkills (https://web-beta-six-81.vercel.app/) is the developer-native open-source skills marketplace and CLI package manager for AI coding agents. Install 1,000+ modular capabilities for Google Antigravity, Claude Code, Cursor, OpenCode, Codex, Copilot, and Gemini in a single CLI command.',
+    date: 'September 2, 2026',
+    readTime: '4 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'domoskills, agent skills marketplace, ai coding agents, arron parejas, antigravity, claude code, cursor rules, opencode, codex, copilot, skill.md, open source',
+    content: `# Announcing DomoSkills: The Open Agent Skills Marketplace for AI Coding Agents
+
+**Created by Arron Parejas ([@darknecrocities](https://github.com/darknecrocities))**  
+**Web Platform:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)  
+**GitHub Repository:** [https://github.com/darknecrocities/DomoSkills](https://github.com/darknecrocities/DomoSkills)  
+
+---
+
+We are thrilled to introduce **DomoSkills**, created and engineered by **Arron Parejas** as an official sister project in the Domo ecosystem! DomoSkills is the developer-native, open-source capability registry and CLI package manager designed specifically for the new era of autonomous AI coding agents.
+
+\`\`\`text
+DOMOSKILLS_
+Open skills. Smarter agents. Your stack.
+\`\`\`
+
+---
+
+## ⚡ What is DomoSkills?
+
+As AI coding assistants like **Google Antigravity**, **Claude Code**, **Cursor**, **OpenCode Interpreter**, **OpenAI Codex**, and **GitHub Copilot** become essential daily programming companions, engineering teams face a common roadblock: **Agent Capability Fragmentation**.
+
+Developers routinely find themselves re-writing prompt rules, copy-pasting undocumented markdown files across different workspace directories, and running untrusted community prompts with zero security validation.
+
+**DomoSkills** solves this by providing a unified, curated registry of **over 1,000+ verified capabilities** (\`SKILL.md\`) spanning 12 software domains—discoverable and installable with a single terminal command.
+
+---
+
+## 🛡️ Core Pillars of DomoSkills
+
+1. **Universal Multi-Agent Adapter Engine**: Native zero-configuration target directory mappings for 7 major AI environments:
+   - **Google Antigravity & Gemini CLI**: \`.gemini/skills/<name>/\`
+   - **Claude Code**: \`.claude/skills/<name>/\`
+   - **Cursor IDE**: \`.cursor/skills/<name>/\`
+   - **OpenCode Interpreter**: \`.opencode/skills/<name>/\`
+   - **OpenAI Codex / Agents**: \`.agents/skills/<name>/\`
+   - **GitHub Copilot**: \`.github/skills/<name>/\`
+   - **Universal Standard**: \`.agent/skills/<name>/\`
+
+2. **Zero-Execution AST Security Engine**: Every skill is statically analyzed against OWASP guidelines, checking for destructive commands (\`rm -rf /\`), piped downloads (\`curl | bash\`), reverse shells, encoded payloads, and exposed API keys with a transparent 100-point security score.
+
+3. **Reproducible \`domoskills.json\` Lockfile**: Lock down your team's agent capabilities into git version control. Teammates run \`npx domoskills install\` to guarantee identical agent behaviors across machines and CI/CD pipelines.
+
+4. **1,000+ Production-Ready Skills**: Covering Frontend, UI/UX, Backend, Fullstack, Security, DevOps, Cloud, AI/ML, Database, Testing, Mobile, and Developer Productivity.
+
+---
+
+## 🛠️ One-Command CLI Installation
+
+DomoSkills includes a zero-friction CLI that automatically recognizes your workspace and installs skills directly into the designated target directory:
+
+\`\`\`bash
+# Initialize DomoSkills in your project
+npx domoskills init
+
+# Install frontend performance and OWASP security capabilities
+npx domoskills add react-performance owasp-agent-guardian
+
+# Target a specific AI coding assistant
+npx domoskills add fastapi-clean-architecture --agent cursor
+npx domoskills add docker-architect --agent claude
+
+# Run diagnostic health check and security audit
+npx domoskills doctor
+npx domoskills audit
+\`\`\`
+
+---
+
+## 🌐 Deep DomoDomo Integration
+
+DomoDomo features seamless two-way integration with DomoSkills:
+1. **Top Navigation & Mobile Drawer**: Instant access to the DomoSkills web portal right from the main navbar.
+2. **Dashboard Spotlight**: Interactive CLI command generator and agent compatibility tags right on the DomoDomo dashboard.
+3. **In-App Tool Hub (\`/tool/domoskills\`)**: View and browse the live marketplace in an embedded sandbox with zoom controls, CLI builders, and domain shortcuts.
+4. **Domo Skill Creator Bridge**: Export your visual skills and submit them to the community at [DomoSkills Submit](https://web-beta-six-81.vercel.app/submit).
+5. **AI Hub Studio**: Quick-access shortcuts inside the offline AI developer studio.
+
+---
+
+## 🚀 Explore DomoSkills Today
+
+Experience the marketplace live at [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/) and contribute to the open-source repository on GitHub at [https://github.com/darknecrocities/DomoSkills](https://github.com/darknecrocities/DomoSkills)!
+
+*DomoSkills was created by **Arron Parejas** to bring security, standards, and reproducibility to autonomous AI development.*`
+  },
+  {
     slug: 'announcing-multi-platform-desktop-download-hub-windows-exe-mac-dmg-permissions-modal',
     title: 'Announcing Multi-Platform Desktop Download Hub: Windows (.exe), macOS (.dmg), Auto-Ollama Setup & Permissions Sandbox',
     excerpt: 'DomoDomo releases its comprehensive Desktop Download Hub (/download), offering native Windows (.exe installer & portable bundle), macOS (.dmg & universal app package), Linux (AppImage & deb), automated Ollama local AI background setup with CORS configuration, and an interactive Desktop & Hardware Permissions sandbox modal.',

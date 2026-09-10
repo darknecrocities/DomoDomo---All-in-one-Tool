@@ -46,8 +46,10 @@ import {
   Eye,
   Globe,
   Activity,
-  Network
+  Network,
+  ExternalLink
 } from 'lucide-react';
+import { GiSnake } from 'react-icons/gi';
 import { aiService } from '../utils/aiService';
 import { Logo } from '../components/Logo';
 import { N8nFlowCanvas } from '../tools/ai/components/N8nFlowCanvas';
@@ -1602,6 +1604,40 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <Layers size={15} className="shrink-0" />
               {!sidebarCollapsed && <span>Docs & Integration</span>}
             </button>
+
+            {/* Codepyne.io Upskilling Platform */}
+            <a
+              href="https://codepyne-io.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all group"
+              title="Codepyne.io — The AI & Machine Learning Upskilling Platform"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <GiSnake size={15} className="shrink-0 text-emerald-400 group-hover:scale-110 transition-transform" />
+                {!sidebarCollapsed && <span className="truncate">Codepyne.io</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
+              )}
+            </a>
+
+            {/* DomoSkills Marketplace */}
+            <a
+              href="https://web-beta-six-81.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all group"
+              title="DomoSkills — The Open Agent Skills Marketplace (External Webapp)"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Sparkles size={15} className="shrink-0 text-emerald-400 group-hover:rotate-12 transition-transform" />
+                {!sidebarCollapsed && <span className="truncate">DomoSkills</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
+              )}
+            </a>
           </nav>
 
           {/* Section: Train & Flow */}
