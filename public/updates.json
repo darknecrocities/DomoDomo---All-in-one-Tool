@@ -1,7 +1,19 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-08T09:36:51.026Z",
+  "buildTime": "2026-09-10T05:26:16.338Z",
   "commits": [
+    {
+      "hash": "e6accbd",
+      "date": "2026-09-08",
+      "author": "darknecrocities",
+      "message": "fix(blog): escape code block backticks in DomoSkills announcement post"
+    },
+    {
+      "hash": "c1cac7f",
+      "date": "2026-09-08",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "8fc3a77",
       "date": "2026-09-08",
@@ -79,18 +91,6 @@
       "date": "2026-08-27",
       "author": "darknecrocities",
       "message": "fix(desktop/ai): auto-run ollama with CORS, unlock all AI tools, and fix video resolution"
-    },
-    {
-      "hash": "8330c2d",
-      "date": "2026-08-24",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "2569c2c",
-      "date": "2026-08-24",
-      "author": "darknecrocities",
-      "message": "fix(pwa): resolve persistent update toast with semver checking, SW message handling, and storage sync"
     }
   ]
 }

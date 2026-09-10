@@ -13,6 +13,101 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-codepyne-io-ai-machine-learning-upskilling-platform',
+    title: 'Announcing Codepyne.io: The AI & Machine Learning Upskilling Platform Joins the Domo Ecosystem',
+    excerpt: 'Codepyne.io (https://codepyne-io.vercel.app/) officially joins the Domo ecosystem as our premier AI & Machine Learning upskilling partner. Learn by orchestrating, training, and deploying real models — from Python fundamentals and autograd engines to transformer fine-tuning, multi-agent systems, and verifiable AI certifications.',
+    date: 'September 10, 2026',
+    readTime: '4 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'codepyne, codepyne.io, ai machine learning upskilling, learn machine learning, autograd engine, transformer fine-tuning, multi-agent systems, verifiable ai certifications, python fundamentals, domo ecosystem',
+    content: `# Announcing Codepyne.io: The AI & Machine Learning Upskilling Platform Joins the Domo Ecosystem
+
+**Platform:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)  
+**Ecosystem Partner:** Codepyne.io × DomoDomo × DomoSkills  
+**Category:** Ecosystem Announcements  
+
+---
+
+We are thrilled to welcome **Codepyne.io** into the official Domo developer ecosystem!
+
+As the AI landscape evolves at breakneck speed, understanding machine learning from the ground up is no longer optional for software engineers. While **DomoDomo** delivers private, client-side developer tooling and local AI execution, and **DomoSkills** provides modular capabilities for autonomous coding agents, **Codepyne.io** delivers the critical learning pillar: **interactive, hands-on mastery of foundational and frontier machine learning systems.**
+
+\`\`\`text
+CODEPYNE.IO_
+Orchestrate. Train. Deploy.
+From Python Fundamentals & Autograd to Transformer Fine-Tuning & Multi-Agent Systems.
+\`\`\`
+
+---
+
+## 🐍 What is Codepyne.io?
+
+[**Codepyne.io**](https://codepyne-io.vercel.app/) is a dedicated AI & Machine Learning upskilling platform where you don't just watch videos or read theory—you learn by **orchestrating, training, and deploying real models**.
+
+Traditional ML education often falls into two extremes: either overly abstract mathematics without runnable code, or superficial high-level wrapper APIs that hide the underlying mechanics. Codepyne.io bridges this divide with an interactive, code-first engineering curriculum.
+
+---
+
+## 📚 Core Learning Pathways
+
+Codepyne.io takes developers through an end-to-end learning journey:
+
+### 1. 🐍 Python Fundamentals & Numerical Foundations
+Build an ironclad foundation with clean, idiomatic Python. Master tensor representations, NumPy matrix operations, vectorized broadcasting, memory layouts, and high-performance computing basics.
+
+### 2. ⚙️ Autograd Engines & Backpropagation from Scratch
+Stop treating gradient calculation as magic. Code your own computational graph engine, automatic differentiation tape, topological sorting, and reverse-mode autodiff—unlocking deep intuition for how neural networks actually update weights.
+
+### 3. 🤖 Transformer Architectures & Attention Heads
+Deconstruct modern Large Language Models layer by layer:
+- Scaled Dot-Product Attention & Multi-Head Projections
+- Positional Encodings (Sinusoidal & Rotary / RoPE)
+- Tokenization pipelines (Byte-Pair Encoding, WordPiece)
+- Feed-Forward layers, LayerNorm / RMSNorm, and residual connections
+- Causal decoder loops and KV caching
+
+### 4. 🎛️ Transformer Fine-Tuning & Quantization
+Move from architecture theory to real-world deployment:
+- Parameter-Efficient Fine-Tuning (PEFT) using LoRA and QLoRA
+- Instruction-tuning and conversational dataset preparation
+- Model quantization (FP16, 8-bit, 4-bit GGUF Q4_K_M)
+- Local model deployment with Ollama, llama.cpp, and vLLM
+
+### 5. 🐝 Multi-Agent Systems & Tool Orchestration
+Orchestrate autonomous multi-agent networks:
+- ReAct loops (Reasoning + Action)
+- Function calling, OpenAPI specs, and Model Context Protocol (MCP) integrations
+- Multi-agent debate, hierarchical manager-worker workflows, and consensus loops
+- Tool authorization, sandboxing, and runtime guardrails
+
+### 6. 🎓 Verifiable AI Certifications
+Complete rigorous code-level assignments and real-world benchmark evaluations to earn cryptographically verifiable AI certifications that validate your engineering expertise.
+
+---
+
+## 🌐 Seamless Domo Ecosystem Synergy
+
+The addition of Codepyne.io creates an integrated triumvirate for AI developers:
+
+| Platform | Role in Ecosystem | Key Capabilities |
+| :--- | :--- | :--- |
+| **Codepyne.io** | AI/ML Upskilling & Training | Autograd, Transformers, Multi-Agent, Fine-Tuning, Certifications |
+| **DomoDomo** | Sandboxed Execution & Utilities | AI Hub Studio, GGUF Generator, Quantization Benchmark, 100+ Tools |
+| **DomoSkills** | Agent Skills Registry & CLI | 200+ Skills for Antigravity, Claude Code, Cursor, Codex |
+
+---
+
+## 🚀 Explore Codepyne.io Today
+
+Whether you are a developer looking to break into machine learning, a software engineer wanting to build custom transformer architectures, or an AI practitioner orchestrating multi-agent systems, Codepyne.io is built for you.
+
+- 🌐 **Start Upskilling on Codepyne.io:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)
+- 📦 **Explore DomoSkills:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)
+- 🛠️ **Launch DomoDomo AI Hub:** [/ai-hub](/ai-hub)
+`
+  },
+  {
     slug: 'introducing-canon-cr2-to-png-high-quality-batch-converter',
     title: 'Introducing the Canon CR2 to PNG Converter: Lossless Batch Conversion with Zero Corruption',
     excerpt: 'Convert Canon RAW (.CR2) camera photos to lossless, pristine PNGs directly inside your browser sandbox. Featuring a dual-strategy binary parsing engine, batch queue processing, camera Exif metadata extraction, interactive zoom viewports, and one-click ZIP packaging.',

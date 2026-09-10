@@ -629,7 +629,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.6.0 (Latest)",
+                    version: "v2.6.1 (Latest)",
+                    date: "September 10, 2026",
+                    title: "Codepyne.io AI & ML Upskilling Platform Integration & Ecosystem Expansion",
+                    changes: [
+                      "Codepyne.io Ecosystem Partnership: Official integration with https://codepyne-io.vercel.app/ — the AI & Machine Learning upskilling platform where developers learn by orchestrating, training, and deploying real models.",
+                      "Curriculum Synchronization: Direct bridges for Python fundamentals, autograd engines, transformer fine-tuning, multi-agent systems, and verifiable AI certifications.",
+                      "Navigation & Menu Upgrades: Added Codepyne.io with snake icon to the Ecosystem dropdown, mobile drawer, and platform footer; streamlined desktop client resource label to 'Download'."
+                    ]
+                  },
+                  {
+                    version: "v2.6.0",
                     date: "September 2, 2026",
                     title: "DomoSkills Agent Marketplace Integration & Open Ecosystem Synchronization",
                     changes: [
