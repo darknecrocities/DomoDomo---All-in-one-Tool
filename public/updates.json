@@ -1,7 +1,19 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-10T05:26:16.338Z",
+  "buildTime": "2026-09-13T12:48:52.241Z",
   "commits": [
+    {
+      "hash": "bcf36b4",
+      "date": "2026-09-10",
+      "author": "darknecrocities",
+      "message": "feat(ecosystem): integrate Codepyne.io in navigation and dashboard, publish blog announcement, and rename Desktop Client to Download"
+    },
+    {
+      "hash": "157d27d",
+      "date": "2026-09-08",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "e6accbd",
       "date": "2026-09-08",
@@ -79,18 +91,6 @@
       "date": "2026-08-27",
       "author": "darknecrocities",
       "message": "chore(pwa): update service worker cache hash"
-    },
-    {
-      "hash": "4efc139",
-      "date": "2026-08-27",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "2330d4b",
-      "date": "2026-08-27",
-      "author": "darknecrocities",
-      "message": "fix(desktop/ai): auto-run ollama with CORS, unlock all AI tools, and fix video resolution"
     }
   ]
 }

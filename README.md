@@ -2,7 +2,7 @@
 
 DomoDomo is an open-source, **100% client-side, offline-first Agentic AI platform and productivity workshop**. Built as a high-performance, private, zero-server architecture toolbox, all operations—including autonomous multi-agent orchestration, local model context protocol (MCP) tool execution, document processing, and media suite tools—run completely inside your browser sandbox and local environment. Your data, code, images, PDFs, and files never leave your computer—no servers, no APIs, and no external clouds are ever touched.
 
-[👥 View Contributors](CONTRIBUTORS.md) | [🛠️ Contributing Guidelines](CONTRIBUTING.md)
+[🐍 Codepyne.io](https://codepyne-io.vercel.app/) | [✨ DomoSkills Marketplace](https://web-beta-six-81.vercel.app/) | [💻 Download App](https://domodomo.site/download) | [👥 View Contributors](CONTRIBUTORS.md) | [🛠️ Contributing Guidelines](CONTRIBUTING.md)
 
 ---
 
@@ -15,6 +15,56 @@ DomoDomo operates on a strict **zero-leak agentic mandate**. Unlike cloud-based 
 - **Local Model Context Protocol (MCP) Server**: Provides local LLMs and agents with structured access to filesystem tools, codebase inspection, and local process controls via a local SSE server (`mcp-server/`).
 - **Local Cognitive Journaling (`domo_journal.md`)**: Background AI agents automatically write reflective cognitive journal entries documenting internal reasoning, user interaction lessons, and code insights locally.
 - **Browser-Side Vector Memory (RAG)**: Fast in-memory and IndexedDB vector embeddings (`all-MiniLM-L6-v2`) enable semantic search and document retrieval without cloud dependencies.
+
+---
+
+## 🌐 Domo Ecosystem & Explore Showcase
+
+DomoDomo has expanded beyond standalone client-side tools into a connected, developer-native ecosystem. From hands-on Machine Learning mastery to open agent capability distribution and offline local execution, the Domo ecosystem bridges education, agent tooling, and productivity:
+
+| Platform | Role in Ecosystem | Key Capabilities | Quick Links |
+| :--- | :--- | :--- | :--- |
+| **Codepyne.io** | Official Upskilling & Training Partner | Autograd from scratch, Transformer Attention & RoPE, Multi-Agent Systems, Fine-Tuning (LoRA/QLoRA), Verifiable AI Certifications | [Explore Codepyne.io](https://codepyne-io.vercel.app/) • [Read Announcement](/blog/announcing-codepyne-io-ai-machine-learning-upskilling-platform) |
+| **DomoSkills** | Open Agent Skills Marketplace & CLI | 200+ verified capabilities (`SKILL.md`) for Antigravity, Claude Code, Cursor, OpenCode, Codex, Gemini CLI; one-command CLI package manager (`npx domoskills add`) | [Explore Marketplace](https://web-beta-six-81.vercel.app/) • [GitHub Repo](https://github.com/darknecrocities/DomoSkills) • [In-App Hub](/tool/domoskills) |
+| **DomoDomo AI Hub** | Local-First AI Studio & Execution Sandbox | 16 dynamic offline AI modules, RAG Vector Search, Function Calling Sandbox, Guardrails Inspector, Modelfile/GGUF generator, n8n visual flow builder | [Launch AI Hub](/ai-hub) • [Technical Docs](/docs) |
+
+### 🐍 Codepyne.io — AI & Machine Learning Upskilling Platform
+**[Codepyne.io](https://codepyne-io.vercel.app/)** is the official AI & Machine Learning upskilling partner of the Domo ecosystem. Built on the conviction that deep engineering intuition requires coding models from first principles rather than relying on abstract slides or opaque wrapper APIs, Codepyne delivers an interactive, code-first engineering curriculum:
+- **Python Fundamentals & Numerical Foundations**: Master tensor mathematics, vectorized NumPy computations, memory layout optimizations, and broadcasting from the ground up.
+- **Autograd Engines & Backpropagation from Scratch**: Build computational graph engines, automatic differentiation tapes, and topological reverse-mode autodiff without relying on black-box frameworks.
+- **Transformer Architectures & Attention Heads**: Deconstruct modern Large Language Models layer-by-layer—scaled dot-product attention, multi-head projections, rotary positional embeddings (RoPE), KV caching, and causal decoder loops.
+- **Transformer Fine-Tuning & Quantization**: Parameter-Efficient Fine-Tuning (PEFT) with LoRA and QLoRA, conversational dataset curation, and 4-bit GGUF (Q4_K_M) quantization for local deployment with Ollama, llama.cpp, and vLLM.
+- **Multi-Agent Systems & Tool Orchestration**: ReAct reasoning loops, function calling with JSON schemas, Model Context Protocol (MCP) integrations, hierarchical manager-worker pipelines, and agent consensus loops.
+- **Verifiable AI Certifications**: Solve rigorous code-level challenges and benchmark evaluations to earn cryptographically verifiable AI certifications validating real-world machine learning proficiency.
+
+### ✨ DomoSkills — The Open Agent Skills Marketplace & CLI
+Created and engineered by **Arron Parejas**, **[DomoSkills](https://web-beta-six-81.vercel.app/)** is the developer-native open-source capability registry and CLI package manager designed specifically for autonomous AI coding agents:
+- **200+ Verified Agent Capabilities**: Curated library of modular skills (`SKILL.md`) spanning 12 software engineering domains (frontend, backend, security, DevOps, performance, testing, AI/ML, and architecture).
+- **Single-Command CLI Package Manager**: Install agent capabilities directly into any project repository with automatic workspace detection:
+  ```bash
+  # Initialize DomoSkills in your project
+  npx domoskills init
+
+  # Add skills for any supported agent
+  npx domoskills add react-performance owasp-agent-guardian
+  npx domoskills add fastapi-clean-architecture --agent cursor
+  npx domoskills add docker-architect --agent claude
+
+  # Run workspace health audits
+  npx domoskills doctor
+  npx domoskills audit
+  ```
+- **Universal Agent Compatibility**: Native support for **Google Antigravity**, **Claude Code**, **Cursor**, **OpenCode**, **Codex**, **Gemini CLI**, **Windsurf**, and **GitHub Copilot**.
+- **Reproducible Team Workflows**: Commit `domoskills.json` lockfiles into git version control so teammates and CI/CD pipelines run `npx domoskills install` for 100% reproducible agent behaviors across environments.
+- **In-App Tool Hub (`/tool/domoskills`)**: Browse the live marketplace directly inside DomoDomo with interactive viewport zoom controls (70%–150%), CLI generation wizards, category deep-links, and one-click submissions via the Domo Skill Creator bridge.
+
+### 🚀 What's New in the Explore Catalog & Toolbox ("& etc")
+DomoDomo's **Explore** catalog features 15 distinct categories powering 110+ client-side web utilities. Recent high-impact additions to the explore roster include:
+- **Canon CR2 to PNG Batch Converter (`/tool/cr2-to-png`)**: A 100% client-side, professional-grade Canon RAW (`.CR2`) converter to lossless 24-bit PNGs. Features a proprietary zero-corruption dual-strategy parser (TIFF IFD traversal + DIGIC hardware JPEG stream carving) that prevents color distortion and memory bounds errors, Exif camera MakerNotes inspection (ISO, aperture, shutter speed, lens model), responsive zoom viewports, and one-click ZIP archive exports.
+- **AI Hub Studio (`/ai-hub`)**: A dedicated central laboratory uniting 16 dynamic offline AI modules, Model Library, RAG Vector Search (TF-IDF and local embeddings), Prompt Engineering Lab (live `{{variable}}` substitution), Function Calling Sandbox, Multimodal Vision Downloader (Llava, Llama 3.2 Vision, Moondream), AI Guardrails Inspector (8 PII categories & jailbreak blocking), and GGUF VRAM Quantization Calculator.
+- **Visual Flow Automation Canvas**: Drag-and-drop n8n-style visual graph flowchart board with pan/zoom viewport controls, curved Bezier port wiring, multi-workflow management, and real-time execution logs JSON payload inspection.
+- **Universal Desktop Download Hub & Permissions Sandbox (`/download`)**: Direct desktop installers for Windows (`.exe` & portable zip), macOS (`.dmg` & universal app bundle), Linux (`.AppImage` & `.deb`), and 1-click PWA installer—paired with live Ollama CORS configuration scripts (`OLLAMA_ORIGINS="*"`) and interactive local hardware permissions testing.
+- **Interactive Viewport Standards**: All media, canvas, and spatial tools strictly adhere to DomoDomo's interactive viewport guidelines with **Zoom In**, **Zoom Out**, **Reset 100%**, and **Pan** controls with zero cloud telemetry.
 
 ---
 
@@ -77,6 +127,7 @@ DomoDomo is engineered using modern, lightweight frontend technologies to ensure
 - **Image & Photo Utilities**:
   - [exifr](https://mutiny.cz/exifr/): High-performance, memory-efficient EXIF parser to read/strip metadata from photos.
   - **Canvas API**: Extensive use of the HTML5 Canvas for collage making, background removal chroma keying, image compression, format conversion (WebP/JPG/PNG), and pixel manipulations.
+  - **Canon RAW (.CR2) Dual-Strategy Binary Parser**: Resilient in-browser parser executing TIFF IFD traversal and DIGIC hardware JPEG stream carving to extract pristine full-resolution sensor pictures without server uploads.
 
 ### Barcode & Networking Tools
 - **QR Code & Barcode**: 

@@ -43,7 +43,7 @@ From Python Fundamentals & Autograd to Transformer Fine-Tuning & Multi-Agent Sys
 
 ## 🐍 What is Codepyne.io?
 
-[**Codepyne.io**](https://codepyne-io.vercel.app/) is a dedicated AI & Machine Learning upskilling platform where you don't just watch videos or read theory—you learn by **orchestrating, training, and deploying real models**.
+**[Codepyne.io](https://codepyne-io.vercel.app/)** is a dedicated AI & Machine Learning upskilling platform where you don't just watch videos or read theory—you learn by **orchestrating, training, and deploying real models**.
 
 Traditional ML education often falls into two extremes: either overly abstract mathematics without runnable code, or superficial high-level wrapper APIs that hide the underlying mechanics. Codepyne.io bridges this divide with an interactive, code-first engineering curriculum.
 
