@@ -54,7 +54,7 @@ export const LayerPanel: React.FC<LayerPanelProps> = ({
               onClick={() => onSelect(layer.id)}
               className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors border ${
                 selectedId === layer.id
-                  ? 'bg-[#3C6B4D]/20 border-[#3C6B4D] text-[#ECEBE9]'
+                  ? 'bg-white text-black/20 border-white/30 text-[#ECEBE9]'
                   : 'bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:bg-[#1E2022]'
               }`}
             >

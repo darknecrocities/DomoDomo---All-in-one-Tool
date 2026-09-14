@@ -73,7 +73,7 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
                   Local LLM Required
                 </span>
                 {categoryName && (
-                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+                  <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-white/10 text-[#ECEBE9] border border-white/20">
                     {categoryName}
                   </span>
                 )}
@@ -97,7 +97,7 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
         {/* Live Status indicator */}
         <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-[#3C6B4D] animate-pulse' : 'bg-rose-500'}`} />
+            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-sky-400 animate-pulse' : 'bg-rose-500'}`} />
             <div>
               <span className="text-xs font-bold text-[#ECEBE9] block">
                 Status: {isOnline ? 'Connected to Local Ollama' : 'Ollama Offline / Not Detected'}
@@ -121,8 +121,8 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
         </div>
 
         {isOnline ? (
-          <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 p-4 rounded-xl text-center flex flex-col items-center gap-2">
-            <CheckCircle2 size={28} className="text-[#3C6B4D]" />
+          <div className="bg-white/10 border border-white/20 p-4 rounded-xl text-center flex flex-col items-center gap-2">
+            <CheckCircle2 size={28} className="text-sky-300" />
             <h4 className="text-sm font-bold text-[#ECEBE9]">Local AI Connection Active!</h4>
             <p className="text-xs text-[#A3A09B]">Closing setup window and unlocking tool...</p>
           </div>
@@ -137,17 +137,17 @@ export const LocalAISetupModal: React.FC<LocalAISetupModalProps> = ({
             <div className="flex flex-col gap-2 bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/20 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">
+                  <span className="w-5 h-5 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-mono">
                     1
                   </span>
                   Run DomoDomo Locally
                 </span>
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${isLocal ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'bg-rose-500/20 text-rose-400'}`}>
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${isLocal ? 'bg-white/10 text-white border border-white/20' : 'bg-rose-500/20 text-rose-400'}`}>
                   {isLocal ? '✓ Passed (Localhost)' : '⚠️ Hosted Online'}
                 </span>
               </div>
               <p className="text-xs text-[#A3A09B]">
-                Due to browser CORS & mixed content rules, websites on <code className="text-[#3C6B4D]">https://</code> cannot reach your local machine ports directly. Run DomoDomo locally:
+                Due to browser CORS & mixed content rules, websites on <code className="text-sky-300">https://</code> cannot reach your local machine ports directly. Run DomoDomo locally:
               </p>
               <div className="bg-[#18191B] p-3 rounded-lg border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto whitespace-pre-wrap">
@@ -168,13 +168,13 @@ npm run dev`}
             {/* Step 2 */}
             <div className="flex flex-col gap-2 bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
               <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/20 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">
+                <span className="w-5 h-5 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-mono">
                   2
                 </span>
                 Install Ollama & Download Model
               </span>
               <p className="text-xs text-[#A3A09B]">
-                Download Ollama from <a href="https://ollama.com" target="_blank" rel="noreferrer" className="text-[#3C6B4D] underline font-semibold">ollama.com</a> and start your preferred model:
+                Download Ollama from <a href="https://ollama.com" target="_blank" rel="noreferrer" className="text-white underline font-semibold">ollama.com</a> and start your preferred model:
               </p>
               <div className="bg-[#18191B] p-3 rounded-lg border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
                 <pre className="overflow-x-auto">ollama run llama3.2</pre>
@@ -190,13 +190,13 @@ npm run dev`}
             {/* Step 3 */}
             <div className="flex flex-col gap-2 bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
               <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/20 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">
+                <span className="w-5 h-5 rounded-full bg-white/15 text-white flex items-center justify-center text-xs font-mono">
                   3
                 </span>
                 Enable Browser CORS Access
               </span>
               <p className="text-xs text-[#A3A09B]">
-                Set <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> environment variable before starting Ollama:
+                Set <code className="text-sky-300 font-mono">OLLAMA_ORIGINS="*"</code> environment variable before starting Ollama:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
                 <div className="bg-[#18191B] p-2.5 rounded border border-[#2A2D30]">

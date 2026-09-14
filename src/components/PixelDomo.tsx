@@ -13,7 +13,7 @@ export const PixelDomo = ({ frame, size = 120, className = '' }: PixelDomoProps)
     'w': '#FFFFFF', // Pure white fur
     's': '#E2E8F0', // Soft shading grey
     'p': '#FF8DA1', // Soft pink cheeks
-    'b': '#4E8E5E', // Green bamboo leaf accent
+    'b': '#38BDF8', // Frosted winter ice accent
     'y': '#F59E0B', // Golden bell/accent
   };
 

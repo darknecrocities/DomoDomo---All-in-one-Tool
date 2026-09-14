@@ -310,7 +310,7 @@ export const CropRotateTool = () => {
               <button 
                 key={r}
                 onClick={() => setAspect(r)}
-                className={`py-1 rounded text-[11px] font-bold ${aspect === r ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-450 border border-slate-850 hover:bg-slate-800'}`}
+                className={`py-1 rounded text-[11px] font-bold ${aspect === r ? 'bg-white text-black' : 'bg-slate-900 text-slate-450 border border-slate-850 hover:bg-slate-800'}`}
               >
                 {r.toUpperCase()}
               </button>
@@ -358,13 +358,13 @@ export const CropRotateTool = () => {
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-800">
                   <button
                     onClick={() => setUnit('%')}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${unit === '%' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${unit === '%' ? 'bg-white text-black' : 'text-slate-400 hover:text-slate-200'}`}
                   >
                     %
                   </button>
                   <button
                     onClick={() => setUnit('px')}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${unit === 'px' ? 'bg-[#4E8E5E] text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${unit === 'px' ? 'bg-white text-black' : 'text-slate-400 hover:text-slate-200'}`}
                   >
                     PX
                   </button>

@@ -200,7 +200,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-enhancer',
-        name: 'AI Image Enhancer',
+        name: 'Image Detail Enhancer',
         engine: 'Canvas ImageData Filter Kernels',
         details: 'Applies multi-pass digital filters including contrast stretching, gamma adjustments, and customized pixel-convolution kernels to optimize sharpness, brightness, and color balance directly in-memory.',
         functionality: 'Enhances image clarity and colors. Features auto-adjustments, contrast stretching, sharpness, and brightness controls.',
@@ -1074,30 +1074,30 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
     ]
   },
   ai: {
-    title: 'Local AI Suite',
-    desc: 'Local model connection pipelines, summarization, OCR formatters, and translation.',
+    title: 'Smart Assistants Suite',
+    desc: 'Local writing assistants, summarization, OCR formatters, and translation.',
     list: [
       {
         id: 'ai-chat',
-        name: 'AI Chat',
+        name: 'Chat & Writing Assistant',
         engine: 'Ollama Client REST Pipeline',
         details: 'Streams message structures to local Ollama ports, rendering response markdown content.',
-        functionality: 'Interactive chat threads with local AI. Custom system prompts, model selections, and markdown renders.',
+        functionality: 'Interactive chat threads with local assistants. Custom system prompts, model selections, and markdown renders.',
         howItWorks: '1. Connects to Ollama port. 2. Transmits messages formats. 3. Reads response chunks. 4. Renders output.',
         technicalSpecs: 'Requires local Ollama connection running on port 11434.'
       },
       {
         id: 'ai-summarizer',
-        name: 'Summarizer',
+        name: 'Document Summarizer',
         engine: 'Ollama Model Summarizer Pipeline',
         details: 'Sends text content to local LLMs with custom instructions to create structured summaries.',
-        functionality: 'Local AI text summarizer. Summary format settings (bullets/paragraphs) and copy options.',
+        functionality: 'Local text summarizer. Summary format settings (bullets/paragraphs) and copy options.',
         howItWorks: '1. Formats summaries prompt layers. 2. Queries local Ollama model. 3. Displays output.',
         technicalSpecs: 'Compatible with standard Llama/Mistral models.'
       },
       {
         id: 'caption-gen',
-        name: 'Caption Generator',
+        name: 'Image Caption Generator',
         engine: 'Ollama Vision Pipeline',
         details: 'Encodes image uploads as base64 parameters, transmitting details to local vision LLMs for captioning.',
         functionality: 'Generates captions for images using vision LLMs. Upload previews and details sliders.',
@@ -1106,7 +1106,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ocr-assistant',
-        name: 'OCR Assistant',
+        name: 'OCR Document Formatter',
         engine: 'Ollama Layout Formatting Pipeline',
         details: 'Sends noisy text from OCR tools to local LLMs to format clean document configurations.',
         functionality: 'Formats messy OCR text. Spelling corrections, markdown formatting, and paragraphs organization.',
@@ -1115,16 +1115,16 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'prompt-enhancer',
-        name: 'Prompt Enhancer',
+        name: 'Instruction & Prompt Polish',
         engine: 'Ollama Prompt Optimization Pipeline',
         details: 'Assembles prompt elements, utilizing local LLMs to expand concepts into detailed instructions.',
-        functionality: 'Enhances AI prompts. Custom enhancement templates and detail sliders.',
+        functionality: 'Polishes instructions and prompts. Custom enhancement templates and detail sliders.',
         howItWorks: '1. Evaluates input prompts. 2. Queries local model to build detailed instructions templates. 3. Returns output.',
         technicalSpecs: 'Uses system prompt templates.'
       },
       {
         id: 'image-classifier',
-        name: 'Image Classifier',
+        name: 'Visual Object Classifier',
         engine: 'Ollama Image Classification Pipeline',
         details: 'Sends image parameters to local vision LLMs, returning tag listings and classification percentages.',
         functionality: 'Classifies images using local models. Returns classification tags and confidence percentages.',
@@ -1133,7 +1133,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'text-rewriter',
-        name: 'Text Rewriter',
+        name: 'Tone & Style Rewriter',
         engine: 'Ollama Tone Transformation Pipeline',
         details: 'Applies style templates using local models, rewriting paragraphs into alternative tones.',
         functionality: 'Rewrites text with custom tones (professional, casual, academic). Length settings.',
@@ -1142,16 +1142,16 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-translator',
-        name: 'Translator',
+        name: 'Offline Document Translator',
         engine: 'Ollama Translation Pipeline',
         details: 'Directs local LLMs to translate text strings, maintaining structure and context.',
-        functionality: 'Translates texts using local AI. Target language lists, context flags, and copies.',
+        functionality: 'Translates texts using local models. Target language lists, context flags, and copies.',
         howItWorks: '1. Constructs translation directives. 2. Queries model. 3. Outputs translated text.',
         technicalSpecs: 'Preserves tags and markdown formats.'
       },
       {
         id: 'ai-stt',
-        name: 'Speech-to-Text',
+        name: 'Voice-to-Text Transcriber',
         engine: 'Ollama Audio Transcription Pipeline',
         details: 'Processes audio files through local models to generate text transcriptions.',
         functionality: 'Transcribes audio files. Waveform inputs and transcription logs exports.',
@@ -1160,7 +1160,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'semantic-search',
-        name: 'Semantic Search',
+        name: 'Content Similarity Finder',
         engine: 'Ollama Embedding Engine',
         details: 'Passes document texts to embedding models, storing vectors to perform similarity searches.',
         functionality: 'Performs semantic searches on documents. Similarity ranking charts and scores display.',
@@ -1169,7 +1169,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-code-explainer',
-        name: 'AI Code Explainer',
+        name: 'Code Explainer & Inspector',
         engine: 'Ollama Code Explanation Pipeline',
         details: 'Analyzes code segments step-by-step, assessing complexity and translating logic to other languages.',
         functionality: 'Explains code functionality. Complexity metrics, line-by-line analyses, and language conversion.',
@@ -1178,7 +1178,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-flashcard-maker',
-        name: 'AI Flashcard Maker',
+        name: 'Study Flashcard Generator',
         engine: 'Ollama Educational Q&A Pipeline',
         details: 'Transforms any text input or topic into structured Q&A card decks for study sessions.',
         functionality: 'Creates flashcards. Flashcard counts adjusters and interactive card previewers.',
@@ -1187,7 +1187,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-sentiment-journal',
-        name: 'AI Sentiment Journal',
+        name: 'Daily Sentiment Journal',
         engine: 'Ollama Sentiment & Mood Analysis Pipeline',
         details: 'Evaluates mood trends, keywords, and emotions from daily journal entries securely saved in local storage.',
         functionality: 'Logs and analyzes mood trends in daily journals. Empathic indicators charts.',
@@ -1196,7 +1196,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-email-composer',
-        name: 'AI Email Composer',
+        name: 'Smart Email Drafter',
         engine: 'Ollama Business Copywriting Pipeline',
         details: 'Drafts or replies to emails with options for tone, length, and subject lines based on user intent.',
         functionality: 'Composes emails. Tone options, email length controls, and subject line selectors.',
@@ -1205,7 +1205,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-story-generator',
-        name: 'AI Story Generator',
+        name: 'Creative Story Crafter',
         engine: 'Ollama Creative Fiction Pipeline',
         details: 'Generates fantasy, sci-fi, horror, or comedy stories complete with characters, settings, and twists.',
         functionality: 'Generates creative writing stories. Genre configurations, plot tags, and character outlines selectors.',
@@ -1214,7 +1214,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-debate-assistant',
-        name: 'AI Debate Assistant',
+        name: 'Debate & Logic Builder',
         engine: 'Ollama Argumentation Pipeline',
         details: 'Constructs PRO and CON arguments, opening/closing statements, and counterpoints for a given topic.',
         functionality: 'Builds debate arguments. Pro/con coordinates and counterpoints listings.',
@@ -1223,7 +1223,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-math-solver',
-        name: 'AI Math Solver',
+        name: 'Step-by-Step Math Solver',
         engine: 'Ollama Mathematical Reasoning Pipeline',
         details: 'Solves complex equations and word problems step-by-step with LaTeX formatting.',
         functionality: 'Solves math problems. Interactive step-by-step layout and LaTeX formatting.',
@@ -1232,7 +1232,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-recipe-generator',
-        name: 'AI Recipe Generator',
+        name: 'Recipe & Pantry Chef',
         engine: 'Ollama Culinary Optimization Pipeline',
         details: 'Recommends cooking recipes, nutrition estimates, and missing ingredient lists from available items.',
         functionality: 'Generates cooking recipes. Ingredient lists, dietary setups, and nutrition cards.',
@@ -1241,7 +1241,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-code-reviewer',
-        name: 'AI Code Reviewer',
+        name: 'Code Quality & Bug Auditor',
         engine: 'Ollama Static Review Pipeline',
         details: 'Audits code structure for bugs, security weaknesses, performance, and best practices.',
         functionality: 'Audits code files. Suggests optimizations, maps security issues, and displays score indexes.',
@@ -1250,7 +1250,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-mind-mapper',
-        name: 'AI Mind Mapper',
+        name: 'Concept Mind Mapper',
         engine: 'Ollama Hierarchical Layout Pipeline',
         details: 'Extracts concepts from topics to organize them into nested branches and outlines.',
         functionality: 'Creates mind map outlines. Nested nodes configurations and outline exports.',
@@ -1259,7 +1259,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'domo-agent-hub',
-        name: 'Domo Agent Hub',
+        name: 'Agent Workspace Hub',
         engine: 'Ollama Workspace File API',
         details: 'Mounts local directories using File System Access handles to edit files and direct AI coding runs offline.',
         functionality: 'Mounts folders to work on code. Multi-agent workflows, autosave adjustments, and log changes.',
@@ -1304,7 +1304,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'domo-companion',
-        name: 'Domo Companion (Floating AI Assistant)',
+        name: 'Domo Companion (Floating Guide)',
         engine: 'Ollama Client Context Pipeline',
         details: 'A persistent, draggable widget overlay executing offline model prompts with real-time viewport context sensing and high-fidelity boundary dragging.',
         functionality: 'Companion chat window, custom mascot personas, overlay styling, viewport boundary detection, and scroll-drag coordinate filters.',
@@ -1313,7 +1313,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-pii-redactor',
-        name: 'AI PII Data Redactor',
+        name: 'Sensitive Data & PII Redactor',
         engine: 'Ollama Privacy Anonymization Pipeline',
         details: 'Parses raw text data to intelligently identify and mask Personally Identifiable Information using local LLM understanding.',
         functionality: 'Redacts sensitive info (names, IPs, emails) from logs and text.',
@@ -1322,7 +1322,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-regex-architect',
-        name: 'AI Regex Explainer & Builder',
+        name: 'Regex Explainer & Builder',
         engine: 'Ollama Parsing & Explanation Pipeline',
         details: 'Breaks down complex regex patterns or constructs them from natural language descriptions.',
         functionality: 'Explains or builds regex patterns locally.',
@@ -1331,7 +1331,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-devops-architect',
-        name: 'AI DevOps Command Architect',
+        name: 'DevOps Command Architect',
         engine: 'Ollama SysAdmin Scripting Pipeline',
         details: 'Generates complex bash scripts, Docker commands, and crontab schedules from simple plain English.',
         functionality: 'Generates bash scripts, Dockerfiles, docker-compose configs, and cron expressions.',
@@ -1340,7 +1340,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-hub-studio',
-        name: 'AI Hub Studio (18-Tool Local AI Automation Suite)',
+        name: 'Studio Lab (Automation Suite)',
         engine: 'HuggingFace Hub API, n8n Visual Flow Graph Canvas Engine, Ollama REST Stream, Multi-Method PEFT/Fine-Tune Engine, Vector RAG Engine, & Model Settings Manager',
         details: 'Comprehensive local AI Hub Studio featuring 18 dynamic sub-studios: HuggingFace Model Hub, Model Settings & Storage Manager, n8n-style visual graph flowchart canvas, Advanced Multi-Method Fine-Tune Studio (QLoRA, LoRA, Full Fine-Tune, Prefix Tuning, Adapter Tuning, DPO/RLHF), Side-by-Side Model Benchmarks, RAG Vector Search Studio, Prompt Engineering Lab, Structured JSON Extractor, Function Calling Studio, AI Guardrails Inspector, Code Refactoring & AI Patch, Multi-Model Router, Knowledge Graph Visualizer, Vision Inspection Studio with 1-Click Model Downloader, and GGUF VRAM Quantization Calculator.',
         functionality: '18-tab local AI environment: HuggingFace model search, GGUF variant browser & 1-click pull-to-Ollama, model settings manager for deleting models, Modelfile inspection, model aliasing, VRAM unloading, n8n visual automation board, multi-method fine-tuning with 6 strategies, Python training script generator, loss curve monitor, downloadable training packages, TF-IDF vector document chunker, {{variable}} prompt template parser, JSON schema validator, client-side function calling execution trace, 8-category PII redaction mask editor, AST code patch exporter, intent classification router, interactive SVG knowledge graph entity extractor, Llava multimodal vision inspector with 1-click model downloader, and GGUF --n-gpu-layers VRAM offload calculator.',
@@ -1349,7 +1349,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ai-model-manager',
-        name: 'Model Settings & Storage Manager',
+        name: 'Local Model Manager',
         engine: 'Ollama REST Management API (/api/tags, /api/delete, /api/show, /api/copy)',
         details: 'Local Ollama model weight management studio. Delete unused model files from disk, inspect detailed Modelfile metadata, copy/alias models, force GPU VRAM unloads, and configure default inference hyperparameters.',
         functionality: '1-click model deletion, deep JSON Modelfile inspector, instant local model aliasing without re-downloading, VRAM purge button (keep_alive: 0), and global context window, temperature, and top_p settings.',
@@ -1744,11 +1744,11 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
   },
   design: {
     title: 'Design & UI/UX Studio',
-    desc: 'Local-first web accessibility auditing, visual background synthesis, typography systems, and vector path tools powered by Local AI.',
+    desc: 'Local-first web accessibility auditing, visual background synthesis, typography systems, and vector path tools.',
     list: [
       {
         id: 'wcag-contrast-checker',
-        name: 'AI WCAG Contrast & Accessibility Auditor',
+        name: 'WCAG Contrast & Accessibility Auditor',
         engine: 'Web Canvas RGB Matrix & Local Ollama AI',
         details: 'Calculates WCAG 2.1 contrast ratios and simulates colorvision deficiencies with Local AI accessibility remediation guidance.',
         functionality: 'Tests text-to-background contrast and provides AI accessibility recommendations.',
@@ -1757,7 +1757,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'mesh-gradient-generator',
-        name: 'AI CSS Glass & Mesh Gradient Architect',
+        name: 'CSS Glass & Mesh Gradient Architect',
         engine: 'Canvas & Local Ollama AI',
         details: 'Visual designer to create multi-point fluid mesh background gradients and glassmorphism cards.',
         functionality: 'Generates radial gradient focal points and backdrop-filter CSS snippets.',
@@ -1766,7 +1766,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'font-glyph-inspector',
-        name: 'AI Font Subsetter & Typography Advisor',
+        name: 'Font Subsetter & Typography Advisor',
         engine: 'Opentype & Local Ollama AI',
         details: 'Inspects Unicode character glyph maps and generates AI font pairing recommendations.',
         functionality: 'Parses character sets and advises on typography design scales.',
@@ -1775,7 +1775,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'svg-path-studio',
-        name: 'AI SVG Component & Vector Code Studio',
+        name: 'SVG Component & Vector Code Studio',
         engine: 'SVG Path DOM & Local Ollama AI',
         details: 'Visual vector path editor and React SVG component generator powered by Local AI.',
         functionality: 'Manipulates path coordinates and generates stroke animation CSS keyframes.',
@@ -1784,7 +1784,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'neumorphism-glass-builder',
-        name: 'AI Neumorphism & Soft UI Generator',
+        name: 'Neumorphism & Soft UI Generator',
         engine: 'Soft UI Shadow Engine & Ollama AI',
         details: 'Design soft extruded and inset neumorphic UI components, generate dual light/dark shadows, and synthesize soft UI systems with Local AI.',
         functionality: 'Calculates dual highlight/shadow offsets and generates CSS box-shadow code.',
@@ -1793,7 +1793,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'box-shadow-studio',
-        name: 'AI Multi-Layer CSS Shadow & Elevation Studio',
+        name: 'Multi-Layer CSS Shadow & Elevation Studio',
         engine: 'Multi-Layer Lighting Matrix & Ollama AI',
         details: 'Compose multi-layer ambient and key shadows, build realistic natural elevation steps, and synthesize lighting systems with Local AI.',
         functionality: 'Composes layered ambient/key shadows into single CSS box-shadow property.',
@@ -1802,7 +1802,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'color-palette-harmonies',
-        name: 'AI Color Palette & Harmony Studio',
+        name: 'Color Palette & Harmony Studio',
         engine: 'HSL Color Wheel Engine & Ollama AI',
         details: 'Calculate color theory harmonies (Complementary, Triadic, Analogous), generate Tailwind theme configs, check contrast swatches, and prompt Local AI.',
         functionality: 'Calculates HSL angular offsets on color wheel for 5-swatch palette generation.',
@@ -1811,7 +1811,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'border-radius-blob-maker',
-        name: 'AI Organic CSS Blob & Border Radius Generator',
+        name: 'Organic CSS Blob & Border Radius Generator',
         engine: '8-Point Radius Engine & Ollama AI',
         details: 'Manipulate 8-point organic CSS border-radius coordinates, synthesize fluid morphing keyframes, export CSS code, and prompt Local AI.',
         functionality: 'Generates non-standard 8-point border-radius percentage strings for organic shapes.',
@@ -1820,7 +1820,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'css-grid-flex-studio',
-        name: 'AI CSS Grid & Flexbox Layout Architect',
+        name: 'CSS Grid & Flexbox Layout Architect',
         engine: 'CSS Box Model Engine & Ollama AI',
         details: 'Visual CSS Grid and Flexbox container layout builder, customize gap, alignment, and template columns, export CSS code, and prompt Local AI.',
         functionality: 'Visual layout builder for CSS Grid templates and Flexbox alignment properties.',
@@ -1829,7 +1829,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'design-token-generator',
-        name: 'AI Design Token & CSS Variables System Studio',
+        name: 'Design Token & CSS Variables System Studio',
         engine: 'W3C Design Token Engine & Ollama AI',
         details: 'Construct cross-platform design token suites (Colors, Typography scale, Spacing, Elevation), export W3C JSON / CSS custom variables, and prompt Local AI.',
         functionality: 'Exports structured design tokens in W3C JSON and CSS custom property formats.',
@@ -1840,11 +1840,11 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
   },
   network: {
     title: 'Network & Web Performance Lab',
-    desc: 'Offline HTTP Archive waterfall profiling, API client code generation, and security policy building powered by Local AI.',
+    desc: 'Offline HTTP Archive waterfall profiling, API client code generation, and security policy building.',
     list: [
       {
         id: 'har-waterfall-profiler',
-        name: 'AI HAR Performance Diagnostic Profiler',
+        name: 'HAR Performance Diagnostic Profiler',
         engine: 'Local HAR JSON Parser & Ollama AI',
         details: 'Visualizes HTTP Archive network traces offline with request waterfall charts.',
         functionality: 'Isolates TTFB latencies, payload sizes, and failed HTTP status codes.',
@@ -1853,7 +1853,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'curl-code-studio',
-        name: 'AI cURL to Multi-Language SDK Generator',
+        name: 'cURL to Multi-Language SDK Generator',
         engine: 'AST Command Parser & Ollama AI',
         details: 'Converts raw cURL commands into clean code snippets across JS, Python, Go, Rust, and PHP.',
         functionality: 'Translates request parameters and headers into typed SDK clients.',
@@ -1862,7 +1862,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'csp-header-builder',
-        name: 'AI Security Header & CSP Policy Architect',
+        name: 'Security Header & CSP Policy Architect',
         engine: 'CSP Directive Engine & Ollama AI',
         details: 'Configures Content Security Policy directives visually and audits XSS injection risks.',
         functionality: 'Generates hardened CSP headers and web server configurations.',
@@ -1871,7 +1871,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'jwt-debugger-studio',
-        name: 'AI JWT Token Inspector & Claims Auditor',
+        name: 'JWT Token Inspector & Claims Auditor',
         engine: 'Base64Url Decoder & Ollama AI',
         details: 'Decode JSON Web Tokens (Header, Payload, Signature) offline, inspect expiration claims, verify signing algorithms, and audit security with Local AI.',
         functionality: 'Decodes JWT tokens offline into human-readable Header and Payload JSON structures.',
@@ -1880,7 +1880,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'websocket-tester-studio',
-        name: 'AI WebSockets & SSE Packet Diagnostic Studio',
+        name: 'WebSockets & SSE Packet Diagnostic Studio',
         engine: 'WebSocket Protocol & Ollama AI',
         details: 'Inspect real-time WebSocket frames, stream Server-Sent Events (SSE), test reconnect backoff latency, and audit packet payloads with Local AI.',
         functionality: 'Connects to WS/WSS endpoints and logs sent/received message frame history.',
@@ -1889,7 +1889,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'dns-lookup-inspector',
-        name: 'AI DNS & DoH Security Diagnostic Inspector',
+        name: 'DNS & DoH Security Diagnostic Inspector',
         engine: 'DNS-over-HTTPS & Ollama AI',
         details: 'Perform encrypted DNS-over-HTTPS (DoH) record queries (A, AAAA, MX, TXT, CAA, NS), audit SPF/DMARC spoofing risks, and run Local AI diagnostics.',
         functionality: 'Queries Cloudflare/Google DoH JSON endpoints for A, MX, TXT, and CAA records.',
@@ -1898,7 +1898,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'http-status-debugger',
-        name: 'AI HTTP Status & CORS Diagnostic Studio',
+        name: 'HTTP Status & CORS Diagnostic Studio',
         engine: 'HTTP Reference DB & Ollama AI',
         details: 'Lookup HTTP 1xx-5xx status codes, debug CORS headers, generate Express/Nginx CORS middleware, and prompt Local AI.',
         functionality: 'Interactive reference manual and middleware generator for HTTP status codes and CORS preflight headers.',
@@ -1907,7 +1907,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'graphql-query-studio',
-        name: 'AI GraphQL Schema & Query Optimizer',
+        name: 'GraphQL Schema & Query Optimizer',
         engine: 'GQL AST Parser & Ollama AI',
         details: 'Format GraphQL queries, evaluate nested field depth complexity, generate TypeScript response types, and prompt Local AI.',
         functionality: 'Parses GraphQL documents to evaluate query depth and selection complexity.',
@@ -1916,7 +1916,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'ip-subnet-calculator',
-        name: 'AI IP CIDR & Subnet Calculator',
+        name: 'IP CIDR & Subnet Calculator',
         engine: 'Bitwise IP Engine & Ollama AI',
         details: 'Calculate IPv4/IPv6 CIDR network address boundaries, wildcard netmasks, usable host counts, and synthesize VLAN subnet plans with Local AI.',
         functionality: 'Bitwise math for CIDR mask calculation, netmask conversion, and host bounds.',
@@ -1925,7 +1925,7 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
       },
       {
         id: 'open-api-schema-builder',
-        name: 'AI OpenAPI 3.0 & Swagger Schema Studio',
+        name: 'OpenAPI 3.0 & Swagger Schema Studio',
         engine: 'OpenAPI 3.0 Builder & Ollama AI',
         details: 'Construct OpenAPI 3.0 JSON/YAML specifications, generate TypeScript API response contracts, export Swagger schemas, and prompt Local AI.',
         functionality: 'Visual builder for OpenAPI 3.0 JSON/YAML specifications and response schemas.',

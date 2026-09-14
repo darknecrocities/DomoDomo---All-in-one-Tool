@@ -160,10 +160,10 @@ export const UpdateNotificationToast: React.FC = () => {
   return (
     <aside
       aria-label="Application Update Alert"
-      className="fixed bottom-5 right-5 z-[9999] max-w-sm w-[calc(100vw-40px)] bg-[#18191B]/95 backdrop-blur-xl border border-[#3C6B4D]/60 shadow-2xl shadow-emerald-950/40 rounded-2xl p-4 text-[#ECEBE9] animate-in fade-in slide-in-from-bottom-5 duration-300"
+      className="fixed bottom-5 right-5 z-[9999] max-w-sm w-[calc(100vw-40px)] bg-[#18191B]/95 backdrop-blur-xl border border-white/20 shadow-2xl shadow-black/60 rounded-2xl p-4 text-[#ECEBE9] animate-in fade-in slide-in-from-bottom-5 duration-300"
     >
       <div className="flex items-start gap-3">
-        <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0 mt-0.5 animate-pulse">
+        <div className="p-2.5 rounded-xl bg-white/10 text-white border border-white/20 shrink-0 mt-0.5 animate-pulse">
           <Sparkles size={20} />
         </div>
         <div className="flex-1 min-w-0">
@@ -171,7 +171,7 @@ export const UpdateNotificationToast: React.FC = () => {
             <h2 className="text-sm font-bold text-[#ECEBE9] flex items-center gap-1.5 font-heading">
               <span>New Update Ready</span>
               {newVersion && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-mono font-bold">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/15 text-white font-mono font-bold">
                   {newVersion}
                 </span>
               )}
@@ -191,7 +191,7 @@ export const UpdateNotificationToast: React.FC = () => {
             <button
               onClick={handleApplyUpdate}
               disabled={isUpdating}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#2F543C] active:scale-[0.98] text-white text-xs font-bold shadow-md shadow-emerald-950/50 transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black text-xs font-bold shadow-md shadow-white/10 transition-all cursor-pointer disabled:opacity-50"
             >
               <RefreshCw size={13} className={isUpdating ? 'animate-spin' : ''} />
               <span>{isUpdating ? 'Updating...' : 'Update & Reload'}</span>

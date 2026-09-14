@@ -513,9 +513,9 @@ INSTRUCTIONS:
 			</Helmet>
 
 			{generatedPkgName && (
-				<div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 flex items-center justify-between gap-3 animate-fadeIn">
+				<div className="bg-white/5 border border-white/20 rounded-2xl p-4 flex items-center justify-between gap-3 animate-fadeIn">
 					<div className="flex items-center gap-3">
-						<CheckCircle size={20} className="text-emerald-400 shrink-0" />
+						<CheckCircle size={20} className="text-sky-300 shrink-0" />
 						<div>
 							<span className="text-xs font-bold text-[#ECEBE9] block">
 								Download Started!
@@ -539,12 +539,12 @@ INSTRUCTIONS:
 				<div className="absolute inset-0 bg-[linear-gradient(to_right,#2a2d30_1px,transparent_1px),linear-gradient(to_bottom,#2a2d30_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.12] pointer-events-none" />
 				<div className="lg:col-span-8 z-10 flex flex-col gap-4">
 					<div className="flex flex-wrap items-center gap-3">
-						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold w-fit">
-							<ShieldCheck size={14} />
+						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 text-[#ECEBE9] border border-white/20 text-xs font-semibold w-fit">
+							<ShieldCheck size={14} className="text-sky-300" />
 							<span>100% Client-Side & Local-First</span>
 						</div>
-						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3C6B4D]/15 text-emerald-400 border border-[#3C6B4D]/30 text-xs font-semibold w-fit">
-							<Bot size={14} />
+						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 text-xs font-semibold w-fit">
+							<Bot size={14} className="text-sky-300" />
 							<span>Ollama Local AI Ready</span>
 						</div>
 						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-semibold w-fit">
@@ -581,13 +581,13 @@ INSTRUCTIONS:
 							onClick={() => setIsPermsModalOpen(true)}
 							className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25282B] hover:bg-[#2A2D30] text-[#ECEBE9] border border-[#3C4044] text-xs font-bold transition-all shadow-md active:scale-95"
 						>
-							<Shield size={14} className="text-emerald-400" />
+							<Shield size={14} className="text-sky-300" />
 							<span>Configure Desktop Permissions</span>
 						</button>
 
 						<button
 							onClick={() => setIsOllamaModalOpen(true)}
-							className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#3C6B4D]/15 hover:bg-[#3C6B4D]/25 text-emerald-300 border border-[#3C6B4D]/35 text-xs font-bold transition-all shadow-md active:scale-95"
+							className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-xs font-bold transition-all shadow-md active:scale-95"
 						>
 							<Bot size={14} />
 							<span>Ollama Setup Guide</span>
@@ -598,7 +598,7 @@ INSTRUCTIONS:
 				{/* Panda Mascot Brand Icon Box */}
 				<div className="lg:col-span-4 z-10 flex justify-center lg:justify-end">
 					<div className="bg-[#111213] border border-[#2A2D30] rounded-3xl p-4 w-44 h-44 flex items-center justify-center shadow-2xl relative group overflow-hidden">
-						<div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 via-[#3C6B4D] to-[#E29E2D] rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-500" />
+						<div className="absolute -inset-0.5 bg-gradient-to-r from-white/30 via-white/10 to-amber-400/30 rounded-3xl blur opacity-30 group-hover:opacity-60 transition duration-500" />
 						<div className="relative w-full h-full bg-[#18191B] rounded-2xl flex items-center justify-center border border-[#2A2D30] p-4">
 							<img
 								src={domodomoLogo}
@@ -616,7 +616,7 @@ INSTRUCTIONS:
 					<div
 						className={`p-3 rounded-xl border ${
 							ollamaOnline
-								? "bg-emerald-500/10 border-emerald-500/25 text-emerald-400"
+								? "bg-sky-500/10 border-sky-500/25 text-sky-400"
 								: "bg-amber-500/10 border-amber-500/25 text-amber-400"
 						}`}
 					>
@@ -629,13 +629,13 @@ INSTRUCTIONS:
 							</span>
 							<div
 								className={`w-2.5 h-2.5 rounded-full ${
-									ollamaOnline ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+									ollamaOnline ? "bg-sky-400 animate-pulse" : "bg-amber-500"
 								}`}
 							/>
 							<span
 								className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
 									ollamaOnline
-										? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
+										? "bg-sky-500/15 text-sky-300 border border-sky-500/25"
 										: "bg-amber-500/15 text-amber-400 border border-amber-500/25"
 								}`}
 							>
@@ -682,7 +682,7 @@ INSTRUCTIONS:
 							<button
 								onClick={handlePullModel}
 								disabled={isPulling}
-								className="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-xs font-bold transition-all flex items-center gap-1"
+								className="px-3 py-1 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-bold transition-all flex items-center gap-1 shadow-sm"
 							>
 								{isPulling ? (
 									<>
@@ -709,7 +709,7 @@ INSTRUCTIONS:
 								}
 								target="_blank"
 								rel="noreferrer"
-								className="px-3.5 py-2 rounded-xl bg-[#3C6B4D]/20 text-emerald-300 hover:bg-[#3C6B4D]/30 border border-[#3C6B4D]/35 text-xs font-bold transition-all flex items-center gap-1.5"
+								className="px-3.5 py-2 rounded-xl bg-white/10 text-white hover:bg-white/15 border border-white/20 text-xs font-bold transition-all flex items-center gap-1.5"
 							>
 								<Download size={14} />
 								<span>
@@ -740,18 +740,18 @@ INSTRUCTIONS:
 
 			{/* Progress Indicator for Live Model Pull */}
 			{isPulling && (
-				<div className="bg-[#111213] border border-emerald-500/30 rounded-xl p-4 flex flex-col gap-2 animate-fadeIn">
+				<div className="bg-[#111213] border border-white/20 rounded-xl p-4 flex flex-col gap-2 animate-fadeIn">
 					<div className="flex items-center justify-between text-xs">
 						<span className="font-bold text-[#ECEBE9]">
 							Downloading Local AI Model: {selectedPullModel}
 						</span>
-						<span className="font-mono font-bold text-emerald-400">
+						<span className="font-mono font-bold text-sky-300">
 							{pullProgress}%
 						</span>
 					</div>
 					<div className="w-full bg-[#18191B] rounded-full h-2 overflow-hidden border border-[#2A2D30]">
 						<div
-							className="bg-gradient-to-r from-emerald-500 to-[#3C6B4D] h-full transition-all duration-300 rounded-full"
+							className="bg-gradient-to-r from-sky-400 via-neutral-200 to-white h-full transition-all duration-300 rounded-full"
 							style={{ width: `${pullProgress}%` }}
 						/>
 					</div>
@@ -784,14 +784,14 @@ INSTRUCTIONS:
 					onClick={() => setActiveTab("mac")}
 					className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all shrink-0 ${
 						activeTab === "mac"
-							? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/35 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+							? "bg-white/15 text-white border border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.15)]"
 							: "bg-[#18191B] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#25282B] border border-[#2A2D30]"
 					}`}
 				>
 					<AppleLogo size={15} />
 					<span>macOS (.dmg / App)</span>
 					{detectedOS === "mac" && (
-						<span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-extrabold">
+						<span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-white/20 text-white font-extrabold">
 							Recommended
 						</span>
 					)}
@@ -818,7 +818,7 @@ INSTRUCTIONS:
 					onClick={() => setActiveTab("pwa")}
 					className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all shrink-0 ${
 						activeTab === "pwa"
-							? "bg-[#3C6B4D]/20 text-emerald-300 border border-[#3C6B4D]/40 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+							? "bg-white/15 text-white border border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.15)]"
 							: "bg-[#18191B] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#25282B] border border-[#2A2D30]"
 					}`}
 				>
@@ -885,28 +885,28 @@ INSTRUCTIONS:
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Executable (.exe) & Portable</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Auto-starts Ollama with CORS</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>WebGPU & SIMD Acceleration</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Custom Desktop Icon & Shortcuts</span>
 									</div>
@@ -944,7 +944,7 @@ INSTRUCTIONS:
 						<div className="lg:col-span-5 flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8">
 							<div className="flex flex-col gap-4">
 								<div className="flex items-center gap-2.5">
-									<div className="p-2.5 rounded-xl bg-[#3C6B4D]/15 text-emerald-400 border border-[#3C6B4D]/30">
+									<div className="p-2.5 rounded-xl bg-white/10 text-white border border-white/20">
 										<FileCode size={20} />
 									</div>
 									<div>
@@ -978,7 +978,7 @@ INSTRUCTIONS:
 											title="Copy command"
 										>
 											{copiedCmd === "ps1" ? (
-												<Check size={13} className="text-emerald-400" />
+												<Check size={13} className="text-sky-300" />
 											) : (
 												<Copy size={13} />
 											)}
@@ -1016,7 +1016,7 @@ INSTRUCTIONS:
 											}
 											className="py-2.5 px-3 rounded-xl bg-[#111213] hover:bg-[#25282B] border border-[#2A2D30] text-xs font-semibold text-[#ECEBE9] flex items-center justify-center gap-1.5 transition-all"
 										>
-											<Download size={13} className="text-emerald-400" />
+											<Download size={13} className="text-sky-300" />
 											<span>start-app.bat</span>
 										</button>
 									</div>
@@ -1025,7 +1025,7 @@ INSTRUCTIONS:
 
 							<div className="mt-6 pt-4 border-t border-[#2A2D30] flex items-center justify-between text-xs text-[#A3A09B]">
 								<span className="flex items-center gap-1">
-									<Shield size={12} className="text-emerald-400" />
+									<Shield size={12} className="text-sky-300" />
 									<span>No cloud registry edits</span>
 								</span>
 								<span className="font-mono">Windows 10 / 11</span>
@@ -1080,18 +1080,18 @@ INSTRUCTIONS:
 				<div className="flex flex-col gap-6 animate-fadeIn">
 					<div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 						{/* macOS Installer Card */}
-						<div className="lg:col-span-7 flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 hover:border-emerald-500/40 transition-all relative overflow-hidden group">
+						<div className="lg:col-span-7 flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 hover:border-white/30 transition-all relative overflow-hidden group">
 							<div className="z-10 flex flex-col gap-5">
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-3">
-										<div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+										<div className="p-3 rounded-2xl bg-white/10 text-white border border-white/20">
 											<AppleLogo size={28} />
 										</div>
 										<div>
 											<h2 className="text-2xl font-black text-[#ECEBE9] font-heading">
 												DomoDomo for macOS
 											</h2>
-											<p className="text-xs text-emerald-400 font-semibold font-mono">
+											<p className="text-xs text-[#ECEBE9] font-semibold font-mono">
 												Universal (Apple Silicon M1-M4 & Intel x64)
 											</p>
 										</div>
@@ -1113,28 +1113,28 @@ INSTRUCTIONS:
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Apple Silicon (M1/M2/M3/M4) Optimized</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Direct Metal / WebGPU Acceleration</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>100% Sandbox Privacy Compliance</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Dock & Spotlight Integration</span>
 									</div>
@@ -1145,7 +1145,7 @@ INSTRUCTIONS:
 								<a
 									href="/DomoDomo-Universal.dmg"
 									download="DomoDomo-Universal.dmg"
-									className="w-full sm:flex-1 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm transition-all shadow-[0_0_25px_rgba(16,185,129,0.3)] active:scale-[0.98] flex items-center justify-center gap-2"
+									className="w-full sm:flex-1 py-3.5 px-4 rounded-2xl bg-white hover:bg-neutral-200 text-black font-black text-sm transition-all shadow-[0_0_25px_rgba(255,255,255,0.2)] active:scale-[0.98] flex items-center justify-center gap-2"
 								>
 									<Download size={16} />
 									<span>Download DomoDomo Universal (.dmg)</span>
@@ -1171,14 +1171,14 @@ INSTRUCTIONS:
 						<div className="lg:col-span-5 flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8">
 							<div className="flex flex-col gap-4">
 								<div className="flex items-center gap-2.5">
-									<div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+									<div className="p-2.5 rounded-xl bg-white/10 text-white border border-white/20">
 										<Shield size={20} />
 									</div>
 									<div>
 										<h3 className="text-base font-bold text-[#ECEBE9]">
 											macOS Gatekeeper Verification Guide
 										</h3>
-										<p className="text-xs text-emerald-400 font-semibold">
+										<p className="text-xs text-[#A3A09B] font-semibold">
 											Bypass "Apple could not verify developer" dialog
 										</p>
 									</div>
@@ -1188,17 +1188,17 @@ INSTRUCTIONS:
 								<div className="flex flex-col gap-2.5 text-xs text-[#A3A09B]">
 									<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] flex flex-col gap-1">
 										<span className="font-bold text-[#ECEBE9] flex items-center gap-1.5">
-											<span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-[10px] font-mono">1</span>
+											<span className="w-4 h-4 rounded-full bg-white/15 text-white flex items-center justify-center text-[10px] font-mono">1</span>
 											Right-Click Open (Fastest GUI):
 										</span>
 										<p className="text-[11px] leading-relaxed">
-											In Finder, <b>Right-Click (Control-Click)</b> on <code className="text-emerald-300">DomoDomo.app</code> in Applications &gt; click <b>Open</b> &gt; click <b>Open</b> in the pop-up.
+											In Finder, <b>Right-Click (Control-Click)</b> on <code className="text-sky-300">DomoDomo.app</code> in Applications &gt; click <b>Open</b> &gt; click <b>Open</b> in the pop-up.
 										</p>
 									</div>
 
 									<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] flex flex-col gap-1">
 										<span className="font-bold text-[#ECEBE9] flex items-center gap-1.5">
-											<span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-[10px] font-mono">2</span>
+											<span className="w-4 h-4 rounded-full bg-white/15 text-white flex items-center justify-center text-[10px] font-mono">2</span>
 											System Settings:
 										</span>
 										<p className="text-[11px] leading-relaxed">
@@ -1208,11 +1208,11 @@ INSTRUCTIONS:
 
 									<div className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] flex flex-col gap-1.5">
 										<span className="font-bold text-[#ECEBE9] flex items-center gap-1.5">
-											<span className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-[10px] font-mono">3</span>
+											<span className="w-4 h-4 rounded-full bg-white/15 text-white flex items-center justify-center text-[10px] font-mono">3</span>
 											Terminal 1-Liner (Remove Quarantine):
 										</span>
 										<div className="bg-[#18191B] border border-[#2A2D30] rounded-lg p-2 relative font-mono text-[10px] text-[#A3A09B] group">
-											<code className="text-emerald-300 block overflow-x-auto whitespace-pre pr-8">
+											<code className="text-sky-300 block overflow-x-auto whitespace-pre pr-8">
 												xattr -cr /Applications/DomoDomo.app
 											</code>
 											<button
@@ -1226,7 +1226,7 @@ INSTRUCTIONS:
 												title="Copy xattr un-quarantine command"
 											>
 												{copiedCmd === "xattr-cmd" ? (
-													<Check size={12} className="text-emerald-400" />
+													<Check size={12} className="text-sky-300" />
 												) : (
 													<Copy size={12} />
 												)}
@@ -1240,7 +1240,7 @@ INSTRUCTIONS:
 										Automated Ollama Background Script:
 									</span>
 									<div className="bg-[#111213] border border-[#2A2D30] rounded-xl p-2.5 relative font-mono text-[10px] text-[#A3A09B] group">
-										<code className="text-emerald-300 block overflow-x-auto whitespace-pre pr-8">
+										<code className="text-sky-300 block overflow-x-auto whitespace-pre pr-8">
 											curl -fsSL https://ollama.com/install.sh | sh && export OLLAMA_ORIGINS="*" && ollama serve
 										</code>
 										<button
@@ -1254,7 +1254,7 @@ INSTRUCTIONS:
 											title="Copy command"
 										>
 											{copiedCmd === "mac-cmd" ? (
-												<Check size={13} className="text-emerald-400" />
+												<Check size={13} className="text-sky-300" />
 											) : (
 												<Copy size={13} />
 											)}
@@ -1265,7 +1265,7 @@ INSTRUCTIONS:
 
 							<div className="mt-6 pt-4 border-t border-[#2A2D30] flex items-center justify-between text-xs text-[#A3A09B]">
 								<span className="flex items-center gap-1">
-									<Shield size={12} className="text-emerald-400" />
+									<Shield size={12} className="text-sky-300" />
 									<span>Gatekeeper & macOS Sequoia Ready</span>
 								</span>
 								<span className="font-mono">macOS 12+</span>
@@ -1276,7 +1276,7 @@ INSTRUCTIONS:
 					{/* macOS Step by Step */}
 					<section className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-6 flex flex-col gap-4">
 						<h3 className="text-sm font-bold text-[#ECEBE9] uppercase tracking-wider flex items-center gap-2">
-							<Info size={16} className="text-emerald-400" />
+							<Info size={16} className="text-sky-300" />
 							<span>How to Install on macOS</span>
 						</h3>
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-[#A3A09B] leading-relaxed">
@@ -1343,28 +1343,28 @@ INSTRUCTIONS:
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-amber-400 shrink-0"
 										/>
 										<span>Universal .AppImage Binary</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-amber-400 shrink-0"
 										/>
 										<span>Debian & Ubuntu .deb Package</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-amber-400 shrink-0"
 										/>
 										<span>Systemd Ollama Daemon Integration</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-amber-400 shrink-0"
 										/>
 										<span>Wayland & X11 Native Rendering</span>
 									</div>
@@ -1425,7 +1425,7 @@ INSTRUCTIONS:
 										title="Copy command"
 									>
 										{copiedCmd === "linux-appimage" ? (
-											<Check size={13} className="text-emerald-400" />
+											<Check size={13} className="text-amber-400" />
 										) : (
 											<Copy size={13} />
 										)}
@@ -1436,7 +1436,7 @@ INSTRUCTIONS:
 									<span className="font-bold text-[#ECEBE9]">
 										Ollama CORS configuration for systemd:
 									</span>
-									<code className="bg-[#111213] p-2 rounded-lg border border-[#2A2D30] font-mono text-[10px] text-emerald-300">
+									<code className="bg-[#111213] p-2 rounded-lg border border-[#2A2D30] font-mono text-[10px] text-amber-300">
 										Environment="OLLAMA_ORIGINS=*"
 									</code>
 								</div>
@@ -1457,17 +1457,17 @@ INSTRUCTIONS:
 				<div className="flex flex-col gap-6 animate-fadeIn">
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 						{/* 1-Click PWA Card */}
-						<div className="flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 hover:border-emerald-500/40 transition-all">
+						<div className="flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 hover:border-white/30 transition-all">
 							<div className="flex flex-col gap-5">
 								<div className="flex items-center gap-3">
-									<div className="p-3 rounded-2xl bg-[#3C6B4D]/15 text-emerald-400 border border-[#3C6B4D]/30">
+									<div className="p-3 rounded-2xl bg-white/10 text-white border border-white/20">
 										<Layers size={28} />
 									</div>
 									<div>
 										<h2 className="text-2xl font-black text-[#ECEBE9] font-heading">
 											Progressive Web App (PWA)
 										</h2>
-										<p className="text-xs text-emerald-400 font-semibold font-mono">
+										<p className="text-xs text-[#ECEBE9] font-semibold font-mono">
 											Chrome • Edge • Brave • Safari
 										</p>
 									</div>
@@ -1484,21 +1484,21 @@ INSTRUCTIONS:
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Instant installation with zero file downloads</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Automatic background service worker caching</span>
 									</div>
 									<div className="flex items-center gap-2 text-xs text-[#ECEBE9]">
 										<CheckCircle2
 											size={15}
-											className="text-emerald-400 shrink-0"
+											className="text-sky-300 shrink-0"
 										/>
 										<span>Works 100% offline once opened</span>
 									</div>
@@ -1509,13 +1509,13 @@ INSTRUCTIONS:
 								{isInstallable ? (
 									<button
 										onClick={handleInstallPWA}
-										className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all active:scale-95"
+										className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-white hover:bg-neutral-200 text-black font-black text-sm shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all active:scale-95"
 									>
 										<Download size={16} />
 										<span>Install DomoDomo PWA Now</span>
 									</button>
 								) : installSuccess ? (
-									<div className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-sm font-bold">
+									<div className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-white/10 border border-white/20 text-white text-sm font-bold">
 										<CheckCircle size={16} />
 										<span>PWA Installed Successfully!</span>
 									</div>
@@ -1523,7 +1523,7 @@ INSTRUCTIONS:
 									<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex gap-3 items-start">
 										<Info
 											size={18}
-											className="text-emerald-400 shrink-0 mt-0.5"
+											className="text-sky-300 shrink-0 mt-0.5"
 										/>
 										<div className="flex flex-col gap-1">
 											<p className="text-xs font-bold text-[#ECEBE9]">
@@ -1546,7 +1546,7 @@ INSTRUCTIONS:
 						<div className="flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8">
 							<div className="flex flex-col gap-4">
 								<h3 className="text-base font-bold text-[#ECEBE9] flex items-center gap-2">
-									<Laptop size={18} className="text-emerald-400" />
+									<Laptop size={18} className="text-sky-300" />
 									<span>Browser-Specific PWA Instructions</span>
 								</h3>
 
@@ -1584,7 +1584,7 @@ INSTRUCTIONS:
 
 							<div className="mt-6 pt-4 border-t border-[#2A2D30] flex items-center justify-between text-xs text-[#A3A09B]">
 								<span>Runs in sandbox with WebGPU support</span>
-								<span className="text-emerald-400 font-bold">Instant Start</span>
+								<span className="text-[#ECEBE9] font-bold">Instant Start</span>
 							</div>
 						</div>
 					</div>
@@ -1650,17 +1650,17 @@ INSTRUCTIONS:
 						</div>
 
 						{/* Android Chrome */}
-						<div className="flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 hover:border-emerald-500/40 transition-all">
+						<div className="flex flex-col justify-between rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 hover:border-sky-500/40 transition-all">
 							<div className="flex flex-col gap-5">
 								<div className="flex items-center gap-3">
-									<div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+									<div className="p-3 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/25">
 										<AndroidLogo size={28} />
 									</div>
 									<div>
 										<h2 className="text-xl font-bold text-[#ECEBE9]">
 											Android (Phones & Tablets)
 										</h2>
-										<p className="text-xs text-emerald-400 font-mono">
+										<p className="text-xs text-sky-400 font-mono">
 											Chrome / Firefox / Edge
 										</p>
 									</div>
@@ -1674,15 +1674,15 @@ INSTRUCTIONS:
 
 								<div className="space-y-2 mt-2 text-xs text-[#ECEBE9]">
 									<div className="flex items-start gap-2 bg-[#111213] p-3 rounded-xl border border-[#2A2D30]">
-										<span className="font-bold text-emerald-400">Step 1:</span>
+										<span className="font-bold text-sky-400">Step 1:</span>
 										<span>Open DomoDomo in Google Chrome or Brave.</span>
 									</div>
 									<div className="flex items-start gap-2 bg-[#111213] p-3 rounded-xl border border-[#2A2D30]">
-										<span className="font-bold text-emerald-400">Step 2:</span>
+										<span className="font-bold text-sky-400">Step 2:</span>
 										<span>Tap the three dots menu (⋮) at top right.</span>
 									</div>
 									<div className="flex items-start gap-2 bg-[#111213] p-3 rounded-xl border border-[#2A2D30]">
-										<span className="font-bold text-emerald-400">Step 3:</span>
+										<span className="font-bold text-sky-400">Step 3:</span>
 										<span>
 											Tap <b>"Install app"</b> or <b>"Add to Home screen"</b>.
 										</span>
@@ -1692,7 +1692,7 @@ INSTRUCTIONS:
 
 							<div className="mt-8 pt-6 border-t border-[#2A2D30] text-xs text-[#A3A09B] flex items-center justify-between">
 								<span>Google Play Store release coming soon</span>
-								<span className="text-emerald-400 font-bold">Android 8+</span>
+								<span className="text-sky-400 font-bold">Android 8+</span>
 							</div>
 						</div>
 					</div>
@@ -1705,7 +1705,7 @@ INSTRUCTIONS:
 			<section className="rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 flex flex-col gap-6">
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 					<div className="flex items-center gap-3">
-						<div className="p-2.5 rounded-xl bg-[#3C6B4D]/15 text-emerald-400 border border-[#3C6B4D]/30">
+						<div className="p-2.5 rounded-xl bg-white/10 text-white border border-white/20">
 							<FolderArchive size={22} />
 						</div>
 						<div>
@@ -1725,7 +1725,7 @@ INSTRUCTIONS:
 							download="DomoDomo-Icon-512x512.png"
 							className="px-3 py-1.5 rounded-xl bg-[#111213] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold flex items-center gap-1.5 transition-all"
 						>
-							<Download size={13} className="text-emerald-400" />
+							<Download size={13} className="text-white" />
 							<span>Icon (PNG 512px)</span>
 						</a>
 
@@ -1779,19 +1779,19 @@ INSTRUCTIONS:
 					<a
 						href="/DomoDomo-Universal.dmg"
 						download="DomoDomo-Universal.dmg"
-						className="bg-[#111213] hover:bg-[#18191B] border border-[#2A2D30] hover:border-emerald-500/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center transition-all group"
+						className="bg-[#111213] hover:bg-[#18191B] border border-[#2A2D30] hover:border-white/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center transition-all group"
 					>
-						<div className="w-12 h-12 rounded-xl bg-[#18191B] group-hover:bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs transition-all">
+						<div className="w-12 h-12 rounded-xl bg-[#18191B] group-hover:bg-white/20 border border-white/30 flex items-center justify-center text-white font-bold text-xs transition-all">
 							<AppleLogo size={20} />
 						</div>
 						<span className="text-[11px] font-bold text-[#ECEBE9]">
 							macOS Installer (.dmg)
 						</span>
-						<span className="text-[10px] text-emerald-400">Direct Download</span>
+						<span className="text-[10px] text-white">Direct Download</span>
 					</a>
 
 					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center">
-						<div className="w-12 h-12 rounded-xl bg-[#18191B] border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">
+						<div className="w-12 h-12 rounded-xl bg-[#18191B] border border-white/30 flex items-center justify-center text-white font-bold text-xs">
 							PWA
 						</div>
 						<span className="text-[11px] font-bold text-[#ECEBE9]">
@@ -1807,7 +1807,7 @@ INSTRUCTIONS:
 			{/* ========================================================================= */}
 			<section className="rounded-3xl bg-[#18191B] border border-[#2A2D30] p-6 md:p-8 flex flex-col gap-6">
 				<h3 className="text-lg font-bold text-[#ECEBE9] flex items-center gap-2">
-					<Shield className="text-emerald-400" size={20} />
+					<Shield className="text-sky-300" size={20} />
 					<span>DomoDomo Desktop Privacy & Performance Guarantees</span>
 				</h3>
 

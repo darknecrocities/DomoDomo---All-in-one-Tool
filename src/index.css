@@ -267,6 +267,37 @@
   .emil-accordion-content {
     overflow: hidden;
   }
+
+  /* Winter Frost & Tactile Holiday Styling */
+  .frost-card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.08), 0 4px 20px -2px rgba(0, 0, 0, 0.25);
+    @apply rounded-card;
+    transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), background-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  }
+
+  .frost-card-hover {
+    transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), background-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .frost-card-hover:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.35) !important;
+      background-color: var(--surface-dim) !important;
+      box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 0.15), 0 12px 32px -4px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  .frost-badge {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 @layer utilities {
@@ -668,6 +699,34 @@
   animation: pulse-slow 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
+@keyframes frost-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-frost-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  background-size: 200% 100%;
+  animation: frost-shimmer 4s ease-in-out infinite;
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(0%);
@@ -787,9 +846,9 @@
 }
 .markdown-chat-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  background-color: rgba(60, 107, 77, 0.15);
-  color: #4E8E5E;
-  border: 1px solid rgba(60, 107, 77, 0.3);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ECEBE9;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   padding: 0.15rem 0.35rem;
   border-radius: 0.375rem;
   font-size: 0.8125rem;
@@ -828,7 +887,7 @@
   margin-bottom: 0.2rem;
 }
 .markdown-chat-content blockquote {
-  border-left: 3px solid #3C6B4D;
+  border-left: 3px solid #5E5E5E;
   background-color: rgba(24, 25, 27, 0.6);
   padding: 0.4rem 0.75rem;
   margin-top: 0.5rem;
@@ -843,12 +902,12 @@
   margin: 0.75rem 0;
 }
 .markdown-chat-content a {
-  color: #4E8E5E;
+  color: #ECEBE9;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .markdown-chat-content a:hover {
-  color: #63AA75;
+  color: #FFFFFF;
 }
 .markdown-chat-content table {
   width: 100%;

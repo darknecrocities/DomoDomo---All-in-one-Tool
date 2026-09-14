@@ -70,12 +70,12 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0d0e0f]/90 backdrop-blur-md px-4 emil-backdrop">
       <div className="relative w-full max-w-lg bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl text-left overflow-hidden emil-modal-container">
         {/* Glow indicator */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#3C6B4D]/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
 
         {/* Step Indicator Header */}
         <div className="flex items-center justify-between border-b border-[#2A2D30]/60 pb-4">
           <div className="flex items-center gap-2">
-            <Brain size={20} className="text-[#3C6B4D]" />
+            <Brain size={20} className="text-white" />
             <span className="text-xs font-bold text-[#ECEBE9] uppercase tracking-wider">Assistant Setup</span>
           </div>
           <span className="text-[10px] font-bold text-[#A3A09B] uppercase tracking-wide">
@@ -88,7 +88,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
             <div className="flex flex-col items-center text-center gap-3">
               <div className="relative group">
                 <div className="w-32 h-32 flex items-center justify-center rounded-3xl border border-[#2A2D30] bg-[#111213]/80 p-3 shadow-2xl backdrop-blur-md relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#3C6B4D]/15 via-transparent to-[#3C6B4D]/5 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5 pointer-events-none" />
                   <img 
                     src={pandaOnboarding} 
                     alt="Domo Panda Mascot" 
@@ -96,8 +96,8 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                   />
                 </div>
                 <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3C6B4D] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-[#3C6B4D]"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-white"></span>
                 </span>
               </div>
               <div>
@@ -113,12 +113,12 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
             <div className="border-t border-[#2A2D30]/60 my-1" />
 
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-xl text-[#3C6B4D]">
+              <div className="p-2.5 bg-white/10 border border-white/20 rounded-xl text-white">
                 <Shield size={20} />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[#ECEBE9]">100% Offline & Local-First</h3>
-                <span className="text-[10px] text-[#3C6B4D] font-semibold">Privacy Pledge</span>
+                <span className="text-[10px] text-white font-semibold">Privacy Pledge</span>
               </div>
             </div>
 
@@ -135,7 +135,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
               </button>
               <button
                 onClick={() => setStep(2)}
-                className="btn-primary flex items-center gap-1 bg-[#3C6B4D] text-[#ECEBE9] px-5 py-2.5 rounded-lg text-xs font-semibold hover:bg-[#3C6B4D]/90"
+                className="btn-primary flex items-center gap-1 bg-white text-black px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-neutral-200 transition-all shadow-md"
               >
                 <span>Get Started</span>
                 <ArrowRight size={14} />
@@ -147,7 +147,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
         {step === 2 && (
           <div className="flex flex-col gap-5 py-2">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-2xl text-[#3C6B4D]">
+              <div className="p-3 bg-white/10 border border-white/20 rounded-2xl text-white">
                 <User size={24} />
               </div>
               <div>
@@ -164,7 +164,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                   placeholder="e.g. Arron, Developer X"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-white/50"
                 />
               </div>
 
@@ -173,7 +173,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-white/50"
                 >
                   <option value="Developer">Developer / Software Engineer</option>
                   <option value="Security Analyst">Cybersecurity Analyst / Auditor</option>
@@ -194,7 +194,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="btn-primary flex items-center gap-1 bg-[#3C6B4D] text-[#ECEBE9] px-5 py-2.5 rounded-lg text-xs font-semibold hover:bg-[#3C6B4D]/90"
+                className="btn-primary flex items-center gap-1 bg-white text-black px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-neutral-200 transition-all shadow-md"
               >
                 <span>Continue</span>
                 <ArrowRight size={14} />
@@ -206,7 +206,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
         {step === 3 && (
           <div className="flex flex-col gap-5 py-2">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-2xl text-[#3C6B4D]">
+              <div className="p-3 bg-white/10 border border-white/20 rounded-2xl text-white">
                 <Cpu size={24} />
               </div>
               <div>
@@ -221,7 +221,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                 <select
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-white/50"
                 >
                   <option value="Novice / Learning the basics">Novice / Learning the basics</option>
                   <option value="Intermediate Practitioner">Intermediate Practitioner</option>
@@ -236,7 +236,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                   placeholder="e.g. TypeScript/React, Python/Django, Rust, C++"
                   value={techStack}
                   onChange={(e) => setTechStack(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-white/50"
                 />
               </div>
 
@@ -245,7 +245,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                 <select
                   value={hardwareTier}
                   onChange={(e) => setHardwareTier(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-white/50"
                 >
                   <option value="Low Specs (Models &lt; 1.5B)">Low Specs (Uses small models: 0.5B - 1.5B)</option>
                   <option value="Standard Specs (Models 3B - 8B)">Standard Specs (Uses medium models: 3B - 8B)</option>
@@ -264,7 +264,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
               </button>
               <button
                 onClick={() => setStep(4)}
-                className="btn-primary flex items-center gap-1 bg-[#3C6B4D] text-[#ECEBE9] px-5 py-2.5 rounded-lg text-xs font-semibold hover:bg-[#3C6B4D]/90"
+                className="btn-primary flex items-center gap-1 bg-white text-black px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-neutral-200 transition-all shadow-md"
               >
                 <span>Continue</span>
                 <ArrowRight size={14} />
@@ -276,7 +276,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
         {step === 4 && (
           <div className="flex flex-col gap-5 py-2">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-[#3C6B4D]/15 border border-[#3C6B4D]/25 rounded-2xl text-[#3C6B4D]">
+              <div className="p-3 bg-white/10 border border-white/20 rounded-2xl text-white">
                 <Sparkles size={24} />
               </div>
               <div>
@@ -298,8 +298,8 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                         onClick={() => toggleGoal(g.label)}
                         className={`text-left px-3 py-2 rounded-lg text-[11px] font-semibold border transition-all ${
                           isSelected
-                            ? 'bg-[#3C6B4D]/10 border-[#3C6B4D] text-[#ECEBE9]'
-                            : 'bg-[#111213] border-[#2A2D30] text-[#A3A09B] hover:border-[#3C6B4D]/50'
+                            ? 'bg-white/10 border-white/40 text-[#ECEBE9]'
+                            : 'bg-[#111213] border-[#2A2D30] text-[#A3A09B] hover:border-white/30'
                         }`}
                       >
                         {g.label}
@@ -314,7 +314,7 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
                 <select
                   value={tone}
                   onChange={(e) => setTone(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:border-white/50"
                 >
                   <option value="Direct & Brief">Direct & Brief (Saves local tokens)</option>
                   <option value="Analytical & Structured">Analytical & Structured (Highly technical)</option>
@@ -333,10 +333,10 @@ export const OnboardingModal = ({ onComplete }: OnboardingModalProps) => {
               </button>
               <button
                 onClick={handleFinish}
-                className="btn-primary flex items-center gap-1 bg-[#3C6B4D] text-[#ECEBE9] px-5 py-2.5 rounded-lg text-xs font-semibold hover:bg-[#3C6B4D]/90"
+                className="btn-primary flex items-center gap-1 bg-white text-black px-5 py-2.5 rounded-lg text-xs font-bold hover:bg-neutral-200 transition-all shadow-md"
               >
                 <span>Finish Setup</span>
-                <CheckCircle size={14} className="text-[#ECEBE9]" />
+                <CheckCircle size={14} className="text-black" />
               </button>
             </div>
           </div>

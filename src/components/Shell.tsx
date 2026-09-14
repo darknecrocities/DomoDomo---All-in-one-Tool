@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Cpu, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -11,6 +11,7 @@ import betterGovLogo from '../assets/bettergovph.jpg';
 import upamateLogo from '../assets/upamate.png';
 import stageByAntLogo from '../assets/stagebyant.png';
 import { AppBuildersWidget } from './AppBuildersWidget';
+import { SnowfallBackground } from './SnowfallBackground';
 
 
 
@@ -106,6 +107,18 @@ export const Shell = () => {
   const [openDropdown, setOpenDropdown] = useState<'ecosystem' | 'resources' | null>(null);
   const ecosystemRef = useRef<HTMLDivElement>(null);
   const resourcesRef = useRef<HTMLDivElement>(null);
+
+  const [isSnowing, setIsSnowing] = useState<boolean>(() => {
+    const saved = localStorage.getItem('domodomo_snowfall_enabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+
+  const toggleSnow = () => {
+    const next = !isSnowing;
+    setIsSnowing(next);
+    localStorage.setItem('domodomo_snowfall_enabled', String(next));
+    window.dispatchEvent(new CustomEvent('domodomo_toggle_snowfall', { detail: { enabled: next } }));
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -300,7 +313,9 @@ export const Shell = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-[#111213]">
+    <div className="min-h-screen flex flex-col justify-between bg-[#111213] relative overflow-x-hidden">
+      {/* Continuous Winter Snowfall Canvas */}
+      <SnowfallBackground />
       {/* Top Navbar */}
       <header className="bg-[#18191B] border-b border-[#2A2D30] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
@@ -339,7 +354,7 @@ export const Shell = () => {
                 }`}
                 aria-expanded={openDropdown === 'ecosystem'}
               >
-                <Sparkles size={13} className="text-emerald-400" />
+                <Sparkles size={13} className="text-amber-300" />
                 <span>Ecosystem</span>
                 <ChevronDown size={12} className={`transition-transform duration-200 ${openDropdown === 'ecosystem' ? 'rotate-180 text-[#ECEBE9]' : 'text-[#72706C]'}`} />
               </button>
@@ -347,36 +362,36 @@ export const Shell = () => {
               {openDropdown === 'ecosystem' && (
                 <div className="absolute left-0 mt-2 w-88 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
                   <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
-                    Domo Agent Ecosystem
+                    Domo Platforms &amp; Labs
                   </div>
 
-                  {/* AI Hub */}
+                  {/* Studio Lab */}
                   <NavLink
                     to="/ai-hub"
                     onClick={() => setOpenDropdown(null)}
                     className={({ isActive }) =>
                       `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
                       }`
                     }
                   >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-emerald-400 shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5">
                       <Bot size={15} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-xs text-[#ECEBE9]">AI Hub Studio</span>
-                        <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.2 rounded-full">
+                        <span className="font-bold text-xs text-[#ECEBE9]">Studio Lab</span>
+                        <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
                           NEW
                         </span>
                       </div>
                       <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
-                        Local AI agents, RAG, prompt lab & models
+                        Offline workflow automations, local models &amp; prompt testing
                       </p>
                     </div>
                   </NavLink>
 
-                  {/* Codepyne.io AI & ML Upskilling */}
+                  {/* Codepyne.io Platform */}
                   <a
                     href="https://codepyne-io.vercel.app/"
                     target="_blank"
@@ -384,23 +399,23 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
                   >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-emerald-400 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
                       <GiSnake size={16} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-emerald-400 transition-colors">
+                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
                             Codepyne.io
                           </span>
-                          <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.2 rounded-full">
+                          <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
                             NEW
                           </span>
                         </div>
                         <ExternalLink size={11} className="text-[#72706C]" />
                       </div>
                       <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-2">
-                        The AI &amp; Machine Learning upskilling platform — orchestrate, train &amp; deploy real models
+                        Interactive developer upskilling — algorithm sandboxes &amp; Python engineering
                       </p>
                     </div>
                   </a>
@@ -413,18 +428,18 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
                   >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-emerald-400 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
                       <Sparkles size={15} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
-                        <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-emerald-400 transition-colors">
+                        <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
                           DomoSkills Marketplace
                         </span>
                         <ExternalLink size={11} className="text-[#72706C]" />
                       </div>
                       <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
-                        200+ open agent skills for Antigravity, Cursor, Claude
+                        200+ verified coding &amp; productivity skills for modern developer tools
                       </p>
                     </div>
                   </a>
@@ -435,7 +450,7 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className={({ isActive }) =>
                       `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
                       }`
                     }
                   >
@@ -445,7 +460,7 @@ export const Shell = () => {
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-xs text-[#ECEBE9]">In-App Skills Hub</span>
                       <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
-                        Embedded catalog, CLI generator & zoom sandbox
+                        Embedded catalog, CLI generator &amp; zoom sandbox
                       </p>
                     </div>
                   </NavLink>
@@ -472,7 +487,7 @@ export const Shell = () => {
               {openDropdown === 'resources' && (
                 <div className="absolute left-0 mt-2 w-72 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
                   <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
-                    Developer Docs & Tools
+                    Developer Docs &amp; Tools
                   </div>
 
                   <NavLink
@@ -480,7 +495,7 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className={({ isActive }) =>
                       `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
                       }`
                     }
                   >
@@ -489,7 +504,7 @@ export const Shell = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-xs text-[#ECEBE9]">Documentation</span>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Tool guides & local specs</p>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Tool guides &amp; local specs</p>
                     </div>
                   </NavLink>
 
@@ -498,7 +513,7 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className={({ isActive }) =>
                       `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
                       }`
                     }
                   >
@@ -507,7 +522,7 @@ export const Shell = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-xs text-[#ECEBE9]">API Library</span>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">WASM & client-side functions</p>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">WASM &amp; client-side functions</p>
                     </div>
                   </NavLink>
 
@@ -516,7 +531,7 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className={({ isActive }) =>
                       `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
                       }`
                     }
                   >
@@ -524,8 +539,8 @@ export const Shell = () => {
                       <FileText size={14} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="font-bold text-xs text-[#ECEBE9]">Blog & News</span>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Changelogs & release updates</p>
+                      <span className="font-bold text-xs text-[#ECEBE9]">Blog &amp; News</span>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Changelogs &amp; release updates</p>
                     </div>
                   </NavLink>
 
@@ -534,7 +549,7 @@ export const Shell = () => {
                     onClick={() => setOpenDropdown(null)}
                     className={({ isActive }) =>
                       `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
                       }`
                     }
                   >
@@ -543,7 +558,7 @@ export const Shell = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-xs text-[#ECEBE9]">Download</span>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Windows (.exe), macOS (.dmg), Linux & PWA</p>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">Windows (.exe), macOS (.dmg), Linux &amp; PWA</p>
                     </div>
                   </NavLink>
                 </div>
@@ -568,6 +583,17 @@ export const Shell = () => {
           {/* Right-side actions */}
           <div className="flex items-center gap-1.5 shrink-0">
 
+            {/* Winter Holiday Badge & Snowfall Toggle */}
+            <button
+              type="button"
+              onClick={toggleSnow}
+              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/25 text-[11px] font-mono text-[#ECEBE9] transition-all cursor-pointer mr-1 select-none"
+              title={isSnowing ? 'Continuous Snowfall: Active (Click to pause)' : 'Continuous Snowfall: Paused (Click to activate)'}
+            >
+              <Snowflake size={11} className={`text-sky-300 ${isSnowing ? 'animate-spin-slow' : 'opacity-40'}`} />
+              <span>Winter Edition</span>
+            </button>
+
             {/* Feedback — desktop only */}
             <a
               href="https://forms.gle/ahQXtFoietABJZpg8"
@@ -584,7 +610,7 @@ export const Shell = () => {
               href="https://www.facebook.com/profile.php?id=61590872807465"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#3C6B4D] transition-all hover:bg-[#3C6B4D]/10"
+              className="hidden xl:flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-white/40 text-[#A3A09B] hover:text-white transition-all hover:bg-white/5"
               title="Follow on Facebook"
             >
               <FacebookIcon size={14} />
@@ -609,11 +635,11 @@ export const Shell = () => {
               href="https://github.com/darknecrocities/DomoDomo---All-in-one-Tool"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022] group"
+              className="hidden md:flex items-center gap-1.5 px-2.5 h-8 rounded-lg border border-[#2A2D30] hover:border-white/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-all hover:bg-[#1E2022] group"
               title="Star on GitHub"
             >
               <GithubIcon size={14} />
-              <div className="h-3 w-px bg-[#2A2D30] group-hover:bg-[#3C6B4D]/40" />
+              <div className="h-3 w-px bg-[#2A2D30] group-hover:bg-white/20" />
               <Star size={11} className="text-[#E29E2D] fill-[#E29E2D]" />
               <span className="font-mono text-[11px]">{stars !== null ? stars : '—'}</span>
             </a>
@@ -626,18 +652,18 @@ export const Shell = () => {
               onClick={handleOpenSfxModal}
               className={`hidden sm:flex items-center justify-center h-8 w-8 rounded-lg border transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] ${
                 !isSfxMuted
-                  ? 'border-[#3C6B4D]/50 text-[#3C6B4D] bg-[#3C6B4D]/10 hover:bg-[#3C6B4D]/20'
-                  : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 hover:bg-[#1E2022]'
+                  ? 'border-white/30 text-white bg-white/10 hover:bg-white/15'
+                  : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-white/40 hover:bg-[#1E2022]'
               }`}
               title={isSfxMuted ? 'Mechanical SFX Muted (Click to configure)' : `Mechanical SFX Active: ${sfxSettings.profile} (Click to configure)`}
             >
-              {isSfxMuted ? <VolumeX size={15} /> : <Volume2 size={15} className="animate-pulse" />}
+              {isSfxMuted ? <VolumeX size={15} /> : <Volume2 size={15} className="animate-pulse text-white" />}
             </button>
 
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
-              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] hover:bg-[#1E2022]"
+              className="flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-white/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] hover:bg-[#1E2022]"
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {theme === 'light' ? <Moon size={15} /> : <Sun size={15} />}
@@ -649,8 +675,8 @@ export const Shell = () => {
               className={({ isActive }) =>
                 `hidden md:flex items-center justify-center h-8 w-8 rounded-lg border transition-all ${
                   isActive
-                    ? 'border-[#3C6B4D]/50 text-[#3C6B4D] bg-[#3C6B4D]/10'
-                    : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50 hover:bg-[#1E2022]'
+                    ? 'border-white/30 text-white bg-white/10'
+                    : 'border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-white/40 hover:bg-[#1E2022]'
                 }`
               }
               title="Settings"
@@ -661,7 +687,7 @@ export const Shell = () => {
             {/* Hamburger — mobile / tablet only */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#A3A09B] hover:text-[#ECEBE9] transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] hover:bg-[#1E2022]"
+              className="lg:hidden flex items-center justify-center h-8 w-8 rounded-lg border border-[#2A2D30] hover:border-white/40 text-[#A3A09B] hover:text-[#ECEBE9] transition-transform duration-160 ease-[var(--ease-out)] active:scale-[0.92] hover:bg-[#1E2022]"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
@@ -688,7 +714,7 @@ export const Shell = () => {
                 }
               >
                 <span>Tools</span>
-                <span className="text-[10px] font-mono text-[#3C6B4D]">{TOOLS.length} tools</span>
+                <span className="text-[10px] font-mono text-[#A3A09B]">{TOOLS.length} tools</span>
               </NavLink>
 
               <NavLink
@@ -697,14 +723,14 @@ export const Shell = () => {
                 className={({ isActive }) =>
                   `px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center gap-2 ${
                     isActive
-                      ? 'text-[#3C6B4D] bg-[#3C6B4D]/15'
-                      : 'text-[#3C6B4D] bg-[#3C6B4D]/8 hover:bg-[#3C6B4D]/15'
+                      ? 'text-white bg-white/10'
+                      : 'text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30]'
                   }`
                 }
               >
                 <Bot size={15} />
-                <span>AI Hub Studio</span>
-                <span className="ml-auto text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-2 py-0.5 rounded-full">NEW</span>
+                <span>Studio Lab</span>
+                <span className="ml-auto text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-2 py-0.5 rounded-full">NEW</span>
               </NavLink>
 
               {/* Codepyne.io Platform */}
@@ -716,9 +742,9 @@ export const Shell = () => {
                 className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
               >
                 <div className="flex items-center gap-2">
-                  <GiSnake size={16} className="text-emerald-400" />
+                  <GiSnake size={16} className="text-amber-300" />
                   <span>Codepyne.io</span>
-                  <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.2 rounded-full">NEW</span>
+                  <span className="text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-1.5 py-0.2 rounded-full">NEW</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
               </a>
@@ -731,7 +757,7 @@ export const Shell = () => {
                 className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
               >
                 <div className="flex items-center gap-2">
-                  <Sparkles size={15} className="text-emerald-400" />
+                  <Sparkles size={15} className="text-amber-300" />
                   <span>DomoSkills Marketplace</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
@@ -769,10 +795,10 @@ export const Shell = () => {
                 className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022] cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <Volume2 size={15} className="text-[#3C6B4D]" />
+                  <Volume2 size={15} className="text-white" />
                   <span>Acoustic SFX Studio</span>
                 </div>
-                <span className="text-[9px] font-mono font-bold text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded">
+                <span className="text-[9px] font-mono font-bold text-[#ECEBE9] uppercase bg-white/10 px-2 py-0.5 rounded border border-white/20">
                   40 SFX
                 </span>
               </button>
@@ -791,6 +817,15 @@ export const Shell = () => {
                 <span>Feedback</span>
               </a>
 
+              <button
+                type="button"
+                onClick={() => toggleSnow()}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-white/5 border border-white/15 text-[#ECEBE9] text-[12px] font-semibold hover:bg-white/10 transition-all col-span-2 select-none"
+              >
+                <Snowflake size={14} className={`text-sky-300 ${isSnowing ? 'animate-spin-slow' : 'opacity-40'}`} />
+                <span>Winter Snowfall: {isSnowing ? 'Active' : 'Paused'}</span>
+              </button>
+
               <a
                 href="https://ko-fi.com/domodomoo"
                 target="_blank"
@@ -807,7 +842,7 @@ export const Shell = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-[12px] font-semibold hover:border-[#3C6B4D]/40 transition-all"
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] text-[12px] font-semibold hover:border-white/40 transition-all"
               >
                 <GithubIcon size={14} />
                 <span>GitHub</span>
@@ -820,7 +855,7 @@ export const Shell = () => {
               {isInstallable && (
                 <button
                   onClick={() => { handleInstallClick(); setMobileMenuOpen(false); }}
-                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] text-[12px] font-semibold hover:bg-[#3C6B4D]/25 transition-all"
+                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white text-[12px] font-semibold hover:bg-white/20 transition-all"
                 >
                   <Download size={14} />
                   <span>Install App</span>
@@ -833,7 +868,7 @@ export const Shell = () => {
                   className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-red-950/20 border border-red-900/40 text-red-400 text-[12px] font-semibold col-span-2"
                 >
                   <Trash2 size={14} />
-                  <span>Purge Local AI Data</span>
+                  <span>Clear Device Storage</span>
                 </button>
               )}
             </div>
@@ -844,14 +879,14 @@ export const Shell = () => {
       {/* Auto-Update Repository Notification Banner */}
       {repoStatus === 'update_available' && (
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 mt-4">
-          <div className="p-4 rounded-2xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/35 text-[#ECEBE9] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md animate-fadeIn">
+          <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md animate-fadeIn">
             <div className="space-y-1 text-left">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs">
                 <Zap size={14} className="animate-bounce" />
                 <span>Auto-Push Detected on GitHub Remote!</span>
               </div>
               <p className="text-[11px] text-[#A3A09B]">
-                New release commit <code className="bg-[#111213] px-1 py-0.5 rounded text-emerald-400 font-bold font-mono text-[10px]">{simulatedCommit.hash}</code> by <span className="font-bold text-[#ECEBE9]">{simulatedCommit.author}</span>: "{simulatedCommit.message}" (Updated files: {simulatedCommit.files.join(', ')}).
+                New release commit <code className="bg-[#111213] px-1 py-0.5 rounded text-white font-bold font-mono text-[10px]">{simulatedCommit.hash}</code> by <span className="font-bold text-[#ECEBE9]">{simulatedCommit.author}</span>: "{simulatedCommit.message}" (Updated files: {simulatedCommit.files.join(', ')}).
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -863,7 +898,7 @@ export const Shell = () => {
               </button>
               <button
                 onClick={runAutoUpdater}
-                className="px-4 py-1.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+                className="px-4 py-1.5 bg-white hover:bg-neutral-200 text-black text-xs font-black rounded-xl transition-all shadow-sm flex items-center gap-1.5"
               >
                 <Download size={13} />
                 <span>Update App</span>
@@ -878,7 +913,7 @@ export const Shell = () => {
         <div className="fixed inset-0 bg-[#0A0B0C]/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="w-full max-w-2xl bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-2xl space-y-4 animate-scaleUp">
             <div className="flex items-center gap-3 pb-3 border-b border-[#2A2D30]">
-              <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+              <div className="w-3 h-3 rounded-full bg-amber-400 animate-ping" />
               <div className="space-y-0.5 text-left">
                 <h3 className="text-sm font-black text-[#ECEBE9]">Domo Repository Auto-Updater</h3>
                 <p className="text-[10px] text-[#72706C]">Pulling latest code changes and building assets offline...</p>
@@ -899,7 +934,7 @@ export const Shell = () => {
 
             <div className="flex justify-between items-center text-[10px] text-[#72706C]">
               <span>Step-by-step Git / Package deployment</span>
-              <span className="animate-pulse text-emerald-400 font-bold">Deploying build...</span>
+              <span className="animate-pulse text-amber-300 font-bold">Deploying build...</span>
             </div>
           </div>
         </div>
@@ -1015,30 +1050,30 @@ export const Shell = () => {
                       </div>
                     </a>
 
-                    {/* #1 in AI Category Badge */}
+                    {/* #1 in Innovation Badge */}
                     <div
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
-                      title="#1 Product in AI & Local LLM Category"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] shadow-md font-extrabold text-xs transition-all hover:border-white/40"
+                      title="#1 Product in Innovation Category"
                     >
-                      <Cpu size={14} className="text-[#3C6B4D]" />
-                      <span>#1 in AI Category</span>
+                      <Sparkles size={14} className="text-amber-400" />
+                      <span>#1 in Innovation</span>
                     </div>
 
                     {/* #1 in Productivity Badge */}
                     <div
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] shadow-md font-extrabold text-xs transition-all hover:border-white/40"
                       title="#1 Product in Productivity Category"
                     >
-                      <Trophy size={14} className="text-[#3C6B4D]" />
+                      <Trophy size={14} className="text-amber-400" />
                       <span>#1 in Productivity</span>
                     </div>
 
                     {/* #1 in Developer Tools Badge */}
                     <div
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-md font-extrabold text-xs transition-all hover:border-[#3C6B4D]/70"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] shadow-md font-extrabold text-xs transition-all hover:border-white/40"
                       title="#1 Product in Developer Tools Category"
                     >
-                      <Award size={14} className="text-[#3C6B4D]" />
+                      <Award size={14} className="text-amber-400" />
                       <span>#1 in Developer Tools</span>
                     </div>
 
@@ -1047,7 +1082,7 @@ export const Shell = () => {
                       href="https://www.facebook.com/share/p/19NcmGKzVJ/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/abakada w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/abakada w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
                       title="As Featured on Abakada.org"
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
@@ -1061,7 +1096,7 @@ export const Shell = () => {
                         <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
                           As Featured on
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/abakada:text-[#4E8E5E] transition-colors">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/abakada:text-white transition-colors">
                           Abakada.org
                         </span>
                       </div>
@@ -1072,7 +1107,7 @@ export const Shell = () => {
                       href="https://bettergov.ph"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/bettergov w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
                       title="Featured on BetterGov PH"
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
@@ -1086,7 +1121,7 @@ export const Shell = () => {
                         <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
                           As Featured on
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-[#4E8E5E] transition-colors">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/bettergov:text-white transition-colors">
                           BetterGov.ph
                         </span>
                       </div>
@@ -1097,7 +1132,7 @@ export const Shell = () => {
                       href="https://www.facebook.com/share/p/1G5PGJFuYE/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/upamate w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/upamate w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
                       title="As Featured on Upamate"
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
@@ -1111,7 +1146,7 @@ export const Shell = () => {
                         <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
                           As Featured on
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/upamate:text-[#4E8E5E] transition-colors">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/upamate:text-white transition-colors">
                           Upamate
                         </span>
                       </div>
@@ -1122,7 +1157,7 @@ export const Shell = () => {
                       href="https://stage.byant.dev/p/domodomo"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/stagebyant w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/stagebyant w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
                       title="Featured Pick on Stage by Ant"
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
@@ -1136,7 +1171,7 @@ export const Shell = () => {
                         <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
                           Featured Pick on
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/stagebyant:text-[#4E8E5E] transition-colors">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/stagebyant:text-white transition-colors">
                           Stage by Ant
                         </span>
                       </div>
@@ -1147,7 +1182,7 @@ export const Shell = () => {
                       href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/appbuildersph w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/appbuildersph w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
                       title="Featured on AppBuildersPH Daily Top Apps"
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
@@ -1161,7 +1196,7 @@ export const Shell = () => {
                         <span className="text-[9px] tracking-wider text-[#A3A09B] font-bold uppercase">
                           As Featured on
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/appbuildersph:text-[#4E8E5E] transition-colors">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/appbuildersph:text-white transition-colors">
                           AppBuildersPH
                         </span>
                       </div>
@@ -1171,17 +1206,17 @@ export const Shell = () => {
                       href="https://web-beta-six-81.vercel.app/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/domoskills w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/60"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/domoskills w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
                       title="DomoSkills — The Open Agent Skills Marketplace"
                     >
-                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-emerald-400 group-hover/domoskills:scale-105 transition-transform">
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-amber-300 group-hover/domoskills:scale-105 transition-transform">
                         <Sparkles size={15} />
                       </div>
                       <div className="flex flex-col text-left leading-tight">
-                        <span className="text-[9px] tracking-wider text-emerald-400 font-bold uppercase">
+                        <span className="text-[9px] tracking-wider text-amber-400 font-bold uppercase">
                           Domo Ecosystem
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/domoskills:text-emerald-400 transition-colors flex items-center gap-1">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/domoskills:text-amber-300 transition-colors flex items-center gap-1">
                           <span>DomoSkills</span>
                           <ExternalLink size={10} className="text-[#72706C]" />
                         </span>
@@ -1193,17 +1228,17 @@ export const Shell = () => {
                       href="https://codepyne-io.vercel.app/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/codepyne w-fit border border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/60"
-                      title="Codepyne.io — The AI & Machine Learning Upskilling Platform"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/codepyne w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
+                      title="Codepyne.io — Developer Upskilling Platform"
                     >
-                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-emerald-400 group-hover/codepyne:scale-105 transition-transform">
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-amber-300 group-hover/codepyne:scale-105 transition-transform">
                         <GiSnake size={16} />
                       </div>
                       <div className="flex flex-col text-left leading-tight">
-                        <span className="text-[9px] tracking-wider text-emerald-400 font-bold uppercase">
+                        <span className="text-[9px] tracking-wider text-amber-400 font-bold uppercase">
                           Domo Ecosystem
                         </span>
-                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/codepyne:text-emerald-400 transition-colors flex items-center gap-1">
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/codepyne:text-amber-300 transition-colors flex items-center gap-1">
                           <span>Codepyne.io</span>
                           <ExternalLink size={10} className="text-[#72706C]" />
                         </span>
@@ -1214,7 +1249,7 @@ export const Shell = () => {
                   <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
                     <span className="text-[#72706C] text-[10px] uppercase tracking-wider font-bold">Developed By</span>
                     <div className="flex flex-wrap gap-x-2 gap-y-1 text-[#ECEBE9] text-[11px]">
-                      <a href="https://github.com/darknecrocities" target="_blank" rel="noopener noreferrer" className="hover:text-[#3C6B4D] transition-colors font-bold">Ram Achilles Guinto</a>
+                      <a href="https://github.com/darknecrocities" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors font-bold">Ram Achilles Guinto</a>
                       <span className="text-[#72706C] font-normal">•</span>
                       <span className="text-[#ECEBE9] font-bold">Arron Kian Parejas</span>
                       <span className="text-[#72706C] font-normal">•</span>
@@ -1237,10 +1272,10 @@ export const Shell = () => {
                         href="https://codepyne-io.vercel.app/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1 text-emerald-400 font-bold"
+                        className="hover:text-white transition-colors flex items-center gap-1 text-[#ECEBE9] font-bold"
                       >
                         <span>Codepyne.io</span>
-                        <ExternalLink size={10} className="text-emerald-500" />
+                        <ExternalLink size={10} className="text-[#72706C]" />
                       </a>
                     </li>
                     <li>
@@ -1248,10 +1283,10 @@ export const Shell = () => {
                         href="https://web-beta-six-81.vercel.app/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-[#ECEBE9] transition-colors flex items-center gap-1 text-emerald-400 font-bold"
+                        className="hover:text-white transition-colors flex items-center gap-1 text-[#ECEBE9] font-bold"
                       >
                         <span>DomoSkills</span>
-                        <ExternalLink size={10} className="text-emerald-500" />
+                        <ExternalLink size={10} className="text-[#72706C]" />
                       </a>
                     </li>
                     <li><Link to="/library-api" className="hover:text-[#ECEBE9] transition-colors">API Library</Link></li>
@@ -1319,11 +1354,11 @@ export const Shell = () => {
                 <Link to="/docs" className="hover:text-[#ECEBE9] transition-colors">Privacy Policy</Link>
                 <button
                   onClick={handleClearAIData}
-                  className="hover:text-rose-450 transition-colors flex items-center gap-1"
-                  title="Purge all offline client-side storage"
+                  className="hover:text-white transition-colors flex items-center gap-1 text-[#A3A09B]"
+                  title="Clear all offline client-side storage"
                 >
                   <Trash2 size={10} />
-                  <span>Purge AI Memory</span>
+                  <span>Clear Device Storage</span>
                 </button>
               </div>
 

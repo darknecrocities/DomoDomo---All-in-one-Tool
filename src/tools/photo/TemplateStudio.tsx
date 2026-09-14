@@ -312,8 +312,8 @@ export const TemplateStudioTool = () => {
       <div className="flex items-center justify-between p-3 bg-[#18191B] border-b border-[#2A2D30]">
         <div className="flex items-center gap-4">
           <div className="flex bg-[#0A0B0C] rounded-lg p-1 border border-[#2A2D30]">
-            <button onClick={() => { setMode('admin'); setSelectedId(null); }} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${mode === 'admin' ? 'bg-[#3C6B4D] text-white shadow' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>Admin</button>
-            <button onClick={() => { setMode('user'); setSelectedId(null); }} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${mode === 'user' ? 'bg-[#3C6B4D] text-white shadow' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>User</button>
+            <button onClick={() => { setMode('admin'); setSelectedId(null); }} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${mode === 'admin' ? 'bg-white text-black shadow' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>Admin</button>
+            <button onClick={() => { setMode('user'); setSelectedId(null); }} className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${mode === 'user' ? 'bg-white text-black shadow' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>User</button>
           </div>
           
           {mode === 'admin' && (
@@ -326,8 +326,8 @@ export const TemplateStudioTool = () => {
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 mr-4 border-r border-[#2A2D30] pr-4">
-            <button onClick={() => setCanvasMode('select')} className={`p-1.5 rounded ${canvasMode === 'select' ? 'bg-[#3C6B4D] text-white' : 'hover:bg-[#2A2D30] text-[#A3A09B]'}`} title="Selection Tool"><MousePointer2 size={16} /></button>
-            <button onClick={() => setCanvasMode('hand')} className={`p-1.5 rounded ${canvasMode === 'hand' ? 'bg-[#3C6B4D] text-white' : 'hover:bg-[#2A2D30] text-[#A3A09B]'}`} title="Hand Tool (Pan)"><Hand size={16} /></button>
+            <button onClick={() => setCanvasMode('select')} className={`p-1.5 rounded ${canvasMode === 'select' ? 'bg-white text-black' : 'hover:bg-[#2A2D30] text-[#A3A09B]'}`} title="Selection Tool"><MousePointer2 size={16} /></button>
+            <button onClick={() => setCanvasMode('hand')} className={`p-1.5 rounded ${canvasMode === 'hand' ? 'bg-white text-black' : 'hover:bg-[#2A2D30] text-[#A3A09B]'}`} title="Hand Tool (Pan)"><Hand size={16} /></button>
             <div className="w-px h-4 bg-[#2A2D30] mx-1" />
             <button onClick={() => setScale(s => s * 0.9)} className="p-1.5 rounded hover:bg-[#2A2D30] text-[#A3A09B]"><ZoomOut size={16} /></button>
             <span className="text-xs font-mono w-12 text-center">{Math.round(scale * 100)}%</span>
@@ -357,7 +357,7 @@ export const TemplateStudioTool = () => {
           <div className="absolute inset-0 z-50 bg-[#0A0B0C]/90 backdrop-blur-sm flex items-center justify-center p-8">
             <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl w-full max-w-3xl max-h-full flex flex-col shadow-2xl">
               <div className="flex items-center justify-between p-4 border-b border-[#2A2D30]">
-                <h2 className="text-xl font-bold flex items-center gap-2"><Library className="text-[#3C6B4D]" /> Templates Gallery</h2>
+                <h2 className="text-xl font-bold flex items-center gap-2"><Library className="text-white" /> Templates Gallery</h2>
                 <button onClick={() => setShowGallery(false)} className="p-2 hover:bg-[#2A2D30] rounded-lg text-[#A3A09B]"><X size={20} /></button>
               </div>
               <div className="p-6 overflow-y-auto grid grid-cols-2 gap-4">
@@ -365,9 +365,9 @@ export const TemplateStudioTool = () => {
                   <div 
                     key={preset.id} 
                     onClick={() => { loadTemplateJSON(preset); setShowGallery(false); }}
-                    className="border border-[#2A2D30] bg-[#111213] rounded-xl p-4 cursor-pointer hover:border-[#3C6B4D] hover:bg-[#1E2022] transition-all group"
+                    className="border border-[#2A2D30] bg-[#111213] rounded-xl p-4 cursor-pointer hover:border-white/30 hover:bg-[#1E2022] transition-all group"
                   >
-                    <div className="w-full h-32 bg-[#0A0B0C] rounded-lg border border-[#2A2D30] mb-4 flex flex-col items-center justify-center text-[#72706C] group-hover:text-[#3C6B4D]">
+                    <div className="w-full h-32 bg-[#0A0B0C] rounded-lg border border-[#2A2D30] mb-4 flex flex-col items-center justify-center text-[#72706C] group-hover:text-white">
                       <LayoutTemplate size={32} className="mb-2 opacity-50" />
                       <span className="text-xs font-mono">{preset.width}x{preset.height}</span>
                     </div>
@@ -382,10 +382,10 @@ export const TemplateStudioTool = () => {
 
         {isGenerating && (
           <div className="absolute inset-0 z-50 bg-[#0A0B0C]/80 backdrop-blur-sm flex flex-col items-center justify-center">
-            <Loader2 size={48} className="text-[#3C6B4D] animate-spin mb-4" />
+            <Loader2 size={48} className="text-white animate-spin mb-4" />
             <h2 className="text-xl font-bold">Generating Batch ZIP...</h2>
             <div className="w-64 h-2 bg-[#2A2D30] rounded-full mt-4 overflow-hidden">
-              <div className="h-full bg-[#3C6B4D] transition-all duration-200" style={{ width: `${progress}%` }} />
+              <div className="h-full bg-white text-black transition-all duration-200" style={{ width: `${progress}%` }} />
             </div>
             <p className="mt-2 text-sm text-[#A3A09B]">{progress}% Complete</p>
           </div>
@@ -400,10 +400,10 @@ export const TemplateStudioTool = () => {
                   type="text" 
                   value={template.name} 
                   onChange={e => updateTemplate(p => ({ ...p, name: e.target.value }))}
-                  className="w-full bg-transparent font-bold text-lg outline-none border-b border-transparent focus:border-[#3C6B4D]"
+                  className="w-full bg-transparent font-bold text-lg outline-none border-b border-transparent focus:border-white/30"
                   placeholder="Template Name"
                 />
-                <label className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-[#3C6B4D]/40 rounded-xl hover:border-[#3C6B4D] hover:bg-[#3C6B4D]/10 cursor-pointer text-[#A3A09B] mt-2">
+                <label className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-white/30/40 rounded-xl hover:border-white/30 hover:bg-white text-black/10 cursor-pointer text-[#A3A09B] mt-2">
                   <Upload size={16} /> <span className="text-xs font-bold">Upload Background</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
@@ -463,7 +463,7 @@ export const TemplateStudioTool = () => {
                       placeholder="Save current design..."
                       value={libraryNameInput}
                       onChange={e => setLibraryNameInput(e.target.value)}
-                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded p-1.5 text-[11px] outline-none focus:border-[#3C6B4D]"
+                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded p-1.5 text-[11px] outline-none focus:border-white/30"
                     />
                     <button
                       onClick={() => {
@@ -472,7 +472,7 @@ export const TemplateStudioTool = () => {
                         setLibraryNameInput('');
                         alert(`Design saved locally as "${name}"!`);
                       }}
-                      className="px-2.5 bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-[10px] font-bold rounded"
+                      className="px-2.5 bg-white text-black hover:bg-[#2E533B] text-white text-[10px] font-bold rounded"
                     >
                       Save
                     </button>
@@ -487,7 +487,7 @@ export const TemplateStudioTool = () => {
                               loadTemplateJSON(data);
                               alert(`Loaded local design "${name}"!`);
                             }}
-                            className="font-semibold text-[#ECEBE9] hover:text-[#3C6B4D] text-left truncate flex-1"
+                            className="font-semibold text-[#ECEBE9] hover:text-white text-left truncate flex-1"
                           >
                             📁 {name}
                           </button>
@@ -508,7 +508,7 @@ export const TemplateStudioTool = () => {
                     <LayoutTemplate size={14} /> <span className="text-xs font-bold text-center">Load JSON</span>
                     <input type="file" accept=".json" className="hidden" onChange={handleJsonUpload} />
                   </label>
-                  <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-[#3C6B4D] bg-[#3C6B4D]/10 text-[#3C6B4D] rounded-xl hover:bg-[#3C6B4D]/20 cursor-pointer text-xs font-bold">
+                  <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-white/30 bg-white text-black/10 text-white rounded-xl hover:bg-white text-black/20 cursor-pointer text-xs font-bold">
                     <Library size={14} /> Gallery
                   </button>
                 </div>
@@ -556,7 +556,7 @@ export const TemplateStudioTool = () => {
                   placeholder="Search layers..."
                   value={layerSearchQuery}
                   onChange={e => setLayerSearchQuery(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg p-2 text-xs outline-none focus:border-[#3C6B4D] font-semibold"
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg p-2 text-xs outline-none focus:border-white/30 font-semibold"
                 />
                 <LayerPanel 
                   layers={template.layers.filter(l => l.name.toLowerCase().includes(layerSearchQuery.toLowerCase()))} 
@@ -576,7 +576,7 @@ export const TemplateStudioTool = () => {
                   <LayoutTemplate size={16} /> <span className="text-xs font-bold text-center">Load JSON</span>
                   <input type="file" accept=".json" className="hidden" onChange={handleJsonUpload} />
                 </label>
-                <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-[#3C6B4D] bg-[#3C6B4D]/10 text-[#3C6B4D] rounded-xl hover:bg-[#3C6B4D]/20 cursor-pointer text-xs font-bold">
+                <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-white/30 bg-white text-black/10 text-white rounded-xl hover:bg-white text-black/20 cursor-pointer text-xs font-bold">
                   <Library size={16} /> Gallery
                 </button>
               </div>
@@ -597,7 +597,7 @@ export const TemplateStudioTool = () => {
                           value={userInputs[l.variableName] ?? (l.text || l.src || '')}
                           onChange={e => setUserInputs(prev => ({ ...prev, [l.variableName]: e.target.value }))}
                           placeholder={l.type === 'image' ? "Paste image URL here" : ""}
-                          className="w-full bg-[#0A0B0C] border border-[#2A2D30] rounded-lg p-2 text-sm outline-none focus:border-[#3C6B4D]"
+                          className="w-full bg-[#0A0B0C] border border-[#2A2D30] rounded-lg p-2 text-sm outline-none focus:border-white/30"
                         />
                       </div>
                     );
@@ -608,9 +608,9 @@ export const TemplateStudioTool = () => {
               <div className="h-px bg-[#2A2D30]" />
               
               <div className="space-y-2">
-                <h3 className="text-sm font-bold text-[#3C6B4D]">Batch Processing</h3>
+                <h3 className="text-sm font-bold text-white">Batch Processing</h3>
                 <p className="text-[10px] text-[#A3A09B]">Upload a CSV file. Headers must map to variables (e.g. "name" for "{"{{name}}"}")</p>
-                <label className="flex items-center justify-center gap-2 w-full py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white rounded-xl cursor-pointer">
+                <label className="flex items-center justify-center gap-2 w-full py-2 bg-white text-black hover:bg-[#2E533B] text-white rounded-xl cursor-pointer">
                   <Upload size={14} /> <span className="text-xs font-bold">Upload CSV & Generate ZIP</span>
                   <input type="file" accept=".csv" className="hidden" onChange={handleCSVUpload} />
                 </label>

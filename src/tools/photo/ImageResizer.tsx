@@ -156,15 +156,15 @@ export const ImageResizerTool = () => {
 
           {preset === 'custom' && (
             <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer py-1">
-              <input type="checkbox" checked={aspectRatio} onChange={(e) => setAspectRatio(e.target.checked)} className="accent-[#4E8E5E]" />
+              <input type="checkbox" checked={aspectRatio} onChange={(e) => setAspectRatio(e.target.checked)} className="accent-white" />
               <span>Lock Aspect Ratio</span>
             </label>
           )}
 
           <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-2 border-t border-slate-850 pt-3">Resize Method</span>
           <div className="flex gap-2">
-            <button onClick={() => setResizeMode('stretch')} className={`flex-1 py-1.5 rounded text-xs font-bold ${resizeMode === 'stretch' ? 'bg-[#4E8E5E]' : 'bg-slate-900 border border-slate-850'}`}>Stretch</button>
-            <button onClick={() => setResizeMode('pad')} className={`flex-1 py-1.5 rounded text-xs font-bold ${resizeMode === 'pad' ? 'bg-[#4E8E5E]' : 'bg-slate-900 border border-slate-850'}`}>Letterbox / Pad</button>
+            <button onClick={() => setResizeMode('stretch')} className={`flex-1 py-1.5 rounded text-xs font-bold ${resizeMode === 'stretch' ? 'bg-white text-black' : 'bg-slate-900 border border-slate-850'}`}>Stretch</button>
+            <button onClick={() => setResizeMode('pad')} className={`flex-1 py-1.5 rounded text-xs font-bold ${resizeMode === 'pad' ? 'bg-white text-black' : 'bg-slate-900 border border-slate-850'}`}>Letterbox / Pad</button>
           </div>
 
           {resizeMode === 'pad' && (

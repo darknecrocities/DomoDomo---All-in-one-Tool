@@ -265,7 +265,7 @@ export const CR2ToPNGConverterTool: React.FC = () => {
     ctx.fillRect(0, 0, 1920, 1280);
 
     // Grid lines & aperture circles
-    ctx.strokeStyle = '#3C6B4D';
+    ctx.strokeStyle = '#ECEBE9';
     ctx.lineWidth = 2;
     for (let x = 0; x < 1920; x += 160) {
       ctx.beginPath();
@@ -283,7 +283,7 @@ export const CR2ToPNGConverterTool: React.FC = () => {
     // Glowing focus ring
     ctx.beginPath();
     ctx.arc(960, 640, 320, 0, Math.PI * 2);
-    ctx.strokeStyle = '#4E8E5E';
+    ctx.strokeStyle = '#ECEBE9';
     ctx.lineWidth = 6;
     ctx.stroke();
 

@@ -24,20 +24,20 @@ const CodeBlock = ({ language, code }: { language: string; code: string }) => {
             <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/60 inline-block" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]/60 inline-block" />
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-widest font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+          <span className="text-[10px] font-mono uppercase tracking-widest font-extrabold text-white bg-white/10 px-2 py-0.5 rounded border border-white/20">
             {language || 'code'}
           </span>
         </div>
 
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold text-[#A3A09B] hover:text-[#ECEBE9] bg-[#111213] hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold text-[#A3A09B] hover:text-[#ECEBE9] bg-[#111213] hover:bg-[#1E2022] border border-[#2A2D30] hover:border-white/40 transition-all cursor-pointer"
           title="Copy code snippet"
         >
           {copied ? (
             <>
-              <Check size={12} className="text-emerald-400" />
-              <span className="text-emerald-400 font-bold">Copied!</span>
+              <Check size={12} className="text-white" />
+              <span className="text-white font-bold">Copied!</span>
             </>
           ) : (
             <>
@@ -193,7 +193,7 @@ const parseInlineMarkup = (text: string): React.ReactNode[] => {
       );
     } else if (first.type === 'code') {
       tokens.push(
-        <code key={key++} className="bg-[#111213] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-emerald-400 font-semibold">
+        <code key={key++} className="bg-[#111213] border border-[#2A2D30] px-1.5 py-0.5 rounded text-xs font-mono text-white font-semibold">
           {first.content}
         </code>
       );
@@ -372,7 +372,7 @@ const renderMarkdown = (text: string) => {
       blocks.push(
         <blockquote
           key={blockKey++}
-          className="border-l-4 border-emerald-500/70 bg-[#111213] p-4 rounded-r-2xl italic text-sm text-[#A3A09B] my-5 shadow-inner text-left"
+          className="border-l-4 border-white/70 bg-[#111213] p-4 rounded-r-2xl italic text-sm text-[#A3A09B] my-5 shadow-inner text-left"
         >
           {parseInlineMarkup(bqLines.join(' '))}
         </blockquote>

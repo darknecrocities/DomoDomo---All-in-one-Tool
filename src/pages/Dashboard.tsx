@@ -8,7 +8,6 @@ import {
 	ChevronDown,
 	ChevronLeft,
 	ChevronRight,
-	Star,
 	Copy,
 	Check,
 	Trophy as TrophyIcon,
@@ -18,6 +17,8 @@ import {
 	Sparkles,
 	ArrowUpRight,
 	Terminal,
+	Snowflake,
+	Gift,
 } from "lucide-react";
 import { GiSnake } from "react-icons/gi";
 import { Helmet } from "react-helmet-async";
@@ -59,7 +60,7 @@ export const CATEGORIES = [
 	{ id: "audio", name: "Audio Web" },
 	{ id: "dev", name: "Developer Tools" },
 	{ id: "data", name: "Data & Visualizer" },
-	{ id: "ai", name: "Local AI" },
+	{ id: "ai", name: "Smart Assistants" },
 	{ id: "security", name: "Developer Security" },
 	{ id: "cv", name: "Computer Vision" },
 	{ id: "ml", name: "Machine Learning" },
@@ -109,9 +110,9 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 	},
 	{
 		id: "ai-enhancer",
-		name: "AI Image Enhancer",
+		name: "Image Detail Enhancer",
 		categories: ["photo"],
-		description: "Enhance details using local contrast and color filters.",
+		description: "Enhance photo details using local contrast and color filters.",
 		icon: "Image",
 		status: "functional",
 	},
@@ -995,20 +996,20 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		status: "functional",
 	},
 
-	// AI Tools (20)
+	// Smart Assistants (20)
 	{
 		id: "ai-chat",
-		name: "AI Chat",
+		name: "Chat & Writing Assistant",
 		categories: ["ai"],
-		description: "Chat offline with local Domo assistant.",
+		description: "Chat offline with your local smart assistant.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-summarizer",
-		name: "Summarizer",
+		name: "Document Summarizer",
 		categories: ["ai"],
-		description: "Summarize text documents using local parsing.",
+		description: "Summarize text documents using local document parsing.",
 		icon: "Hammer",
 		status: "functional",
 	},
@@ -1016,7 +1017,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		id: "caption-gen",
 		name: "Caption Generator",
 		categories: ["ai"],
-		description: "Generate descriptive image captions.",
+		description: "Generate clean descriptive image captions.",
 		icon: "Hammer",
 		status: "functional",
 	},
@@ -1024,15 +1025,15 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		id: "ocr-assistant",
 		name: "OCR Assistant",
 		categories: ["ai"],
-		description: "Format OCR results into clean layouts.",
+		description: "Format OCR results into clean structured layouts.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "prompt-enhancer",
-		name: "Prompt Enhancer",
+		name: "Prompt & Request Enhancer",
 		categories: ["ai"],
-		description: "Enhance simple descriptions into descriptive prompts.",
+		description: "Enhance simple requests into clear, detailed instructions.",
 		icon: "Hammer",
 		status: "functional",
 	},
@@ -1040,7 +1041,7 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		id: "image-classifier",
 		name: "Image Classifier",
 		categories: ["ai"],
-		description: "Classify visual items of uploaded images.",
+		description: "Classify visual items of uploaded images locally.",
 		icon: "Hammer",
 		status: "functional",
 	},
@@ -1048,23 +1049,23 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		id: "text-rewriter",
 		name: "Text Rewriter",
 		categories: ["ai"],
-		description: "Rewrite text into corporate or casual tones.",
+		description: "Rewrite text into corporate, casual, or concise tones.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-translator",
-		name: "Translator",
+		name: "Multilingual Translator",
 		categories: ["ai"],
-		description: "Translate text arrays locally.",
+		description: "Translate text offline with zero network latency.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-stt",
-		name: "Speech-to-Text",
+		name: "Speech-to-Text Dictation",
 		categories: ["ai"],
-		description: "Transcribe spoken audio inputs locally.",
+		description: "Transcribe spoken audio inputs locally on your machine.",
 		icon: "Hammer",
 		status: "functional",
 	},
@@ -1078,137 +1079,137 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 	},
 	{
 		id: "ai-code-explainer",
-		name: "AI Code Explainer",
+		name: "Code Explainer & Inspector",
 		categories: ["ai"],
 		description:
-			"Paste code to get plain-English explanations, complexity score, and translation.",
+			"Paste code to get plain-English explanations, complexity scoring, and language translations.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-flashcard-maker",
-		name: "AI Flashcard Maker",
+		name: "Study Flashcard Generator",
 		categories: ["ai"],
-		description: "Turn any text/topic into Q&A flashcards for studying.",
+		description: "Turn study materials and notes into organized Q&A flashcards.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-sentiment-journal",
-		name: "AI Sentiment Journal",
+		name: "Reflective Journal & Sentiment Tracker",
 		categories: ["ai"],
 		description:
-			"Write journal entries and have AI track mood and emotion trends.",
+			"Write journal entries and track mood and sentiment trends privately.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-email-composer",
-		name: "AI Email Composer",
+		name: "Professional Email Drafter",
 		categories: ["ai"],
-		description: "Generate professional emails from bullet points or intent.",
+		description: "Draft polished, professional emails from bullet points or intents.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-story-generator",
-		name: "AI Story Generator",
+		name: "Creative Story Drafter",
 		categories: ["ai"],
-		description: "Generate short stories from genre/character/setting prompts.",
+		description: "Generate short stories from genre, character, and setting prompts.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-debate-assistant",
-		name: "AI Debate Assistant",
+		name: "Debate & Perspective Assistant",
 		categories: ["ai"],
-		description: "Given a topic, generate pro/con arguments and rebuttals.",
+		description: "Given a topic, generate balanced pro/con arguments, counterpoints, and rebuttals.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-math-solver",
-		name: "AI Math Solver",
+		name: "Math Problem Solver",
 		categories: ["ai"],
-		description: "Paste math problems and get step-by-step solutions.",
+		description: "Paste math problems and get verified, step-by-step solutions.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-recipe-generator",
-		name: "AI Recipe Generator",
+		name: "Kitchen Recipe Assistant",
 		categories: ["ai"],
 		description:
-			"Ingredients in → full recipe with steps, nutrition, and variants.",
+			"Ingredients in → full recipe with cooking steps, nutrition, and variants.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-code-reviewer",
-		name: "AI Code Reviewer",
+		name: "Code Quality & Security Reviewer",
 		categories: ["ai"],
-		description: "Review code for bugs, security issues, and best practices.",
+		description: "Review code for bugs, security vulnerabilities, and performance improvements.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "ai-mind-mapper",
-		name: "AI Mind Mapper",
+		name: "Topic & Mind Mapper",
 		categories: ["ai"],
-		description: "Turn a topic into a visual text-based mind map outline.",
+		description: "Turn any concept or topic into an organized outline and visual mind map.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "domo-agent-hub",
-		name: "Domo Agent Hub",
+		name: "Domo Coding Workspace",
 		categories: ["ai"],
-		description: "Interactive offline coding IDE & AI agent workspace.",
+		description: "Interactive offline coding environment and workspace assistant.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "domo-selection",
-		name: "DomoDomo Selection Explainer",
+		name: "Selection Explainer",
 		categories: ["ai"],
-		description: "Highlight text or code to query DomoDomo offline.",
+		description: "Highlight text or code to query the offline assistant instantly.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "domo-local-brain",
-		name: "Domo Local Brain",
+		name: "Local Knowledge Base & Memory",
 		categories: ["ai"],
 		description:
-			"Manage your unified local database (RAG) and configure AI habit-learning settings.",
+			"Manage your unified local database and configure private learning settings.",
 		icon: "Brain",
 		status: "functional",
 	},
 	{
 		id: "domo-cognitive-mapper",
-		name: "Domo Brain Mind Mapper",
+		name: "Knowledge Mind Mapper",
 		categories: ["ai"],
 		description:
-			"Explore the interconnecting neural network of Domo's mind. Interact, search, and manage skills, knowledge bases, recent activities, and system tools in 3D.",
+			"Explore connected knowledge bases, recent activities, and system tools in 3D.",
 		icon: "Brain",
 		status: "functional",
 		popular: true,
 	},
 	{
 		id: "ollama-library",
-		name: "Domo Model Library",
+		name: "Local Model Library",
 		categories: ["ai"],
 		description:
-			"Browse, compare, and install local AI models (Llama 3.2, Qwen 2.5, Gemma 2, Llava) with system recommendations and live download indicators.",
+			"Browse, compare, and install local offline models with live indicators.",
 		icon: "Hammer",
 		status: "functional",
 	},
 	{
 		id: "domo-skill-creator",
-		name: "Domo Skill Creator",
+		name: "Skill & Capability Creator",
 		categories: ["ai"],
 		description:
-			"Design structured capabilities, restrictions, and behaviors to import into your local AI agents visually.",
+			"Design structured capabilities, instructions, and behaviors visually.",
 		icon: "Hammer",
 		status: "functional",
 	},
@@ -1217,116 +1218,116 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		name: "DomoSkills Marketplace",
 		categories: ["ai", "dev", "popular"],
 		description:
-			"Discover, inspect, and install 200+ verified modular capabilities for AI coding agents via live catalog and CLI.",
+			"Discover, inspect, and install 200+ verified modular capabilities for coding assistants.",
 		icon: "Sparkles",
 		status: "functional",
 		popular: true,
 	},
 	{
 		id: "auto-pilot",
-		name: "Auto-Pilot Workspace",
+		name: "Auto-Pilot Task Workspace",
 		categories: ["ai"],
-		description: "Fully autonomous AI agent that executes workflows via voice.",
+		description: "Autonomous workflow assistant that executes voice and text requests.",
 		icon: "Cpu",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "model-migrator",
-		name: "Ollama Model Migrator",
+		name: "Model Backup & Migrator",
 		categories: ["ai"],
 		description:
-			"Back up your local Ollama models, write them to external USB or HDD directories, and restore them offline.",
+			"Back up local models to external storage and restore them offline.",
 		icon: "HardDrive",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "domo-neural-atlas",
-		name: "Domo Neural Atlas",
+		name: "Context & Memory Atlas",
 		categories: ["ai"],
 		description:
-			"Interactive 2D visual layout map of local AI context memories, RAG chunks, and user habit nodes.",
+			"Interactive 2D visual layout map of local context chunks and memory nodes.",
 		icon: "Brain",
 		status: "functional",
 	},
 	{
 		id: "domo-flow-editor",
-		name: "Domo Flow Editor",
+		name: "Workflow Pipeline Editor",
 		categories: ["ai"],
 		description:
-			"Construct and wire automated multi-stage local LLM processing pipelines visually.",
+			"Construct and wire multi-stage automated processing pipelines visually.",
 		icon: "Cpu",
 		status: "functional",
 	},
 	{
 		id: "ai-sandbox-arena",
-		name: "AI Sandbox Arena",
+		name: "Model Benchmark Arena",
 		categories: ["ai"],
 		description:
-			"Compare Time-To-First-Token, speed (t/s), and generation output of local models side-by-side.",
+			"Compare Time-To-First-Token, generation speed, and responses side-by-side.",
 		icon: "Layers",
 		status: "functional",
 	},
 	{
 		id: "ai-voice-companion",
-		name: "Domo Voice Companion",
+		name: "Voice Companion Simulator",
 		categories: ["ai"],
 		description:
-			"Offline vocal conversation simulator with speech recognition and voice synthesis.",
+			"Offline vocal conversation simulator with speech recognition and audio synthesis.",
 		icon: "Volume2",
 		status: "functional",
 	},
 	{
 		id: "ai-pdf-investigator",
-		name: "AIPDF Investigator",
+		name: "PDF Document Investigator",
 		categories: ["ai"],
 		description:
-			"Semantic multi-document question answering tool with page level context citations.",
+			"Multi-document question answering tool with page-level context citations.",
 		icon: "BookOpen",
 		status: "functional",
 	},
 	{
 		id: "ai-research-orchestration-hub",
-		name: "AI Research Orchestration Hub",
+		name: "Research Campaign Orchestrator",
 		categories: ["ai"],
 		description:
-			"Orchestrate structured, loop-based research campaigns with specialized local AI agents, model selectors, and conflict checks.",
+			"Orchestrate structured research campaigns with specialized local assistants and conflict checks.",
 		icon: "Brain",
 		status: "functional",
 	},
 	{
 		id: "ai-pii-redactor",
-		name: "AI PII Data Redactor",
+		name: "PII Data Redactor",
 		categories: ["ai"],
-		description: "Locally redact sensitive info (names, IPs, emails) from logs and text.",
+		description: "Locally redact sensitive info (names, IPs, emails) from logs and documents.",
 		icon: "Shield",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "ai-regex-architect",
-		name: "AI Regex Explainer & Builder",
+		name: "Regex Explainer & Builder",
 		categories: ["ai"],
-		description: "Explain complex regex patterns or build them from English descriptions.",
+		description: "Explain complex regex patterns or generate them from plain English specifications.",
 		icon: "Code",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "ai-devops-architect",
-		name: "AI DevOps Command Architect",
+		name: "DevOps Command Architect",
 		categories: ["ai"],
-		description: "Generate complex bash, Docker, and cron commands from natural language.",
+		description: "Generate bash commands, Dockerfiles, and cron syntax from plain descriptions.",
 		icon: "Terminal",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "ai-hub-studio",
-		name: "AI Hub Studio (Fine-Tune & Flow Automation)",
-		categories: ["AI & Local Models"],
-		description: "Local AI workspace featuring ChatGPT-style chat, HuggingFace Model Hub, Advanced Multi-Method Fine-Tuning (QLoRA/LoRA/Full/Prefix/Adapter/DPO), side-by-side benchmark evaluator, and interactive local AI flow automations.",
+		name: "Studio Lab (Fine-Tune & Flow Automation)",
+		categories: ["ai"],
+		description: "Local workspace featuring interactive chat, model hub, multi-method fine-tuning, and flow automations.",
 		icon: "Bot",
 		status: "functional",
 		popular: true,
@@ -1335,8 +1336,8 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 	{
 		id: "ai-model-manager",
 		name: "Model Settings & Storage Manager",
-		categories: ["AI & Local Models"],
-		description: "Manage local Ollama model weights, delete unused models, inspect Modelfiles, copy aliases, and control VRAM.",
+		categories: ["ai"],
+		description: "Manage local model weights, delete unused files, inspect configurations, and control VRAM allocation.",
 		icon: "Settings",
 		status: "functional",
 		popular: true,
@@ -1878,90 +1879,90 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 	// Design Suite Tools (10)
 	{
 		id: "wcag-contrast-checker",
-		name: "AI WCAG Contrast & Accessibility Auditor",
+		name: "WCAG Contrast & Accessibility Auditor",
 		categories: ["design", "ai"],
-		description: "Evaluate text-to-background contrast ratios against WCAG 2.1 AA/AAA standards and run Local AI accessibility audits.",
+		description: "Evaluate text-to-background contrast ratios against WCAG 2.1 AA/AAA standards and inspect accessibility improvements locally.",
 		icon: "Palette",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "mesh-gradient-generator",
-		name: "AI CSS Glass & Mesh Gradient Architect",
+		name: "CSS Glass & Mesh Gradient Studio",
 		categories: ["design", "ai"],
-		description: "Synthesize fluid mesh gradients, glassmorphism cards, and CSS backdrop filters visually or with Local AI prompts.",
+		description: "Synthesize fluid mesh gradients, glassmorphism cards, and CSS backdrop filters visually with real-time CSS export.",
 		icon: "Sparkles",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "font-glyph-inspector",
-		name: "AI Font Subsetter & Typography Advisor",
+		name: "Font Subsetter & Typography Advisor",
 		categories: ["design", "ai"],
-		description: "Inspect Unicode character glyph maps, define lightweight font subset ranges, and generate AI font pairing systems.",
+		description: "Inspect Unicode character glyph maps, define lightweight font subset ranges, and preview matching typography pairings.",
 		icon: "Type",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "svg-path-studio",
-		name: "AI SVG Component & Vector Code Studio",
+		name: "SVG Component & Vector Code Studio",
 		categories: ["design", "ai"],
-		description: "Edit Bezier path coordinates interactively or convert natural language prompts into optimized, animated React SVG components.",
+		description: "Edit Bezier path coordinates interactively and generate clean, animated React SVG components.",
 		icon: "PenTool",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "neumorphism-glass-builder",
-		name: "AI Neumorphism & Soft UI Generator",
+		name: "Neumorphism & Soft UI Generator",
 		categories: ["design", "ai"],
-		description: "Design soft extruded and inset neumorphic UI components, generate dual light/dark shadows, and synthesize soft UI systems with Local AI.",
+		description: "Design soft extruded and inset neumorphic UI components, generate dual light/dark shadows, and synthesize soft UI systems.",
 		icon: "Layers",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "box-shadow-studio",
-		name: "AI Multi-Layer CSS Shadow & Elevation Studio",
+		name: "Multi-Layer CSS Shadow & Elevation Studio",
 		categories: ["design", "ai"],
-		description: "Compose multi-layer ambient and key shadows, build realistic natural elevation steps, and synthesize lighting systems with Local AI.",
+		description: "Compose multi-layer ambient and key shadows, build realistic natural elevation steps, and configure lighting parameters.",
 		icon: "Layers",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "color-palette-harmonies",
-		name: "AI Color Palette & Harmony Studio",
+		name: "Color Palette & Harmony Studio",
 		categories: ["design", "ai"],
-		description: "Calculate color theory harmonies (Complementary, Triadic, Analogous), generate Tailwind theme configs, check contrast swatches, and prompt Local AI.",
+		description: "Calculate color theory harmonies (Complementary, Triadic, Analogous), generate Tailwind theme configs, and check contrast swatches.",
 		icon: "Palette",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "border-radius-blob-maker",
-		name: "AI Organic CSS Blob & Border Radius Generator",
+		name: "Organic CSS Blob & Border Radius Generator",
 		categories: ["design", "ai"],
-		description: "Manipulate 8-point organic CSS border-radius coordinates, synthesize fluid morphing keyframes, export CSS code, and prompt Local AI.",
+		description: "Manipulate 8-point organic CSS border-radius coordinates, synthesize fluid morphing keyframes, and copy production-ready CSS.",
 		icon: "Wand2",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "css-grid-flex-studio",
-		name: "AI CSS Grid & Flexbox Layout Architect",
+		name: "CSS Grid & Flexbox Layout Architect",
 		categories: ["design", "ai"],
-		description: "Visual CSS Grid and Flexbox container layout builder, customize gap, alignment, and template columns, export CSS code, and prompt Local AI.",
+		description: "Visual CSS Grid and Flexbox container layout builder, customize gap, alignment, and template columns with live preview.",
 		icon: "LayoutGrid",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "design-token-generator",
-		name: "AI Design Token & CSS Variables System Studio",
+		name: "Design Token & CSS Variables Studio",
 		categories: ["design", "ai"],
-		description: "Construct cross-platform design token suites (Colors, Typography scale, Spacing, Elevation), export W3C JSON / CSS custom variables, and prompt Local AI.",
+		description: "Construct cross-platform design token suites (Colors, Typography scale, Spacing, Elevation) and export W3C JSON / CSS custom variables.",
 		icon: "Sliders",
 		status: "functional",
 		requiresOllama: true,
@@ -1970,90 +1971,90 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 	// Network Suite Tools (10)
 	{
 		id: "har-waterfall-profiler",
-		name: "AI HAR Performance Diagnostic Profiler",
+		name: "HAR Performance Diagnostic Profiler",
 		categories: ["network", "ai"],
-		description: "Upload .har browser network traces offline to inspect request latency waterfalls and identify performance bottlenecks with Local AI.",
+		description: "Upload .har browser network traces offline to inspect request latency waterfalls and identify performance bottlenecks.",
 		icon: "BarChart3",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "curl-code-studio",
-		name: "AI cURL to Multi-Language SDK Generator",
+		name: "cURL to Multi-Language SDK Generator",
 		categories: ["network", "ai"],
-		description: "Translate raw cURL requests into production-ready JavaScript, Python, Go, Rust, and PHP code snippets or full SDK wrappers with Local AI.",
+		description: "Translate raw cURL requests into production-ready JavaScript, Python, Go, Rust, and PHP code snippets or client wrappers.",
 		icon: "Terminal",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "csp-header-builder",
-		name: "AI Security Header & CSP Policy Architect",
+		name: "Security Header & CSP Policy Architect",
 		categories: ["network", "security", "ai"],
-		description: "Configure Content Security Policy (CSP) directives visually, audit XSS risks, and generate server headers with Local AI.",
+		description: "Configure Content Security Policy (CSP) directives visually, audit XSS risks, and generate robust server headers.",
 		icon: "ShieldCheck",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "jwt-debugger-studio",
-		name: "AI JWT Token Inspector & Claims Auditor",
+		name: "JWT Token Inspector & Claims Auditor",
 		categories: ["network", "security", "ai"],
-		description: "Decode JSON Web Tokens (Header, Payload, Signature) offline, inspect expiration claims, verify signing algorithms, and audit security with Local AI.",
+		description: "Decode JSON Web Tokens (Header, Payload, Signature) offline, inspect expiration claims, and verify signing algorithms.",
 		icon: "KeyRound",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "websocket-tester-studio",
-		name: "AI WebSockets & SSE Packet Diagnostic Studio",
+		name: "WebSockets & SSE Packet Diagnostic Studio",
 		categories: ["network", "ai"],
-		description: "Inspect real-time WebSocket frames, stream Server-Sent Events (SSE), test reconnect backoff latency, and audit packet payloads with Local AI.",
+		description: "Inspect real-time WebSocket frames, stream Server-Sent Events (SSE), and test reconnect backoff latency with payload inspection.",
 		icon: "Terminal",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "dns-lookup-inspector",
-		name: "AI DNS & DoH Security Diagnostic Inspector",
+		name: "DNS & DoH Security Diagnostic Inspector",
 		categories: ["network", "security", "ai"],
-		description: "Perform encrypted DNS-over-HTTPS (DoH) record queries (A, AAAA, MX, TXT, CAA, NS), audit SPF/DMARC spoofing risks, and run Local AI diagnostics.",
+		description: "Perform encrypted DNS-over-HTTPS (DoH) record queries (A, AAAA, MX, TXT, CAA, NS) and audit SPF/DMARC spoofing risks.",
 		icon: "ShieldCheck",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "http-status-debugger",
-		name: "AI HTTP Status & CORS Diagnostic Studio",
+		name: "HTTP Status & CORS Diagnostic Studio",
 		categories: ["network", "ai"],
-		description: "Lookup HTTP 1xx-5xx status codes, debug CORS headers, generate Express/Nginx CORS middleware, and prompt Local AI.",
+		description: "Lookup HTTP 1xx-5xx status codes, debug CORS headers, and generate Express/Nginx CORS middleware configs.",
 		icon: "ShieldCheck",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "graphql-query-studio",
-		name: "AI GraphQL Schema & Query Optimizer",
+		name: "GraphQL Schema & Query Optimizer",
 		categories: ["network", "ai"],
-		description: "Format GraphQL queries, evaluate nested field depth complexity, generate TypeScript response types, and prompt Local AI.",
+		description: "Format GraphQL queries, evaluate nested field depth complexity, and generate TypeScript response types.",
 		icon: "Terminal",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "ip-subnet-calculator",
-		name: "AI IP CIDR & Subnet Calculator",
+		name: "IP CIDR & Subnet Calculator",
 		categories: ["network", "ai"],
-		description: "Calculate IPv4/IPv6 CIDR network address boundaries, wildcard netmasks, usable host counts, and synthesize VLAN subnet plans with Local AI.",
+		description: "Calculate IPv4/IPv6 CIDR network address boundaries, wildcard netmasks, usable host counts, and network subnet plans.",
 		icon: "Terminal",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "open-api-schema-builder",
-		name: "AI OpenAPI 3.0 & Swagger Schema Studio",
+		name: "OpenAPI 3.0 & Swagger Schema Studio",
 		categories: ["network", "ai"],
-		description: "Construct OpenAPI 3.0 JSON/YAML specifications, generate TypeScript API response contracts, export Swagger schemas, and prompt Local AI.",
+		description: "Construct OpenAPI 3.0 JSON/YAML specifications, generate TypeScript API response contracts, and export Swagger schemas.",
 		icon: "Terminal",
 		status: "functional",
 		requiresOllama: true,
@@ -2151,30 +2152,30 @@ const ALL_PLANNED_TOOLS: PlannedTool[] = [
 		requiresOllama: true,
 	},
 
-	// Additional Local AI Tools (3)
+	// Additional Smart & Data Tools (3)
 	{
 		id: "bip39-wallet-inspector",
-		name: "AI Cryptographic BIP-39 & Security Auditor",
+		name: "Cryptographic BIP-39 & Security Auditor",
 		categories: ["security", "ai"],
-		description: "Inspect BIP-39 seed mnemonics, verify HD wallet derivation paths, and audit cryptographic entropy offline with Local AI.",
+		description: "Inspect BIP-39 seed mnemonics, verify HD wallet derivation paths, and audit cryptographic entropy offline.",
 		icon: "KeyRound",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "srt-subtitle-tool",
-		name: "AI Subtitle Translator & Smart Re-timer",
+		name: "Subtitle Translator & Smart Re-timer",
 		categories: ["converter", "video", "ai"],
-		description: "Edit SRT/VTT subtitle timing offsets (+/- ms), re-sync subtitle drift, and translate subtitles line-by-line preserving timestamp markup with Local AI.",
+		description: "Edit SRT/VTT subtitle timing offsets (+/- ms), re-sync subtitle drift, and translate subtitles line-by-line preserving timestamp markup locally.",
 		icon: "Subtitles",
 		status: "functional",
 		requiresOllama: true,
 	},
 	{
 		id: "csv-schema-diff",
-		name: "AI CSV Schema & Data Drift Diagnostic Tool",
+		name: "CSV Schema & Data Drift Diagnostic Tool",
 		categories: ["data", "ai"],
-		description: "Compare two CSV/TSV spreadsheets column-by-column, detect structural schema shifts, and generate database migration SQL scripts with Local AI.",
+		description: "Compare two CSV/TSV spreadsheets column-by-column, detect structural schema shifts, and generate database migration SQL scripts.",
 		icon: "FileSpreadsheet",
 		status: "functional",
 		requiresOllama: true,
@@ -2454,24 +2455,24 @@ export const Dashboard = () => {
 							</a>
 						</TiltContainer>
 
-						{/* #1 in AI Category Badge */}
+						{/* #1 in Innovation Badge */}
 						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
 							<div
-								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
-								title="#1 Product in AI & Local LLM Category"
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] hover:border-amber-400/40 text-xs font-bold shadow-sm"
+								title="#1 Product in Innovation & Local Tools Category"
 							>
-								<Cpu size={13} className="text-[#3C6B4D] shrink-0" />
-								<span>#1 in AI</span>
+								<Sparkles size={13} className="text-amber-400 shrink-0" />
+								<span>#1 Innovation</span>
 							</div>
 						</TiltContainer>
 
 						{/* #1 in Productivity Badge */}
 						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
 							<div
-								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] hover:border-amber-400/40 text-xs font-bold shadow-sm"
 								title="#1 Product in Productivity Category"
 							>
-								<TrophyIcon size={13} className="text-[#3C6B4D] shrink-0" />
+								<TrophyIcon size={13} className="text-amber-400 shrink-0" />
 								<span>#1 Productivity</span>
 							</div>
 						</TiltContainer>
@@ -2479,10 +2480,10 @@ export const Dashboard = () => {
 						{/* #1 in Developer Tools Badge */}
 						<TiltContainer maxTilt={15} scale={1.05} className="inline-block">
 							<div
-								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/15 text-[#4E8E5E] text-xs font-bold shadow-sm"
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#2A2D30] bg-[#18191B] text-[#ECEBE9] hover:border-amber-400/40 text-xs font-bold shadow-sm"
 								title="#1 Product in Developer Tools Category"
 							>
-								<AwardIcon size={13} className="text-[#3C6B4D] shrink-0" />
+								<AwardIcon size={13} className="text-amber-400 shrink-0" />
 								<span>#1 Dev Tools</span>
 							</div>
 						</TiltContainer>
@@ -2498,7 +2499,7 @@ export const Dashboard = () => {
 								href="https://www.facebook.com/share/p/19NcmGKzVJ/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured on Abakada.org"
 							>
 								<img src="/abakada.jpg" alt="Abakada.org" className="w-4 h-4 object-cover rounded-sm" />
@@ -2512,7 +2513,7 @@ export const Dashboard = () => {
 								href="https://bettergov.ph"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured on BetterGov PH"
 							>
 								<img src={betterGovLogo} alt="BetterGov PH" className="w-4 h-4 object-contain rounded-sm" />
@@ -2526,7 +2527,7 @@ export const Dashboard = () => {
 								href="https://www.facebook.com/share/p/1G5PGJFuYE/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured on Upamate"
 							>
 								<img src={upamateLogo} alt="Upamate" className="w-4 h-4 object-contain rounded-sm" />
@@ -2540,7 +2541,7 @@ export const Dashboard = () => {
 								href="https://stage.byant.dev/p/domodomo"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured Pick on Stage by Ant"
 							>
 								<img src={stageByAntLogo} alt="Stage by Ant" className="w-4 h-4 object-contain rounded-sm" />
@@ -2554,7 +2555,7 @@ export const Dashboard = () => {
 								href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-[#3C6B4D]/50 text-xs font-semibold text-[#ECEBE9] transition-all"
+								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured on AppBuildersPH Daily Top Apps"
 							>
 								<img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-4 h-4 object-contain rounded-sm" />
@@ -2565,7 +2566,7 @@ export const Dashboard = () => {
 
 					{/* Group 3: Core Privacy & Open Source Guarantees */}
 					<div className="flex flex-wrap items-center gap-2">
-						<div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-xs font-semibold">
+						<div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 text-[#ECEBE9] border border-white/10 text-xs font-semibold">
 							<Globe size={12} />
 							<span>Sandbox Offline Web Utilities</span>
 						</div>
@@ -2575,13 +2576,13 @@ export const Dashboard = () => {
 						</div>
 					</div>
 					<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#ECEBE9] tracking-tight leading-tight mt-1 font-heading">
-						Your Local-First{' '}<br className="hidden sm:inline" />
-						<span className="text-[#3C6B4D]">Productivity Workshop.</span>
+						Winter Workshop ❄️{' '}<br className="hidden sm:inline" />
+						<span className="text-white">Productivity Suite.</span>
 					</h1>
 					<p className="text-[#A3A09B] text-xs sm:text-sm md:text-base leading-relaxed max-w-xl">
 						DomoDomo is an open-source productivity workshop running entirely in
 						your browser sandbox. Edit files, compress media, compile PDF
-						modifications, and run local AI models. Your files never touch the
+						modifications, and run local offline assistants. Your files never touch the
 						cloud.
 					</p>
 				</div>
@@ -2611,7 +2612,7 @@ export const Dashboard = () => {
 									</span>
 									<div className="flex justify-between items-center group/line">
 										<span className="text-[#ECEBE9] flex items-center gap-1">
-											<span className="text-[#3C6B4D] font-bold">$</span> git
+											<span className="text-white font-bold">$</span> git
 											clone
 											https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git
 										</span>
@@ -2622,11 +2623,11 @@ export const Dashboard = () => {
 													0,
 												)
 											}
-											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-white/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
 											title="Copy command"
 										>
 											{copiedTerminalIndex === 0 ? (
-												<Check size={10} className="text-[#3C6B4D]" />
+												<Check size={10} className="text-white" />
 											) : (
 												<Copy size={10} />
 											)}
@@ -2634,7 +2635,7 @@ export const Dashboard = () => {
 									</div>
 									<div className="flex justify-between items-center group/line">
 										<span className="text-[#ECEBE9] flex items-center gap-1">
-											<span className="text-[#3C6B4D] font-bold">$</span> cd
+											<span className="text-white font-bold">$</span> cd
 											DomoDomo---All-in-one-Tool && npm install
 										</span>
 										<button
@@ -2644,11 +2645,11 @@ export const Dashboard = () => {
 													1,
 												)
 											}
-											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-white/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
 											title="Copy command"
 										>
 											{copiedTerminalIndex === 1 ? (
-												<Check size={10} className="text-[#3C6B4D]" />
+												<Check size={10} className="text-white" />
 											) : (
 												<Copy size={10} />
 											)}
@@ -2662,18 +2663,18 @@ export const Dashboard = () => {
 									</span>
 									<div className="flex justify-between items-center group/line">
 										<span className="text-[#ECEBE9] flex items-center gap-1">
-											<span className="text-[#3C6B4D] font-bold">$</span> npm
+											<span className="text-white font-bold">$</span> npm
 											run dev
 										</span>
 										<button
 											onClick={() =>
 												handleCopyTerminalCommand("npm run dev", 2)
 											}
-											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-white/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
 											title="Copy command"
 										>
 											{copiedTerminalIndex === 2 ? (
-												<Check size={10} className="text-[#3C6B4D]" />
+												<Check size={10} className="text-white" />
 											) : (
 												<Copy size={10} />
 											)}
@@ -2687,29 +2688,29 @@ export const Dashboard = () => {
 
 								<div className="flex flex-col gap-1">
 									<span className="text-[#72706C] font-semibold">
-										# 3. Setup and pull local AI tools (via Ollama)
+										# 3. Connect local device assistants (via Ollama)
 									</span>
 									<div className="flex justify-between items-center group/line">
 										<span className="text-[#ECEBE9] flex items-center gap-1">
-											<span className="text-[#3C6B4D] font-bold">$</span> ollama
+											<span className="text-white font-bold">$</span> ollama
 											run llama3.2:3b
 										</span>
 										<button
 											onClick={() =>
 												handleCopyTerminalCommand("ollama run llama3.2:3b", 3)
 											}
-											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
+											className="p-1 rounded bg-[#18191B]/80 border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-white/40 transition-all opacity-0 group-hover/line:opacity-100 shrink-0"
 											title="Copy command"
 										>
 											{copiedTerminalIndex === 3 ? (
-												<Check size={10} className="text-[#3C6B4D]" />
+												<Check size={10} className="text-white" />
 											) : (
 												<Copy size={10} />
 											)}
 										</button>
 									</div>
-									<span className="text-[#3C6B4D] text-[9px] pl-4">
-										✓ Local AI bridge connected and secure!
+									<span className="text-sky-300 text-[9px] pl-4">
+										✓ Local device bridge connected and ready!
 									</span>
 								</div>
 							</div>
@@ -2735,20 +2736,20 @@ export const Dashboard = () => {
 			{/* Domo Ecosystem Showcase */}
 			<div className="space-y-4">
 				{/* Codepyne.io Ecosystem Spotlight Banner */}
-				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/codepyne text-left">
-					<div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/40 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/codepyne text-left">
+					<div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 					<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
 						<div className="space-y-3 max-w-3xl">
 							<div>
-								<div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-emerald-400 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+								<div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
 									<GiSnake size={13} />
 									<span>Official Ecosystem Partner</span>
 								</div>
 								<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
-									<span>Codepyne.io — AI &amp; Machine Learning Upskilling Platform</span>
+									<span>Codepyne.io — Engineering &amp; Data Science Upskilling Platform</span>
 								</h2>
 								<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
-									The AI &amp; Machine Learning upskilling platform where you learn by orchestrating, training, and deploying real models — from Python fundamentals and autograd engines to transformer fine-tuning, multi-agent systems, and verifiable AI certifications.
+									The hands-on technical upskilling platform where you learn by orchestrating, training, and building real systems — from Python fundamentals and autograd engines to transformer fine-tuning, multi-agent systems, and verifiable software certifications.
 								</p>
 							</div>
 
@@ -2771,7 +2772,7 @@ export const Dashboard = () => {
 
 							{/* Highlight Pill */}
 							<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
-								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-emerald-400 font-bold flex items-center gap-1.5">
+								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-amber-300 font-bold flex items-center gap-1.5">
 									<GiSnake size={12} />
 									<span>Web Platform</span>
 								</div>
@@ -2785,7 +2786,7 @@ export const Dashboard = () => {
 								href="https://codepyne-io.vercel.app/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all shadow-md shadow-[#3C6B4D]/20 group/btn"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shadow-white/5 group/btn"
 							>
 								<GiSnake size={15} />
 								<span>Explore Codepyne.io</span>
@@ -2794,7 +2795,7 @@ export const Dashboard = () => {
 
 							<a
 								href="/blog/announcing-codepyne-io-ai-machine-learning-upskilling-platform"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all text-center"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-bold transition-all text-center"
 							>
 								<span>Read Announcement</span>
 							</a>
@@ -2803,17 +2804,17 @@ export const Dashboard = () => {
 				</div>
 
 				{/* DomoSkills Ecosystem Spotlight Banner */}
-				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/domoskills text-left">
-					<div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/40 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/domoskills text-left">
+					<div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 					<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
 						<div className="space-y-3 max-w-3xl">
 							<div>
 								<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
 									<span>DomoSkills — The Open Agent Skills Marketplace</span>
-									<Sparkles size={18} className="text-emerald-400 shrink-0" />
+									<Sparkles size={18} className="text-amber-300 shrink-0" />
 								</h2>
 								<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
-									Supercharge your AI coding agents with 200+ verified capabilities. Single-command CLI installation for <span className="text-[#ECEBE9] font-semibold">Google Antigravity</span>, <span className="text-[#ECEBE9] font-semibold">Claude Code</span>, <span className="text-[#ECEBE9] font-semibold">Cursor</span>, <span className="text-[#ECEBE9] font-semibold">OpenCode</span>, <span className="text-[#ECEBE9] font-semibold">Codex</span>, and <span className="text-[#ECEBE9] font-semibold">Gemini CLI</span>.
+									Supercharge your coding assistants with 200+ verified capabilities. Single-command CLI installation for <span className="text-[#ECEBE9] font-semibold">Google Antigravity</span>, <span className="text-[#ECEBE9] font-semibold">Claude Code</span>, <span className="text-[#ECEBE9] font-semibold">Cursor</span>, <span className="text-[#ECEBE9] font-semibold">OpenCode</span>, <span className="text-[#ECEBE9] font-semibold">Codex</span>, and <span className="text-[#ECEBE9] font-semibold">Gemini CLI</span>.
 								</p>
 							</div>
 
@@ -2829,17 +2830,17 @@ export const Dashboard = () => {
 
 							{/* Quick Copy Command Snippet */}
 							<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
-								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-emerald-400 font-bold flex items-center gap-1.5">
+								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-sky-300 font-bold flex items-center gap-1.5">
 									<Terminal size={12} />
 									<span>CLI</span>
 								</div>
 								<span className="text-[#ECEBE9] text-[11px] sm:text-xs">npx domoskills add react-performance owasp-agent-guardian</span>
 								<button
 									onClick={handleCopyDomoSkillsCli}
-									className="p-1 rounded bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#72706C] hover:text-[#ECEBE9] transition-all ml-1"
+									className="p-1 rounded bg-[#18191B] border border-[#2A2D30] hover:border-white/40 text-[#72706C] hover:text-[#ECEBE9] transition-all ml-1"
 									title="Copy installation command"
 								>
-									{copiedDomoSkillsCli ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+									{copiedDomoSkillsCli ? <Check size={12} className="text-white" /> : <Copy size={12} />}
 								</button>
 							</div>
 						</div>
@@ -2850,7 +2851,7 @@ export const Dashboard = () => {
 								href="https://web-beta-six-81.vercel.app/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all shadow-md shadow-[#3C6B4D]/20 group/btn"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shadow-white/5 group/btn"
 							>
 								<span>Explore Marketplace</span>
 								<ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
@@ -2858,9 +2859,9 @@ export const Dashboard = () => {
 
 							<button
 								onClick={() => navigate('/tool/domoskills')}
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs font-bold transition-all"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-bold transition-all"
 							>
-								<Sparkles size={13} className="text-emerald-400" />
+								<Sparkles size={13} className="text-amber-300" />
 								<span>In-App Tool Hub</span>
 							</button>
 
@@ -2868,7 +2869,7 @@ export const Dashboard = () => {
 								href="https://github.com/darknecrocities/DomoSkills"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30] hover:border-[#3C6B4D]/40 text-xs font-semibold transition-all"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-semibold transition-all"
 							>
 								<Code size={13} />
 								<span>GitHub Repository</span>
@@ -2907,7 +2908,7 @@ export const Dashboard = () => {
 									key={cat.id}
 									onClick={() => handleCategoryChange(cat.id)}
 									className={`py-2 px-4 rounded-xl text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] whitespace-nowrap border shrink-0 flex items-center gap-1.5 ${activeCategory === cat.id
-											? "bg-[#3C6B4D] text-[#ECEBE9] border-[#3C6B4D] shadow-sm"
+											? "bg-white text-black border-white shadow-md font-bold"
 											: "bg-[#18191B] border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213]"
 										}`}
 								>
@@ -2938,7 +2939,7 @@ export const Dashboard = () => {
 					<div className="relative flex-1 sm:flex-initial w-full sm:w-60 md:w-80 group">
 						<Search
 							size={14}
-							className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-[#3C6B4D] transition-colors"
+							className="absolute left-3 top-1/2 -translate-y-1/2 text-[#72706C] group-focus-within:text-white transition-colors"
 						/>
 						<input
 							ref={searchInputRef}
@@ -2946,7 +2947,7 @@ export const Dashboard = () => {
 							placeholder="Search local tools..."
 							value={search}
 							onChange={(e) => setSearch(e.target.value)}
-							className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] transition-all placeholder:text-[#72706C]"
+							className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-14 py-2 text-xs text-[#ECEBE9] focus:outline-none focus:border-white/60 transition-all placeholder:text-[#72706C]"
 						/>
 						<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
 							<kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-[#18191B] border border-[#2A2D30] text-[#72706C] rounded shadow-sm">
@@ -2963,8 +2964,8 @@ export const Dashboard = () => {
 						onClick={togglePhysicsMode}
 						className={`p-2.5 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0 shadow-md ${
 							isPhysicsActive
-								? "bg-[#3C6B4D] border-[#3C6B4D] text-white animate-pulse"
-								: "bg-[#111213] border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/50"
+								? "bg-white border-white text-black animate-pulse"
+								: "bg-[#111213] border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-white/40"
 						}`}
 						title={isPhysicsActive ? "Restore original layout" : "Unlock chaotic mystery physics mode!"}
 					>
@@ -2978,20 +2979,20 @@ export const Dashboard = () => {
 			</div>
 
 			{(activeCategory === "ai" || activeCategory === "investigation") && !hasOllama && (
-				<div className="glass-card p-6 md:p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B] mb-6">
+				<div className="frost-card p-6 md:p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B] mb-6">
 					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
 						<div className="flex items-center gap-3">
-							<div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+							<div className="p-3 bg-white/5 border border-white/10 text-white rounded-xl">
 								<Cpu size={24} />
 							</div>
 							<div>
 								<h2 className="text-xl font-bold text-[#ECEBE9] tracking-tight">
 									{activeCategory === "investigation"
 										? "Investigative Research Suite — Local Ollama Bridge"
-										: "Local AI Hub — Browser Fallback Active"}
+										: "Smart Assistant Hub — Browser Fallback Active"}
 								</h2>
 								<p className="text-[#A3A09B] text-xs mt-1">
-									All tools below are unlocked and operational. Connect local Ollama with CORS to run high-performance offline LLMs directly on your device.
+									All tools below are unlocked and operational. Connect local Ollama with CORS to run high-performance offline models directly on your device.
 								</p>
 							</div>
 						</div>
@@ -3008,7 +3009,7 @@ export const Dashboard = () => {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-1">
 						<div className="flex flex-col gap-3">
 							<h3 className="font-bold text-[#ECEBE9] text-xs flex items-center gap-2">
-								<span className="w-4 h-4 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">
+								<span className="w-4 h-4 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-[10px] font-mono">
 									1
 								</span>
 								<span>Launch DomoDomo Desktop</span>
@@ -3026,7 +3027,7 @@ npm run dev`}
 
 						<div className="flex flex-col gap-3">
 							<h3 className="font-bold text-[#ECEBE9] text-xs flex items-center gap-2">
-								<span className="w-4 h-4 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-[10px] font-mono">
+								<span className="w-4 h-4 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-[10px] font-mono">
 									2
 								</span>
 								<span>Start Local Ollama with CORS</span>
@@ -3044,7 +3045,7 @@ npm run dev`}
 
 					<div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3 mt-1">
 						<div className="flex items-center gap-3">
-							<div className="animate-spin text-[#3C6B4D]">
+							<div className="animate-spin text-white">
 								<Cpu size={16} />
 							</div>
 							<div className="text-left">
@@ -3070,10 +3071,10 @@ npm run dev`}
 			)}
 
 			{activeCategory === "ai" && hasOllama && ollamaModels.length === 0 && (
-				<div className="glass-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B] mb-6">
+				<div className="frost-card p-8 flex flex-col gap-6 text-left max-w-4xl mx-auto w-full border-[#2A2D30] bg-[#18191B] mb-6">
 					<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#2A2D30] pb-5">
 						<div className="flex items-center gap-3">
-							<div className="p-3 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+							<div className="p-3 bg-white/5 border border-white/10 text-white rounded-xl">
 								<Cpu
 									size={24}
 									className={downloadingModel ? "animate-spin" : ""}
@@ -3100,11 +3101,11 @@ npm run dev`}
 							<div className="flex flex-wrap gap-4 text-xs font-semibold text-[#A3A09B] mt-0.5">
 								<div className="flex items-center gap-1">
 									<span className="text-[#72706C]">RAM:</span>
-									<span className="text-[#3C6B4D]">{hardware.ram}</span>
+									<span className="text-white">{hardware.ram}</span>
 								</div>
 								<div className="flex items-center gap-1">
 									<span className="text-[#72706C]">Cores:</span>
-									<span className="text-[#3C6B4D]">
+									<span className="text-white">
 										{hardware.cores} threads
 									</span>
 								</div>
@@ -3112,7 +3113,7 @@ npm run dev`}
 									<span className="text-[#72706C]">WebGPU:</span>
 									<span
 										className={
-											hardware.hasWebGPU ? "text-[#3C6B4D]" : "text-[#E29E2D]"
+											hardware.hasWebGPU ? "text-white" : "text-[#E29E2D]"
 										}
 									>
 										{hardware.hasWebGPU ? "Supported" : "Not supported"}
@@ -3120,8 +3121,8 @@ npm run dev`}
 								</div>
 							</div>
 						</div>
-						<div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-3.5 rounded-xl max-w-sm">
-							<span className="text-[#3C6B4D] font-bold text-xs uppercase tracking-wide block">
+						<div className="bg-white/5 border border-white/10 p-3.5 rounded-xl max-w-sm">
+							<span className="text-white font-bold text-xs uppercase tracking-wide block">
 								Hardware Recommendation
 							</span>
 							<p className="text-[#A3A09B] text-[11px] leading-relaxed mt-1">
@@ -3142,15 +3143,15 @@ npm run dev`}
 						{downloadingModel && (
 							<div className="bg-[#111213] border border-[#2A2D30] p-5 rounded-xl flex flex-col gap-3">
 								<div className="flex justify-between items-center text-xs font-semibold">
-									<span className="text-[#3C6B4D] flex items-center gap-2">
-										<span className="animate-spin w-3 h-3 border-2 border-[#3C6B4D] border-t-transparent rounded-full"></span>
+									<span className="text-white flex items-center gap-2">
+										<span className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full"></span>
 										<span>Downloading {downloadingModel}...</span>
 									</span>
 									<span className="text-[#ECEBE9]">{downloadProgress}%</span>
 								</div>
 								<div className="w-full bg-[#18191B] rounded-full h-2 overflow-hidden border border-[#2A2D30]">
 									<div
-										className="bg-[#3C6B4D] h-full transition-all duration-300"
+										className="bg-white h-full transition-all duration-300"
 										style={{ width: `${downloadProgress}%` }}
 									/>
 								</div>
@@ -3204,12 +3205,12 @@ npm run dev`}
 									<div
 										key={model.name}
 										className={`bg-[#111213] border p-5 rounded-xl flex flex-col justify-between gap-4 transition-all relative ${isRecommended
-												? "border-[#3C6B4D]/40 bg-[#3C6B4D]/5"
-												: "border-[#2A2D30] hover:border-[#2E533B]/40"
+												? "border-amber-500/35 bg-amber-500/5"
+												: "border-[#2A2D30] hover:border-white/30"
 											}`}
 									>
 										{isRecommended && (
-											<span className="absolute -top-2.5 right-4 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
+											<span className="absolute -top-2.5 right-4 bg-amber-500/10 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-bold">
 												Recommended
 											</span>
 										)}
@@ -3228,7 +3229,7 @@ npm run dev`}
 											onClick={() => handlePullModel(model.name)}
 											disabled={!!downloadingModel}
 											className={`w-full py-2 rounded-lg text-xs font-bold transition-all ${isRecommended
-													? "bg-[#3C6B4D] hover:bg-[#2E533B] text-[#ECEBE9] disabled:opacity-40"
+													? "bg-white hover:bg-neutral-200 text-black disabled:opacity-40"
 													: "bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#A3A09B] disabled:opacity-40"
 												}`}
 										>
@@ -3246,22 +3247,22 @@ npm run dev`}
 
 			<div className="flex flex-col gap-6 w-full text-left">
 				{activeCategory === "ai" && hasOllama && (
-					<div className="glass-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
+					<div className="frost-card p-5 flex flex-col gap-4 border-[#2A2D30] bg-[#18191B]">
 						<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 							<div className="flex items-center gap-3">
-								<div className="p-2 bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] rounded-xl">
+								<div className="p-2 bg-white/5 border border-white/10 text-white rounded-xl">
 									<Cpu size={18} />
 								</div>
 								<div>
 									<span className="text-[10px] text-[#72706C] uppercase tracking-wider block font-semibold">
-										Active LLM Model
+										Active Model
 									</span>
 									<div className="flex items-center gap-2 mt-0.5">
 										<span className="text-sm font-bold text-[#ECEBE9] font-mono">
 											{selectedOllamaModel || "None"}
 										</span>
-										<span className="text-[9px] px-2 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 font-bold uppercase tracking-wider">
-											Ollama Active
+										<span className="text-[9px] px-2 py-0.5 rounded bg-white/10 text-white border border-white/20 font-bold uppercase tracking-wider">
+											Active
 										</span>
 									</div>
 								</div>
@@ -3274,7 +3275,7 @@ npm run dev`}
 										setSelectedOllamaModel(e.target.value);
 										aiService.setSelectedOllamaModel(e.target.value);
 									}}
-									className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-[#3C6B4D] w-full md:w-56"
+									className="bg-[#111213] text-[#ECEBE9] border border-[#2A2D30] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:border-white/60 w-full md:w-56"
 								>
 									{ollamaModels.map((m) => (
 										<option key={m} value={m}>
@@ -3305,11 +3306,11 @@ npm run dev`}
 										</span>
 										<span className="text-xs text-[#A3A09B] block mt-1">
 											System RAM:{" "}
-											<strong className="text-[#3C6B4D]">
+											<strong className="text-white">
 												{hardware.ram}
 											</strong>{" "}
 											| CPU Cores:{" "}
-											<strong className="text-[#3C6B4D]">
+											<strong className="text-white">
 												{hardware.cores}
 											</strong>
 										</span>
@@ -3326,14 +3327,14 @@ npm run dev`}
 								{downloadingModel && (
 									<div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl flex flex-col gap-2">
 										<div className="flex justify-between items-center text-xs font-semibold">
-											<span className="text-[#3C6B4D]">
+											<span className="text-white">
 												Downloading {downloadingModel}...
 											</span>
 											<span>{downloadProgress}%</span>
 										</div>
 										<div className="w-full bg-[#18191B] rounded-full h-1.5 overflow-hidden">
 											<div
-												className="bg-[#3C6B4D] h-full"
+												className="bg-white h-full"
 												style={{ width: `${downloadProgress}%` }}
 											/>
 										</div>
@@ -3373,7 +3374,7 @@ npm run dev`}
 													disabled={alreadyInstalled || !!downloadingModel}
 													className={`w-full py-1.5 rounded-lg text-[10px] font-bold transition-all ${alreadyInstalled
 															? "bg-[#18191B] text-[#72706C] cursor-default border border-[#2A2D30]"
-															: "bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 hover:bg-[#3C6B4D]/20"
+															: "bg-white/10 text-white border border-white/20 hover:bg-white/20"
 														}`}
 												>
 													{alreadyInstalled
@@ -3447,10 +3448,10 @@ npm run dev`}
 											userSelect: "none",
 											WebkitUserSelect: "none",
 										}}
-										className={`glass-card flex flex-col items-center justify-center overflow-hidden group select-none ${
+										className={`frost-card flex flex-col items-center justify-center overflow-hidden group select-none ${
 											isReady
 												? tool.popular
-													? "border-[#D4AF37]/35 shadow-[0_0_20px_rgba(212,175,55,0.08)] bg-[#18191B]"
+													? "border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.08)] bg-[#18191B]"
 													: "border-[#2A2D30] bg-[#18191B]"
 												: "opacity-75 border-dashed border-[#2A2D30] bg-[#111213]/60"
 										}`}
@@ -3462,8 +3463,8 @@ npm run dev`}
 													className={`p-2 rounded-xl border flex items-center justify-center shrink-0 ${
 														isReady
 															? tool.popular
-																? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37]"
-																: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D]"
+																? "bg-amber-500/10 border-amber-500/25 text-amber-300"
+																: "bg-[#222426] border-[#33363A] text-[#ECEBE9]"
 															: "bg-[#25282B] border-[#2A2D30] text-[#72706C]"
 													}`}
 												>
@@ -3482,8 +3483,8 @@ npm run dev`}
 															className={`p-2.5 sm:p-3 rounded-xl border shrink-0 ${
 																isReady
 																	? tool.popular
-																		? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37]"
-																		: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D]"
+																		? "bg-amber-500/10 border-amber-500/25 text-amber-300"
+																		: "bg-[#222426] border-[#33363A] text-[#ECEBE9]"
 																	: "bg-[#25282B] border-[#2A2D30] text-[#72706C]"
 															}`}
 														>
@@ -3492,13 +3493,14 @@ npm run dev`}
 														{isReady ? (
 															<div className="flex flex-wrap items-center justify-end gap-1 sm:gap-1.5 shrink min-w-0">
 																{tool.popular && (
-																	<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1 shrink-0">
-																		<Star size={10} className="fill-[#D4AF37] shrink-0" />
-																		<span>Popular</span>
+																	<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 flex items-center gap-1 shrink-0">
+																		<Gift size={10} className="text-amber-300 shrink-0" />
+																		<span>Holiday Pick</span>
 																	</span>
 																)}
-																<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 shrink-0">
-																	Ready
+																<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-white/10 text-[#ECEBE9] border border-white/15 flex items-center gap-1 shrink-0">
+																	<Snowflake size={10} className="text-sky-300 shrink-0" />
+																	<span>Ready</span>
 																</span>
 															</div>
 														) : (
@@ -3531,7 +3533,7 @@ npm run dev`}
 													{isReady && (
 														<span
 															className={`text-[11px] sm:text-xs font-semibold ${
-																tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
+																tool.popular ? "text-amber-300" : "text-[#ECEBE9]"
 															} flex items-center gap-1 shrink-0 ml-1`}
 														>
 															<span>Open</span>
@@ -3558,11 +3560,11 @@ npm run dev`}
 													navigate(`/tool/${tool.id}`);
 												}
 											}}
-											className={`glass-card emil-card-enter p-3.5 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
+											className={`frost-card emil-card-enter p-3.5 sm:p-5 lg:p-6 flex flex-col justify-between text-left relative overflow-hidden group ${
 												isReady
 													? tool.popular
-														? "glass-card-hover cursor-pointer border-[#D4AF37]/35 hover:border-[#D4AF37] hover:shadow-[0_0_20px_rgba(212,175,55,0.08)] bg-[#18191B]"
-														: "glass-card-hover cursor-pointer border-[#2A2D30] hover:border-[#3C6B4D]/50 bg-[#18191B]"
+														? "frost-card-hover cursor-pointer border-amber-500/35 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.12)] bg-[#18191B]"
+														: "frost-card-hover cursor-pointer border-[#2A2D30] hover:border-white/50 hover:shadow-[0_4px_25px_rgba(255,255,255,0.06)] bg-[#18191B]"
 													: "opacity-75 border-dashed border-[#2A2D30] bg-[#111213]/60 cursor-default select-none"
 											}`}
 										>
@@ -3572,8 +3574,8 @@ npm run dev`}
 														className={`p-2.5 sm:p-3 rounded-xl border shrink-0 ${
 															isReady
 																? tool.popular
-																	? "bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#D4AF37] group-hover:scale-[1.03] transition-transform"
-																	: "bg-[#3C6B4D]/10 border-[#3C6B4D]/25 text-[#3C6B4D] group-hover:scale-[1.03] transition-transform"
+																	? "bg-amber-500/10 border-amber-500/25 text-amber-300 group-hover:scale-[1.03] transition-transform"
+																	: "bg-[#222426] border-[#33363A] text-[#ECEBE9] group-hover:scale-[1.03] transition-transform"
 																: "bg-[#25282B] border-[#2A2D30] text-[#72706C]"
 														}`}
 													>
@@ -3582,13 +3584,14 @@ npm run dev`}
 													{isReady ? (
 														<div className="flex flex-wrap items-center justify-end gap-1 sm:gap-1.5 shrink min-w-0">
 															{tool.popular && (
-																<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 flex items-center gap-1 shrink-0">
-																	<Star size={10} className="fill-[#D4AF37] shrink-0" />
-																	<span>Popular</span>
+																<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 flex items-center gap-1 shrink-0">
+																	<Gift size={10} className="text-amber-300 shrink-0" />
+																	<span>Holiday Pick</span>
 																</span>
 															)}
-															<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 shrink-0">
-																Ready
+															<span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider sm:tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-white/10 text-[#ECEBE9] border border-white/15 flex items-center gap-1 shrink-0">
+																<Snowflake size={10} className="text-sky-300 shrink-0" />
+																<span>Ready</span>
 															</span>
 														</div>
 													) : (
@@ -3602,8 +3605,8 @@ npm run dev`}
 													<h3
 														className={`font-bold text-sm sm:text-base lg:text-lg text-[#ECEBE9] ${
 															tool.popular
-																? "group-hover:text-[#D4AF37]"
-																: "group-hover:text-[#3C6B4D]"
+																? "group-hover:text-amber-300"
+																: "group-hover:text-white"
 														} transition-colors line-clamp-1 sm:line-clamp-2`}
 													>
 														{tool.name}
@@ -3628,7 +3631,7 @@ npm run dev`}
 												{isReady && (
 													<span
 														className={`text-[11px] sm:text-xs font-semibold ${
-															tool.popular ? "text-[#D4AF37]" : "text-[#3C6B4D]"
+															tool.popular ? "text-amber-300" : "text-[#ECEBE9] group-hover:text-white"
 														} group-hover:translate-x-1 transition-transform flex items-center gap-1 shrink-0 ml-1`}
 													>
 														<span>Open</span>

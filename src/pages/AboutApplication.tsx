@@ -109,12 +109,12 @@ export const CATEGORY_DETAILS = [
   },
   {
     id: 'ai',
-    name: 'Local AI',
+    name: 'Smart Assistants',
     icon: Cpu,
-    badge: 'Ollama LLM Integration',
-    tagline: 'Private AI chat, document summarization, and local multi-agent loops.',
-    useCase: 'Essential for privacy-minded users running local LLMs (Ollama) for code explaining, text summarization, multi-agent research campaigns, and confidential drafting with zero data leaks.',
-    highlights: ['Local AI Chat', 'Research Orchestrator', 'Code Explainer', 'Document Summarizer']
+    badge: 'Offline Intelligent Engine',
+    tagline: 'Private writing assistance, document summarization, and local helper loops.',
+    useCase: 'Essential for privacy-minded users running local assistants for code inspection, text summarization, research workflows, and confidential drafting with zero data leaks.',
+    highlights: ['Chat & Writing Assistant', 'Document Summarizer', 'Code Explainer & Inspector', 'Agent Workspace Hub']
   },
   {
     id: 'security',
@@ -239,26 +239,26 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
             </div>
 
             <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-sm font-extrabold text-xs"
-              title="#1 Product in AI & Local LLM Category"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-white/20 bg-white/5 text-neutral-200 shadow-sm font-extrabold text-xs"
+              title="#1 Product in Innovation Category"
             >
-              <Cpu size={13} className="text-[#3C6B4D]" />
-              <span>#1 in AI Category</span>
+              <Cpu size={13} className="text-white" />
+              <span>#1 in Innovation</span>
             </div>
 
             <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-sm font-extrabold text-xs"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-white/20 bg-white/5 text-neutral-200 shadow-sm font-extrabold text-xs"
               title="#1 Product in Productivity Category"
             >
-              <Trophy size={13} className="text-[#3C6B4D]" />
+              <Trophy size={13} className="text-white" />
               <span>#1 in Productivity</span>
             </div>
 
             <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-[#3C6B4D]/40 bg-[#3C6B4D]/10 text-[#4E8E5E] shadow-sm font-extrabold text-xs"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-white/20 bg-white/5 text-neutral-200 shadow-sm font-extrabold text-xs"
               title="#1 Product in Developer Tools Category"
             >
-              <Award size={13} className="text-[#3C6B4D]" />
+              <Award size={13} className="text-white" />
               <span>#1 in Developer Tools</span>
             </div>
           </div>
@@ -294,11 +294,11 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
           <button
             onClick={() => handleTabChange('about')}
             className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'about'
-              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              ? 'bg-white text-black font-bold border-white shadow-sm'
               : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
               }`}
           >
-            <Shield size={14} className={activeTab === 'about' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+            <Shield size={14} className={activeTab === 'about' ? 'text-black' : 'text-[#72706C]'} />
             <span>About Page</span>
           </button>
 
@@ -306,33 +306,33 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
           <button
             onClick={() => handleTabChange('categories')}
             className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'categories'
-              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              ? 'bg-white text-black font-bold border-white shadow-sm'
               : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
               }`}
           >
-            <LayoutGrid size={14} className={activeTab === 'categories' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+            <LayoutGrid size={14} className={activeTab === 'categories' ? 'text-black' : 'text-[#72706C]'} />
             <span>Tool Categories</span>
           </button>
 
           <button
             onClick={() => handleTabChange('updates')}
             className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'updates'
-              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              ? 'bg-white text-black font-bold border-white shadow-sm'
               : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
               }`}
           >
-            <Sparkles size={14} className={activeTab === 'updates' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+            <Sparkles size={14} className={activeTab === 'updates' ? 'text-black' : 'text-[#72706C]'} />
             <span>Updates & Patches</span>
           </button>
 
           <button
             onClick={() => handleTabChange('docs')}
             className={`w-full text-left px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border ${activeTab === 'docs'
-              ? 'bg-[#3C6B4D]/10 border-[#3C6B4D]/45 text-[#ECEBE9]'
+              ? 'bg-white text-black font-bold border-white shadow-sm'
               : 'border-transparent text-[#A3A09B] hover:bg-[#111213] hover:text-[#ECEBE9]'
               }`}
           >
-            <Terminal size={14} className={activeTab === 'docs' ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+            <Terminal size={14} className={activeTab === 'docs' ? 'text-black' : 'text-[#72706C]'} />
             <span>Local Docs</span>
           </button>
         </div>
@@ -344,8 +344,8 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               {/* Stats Block */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map(({ label, value, detail, icon: Icon }) => (
-                  <div key={label} className="glass-card p-5 border-[#2A2D30] bg-[#18191B]">
-                    <div className="p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] w-fit">
+                  <div key={label} className="frost-card p-5 border-[#2A2D30] bg-[#18191B]">
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white w-fit">
                       <Icon size={18} />
                     </div>
                     <div className="mt-4">
@@ -358,9 +358,9 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               </section>
 
               {/* Categories Teaser Banner on About tab */}
-              <section className="glass-card p-6 border-[#2A2D30] bg-[#18191B] flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+              <section className="frost-card p-6 border-[#2A2D30] bg-[#18191B] flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
                 <div className="flex flex-col gap-2 max-w-xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 text-white border border-white/10 text-xs font-semibold w-fit">
                     <LayoutGrid size={12} />
                     <span>Comprehensive Toolbox Directory</span>
                   </div>
@@ -373,7 +373,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                 </div>
                 <button
                   onClick={() => handleTabChange('categories')}
-                  className="btn-primary py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shrink-0 shadow-md"
+                  className="bg-white text-black hover:bg-neutral-200 transition-colors py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shrink-0 shadow-md"
                 >
                   <span>View All Categories & Use Cases</span>
                   <ArrowRight size={14} />
@@ -384,9 +384,9 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <CommunityTestimonials compact={true} />
 
               {/* Mission Block */}
-              <section className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-6">
+              <section className="frost-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-6">
                 <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 text-white border border-white/10 text-xs font-semibold w-fit mb-2">
                     <Sparkles size={12} />
                     <span>Mission &amp; Core Purpose</span>
                   </div>
@@ -404,7 +404,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                     ['All-in-One Utility Hub', 'Edit PDFs, compress media, build documents, scan QRs, and format code inside one cohesive system.', Zap]
                   ].map(([title, detail, Icon]) => (
                     <div key={title as string} className="flex gap-3">
-                      <div className="p-2.5 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] h-fit shrink-0">
+                      <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white h-fit shrink-0">
                         <Icon size={18} />
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -419,9 +419,9 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               {/* Install and FAQ Grid */}
               <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Local Installation Guide */}
-                <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B]">
+                <div className="frost-card p-6 border-[#2A2D30] bg-[#18191B]">
                   <h2 className="text-lg font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                    <Terminal size={18} className="text-[#3C6B4D]" />
+                    <Terminal size={18} className="text-white" />
                     <span>Local Installation Guide</span>
                   </h2>
                   <div className="flex flex-col gap-3 mt-5 font-mono text-[11px]">
@@ -433,16 +433,16 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                       { desc: "# 5. Build production bundle", cmd: "npm run build" }
                     ].map((step, idx) => (
                       <div key={idx} className="bg-[#111213] p-3 rounded-xl border border-[#2A2D30] flex justify-between items-center group/cmd">
-                        <div className="flex flex-col gap-1 text-[#3C6B4D]">
+                        <div className="flex flex-col gap-1 text-white">
                           <span className="text-[#72706C] font-semibold text-[10px]">{step.desc}</span>
                           <span className="text-[#ECEBE9] break-all">{step.cmd}</span>
                         </div>
                         <button
                           onClick={() => handleCopyCommand(step.cmd, idx)}
-                          className="p-1.5 rounded bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 transition-all opacity-0 group-hover/cmd:opacity-100 shrink-0"
+                          className="p-1.5 rounded bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] hover:border-white/40 transition-all opacity-0 group-hover/cmd:opacity-100 shrink-0"
                           title="Copy command"
                         >
-                          {copiedIndex === idx ? <Check size={12} className="text-[#3C6B4D]" /> : <Copy size={12} />}
+                          {copiedIndex === idx ? <Check size={12} className="text-sky-300" /> : <Copy size={12} />}
                         </button>
                       </div>
                     ))}
@@ -450,9 +450,9 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                 </div>
 
                 {/* Frequently Asked Questions (Accordion) */}
-                <div className="glass-card p-6 border-[#2A2D30] bg-[#18191B]">
+                <div className="frost-card p-6 border-[#2A2D30] bg-[#18191B]">
                   <h2 className="text-lg font-bold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                    <ShieldAlert size={18} className="text-[#3C6B4D]" />
+                    <ShieldAlert size={18} className="text-white" />
                     <span>Frequently Asked Questions</span>
                   </h2>
                   <div className="flex flex-col gap-3 mt-5">
@@ -499,9 +499,9 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
           {activeTab === 'categories' && (
             <section className="flex flex-col gap-6 animate-fadeIn w-full">
               {/* Header Banner */}
-              <div className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="frost-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex flex-col gap-2 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 text-white border border-white/10 text-xs font-semibold w-fit">
                     <LayoutGrid size={12} />
                     <span>Tool Categories Directory</span>
                   </div>
@@ -522,7 +522,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                       value={categoryFilter}
                       onChange={(e) => setCategoryFilter(e.target.value)}
                       placeholder="Filter categories or use cases..."
-                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-3 py-2 text-xs text-[#ECEBE9] placeholder:text-[#72706C] focus:outline-none focus:border-[#3C6B4D] transition-all"
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl pl-9 pr-3 py-2 text-xs text-[#ECEBE9] placeholder:text-[#72706C] focus:outline-none focus:border-white/50 transition-all"
                     />
                   </div>
                 </div>
@@ -538,20 +538,20 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                   return (
                     <div
                       key={cat.id}
-                      className="glass-card p-6 border-[#2A2D30] bg-[#18191B] hover:border-[#3C6B4D]/50 transition-all duration-300 flex flex-col justify-between gap-6 group/card"
+                      className="frost-card p-6 border-[#2A2D30] bg-[#18191B] hover:border-white/40 transition-all duration-300 flex flex-col justify-between gap-6 group/card"
                     >
                       <div className="flex flex-col gap-4">
                         {/* Header: Icon, Title, Badges */}
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-xl bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 text-[#3C6B4D] group-hover/card:scale-105 transition-transform">
+                            <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-white group-hover/card:scale-105 transition-transform">
                               <Icon size={22} />
                             </div>
                             <div>
-                              <h3 className="text-lg font-bold text-[#ECEBE9] group-hover/card:text-[#4E8E5E] transition-colors">
+                              <h3 className="text-lg font-bold text-[#ECEBE9] group-hover/card:text-white transition-colors">
                                 {cat.name}
                               </h3>
-                              <span className="text-[10px] text-[#3C6B4D] font-mono font-bold">
+                              <span className="text-[10px] text-neutral-400 font-mono font-bold">
                                 {toolCount > 0 ? `${toolCount} Functional Tools` : 'Suite Active'}
                               </span>
                             </div>
@@ -569,7 +569,7 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
 
                         {/* Practical Use Case */}
                         <div className="bg-[#111213] p-3.5 rounded-xl border border-[#2A2D30] flex flex-col gap-1.5">
-                          <div className="flex items-center gap-1.5 text-[#3C6B4D] text-[11px] font-bold">
+                          <div className="flex items-center gap-1.5 text-white text-[11px] font-bold">
                             <Lightbulb size={13} />
                             <span>Primary Use Case & Target Audience</span>
                           </div>
@@ -599,10 +599,10 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                       {/* Action Button */}
                       <button
                         onClick={() => handleNavigateToCategory(cat.id)}
-                        className="w-full btn-secondary py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 group-hover/card:bg-[#3C6B4D]/15 group-hover/card:border-[#3C6B4D]/40 group-hover/card:text-[#ECEBE9] transition-all mt-2"
+                        className="w-full btn-secondary py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 group-hover/card:bg-white group-hover/card:border-white group-hover/card:text-black transition-all mt-2"
                       >
                         <span>Explore {cat.name} Suite</span>
-                        <ArrowRight size={13} className="text-[#3C6B4D] group-hover/card:translate-x-1 transition-transform" />
+                        <ArrowRight size={13} className="text-neutral-400 group-hover/card:text-black group-hover/card:translate-x-1 transition-all" />
                       </button>
                     </div>
                   );
@@ -612,9 +612,9 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
           )}
 
           {activeTab === 'updates' && (
-            <section className="glass-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-6 animate-fadeIn">
+            <section className="frost-card p-6 md:p-8 border-[#2A2D30] bg-[#18191B] space-y-6 animate-fadeIn">
               <div className="max-w-2xl border-b border-[#2A2D30] pb-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20 text-xs font-semibold w-fit mb-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 text-white border border-white/10 text-xs font-semibold w-fit mb-2">
                   <Sparkles size={12} />
                   <span>Release History & Patches</span>
                 </div>
@@ -772,10 +772,10 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                   }
                 ].map((rel, idx) => (
                   <div key={idx} className="flex gap-4 items-start border-l-2 border-[#2A2D30] pl-6 ml-2 relative">
-                    <div className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-[#3C6B4D] border border-[#2A2D30]" />
+                    <div className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-white border border-[#2A2D30]" />
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-3">
-                        <span className="px-2 py-0.5 rounded bg-[#3C6B4D]/15 text-[#4E8E5E] border border-[#3C6B4D]/30 text-[10px] font-bold uppercase tracking-wider">{rel.version}</span>
+                        <span className="px-2 py-0.5 rounded bg-white/10 text-neutral-200 border border-white/20 text-[10px] font-bold uppercase tracking-wider">{rel.version}</span>
                         <span className="text-[10px] font-semibold text-[#72706C]">{rel.date}</span>
                       </div>
                       <h3 className="text-sm font-bold text-[#ECEBE9]">{rel.title}</h3>

@@ -131,7 +131,7 @@ export const BlogContainer = () => {
               href="https://www.facebook.com/share/p/19NcmGKzVJ/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group/abakada flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-sm"
+              className="group/abakada flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/40 transition-all duration-300 shadow-sm"
               title="Featured on Abakada.org"
             >
               <div className="flex items-center gap-2 min-w-0">
@@ -187,7 +187,7 @@ export const BlogContainer = () => {
               href="https://www.appbuildersph.com/blog/daily-top-apps-2026-08-06"
               target="_blank"
               rel="noopener noreferrer"
-              className="group/appbuildersph flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all duration-300 shadow-sm"
+              className="group/appbuildersph flex items-center justify-between p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/40 transition-all duration-300 shadow-sm"
               title="Featured on AppBuildersPH Daily Top Apps"
             >
               <div className="flex items-center gap-2 min-w-0">

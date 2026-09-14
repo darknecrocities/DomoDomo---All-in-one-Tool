@@ -86,7 +86,7 @@ export const ImageCompressorTool = () => {
               <span className="text-slate-400">Compression Quality</span>
               <span className="text-slate-350">{Math.round(quality * 100)}%</span>
             </div>
-            <input type="range" min="0.05" max="1" step="0.05" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+            <input type="range" min="0.05" max="1" step="0.05" value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-white cursor-pointer" />
           </div>
           {imageUrl && (
             <div className="flex flex-col gap-2 mt-2 border-t border-slate-850 pt-3">
@@ -96,7 +96,7 @@ export const ImageCompressorTool = () => {
               </div>
               <div className="flex justify-between text-xs font-mono py-1.5 border-b border-slate-850/30">
                 <span className="text-slate-400">Compressed Size:</span>
-                <span className="text-[#4E8E5E] font-bold">{formatSize(compressedSize)}</span>
+                <span className="text-white font-bold">{formatSize(compressedSize)}</span>
               </div>
               {ratio > 0 && (
                 <div className="flex justify-between text-xs font-mono py-1.5">

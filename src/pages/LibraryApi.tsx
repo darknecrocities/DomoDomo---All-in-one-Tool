@@ -187,9 +187,9 @@ curl -X GET "${endpoint}" \\
       </Helmet>
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#18191B] to-[#1E2022] border border-[#2A2D30] p-8 md:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#3C6B4D]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-2xl space-y-4 flex-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 text-xs font-bold uppercase tracking-wider">
             <Database size={13} />
             <span>Public API Repository</span>
           </div>
@@ -218,26 +218,26 @@ curl -X GET "${endpoint}" \\
         <button
           onClick={() => handleSectionChange('global')}
           className={`pb-3 font-bold text-sm transition-all relative ${
-            currentSection === 'global' ? 'text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9]'
+            currentSection === 'global' ? 'text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'
           }`}
         >
           <span>Global API Directory</span>
           {currentSection === 'global' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3C6B4D]" />
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
           )}
         </button>
         <button
           onClick={() => handleSectionChange('philippine')}
           className={`pb-3 font-bold text-sm transition-all relative flex items-center gap-2 ${
-            currentSection === 'philippine' ? 'text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9]'
+            currentSection === 'philippine' ? 'text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'
           }`}
         >
           <span>Philippine APIs (Locals)</span>
-          <span className="px-1.5 py-0.5 rounded bg-[#3C6B4D]/15 text-[#4E8E5E] border border-[#3C6B4D]/25 text-[9px] font-bold uppercase tracking-wider">
+          <span className="px-1.5 py-0.5 rounded bg-white/10 text-white border border-white/20 text-[9px] font-bold uppercase tracking-wider">
             PH Region
           </span>
           {currentSection === 'philippine' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3C6B4D]" />
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
           )}
         </button>
       </div>
@@ -257,7 +257,7 @@ curl -X GET "${endpoint}" \\
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Type to search..."
-                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] placeholder-[#72706C] focus:outline-none focus:border-[#3C6B4D]/50 transition-colors"
+                className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-[#111213] border border-[#2A2D30] text-[#ECEBE9] placeholder-[#72706C] focus:outline-none focus:border-white/50 transition-colors"
               />
               <Search size={14} className="absolute left-3 top-2.5 text-[#72706C]" />
             </div>
@@ -276,12 +276,12 @@ curl -X GET "${endpoint}" \\
                   onClick={() => setSelectedAuth(authType)}
                   className={`w-full text-left text-xs font-semibold py-1.5 px-3 rounded-lg transition-colors flex items-center justify-between ${
                     selectedAuth === authType
-                      ? 'bg-[#3C6B4D]/10 text-[#ECEBE9] border border-[#3C6B4D]/30'
+                      ? 'bg-white/10 text-[#ECEBE9] border border-white/30'
                       : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022] border border-transparent'
                   }`}
                 >
                   <span>{authType === '' ? 'None' : authType}</span>
-                  {selectedAuth === authType && <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D]" />}
+                  {selectedAuth === authType && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
                 </button>
               ))}
             </div>
@@ -305,13 +305,13 @@ curl -X GET "${endpoint}" \\
                     onClick={() => setSelectedCategory(cat)}
                     className={`w-full text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-between ${
                       selectedCategory === cat
-                        ? 'bg-[#3C6B4D] text-[#ECEBE9] shadow-sm'
+                        ? 'bg-white text-black font-bold shadow-sm'
                         : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                     }`}
                   >
                     <span className="truncate mr-2">{cat}</span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md shrink-0 ${
-                      selectedCategory === cat ? 'bg-[#2E533B] text-[#ECEBE9]' : 'bg-[#111213] text-[#72706C]'
+                      selectedCategory === cat ? 'bg-neutral-200 text-black font-bold' : 'bg-[#111213] text-[#72706C]'
                     }`}>
                       {count}
                     </span>
@@ -350,10 +350,10 @@ curl -X GET "${endpoint}" \\
                     <div className="space-y-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
-                          <span className="text-[10px] font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2 py-0.5 rounded-md">
+                          <span className="text-[10px] font-mono font-bold tracking-wider text-white uppercase bg-white/10 px-2 py-0.5 rounded-md">
                             {api.category}
                           </span>
-                          <h3 className="text-sm font-bold text-[#ECEBE9] group-hover:text-[#3C6B4D] transition-colors mt-1.5">
+                          <h3 className="text-sm font-bold text-[#ECEBE9] group-hover:text-white transition-colors mt-1.5">
                             {api.name}
                           </h3>
                         </div>
@@ -367,17 +367,17 @@ curl -X GET "${endpoint}" \\
 
                     <div className="pt-2 border-t border-[#2A2D30]/50 flex flex-wrap gap-2 items-center text-[10px] font-mono text-[#72706C]">
                       <span className="flex items-center gap-1">
-                        <Shield size={11} className={api.auth === 'No' || api.auth === 'none' ? 'text-[#3C6B4D]' : 'text-[#E29E2D]'} />
+                        <Shield size={11} className={api.auth === 'No' || api.auth === 'none' ? 'text-white' : 'text-[#E29E2D]'} />
                         Auth: {api.auth || 'None'}
                       </span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
-                        <Globe size={11} className="text-sky-500" />
+                        <Globe size={11} className="text-sky-400" />
                         HTTPS: {api.https ? 'Yes' : 'No'}
                       </span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
-                        <Radio size={11} className="text-emerald-500" />
+                        <Radio size={11} className="text-sky-400" />
                         CORS: {api.cors || 'unknown'}
                       </span>
                     </div>
@@ -437,7 +437,7 @@ curl -X GET "${endpoint}" \\
             {/* Modal Header */}
             <div className="shrink-0 p-6 md:p-8 pb-4 border-b border-[#2A2D30]/60 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold tracking-wider text-[#3C6B4D] uppercase bg-[#3C6B4D]/10 px-2.5 py-1 rounded-md">
+                <span className="text-xs font-mono font-bold tracking-wider text-white uppercase bg-white/10 px-2.5 py-1 rounded-md">
                   {selectedApi.category}
                 </span>
                 <button
@@ -486,7 +486,7 @@ curl -X GET "${endpoint}" \\
                   <Globe size={12} />
                   <span>Website / Endpoint Link</span>
                 </h4>
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] font-mono text-[11px] text-[#3C6B4D] overflow-x-auto scrollbar-none">
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#111213] border border-[#2A2D30] font-mono text-[11px] text-white overflow-x-auto scrollbar-none">
                   <span className="text-[#ECEBE9] select-none">URL</span>
                   <span className="truncate">{selectedApi.link}</span>
                 </div>
@@ -517,7 +517,7 @@ curl -X GET "${endpoint}" \\
                         onClick={() => setActiveTab(lang)}
                         className={`text-[10px] font-bold px-2 py-1 rounded transition-colors ${
                           activeTab === lang
-                            ? 'bg-[#3C6B4D] text-[#ECEBE9]'
+                            ? 'bg-white text-black font-bold'
                             : 'text-[#A3A09B] hover:text-[#ECEBE9]'
                         }`}
                       >
@@ -535,7 +535,7 @@ curl -X GET "${endpoint}" \\
                     onClick={() => handleCopy(getCodeSnippet(selectedApi, activeTab), activeTab)}
                     className="absolute right-3 top-3 p-1.5 rounded-lg bg-[#18191B] hover:bg-[#25282B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9] transition-colors"
                   >
-                    {copiedSnippet === activeTab ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                    {copiedSnippet === activeTab ? <Check size={12} className="text-white" /> : <Copy size={12} />}
                   </button>
                 </div>
               </div>

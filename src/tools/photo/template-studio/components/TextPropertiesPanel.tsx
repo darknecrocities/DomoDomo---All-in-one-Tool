@@ -68,9 +68,9 @@ const OllamaAssistant: React.FC<{ layer: TextLayer; onChange: (changes: Partial<
     <div className="space-y-3 mt-4 border-t border-[#2A2D30] pt-4">
       <div className="flex items-center justify-between">
         <span className="text-[10px] text-[#A3A09B] font-bold uppercase tracking-wider flex items-center gap-1">
-          <Cpu size={12} className="text-[#3C6B4D]" /> Ollama Assistant
+          <Cpu size={12} className="text-white" /> Ollama Assistant
         </span>
-        <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${ollamaStatus === 'online' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : ollamaStatus === 'offline' ? 'bg-rose-500/20 text-rose-400' : 'bg-slate-800 text-slate-400'}`}>
+        <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${ollamaStatus === 'online' ? 'bg-white text-black/20 text-white' : ollamaStatus === 'offline' ? 'bg-rose-500/20 text-rose-400' : 'bg-slate-800 text-slate-400'}`}>
           {ollamaStatus}
         </span>
       </div>
@@ -126,7 +126,7 @@ const OllamaAssistant: React.FC<{ layer: TextLayer; onChange: (changes: Partial<
             <button 
               disabled={isLoading || !layer.text}
               onClick={() => handleAIAction('translate')}
-              className="px-2.5 py-1 bg-[#3C6B4D] hover:bg-[#2E533B] text-white rounded text-[10px] font-bold flex items-center gap-0.5 transition-all"
+              className="px-2.5 py-1 bg-white text-black hover:bg-[#2E533B] text-white rounded text-[10px] font-bold flex items-center gap-0.5 transition-all"
             >
               <Globe size={10} /> Translate
             </button>
@@ -219,7 +219,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
       <div className="space-y-2">
         <div>
           <label className="text-[10px] text-[#72706C] font-bold block mb-1">LAYER NAME</label>
-          <input type="text" value={layer.name} onChange={e => onChange({ name: e.target.value })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+          <input type="text" value={layer.name} onChange={e => onChange({ name: e.target.value })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-white/30" />
         </div>
         <div>
           <label className="text-[10px] text-[#72706C] font-bold block mb-1 text-[#E29E2D]">VARIABLE (e.g. {'{{name}}'})</label>
@@ -229,21 +229,21 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
         {isText && (
           <div>
             <label className="text-[10px] text-[#72706C] font-bold block mb-1">DEFAULT TEXT</label>
-            <input type="text" value={(layer as TextLayer).text} onChange={e => onChange({ text: e.target.value } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+            <input type="text" value={(layer as TextLayer).text} onChange={e => onChange({ text: e.target.value } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-white/30" />
           </div>
         )}
 
         {(isQR || isBarcode) && (
           <div>
             <label className="text-[10px] text-[#72706C] font-bold block mb-1">DEFAULT DATA</label>
-            <input type="text" value={(layer as any).text} onChange={e => onChange({ text: e.target.value } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+            <input type="text" value={(layer as any).text} onChange={e => onChange({ text: e.target.value } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-white/30" />
           </div>
         )}
 
         {isImage && (
           <div>
             <label className="text-[10px] text-[#72706C] font-bold block mb-1">DEFAULT IMAGE URL</label>
-            <input type="text" value={(layer as ImageLayer).src || ''} onChange={e => onChange({ src: e.target.value } as any)} placeholder="https://..." className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+            <input type="text" value={(layer as ImageLayer).src || ''} onChange={e => onChange({ src: e.target.value } as any)} placeholder="https://..." className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-2 text-[#ECEBE9] outline-none focus:border-white/30" />
           </div>
         )}
       </div>
@@ -256,13 +256,13 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1">FONT FAMILY</label>
-              <select value={layer.fontFamily} onChange={e => onChange({ fontFamily: e.target.value })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]">
+              <select value={layer.fontFamily} onChange={e => onChange({ fontFamily: e.target.value })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30">
                 {FONTS.map(f => <option key={f} value={f}>{f}</option>)}
               </select>
             </div>
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1">SIZE</label>
-              <input type="number" value={layer.fontSize} onChange={e => onChange({ fontSize: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+              <input type="number" value={layer.fontSize} onChange={e => onChange({ fontSize: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
             </div>
           </div>
 
@@ -272,13 +272,13 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
               {WEIGHTS.map(w => <option key={w} value={w}>{w}</option>)}
             </select>
             <div className="w-px bg-[#2A2D30] mx-1" />
-            <button onClick={() => onChange({ fontStyle: layer.fontStyle === 'italic' ? 'normal' : 'italic' })} className={`p-1.5 rounded ${layer.fontStyle === 'italic' ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>
+            <button onClick={() => onChange({ fontStyle: layer.fontStyle === 'italic' ? 'normal' : 'italic' })} className={`p-1.5 rounded ${layer.fontStyle === 'italic' ? 'bg-white text-black' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>
               <Italic size={14} />
             </button>
-            <button onClick={() => onChange({ textDecoration: layer.textDecoration === 'underline' ? 'none' : 'underline' })} className={`p-1.5 rounded ${layer.textDecoration === 'underline' ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>
+            <button onClick={() => onChange({ textDecoration: layer.textDecoration === 'underline' ? 'none' : 'underline' })} className={`p-1.5 rounded ${layer.textDecoration === 'underline' ? 'bg-white text-black' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>
               <Underline size={14} />
             </button>
-            <button onClick={() => onChange({ textTransform: layer.textTransform === 'uppercase' ? 'none' : 'uppercase' })} className={`p-1.5 rounded font-bold text-[10px] ${layer.textTransform === 'uppercase' ? 'bg-[#3C6B4D] text-white' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>
+            <button onClick={() => onChange({ textTransform: layer.textTransform === 'uppercase' ? 'none' : 'uppercase' })} className={`p-1.5 rounded font-bold text-[10px] ${layer.textTransform === 'uppercase' ? 'bg-white text-black' : 'text-[#72706C] hover:text-[#ECEBE9]'}`}>
               TT
             </button>
           </div>
@@ -307,7 +307,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1 flex justify-between">
                 <span>BG COLOR</span>
-                <button onClick={() => onChange({ backgroundColor: layer.backgroundColor ? null : '#ffffff' })} className="text-[8px] text-[#3C6B4D] hover:underline">
+                <button onClick={() => onChange({ backgroundColor: layer.backgroundColor ? null : '#ffffff' })} className="text-[8px] text-white hover:underline">
                   {layer.backgroundColor ? 'Clear' : 'Add'}
                 </button>
               </label>
@@ -325,11 +325,11 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1">LETTER SPACING</label>
-              <input type="number" step="0.5" value={layer.letterSpacing || 0} onChange={e => onChange({ letterSpacing: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+              <input type="number" step="0.5" value={layer.letterSpacing || 0} onChange={e => onChange({ letterSpacing: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
             </div>
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1">LINE HEIGHT</label>
-              <input type="number" step="0.1" value={layer.lineHeight || 1} onChange={e => onChange({ lineHeight: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+              <input type="number" step="0.1" value={layer.lineHeight || 1} onChange={e => onChange({ lineHeight: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
             </div>
           </div>
         </>
@@ -352,7 +352,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
         <>
           <div>
             <label className="text-[10px] text-[#72706C] font-bold block mb-1">FORMAT</label>
-            <select value={(layer as BarcodeLayer).format} onChange={e => onChange({ format: e.target.value } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]">
+            <select value={(layer as BarcodeLayer).format} onChange={e => onChange({ format: e.target.value } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30">
               {['CODE128', 'EAN13', 'UPC'].map(f => <option key={f} value={f}>{f}</option>)}
             </select>
           </div>
@@ -378,7 +378,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
                 type="checkbox"
                 checked={(layer as ShapeLayer).gradientEnabled || false}
                 onChange={e => onChange({ gradientEnabled: e.target.checked } as any)}
-                className="accent-[#3C6B4D]"
+                className="accent-white"
               />
             </div>
 
@@ -411,7 +411,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
                     step="15"
                     value={(layer as ShapeLayer).gradientAngle ?? 90}
                     onChange={e => onChange({ gradientAngle: Number(e.target.value) } as any)}
-                    className="w-full accent-[#3C6B4D]"
+                    className="w-full accent-white"
                   />
                 </div>
               </div>
@@ -422,7 +422,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1 flex justify-between">
                 <span>BORDER COLOR</span>
-                <button onClick={() => onChange({ stroke: (layer as ShapeLayer).stroke ? null : '#ffffff' } as any)} className="text-[8px] text-[#3C6B4D] hover:underline">
+                <button onClick={() => onChange({ stroke: (layer as ShapeLayer).stroke ? null : '#ffffff' } as any)} className="text-[8px] text-white hover:underline">
                   {(layer as ShapeLayer).stroke ? 'Clear' : 'Add'}
                 </button>
               </label>
@@ -437,20 +437,20 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] text-[#72706C] font-bold block mb-1">BORDER WIDTH</label>
-              <input type="number" min="0" value={(layer as ShapeLayer).strokeWidth || 0} onChange={e => onChange({ strokeWidth: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+              <input type="number" min="0" value={(layer as ShapeLayer).strokeWidth || 0} onChange={e => onChange({ strokeWidth: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
             </div>
 
             {(layer as ShapeLayer).shapeType === 'rect' && (
               <div>
                 <label className="text-[10px] text-[#72706C] font-bold block mb-1">CORNER RADIUS</label>
-                <input type="number" min="0" value={(layer as ShapeLayer).cornerRadius || 0} onChange={e => onChange({ cornerRadius: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+                <input type="number" min="0" value={(layer as ShapeLayer).cornerRadius || 0} onChange={e => onChange({ cornerRadius: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
               </div>
             )}
 
             {(layer as ShapeLayer).shapeType === 'star' && (
               <div>
                 <label className="text-[10px] text-[#72706C] font-bold block mb-1">STAR POINTS</label>
-                <input type="number" min="3" max="20" value={(layer as ShapeLayer).numPoints || 5} onChange={e => onChange({ numPoints: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+                <input type="number" min="3" max="20" value={(layer as ShapeLayer).numPoints || 5} onChange={e => onChange({ numPoints: Number(e.target.value) } as any)} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
               </div>
             )}
           </div>
@@ -463,11 +463,11 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ layer, onChang
           <label className="text-[10px] text-[#72706C] font-bold block mb-1 flex justify-between">
             <span>OPACITY</span><span>{Math.round(layer.opacity * 100)}%</span>
           </label>
-          <input type="range" min="0" max="1" step="0.05" value={layer.opacity} onChange={e => onChange({ opacity: Number(e.target.value) })} className="w-full accent-[#3C6B4D]" />
+          <input type="range" min="0" max="1" step="0.05" value={layer.opacity} onChange={e => onChange({ opacity: Number(e.target.value) })} className="w-full accent-white" />
         </div>
         <div>
           <label className="text-[10px] text-[#72706C] font-bold block mb-1">ROTATION (°)</label>
-          <input type="number" value={Math.round(layer.rotation)} onChange={e => onChange({ rotation: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-[#3C6B4D]" />
+          <input type="number" value={Math.round(layer.rotation)} onChange={e => onChange({ rotation: Number(e.target.value) })} className="w-full bg-[#18191B] border border-[#2A2D30] rounded p-1.5 text-[#ECEBE9] outline-none focus:border-white/30" />
         </div>
       </div>
       

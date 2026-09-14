@@ -62,21 +62,21 @@ export const GlobalSFXController: React.FC = () => {
           setIsOpen(true);
         }}
         data-thock="true"
-        className="fixed bottom-6 right-20 z-40 p-2.5 sm:p-3 rounded-full bg-[#18191B]/90 hover:bg-[#1E2022] border border-[#2A2D30] text-[#ECEBE9] shadow-xl hover:shadow-2xl hover:border-[#3C6B4D]/60 backdrop-blur-md transition-all duration-200 cursor-pointer group flex items-center gap-2 hover:scale-105 active:scale-95"
+        className="fixed bottom-6 right-20 z-40 p-2.5 sm:p-3 rounded-full bg-[#18191B]/90 hover:bg-[#1E2022] border border-[#2A2D30] text-[#ECEBE9] shadow-xl hover:shadow-2xl hover:border-white/40 backdrop-blur-md transition-all duration-200 cursor-pointer group flex items-center gap-2 hover:scale-105 active:scale-95"
         title="Audio & SFX Switch Customizer"
       >
         <div className="relative flex items-center justify-center">
           {isMuted ? (
             <VolumeX className="w-4 h-4 text-[#72706C] group-hover:text-[#ECEBE9] transition-colors" />
           ) : (
-            <Volume2 className="w-4 h-4 text-[#3C6B4D] animate-pulse" />
+            <Volume2 className="w-4 h-4 text-white animate-pulse" />
           )}
         </div>
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#A3A09B] group-hover:text-[#ECEBE9] pr-1 hidden md:inline">
           SFX Hub
         </span>
         {settings.ambientType !== 'off' && (
-          <span className="w-2 h-2 rounded-full bg-[#3C6B4D] animate-ping" />
+          <span className="w-2 h-2 rounded-full bg-white animate-ping" />
         )}
       </button>
 
