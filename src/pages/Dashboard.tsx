@@ -19,6 +19,7 @@ import {
 	Terminal,
 	Snowflake,
 	Gift,
+	NotebookPen as NotebookPenIcon,
 } from "lucide-react";
 import { GiSnake } from "react-icons/gi";
 import { Helmet } from "react-helmet-async";
@@ -2873,6 +2874,74 @@ export const Dashboard = () => {
 							>
 								<Code size={13} />
 								<span>GitHub Repository</span>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				{/* DomoNote Ecosystem Spotlight Banner */}
+				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/40 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/domonote text-left">
+					<div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+					<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+						<div className="space-y-3 max-w-3xl">
+							<div>
+								<div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+									<NotebookPenIcon size={13} />
+									<span>Official Ecosystem Partner</span>
+								</div>
+								<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
+									<span>DomoNote — Personal AI Local Secretary</span>
+								</h2>
+								<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
+									Your intelligent offline-first personal secretary. Capture notes, set AI-powered reminders, draft documents, and manage your day — all with a private local AI that never sends your data to the cloud.
+								</p>
+							</div>
+
+							{/* Feature Highlights */}
+							<div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-[#72706C]">
+								<span className="text-[#A3A09B] font-semibold">Features:</span>
+								{[
+									'Smart Notes',
+									'AI Reminders',
+									'Local AI Assistant',
+									'Offline-First',
+									'Privacy Guaranteed',
+									'Voice Capture',
+								].map((feature) => (
+									<span key={feature} className="px-2 py-0.5 rounded-md bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]">
+										{feature}
+									</span>
+								))}
+							</div>
+
+							{/* Highlight Pill */}
+							<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
+								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-amber-300 font-bold flex items-center gap-1.5">
+									<NotebookPenIcon size={12} />
+									<span>Web App</span>
+								</div>
+								<span className="text-[#ECEBE9] text-[11px] sm:text-xs">https://domonote.vercel.app/</span>
+							</div>
+						</div>
+
+						{/* Action Buttons */}
+						<div className="flex flex-wrap lg:flex-col sm:flex-row items-stretch gap-2.5 shrink-0 w-full lg:w-auto">
+							<a
+								href="https://domonote.vercel.app/"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shadow-white/5 group/btn"
+							>
+								<NotebookPenIcon size={15} />
+								<span>Open DomoNote</span>
+								<ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+							</a>
+
+							<a
+								href="/blog/announcing-domonote-personal-ai-local-secretary"
+								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-bold transition-all text-center"
+							>
+								<span>Read Announcement</span>
 							</a>
 						</div>
 					</div>

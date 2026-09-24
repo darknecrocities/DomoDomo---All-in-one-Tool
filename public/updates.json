@@ -1,7 +1,31 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-13T12:48:52.241Z",
+  "buildTime": "2026-09-24T18:36:53.080Z",
   "commits": [
+    {
+      "hash": "bb811b0",
+      "date": "2026-09-15",
+      "author": "darknecrocities",
+      "message": "feat(ui): festive winter overhaul, continuous snowfall background, monochrome tech theme, and purge AI buzzwords"
+    },
+    {
+      "hash": "108ff6e",
+      "date": "2026-09-13",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "dc2bde5",
+      "date": "2026-09-13",
+      "author": "darknecrocities",
+      "message": "docs(readme): update README with Domo Ecosystem and Explore showcase for Codepyne.io and DomoSkills"
+    },
+    {
+      "hash": "5acf40c",
+      "date": "2026-09-10",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "bcf36b4",
       "date": "2026-09-10",
@@ -67,30 +91,6 @@
       "date": "2026-09-02",
       "author": "darknecrocities",
       "message": "feat(nav): streamline navbar with dropdown menus and unclutter header UI"
-    },
-    {
-      "hash": "359ae4f",
-      "date": "2026-09-02",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "607dd33",
-      "date": "2026-09-02",
-      "author": "darknecrocities",
-      "message": "feat(ecosystem): integrate DomoSkills agent marketplace with matching theme and cross-links"
-    },
-    {
-      "hash": "bb838c7",
-      "date": "2026-08-27",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "baa94f0",
-      "date": "2026-08-27",
-      "author": "darknecrocities",
-      "message": "chore(pwa): update service worker cache hash"
     }
   ]
 }

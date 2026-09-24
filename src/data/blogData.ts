@@ -13,6 +13,118 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-domonote-personal-ai-local-secretary',
+    title: 'Announcing DomoNote: Your Personal AI Local Secretary Joins the Domo Ecosystem',
+    excerpt: 'DomoNote (https://domonote.vercel.app/) officially joins the Domo ecosystem as our personal AI local secretary platform. Capture smart notes, set AI-powered reminders, draft documents, and manage your entire day with a fully private, offline-first AI assistant that never sends your data to the cloud.',
+    date: 'September 25, 2026',
+    readTime: '4 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'domonote, personal ai secretary, local ai notes, offline ai assistant, smart reminders, private notes, ai note taking, local-first productivity, domo ecosystem, domodomo',
+    content: `# Announcing DomoNote: Your Personal AI Local Secretary Joins the Domo Ecosystem
+
+**Platform:** [https://domonote.vercel.app/](https://domonote.vercel.app/)
+**Ecosystem Partner:** DomoNote × DomoDomo × DomoSkills × Codepyne.io
+**Category:** Ecosystem Announcements
+
+---
+
+We are thrilled to welcome **DomoNote** into the official Domo ecosystem!
+
+In a world saturated with cloud-dependent note-taking apps that harvest your most private thoughts, meeting notes, and daily plans, DomoNote arrives as something fundamentally different: **a fully offline-first, privacy-guaranteed personal AI secretary** that keeps every piece of your data exactly where it belongs — on your device.
+
+\`\`\`text
+DOMONOTE_
+Your Personal AI Secretary. Local. Private. Always Ready.
+Capture. Remember. Draft. Manage.
+\`\`\`
+
+---
+
+## 📒 What is DomoNote?
+
+**[DomoNote](https://domonote.vercel.app/)** is a personal AI local secretary web application designed for professionals, students, creators, and anyone who needs a smarter, more private way to organize their digital life.
+
+Unlike conventional note-taking applications that require cloud sync accounts, DomoNote runs entirely inside your browser using modern web technologies — no accounts, no subscriptions, no data leakage.
+
+---
+
+## ✨ Core Features
+
+### 1. 📝 Smart AI-Powered Notes
+Go beyond plain text. DomoNote's AI assistant helps you:
+- Automatically summarize long notes into concise key points
+- Extract action items and follow-ups from meeting notes
+- Rewrite and polish rough drafts into professional documents
+- Tag and categorize notes intelligently based on content
+
+### 2. ⏰ AI-Powered Reminders & Scheduling
+DomoNote transforms natural language into structured reminders:
+- Type "remind me about the project deadline next Friday at 3 PM" and DomoNote understands
+- Smart follow-up suggestions based on your note context
+- Calendar-aware scheduling with recurring event support
+- Desktop push notifications that work fully offline
+
+### 3. 🤖 Local AI Assistant
+The heart of DomoNote is its deeply integrated offline AI assistant:
+- Powered by local models via Ollama — no cloud API keys required
+- Ask questions about your own notes with full context awareness
+- Generate documents, emails, and reports from bullet-point outlines
+- Conversational drafting that feels like working with a real assistant
+
+### 4. 🔒 Privacy-First Architecture
+Every byte of DomoNote stays on your device:
+- **Zero server uploads** — notes are stored in browser IndexedDB
+- **No authentication required** — open the app and start writing
+- **Offline-capable** — works without an internet connection
+- **Export anywhere** — download your notes as Markdown, PDF, or plain text
+
+### 5. 🎙️ Voice Capture
+Speak your thoughts directly into DomoNote:
+- Real-time speech-to-text transcription using the Web Speech API
+- Voice-activated note creation without touching the keyboard
+- Audio memo playback with synchronized transcript display
+
+---
+
+## 🌐 How DomoNote Fits the Domo Ecosystem
+
+The addition of DomoNote completes a powerful quartet for privacy-conscious professionals and developers:
+
+| Platform | Role in Ecosystem | Key Capabilities |
+| :--- | :--- | :--- |
+| **DomoNote** | Personal AI Secretary & Productivity | Smart Notes, AI Reminders, Local AI Assistant, Voice Capture |
+| **DomoDomo** | Sandboxed Developer Utilities | AI Hub Studio, 100+ Browser Tools, Local AI Execution |
+| **DomoSkills** | Agent Skills Registry & CLI | 200+ Skills for AI Coding Agents |
+| **Codepyne.io** | AI/ML Upskilling Platform | Autograd, Transformers, Multi-Agent, Fine-Tuning |
+
+Together, these four platforms form a **complete, privacy-first productivity and development stack** — from daily personal organization to advanced AI model engineering.
+
+---
+
+## 🚀 Getting Started with DomoNote
+
+DomoNote requires no installation, no signup, and no credit card. Simply open the platform in any modern browser and your AI secretary is ready:
+
+1. 🌐 **Open DomoNote:** [https://domonote.vercel.app/](https://domonote.vercel.app/)
+2. 📝 **Create your first note** — type, voice-capture, or paste any content
+3. 🤖 **Enable Local AI** — connect Ollama for private AI-powered assistance
+4. ⏰ **Set a reminder** — describe it naturally and DomoNote handles the rest
+5. 📦 **Export your work** — download as Markdown, PDF, or plain text at any time
+
+---
+
+## 🔗 Explore the Full Domo Ecosystem
+
+- 📒 **Start using DomoNote:** [https://domonote.vercel.app/](https://domonote.vercel.app/)
+- 🛠️ **Launch DomoDomo AI Hub:** [/ai-hub](/ai-hub)
+- 📦 **Explore DomoSkills:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)
+- 🐍 **Upskill with Codepyne.io:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)
+
+*DomoNote joins a growing family of tools committed to keeping your data private, your workflow offline-capable, and your productivity unrestricted by cloud paywalls.*
+`
+  },
+  {
     slug: 'announcing-codepyne-io-ai-machine-learning-upskilling-platform',
     title: 'Announcing Codepyne.io: The AI & Machine Learning Upskilling Platform Joins the Domo Ecosystem',
     excerpt: 'Codepyne.io (https://codepyne-io.vercel.app/) officially joins the Domo ecosystem as our premier AI & Machine Learning upskilling partner. Learn by orchestrating, training, and deploying real models — from Python fundamentals and autograd engines to transformer fine-tuning, multi-agent systems, and verifiable AI certifications.',

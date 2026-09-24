@@ -629,7 +629,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.6.1 (Latest)",
+                    version: "v2.7.0 (Latest)",
+                    date: "September 25, 2026",
+                    title: "DomoNote Personal AI Secretary Integration & Ecosystem Expansion",
+                    changes: [
+                      "DomoNote Ecosystem Partnership: Official integration with https://domonote.vercel.app/ — the personal AI local secretary platform for smart notes, AI-powered reminders, document drafting, and offline AI assistance.",
+                      "Ecosystem Navigation Updates: Added DomoNote with NotebookPen icon to the Ecosystem dropdown, mobile drawer, footer ecosystem badges, and footer quicklinks column.",
+                      "Dashboard Ecosystem Spotlight: New DomoNote spotlight banner on the Dashboard highlighting its offline-first, privacy-guaranteed personal productivity features.",
+                    ]
+                  },
+                  {
+                    version: "v2.6.1",
                     date: "September 10, 2026",
                     title: "Codepyne.io AI & ML Upskilling Platform Integration & Ecosystem Expansion",
                     changes: [
