@@ -7,8 +7,9 @@ import {
 
 const INITIAL_BASE_COUNT = 8180;
 const STORAGE_KEY = 'domodomo_active_users_count';
-const SESSION_KEY = 'domodomo_session_tracked';
+const LAST_VISIT_TIMESTAMP_KEY = 'domodomo_last_visit_timestamp';
 const EVENT_NAME = 'domodomo_count_updated';
+const VISIT_DEBOUNCE_MS = 5000; // 5s debounce to prevent double-firing in React 19 StrictMode
 
 /**
  * Gets the current stored visit count from localStorage or returns base count (8,180).
@@ -62,59 +63,62 @@ export function formatCount(count: number): string {
 
 /**
  * React hook to manage real-time visit count starting at 8,180.
- * Synchronizes with Firebase in real time if configured, with resilient
- * local storage fallback and multi-tab broadcasting.
+ * Automatically synchronizes with Firebase in real time if configured,
+ * and increments on each visit with resilient local storage fallback.
  */
 export function useVisitCounter(_trackClicks?: boolean) {
   const [count, setCount] = useState<number>(() => {
     return getStoredVisitCount();
   });
-  const [isFirebaseSynced, setIsFirebaseSynced] = useState<boolean>(() => {
-    return isFirebaseConfigured();
-  });
 
-  // Increment visit count once on initial session mount
+  // Track visit on mount (with 5-second debounce)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     let isMounted = true;
 
-    const trackSessionVisit = async () => {
-      let isNewSession = false;
+    const trackVisit = async () => {
+      const now = Date.now();
+      let lastVisit = 0;
       try {
-        const sessionTracked = sessionStorage.getItem(SESSION_KEY);
-        if (!sessionTracked) {
-          sessionStorage.setItem(SESSION_KEY, 'true');
-          isNewSession = true;
-        }
+        const lastVisitStr = sessionStorage.getItem(LAST_VISIT_TIMESTAMP_KEY);
+        lastVisit = lastVisitStr ? parseInt(lastVisitStr, 10) : 0;
       } catch {
-        isNewSession = true;
+        lastVisit = 0;
       }
 
-      if (isNewSession) {
-        if (isFirebaseConfigured()) {
-          try {
-            const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
-            if (remoteTotal && isMounted) {
-              const updated = setStoredVisitCount(remoteTotal);
-              setCount(updated);
-              setIsFirebaseSynced(true);
-              return;
-            }
-          } catch (err) {
-            console.warn('[VisitCounter] Failed to record visit in Firebase, using local increment:', err);
-          }
-        }
+      // 5-second debounce to prevent React 19 StrictMode double-mounting
+      if (now - lastVisit < VISIT_DEBOUNCE_MS) {
+        return;
+      }
 
-        // Local fallback increment
-        const updated = incrementVisitCount(1);
-        if (isMounted) {
-          setCount(updated);
+      try {
+        sessionStorage.setItem(LAST_VISIT_TIMESTAMP_KEY, now.toString());
+      } catch {
+        // Ignore sessionStorage restrictions in private browsing
+      }
+
+      if (isFirebaseConfigured()) {
+        try {
+          const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
+          if (remoteTotal && isMounted) {
+            const updated = setStoredVisitCount(remoteTotal);
+            setCount(updated);
+            return;
+          }
+        } catch (err) {
+          console.warn('[VisitCounter] Failed to record visit in Firebase, using local fallback:', err);
         }
+      }
+
+      // If Firebase failed, returned null, or not configured: increment locally
+      const updated = incrementVisitCount(1);
+      if (isMounted) {
+        setCount(updated);
       }
     };
 
-    trackSessionVisit();
+    trackVisit();
 
     return () => {
       isMounted = false;
@@ -129,7 +133,6 @@ export function useVisitCounter(_trackClicks?: boolean) {
     const unsubscribe = subscribeToFirebaseVisits(INITIAL_BASE_COUNT, (liveCount) => {
       const persisted = setStoredVisitCount(liveCount);
       setCount(persisted);
-      setIsFirebaseSynced(true);
     });
 
     return () => {
@@ -189,7 +192,6 @@ export function useVisitCounter(_trackClicks?: boolean) {
   return {
     count,
     formattedCount: formatCount(count),
-    incrementCount: manuallyIncrement,
-    isFirebaseSynced
+    incrementCount: manuallyIncrement
   };
 }

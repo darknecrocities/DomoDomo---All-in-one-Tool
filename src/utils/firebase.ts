@@ -19,37 +19,38 @@ const FIRESTORE_DOCUMENT = 'visits';
 const RTDB_PATH = 'domodomocounter/visits';
 
 /**
- * Returns Firebase configuration parsed from Vite environment variables.
+ * Returns Firebase configuration parsed from Vite / Vercel environment variables.
+ * Supports both VITE_FIREBASE_* and FIREBASE_* prefixes.
  */
 export function getFirebaseConfig(): FirebaseConfig {
+  const env = import.meta.env;
   return {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || '',
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-    appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || '',
+    apiKey: env.VITE_FIREBASE_API_KEY || env.FIREBASE_API_KEY || '',
+    authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || env.FIREBASE_AUTH_DOMAIN || '',
+    databaseURL: env.VITE_FIREBASE_DATABASE_URL || env.FIREBASE_DATABASE_URL || '',
+    projectId: env.VITE_FIREBASE_PROJECT_ID || env.FIREBASE_PROJECT_ID || '',
+    storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || env.FIREBASE_STORAGE_BUCKET || '',
+    messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || env.FIREBASE_MESSAGING_SENDER_ID || '',
+    appId: env.VITE_FIREBASE_APP_ID || env.FIREBASE_APP_ID || '',
+    measurementId: env.VITE_FIREBASE_MEASUREMENT_ID || env.FIREBASE_MEASUREMENT_ID || '',
   };
 }
 
 /**
- * Determine whether Firebase credentials have been configured in .env.
+ * Determine whether Firebase credentials have been configured.
  */
 export function isFirebaseConfigured(): boolean {
   const config = getFirebaseConfig();
-  // Valid if either (apiKey + projectId) or direct databaseURL is set
   return Boolean((config.apiKey && config.projectId) || config.databaseURL);
 }
 
 /**
  * Returns the preferred Firebase service mode ('database' | 'firestore').
- * Automatically defaults to 'firestore' if no specific databaseURL is set,
- * or 'database' if VITE_FIREBASE_DATABASE_URL is provided.
+ * Automatically defaults to 'firestore' for standard Firebase web configurations.
  */
 export function getFirebaseMode(): 'database' | 'firestore' {
-  const explicitMode = import.meta.env.VITE_FIREBASE_MODE;
+  const env = import.meta.env;
+  const explicitMode = env.VITE_FIREBASE_MODE || env.FIREBASE_MODE;
   if (explicitMode === 'firestore') return 'firestore';
   if (explicitMode === 'database') return 'database';
 
@@ -172,21 +173,28 @@ async function recordVisitToFirestore(initialBaseCount: number): Promise<number 
 
     if (!snap.exists()) {
       const nextCount = initialBaseCount + 1;
-      await setDoc(docRef, { count: nextCount }, { merge: true });
+      await setDoc(docRef, { count: nextCount, updatedAt: Date.now() }, { merge: true });
       return nextCount;
     }
 
     const currentCount = snap.data()?.count;
     if (typeof currentCount === 'number' && currentCount < initialBaseCount) {
       const nextCount = initialBaseCount + 1;
-      await setDoc(docRef, { count: nextCount }, { merge: true });
+      await setDoc(docRef, { count: nextCount, updatedAt: Date.now() }, { merge: true });
       return nextCount;
     }
 
-    await updateDoc(docRef, { count: increment(1) });
+    await updateDoc(docRef, { count: increment(1), updatedAt: Date.now() });
     return typeof currentCount === 'number' ? Math.max(initialBaseCount, currentCount) + 1 : initialBaseCount + 1;
-  } catch (err) {
-    console.warn('[Firebase VisitCounter] Firestore record error:', err);
+  } catch (err: unknown) {
+    const errorObj = err as { code?: string; message?: string };
+    if (errorObj?.code === 'permission-denied') {
+      console.warn(
+        '[Firebase VisitCounter] Firestore PERMISSION_DENIED. Please update Firestore security rules in Firebase Console to allow read/write to domodomocounter collection.'
+      );
+    } else {
+      console.warn('[Firebase VisitCounter] Firestore record error:', err);
+    }
     return null;
   }
 }
@@ -257,7 +265,14 @@ function subscribeToFirestoreVisits(
         }
       },
       (error) => {
-        console.warn('[Firebase VisitCounter] Firestore listener error:', error);
+        const errorObj = error as { code?: string; message?: string };
+        if (errorObj?.code === 'permission-denied') {
+          console.warn(
+            '[Firebase VisitCounter] Firestore onSnapshot PERMISSION_DENIED. Check Firebase Console Firestore rules.'
+          );
+        } else {
+          console.warn('[Firebase VisitCounter] Firestore listener error:', error);
+        }
       }
     );
 
