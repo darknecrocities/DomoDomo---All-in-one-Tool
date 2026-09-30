@@ -433,7 +433,7 @@ export const CollageMakerTool = () => {
                     onClick={() => setSelectedTemplate(t.id)}
                     className={`flex items-center gap-2.5 p-2 rounded-xl border text-left transition-all ${
                       selectedTemplate === t.id
-                        ? 'bg-white text-black/10 border-white/30 text-[#ECEBE9]'
+                        ? 'bg-white/10 border-white/30 text-[#ECEBE9]'
                         : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
                     }`}
                   >

@@ -18,9 +18,9 @@ import { useVisitCounter } from '../utils/visitCounter';
 import { AppBuildersWidget } from '../components/AppBuildersWidget';
 
 
-const getStats = (activeUsersCount: string) => [
+const getStats = (activeUsersCount: string, isFirebaseSynced?: boolean) => [
   { label: 'Web Utilities', value: `${TOOLS.length}`, detail: 'Local tools for files, media, code, AI, computer vision, and documents.', icon: Layers },
-  { label: 'Total Visitors & Users', value: activeUsersCount, detail: 'Visitors & creators who accessed and used DomoDomo utilities globally.', icon: Users },
+  { label: 'Total Visitors & Users', value: activeUsersCount, detail: isFirebaseSynced ? 'Real-time global visits synchronized across users via Firebase.' : 'Visitors & creators who accessed and used DomoDomo utilities globally.', icon: Users },
   { label: 'Categories', value: `${CATEGORIES.length - 2}`, detail: 'Photo, PDF, text, converter, QR, video, audio, dev, data, computer vision, 3D spatial, investigative research, and security.', icon: Globe },
   { label: 'License', value: '100%', detail: 'Free, open-source, inspectable, and self-hostable.', icon: Sparkles }
 ];
@@ -164,8 +164,8 @@ export const CATEGORY_DETAILS = [
 ];
 
 export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about' | 'categories' | 'updates' | 'docs' }) => {
-  const { formattedCount } = useVisitCounter();
-  const stats = getStats(formattedCount);
+  const { formattedCount, isFirebaseSynced } = useVisitCounter();
+  const stats = getStats(formattedCount, isFirebaseSynced);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const queryTab = searchParams.get('tab') as 'about' | 'categories' | 'updates' | 'docs';
@@ -350,7 +350,15 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
                     </div>
                     <div className="mt-4">
                       <span className="text-3xl font-extrabold text-[#ECEBE9] tracking-tight">{value}</span>
-                      <h2 className="font-bold text-sm text-[#ECEBE9] mt-1">{label}</h2>
+                      <div className="flex items-center gap-2 mt-1">
+                        <h2 className="font-bold text-sm text-[#ECEBE9]">{label}</h2>
+                        {label === 'Total Visitors & Users' && isFirebaseSynced && (
+                          <span className="inline-flex items-center gap-1 text-[9px] text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-1.5 py-0.5 rounded-full font-mono font-semibold" title="Live synced with Firebase">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                            SYNCED
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[#A3A09B] text-[11px] mt-1 leading-relaxed">{detail}</p>
                     </div>
                   </div>

@@ -403,7 +403,7 @@ export const TemplateStudioTool = () => {
                   className="w-full bg-transparent font-bold text-lg outline-none border-b border-transparent focus:border-white/30"
                   placeholder="Template Name"
                 />
-                <label className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-white/30/40 rounded-xl hover:border-white/30 hover:bg-white text-black/10 cursor-pointer text-[#A3A09B] mt-2">
+                <label className="flex items-center justify-center gap-2 w-full p-3 border border-dashed border-white/30 rounded-xl hover:border-white/40 hover:bg-white/10 cursor-pointer text-[#A3A09B] mt-2">
                   <Upload size={16} /> <span className="text-xs font-bold">Upload Background</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                 </label>
@@ -508,7 +508,7 @@ export const TemplateStudioTool = () => {
                     <LayoutTemplate size={14} /> <span className="text-xs font-bold text-center">Load JSON</span>
                     <input type="file" accept=".json" className="hidden" onChange={handleJsonUpload} />
                   </label>
-                  <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-white/30 bg-white text-black/10 text-white rounded-xl hover:bg-white text-black/20 cursor-pointer text-xs font-bold">
+                  <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-white/30 bg-white/10 text-white rounded-xl hover:bg-white/20 cursor-pointer text-xs font-bold">
                     <Library size={14} /> Gallery
                   </button>
                 </div>
@@ -576,7 +576,7 @@ export const TemplateStudioTool = () => {
                   <LayoutTemplate size={16} /> <span className="text-xs font-bold text-center">Load JSON</span>
                   <input type="file" accept=".json" className="hidden" onChange={handleJsonUpload} />
                 </label>
-                <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-white/30 bg-white text-black/10 text-white rounded-xl hover:bg-white text-black/20 cursor-pointer text-xs font-bold">
+                <button onClick={() => setShowGallery(true)} className="flex flex-col items-center justify-center gap-1 w-full p-2 border border-white/30 bg-white/10 text-white rounded-xl hover:bg-white/20 cursor-pointer text-xs font-bold">
                   <Library size={16} /> Gallery
                 </button>
               </div>

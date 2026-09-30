@@ -70,7 +70,7 @@ const OllamaAssistant: React.FC<{ layer: TextLayer; onChange: (changes: Partial<
         <span className="text-[10px] text-[#A3A09B] font-bold uppercase tracking-wider flex items-center gap-1">
           <Cpu size={12} className="text-white" /> Ollama Assistant
         </span>
-        <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${ollamaStatus === 'online' ? 'bg-white text-black/20 text-white' : ollamaStatus === 'offline' ? 'bg-rose-500/20 text-rose-400' : 'bg-slate-800 text-slate-400'}`}>
+        <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${ollamaStatus === 'online' ? 'bg-white/20 text-white' : ollamaStatus === 'offline' ? 'bg-rose-500/20 text-rose-400' : 'bg-slate-800 text-slate-400'}`}>
           {ollamaStatus}
         </span>
       </div>

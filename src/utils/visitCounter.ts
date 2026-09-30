@@ -1,4 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
+import {
+  isFirebaseConfigured,
+  recordVisitToFirebase,
+  subscribeToFirebaseVisits
+} from './firebase';
 
 const INITIAL_BASE_COUNT = 8180;
 const STORAGE_KEY = 'domodomo_active_users_count';
@@ -56,32 +61,83 @@ export function formatCount(count: number): string {
 }
 
 /**
- * React hook to manage visit count starting at 8,180.
- * Zero clickListeners, zero external API calls.
+ * React hook to manage real-time visit count starting at 8,180.
+ * Synchronizes with Firebase in real time if configured, with resilient
+ * local storage fallback and multi-tab broadcasting.
  */
 export function useVisitCounter(_trackClicks?: boolean) {
   const [count, setCount] = useState<number>(() => {
     return getStoredVisitCount();
+  });
+  const [isFirebaseSynced, setIsFirebaseSynced] = useState<boolean>(() => {
+    return isFirebaseConfigured();
   });
 
   // Increment visit count once on initial session mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    try {
-      const sessionTracked = sessionStorage.getItem(SESSION_KEY);
-      if (!sessionTracked) {
-        sessionStorage.setItem(SESSION_KEY, 'true');
-        const updated = incrementVisitCount(1);
-        setCount(updated);
+    let isMounted = true;
+
+    const trackSessionVisit = async () => {
+      let isNewSession = false;
+      try {
+        const sessionTracked = sessionStorage.getItem(SESSION_KEY);
+        if (!sessionTracked) {
+          sessionStorage.setItem(SESSION_KEY, 'true');
+          isNewSession = true;
+        }
+      } catch {
+        isNewSession = true;
       }
-    } catch (e) {
-      const updated = incrementVisitCount(1);
-      setCount(updated);
-    }
+
+      if (isNewSession) {
+        if (isFirebaseConfigured()) {
+          try {
+            const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
+            if (remoteTotal && isMounted) {
+              const updated = setStoredVisitCount(remoteTotal);
+              setCount(updated);
+              setIsFirebaseSynced(true);
+              return;
+            }
+          } catch (err) {
+            console.warn('[VisitCounter] Failed to record visit in Firebase, using local increment:', err);
+          }
+        }
+
+        // Local fallback increment
+        const updated = incrementVisitCount(1);
+        if (isMounted) {
+          setCount(updated);
+        }
+      }
+    };
+
+    trackSessionVisit();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Sync state across browser tabs & components
+  // Real-time synchronization subscription with Firebase
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!isFirebaseConfigured()) return;
+
+    const unsubscribe = subscribeToFirebaseVisits(INITIAL_BASE_COUNT, (liveCount) => {
+      const persisted = setStoredVisitCount(liveCount);
+      setCount(persisted);
+      setIsFirebaseSynced(true);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Sync state across browser tabs & components via storage events and custom events
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -112,7 +168,20 @@ export function useVisitCounter(_trackClicks?: boolean) {
     };
   }, []);
 
-  const manuallyIncrement = useCallback((step: number = 1) => {
+  const manuallyIncrement = useCallback(async (step: number = 1) => {
+    if (isFirebaseConfigured()) {
+      try {
+        const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
+        if (remoteTotal) {
+          const updated = setStoredVisitCount(remoteTotal);
+          setCount(updated);
+          return;
+        }
+      } catch (e) {
+        console.warn('[VisitCounter] Manual remote increment error:', e);
+      }
+    }
+
     const next = incrementVisitCount(step);
     setCount(next);
   }, []);
@@ -120,6 +189,7 @@ export function useVisitCounter(_trackClicks?: boolean) {
   return {
     count,
     formattedCount: formatCount(count),
-    incrementCount: manuallyIncrement
+    incrementCount: manuallyIncrement,
+    isFirebaseSynced
   };
 }
