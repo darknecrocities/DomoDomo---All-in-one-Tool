@@ -1,10 +1,9 @@
+import DOMPurify from 'dompurify';
+
 /**
  * Simple client-side Markdown to HTML converter.
  * Extracted from Markdown.tsx for global usage across the toolbox, including AI chats.
- */
-/**
- * Simple client-side Markdown to HTML converter.
- * Extracted from Markdown.tsx for global usage across the toolbox, including AI chats.
+ * Hardened with DOMPurify sanitization to prevent DOM XSS vulnerabilities.
  */
 export const parseMarkdown = (md: string): string => {
   if (!md) return '';
@@ -163,5 +162,8 @@ export const parseMarkdown = (md: string): string => {
   if (inTable) resultHtml += '</table></div>';
   if (inList) resultHtml += '</ul>';
 
-  return resultHtml;
+  return DOMPurify.sanitize(resultHtml, {
+    ADD_TAGS: ['input'],
+    ADD_ATTR: ['type', 'checked', 'disabled', 'target', 'rel']
+  });
 };

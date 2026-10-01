@@ -1,5 +1,6 @@
 import { triggerDownload, generateDesignedQR, triggerBlobDownload } from '../../utils/sharedHelpers';
 import { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Layers, Download, Sparkles, Upload, Grid, List, Table, AlertCircle } from 'lucide-react';
 import { QRStylingPanel } from '../../components/QRStylingPanel';
 import type { QRStyleSettings } from '../../components/QRStylingPanel';
@@ -231,7 +232,7 @@ export const BulkQRTool = () => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    printWindow.document.write(`
+    const printContent = `
       <html>
         <head>
           <title>Printable Avery QR Label Sheet</title>
@@ -249,17 +250,23 @@ export const BulkQRTool = () => {
             ${result.map((item, idx) => `
               <div class="label-item">
                 <img src="${item.qrUrl}" class="qr-img" />
-                <div class="text">#${idx + 1}: ${item.text.slice(0, 12)}...</div>
+                <div class="text">#${idx + 1}: ${DOMPurify.sanitize(item.text.slice(0, 12))}...</div>
               </div>
             `).join('')}
           </div>
-          <script>
-            window.onload = function() { window.print(); window.close(); }
-          </script>
         </body>
       </html>
-    `);
+    `;
+
+    printWindow.document.write(DOMPurify.sanitize(printContent, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }));
     printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      try {
+        printWindow.print();
+        printWindow.close();
+      } catch {}
+    }, 250);
   };
 
   const handleUpdateRow = (id: string, newText: string) => {

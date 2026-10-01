@@ -1,5 +1,6 @@
 import { triggerDownload, generateDesignedQR } from '../../utils/sharedHelpers';
 import { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { Wifi, Eye, EyeOff, Download, Printer, ShieldAlert, Sparkles } from 'lucide-react';
 import { QRStylingPanel } from '../../components/QRStylingPanel';
 import type { QRStyleSettings } from '../../components/QRStylingPanel';
@@ -85,7 +86,7 @@ export const WifiQRTool = () => {
       themeStyles = 'background: #ffffff; color: #111827; border: 2px solid #e5e7eb;';
     }
 
-    printWindow.document.write(`
+    const printContent = `
       <html>
         <head>
           <title>WiFi Access Standee Card</title>
@@ -132,13 +133,19 @@ export const WifiQRTool = () => {
               </div>
             `}
           </div>
-          <script>
-            window.onload = function() { window.print(); window.close(); }
-          </script>
         </body>
       </html>
-    `);
+    `;
+
+    printWindow.document.write(DOMPurify.sanitize(printContent, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }));
     printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      try {
+        printWindow.print();
+        printWindow.close();
+      } catch {}
+    }, 250);
   };
 
   return (

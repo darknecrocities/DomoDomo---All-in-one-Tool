@@ -1,5 +1,6 @@
 import { triggerDownload, generateDesignedQR } from '../../utils/sharedHelpers';
 import { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { CreditCard, Download, Sparkles, AlertCircle, Printer } from 'lucide-react';
 import { QRStylingPanel } from '../../components/QRStylingPanel';
 import type { QRStyleSettings } from '../../components/QRStylingPanel';
@@ -118,7 +119,7 @@ export const PaymentQRTool = () => {
       themeStyles = 'background: linear-gradient(135deg, #06170d 0%, #030805 100%); color: #4E8E5E; border: 4px solid #4E8E5E;';
     }
 
-    printWindow.document.write(`
+    const printContent = `
       <html>
         <head>
           <title>Scan To Pay Counter Checkout Card</title>
@@ -139,18 +140,24 @@ export const PaymentQRTool = () => {
             <div class="qr-container"><img src="${qrUrl}" class="qr-img" /></div>
             <div class="amount">${currency} ${getTotalAmount()}</div>
             <div class="details">
-              <strong>Payee:</strong> ${name}<br/>
-              <strong>Remarks:</strong> ${note}
+              <strong>Payee:</strong> ${DOMPurify.sanitize(name)}<br/>
+              <strong>Remarks:</strong> ${DOMPurify.sanitize(note)}
             </div>
-            <div class="ref">REF ID: ${refId}</div>
+            <div class="ref">REF ID: ${DOMPurify.sanitize(refId)}</div>
           </div>
-          <script>
-            window.onload = function() { window.print(); window.close(); }
-          </script>
         </body>
       </html>
-    `);
+    `;
+
+    printWindow.document.write(DOMPurify.sanitize(printContent, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }));
     printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      try {
+        printWindow.print();
+        printWindow.close();
+      } catch {}
+    }, 250);
   };
 
   return (
