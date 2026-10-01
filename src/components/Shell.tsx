@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -355,15 +355,44 @@ export const Shell = () => {
                 aria-expanded={openDropdown === 'ecosystem'}
               >
                 <Sparkles size={13} className="text-amber-300" />
-                <span>Ecosystem</span>
+                <span>Explore</span>
                 <ChevronDown size={12} className={`transition-transform duration-200 ${openDropdown === 'ecosystem' ? 'rotate-180 text-[#ECEBE9]' : 'text-[#72706C]'}`} />
               </button>
 
               {openDropdown === 'ecosystem' && (
-                <div className="absolute left-0 mt-2 w-88 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
+                <div className="absolute left-0 mt-2 w-92 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
                   <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
-                    Domo Platforms &amp; Labs
+                    Explore Platforms &amp; Ecosystem
                   </div>
+
+                  {/* DomoScope GitHub Repository Inspection */}
+                  <a
+                    href="https://domoscope.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpenDropdown(null)}
+                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                  >
+                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
+                      <GitBranch size={16} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
+                            DomoScope
+                          </span>
+                          <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
+                            NEW
+                          </span>
+                        </div>
+                        <ExternalLink size={11} className="text-[#72706C]" />
+                      </div>
+                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-2">
+                        GitHub repo inspection — architecture graphs, database ERD schemas &amp; security audits
+                      </p>
+                    </div>
+                  </a>
 
                   {/* Studio Lab */}
                   <NavLink
@@ -761,6 +790,22 @@ export const Shell = () => {
                 <span>Studio Lab</span>
                 <span className="ml-auto text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-2 py-0.5 rounded-full">NEW</span>
               </NavLink>
+
+              {/* DomoScope Platform */}
+              <a
+                href="https://domoscope.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
+              >
+                <div className="flex items-center gap-2">
+                  <GitBranch size={16} className="text-amber-300" />
+                  <span>DomoScope</span>
+                  <span className="text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-1.5 py-0.2 rounded-full">NEW</span>
+                </div>
+                <ExternalLink size={13} className="text-[#72706C]" />
+              </a>
 
               {/* Codepyne.io Platform */}
               <a
@@ -1246,6 +1291,28 @@ export const Shell = () => {
                         </span>
                       </div>
                     </a>
+                    {/* DomoScope Inspection Badge */}
+                    <a
+                      href="https://domoscope.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/domoscope w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
+                      title="DomoScope — GitHub Repository Inspection &amp; Visualization"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-amber-300 group-hover/domoscope:scale-105 transition-transform">
+                        <GitBranch size={15} />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-amber-400 font-bold uppercase">
+                          Domo Ecosystem
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/domoscope:text-amber-300 transition-colors flex items-center gap-1">
+                          <span>DomoScope</span>
+                          <ExternalLink size={10} className="text-[#72706C]" />
+                        </span>
+                      </div>
+                    </a>
+
                     {/* DomoSkills Marketplace Badge */}
                     <a
                       href="https://web-beta-six-81.vercel.app/"
@@ -1334,6 +1401,17 @@ export const Shell = () => {
                   <ul className="flex flex-col gap-2.5 text-xs text-[#A3A09B] font-semibold">
                     <li><Link to="/" className="hover:text-[#ECEBE9] transition-colors">Tools</Link></li>
                     <li><Link to="/about" className="hover:text-[#ECEBE9] transition-colors">About</Link></li>
+                    <li>
+                      <a
+                        href="https://domoscope.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-white transition-colors flex items-center gap-1 text-[#ECEBE9] font-bold"
+                      >
+                        <span>DomoScope</span>
+                        <ExternalLink size={10} className="text-[#72706C]" />
+                      </a>
+                    </li>
                     <li>
                       <a
                         href="https://codepyne-io.vercel.app/"

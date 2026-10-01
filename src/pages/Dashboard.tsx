@@ -15,13 +15,9 @@ import {
 	Bomb,
 	Hammer,
 	Sparkles,
-	ArrowUpRight,
-	Terminal,
 	Snowflake,
 	Gift,
-	NotebookPen as NotebookPenIcon,
 } from "lucide-react";
-import { GiSnake } from "react-icons/gi";
 import { Helmet } from "react-helmet-async";
 import { DynamicIcon } from "../components/DynamicIcon";
 import { aiService } from "../utils/aiService";
@@ -36,6 +32,7 @@ import stageByAntLogo from "../assets/stagebyant.png";
 import { AppBuildersWidget } from "../components/AppBuildersWidget";
 import { TiltContainer } from "../components/TiltContainer";
 import { useCardPhysics } from "../hooks/useCardPhysics";
+import { EcosystemShowcase } from "../components/EcosystemShowcase";
 
 
 interface PlannedTool {
@@ -2212,13 +2209,6 @@ export const Dashboard = () => {
 		setTimeout(() => setCopiedTerminalIndex(null), 1500);
 	};
 
-	const [copiedDomoSkillsCli, setCopiedDomoSkillsCli] = useState(false);
-	const handleCopyDomoSkillsCli = () => {
-		navigator.clipboard.writeText("npx domoskills add react-performance owasp-agent-guardian");
-		setCopiedDomoSkillsCli(true);
-		setTimeout(() => setCopiedDomoSkillsCli(false), 2000);
-	};
-
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const categoryScrollRef = useRef<HTMLDivElement>(null);
 
@@ -2734,219 +2724,9 @@ export const Dashboard = () => {
 				</div>
 			</div>
 
-			{/* Domo Ecosystem Showcase */}
-			<div className="space-y-4">
-				{/* Codepyne.io Ecosystem Spotlight Banner */}
-				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/40 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/codepyne text-left">
-					<div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-					<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-						<div className="space-y-3 max-w-3xl">
-							<div>
-								<div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-									<GiSnake size={13} />
-									<span>Official Ecosystem Partner</span>
-								</div>
-								<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
-									<span>Codepyne.io — Engineering &amp; Data Science Upskilling Platform</span>
-								</h2>
-								<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
-									The hands-on technical upskilling platform where you learn by orchestrating, training, and building real systems — from Python fundamentals and autograd engines to transformer fine-tuning, multi-agent systems, and verifiable software certifications.
-								</p>
-							</div>
+			{/* Domo Ecosystem Showcase — Interactive Non-Stop Looping Carousel & Modal */}
+			<EcosystemShowcase />
 
-							{/* Curriculum Highlights */}
-							<div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-[#72706C]">
-								<span className="text-[#A3A09B] font-semibold">Curriculum:</span>
-								{[
-									'Python Fundamentals',
-									'Autograd Engines',
-									'Transformer Fine-Tuning',
-									'Multi-Agent Systems',
-									'Model Deployment',
-									'Verifiable Certifications',
-								].map((topic) => (
-									<span key={topic} className="px-2 py-0.5 rounded-md bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]">
-										{topic}
-									</span>
-								))}
-							</div>
-
-							{/* Highlight Pill */}
-							<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
-								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-amber-300 font-bold flex items-center gap-1.5">
-									<GiSnake size={12} />
-									<span>Web Platform</span>
-								</div>
-								<span className="text-[#ECEBE9] text-[11px] sm:text-xs">https://codepyne-io.vercel.app/</span>
-							</div>
-						</div>
-
-						{/* Action Buttons */}
-						<div className="flex flex-wrap lg:flex-col sm:flex-row items-stretch gap-2.5 shrink-0 w-full lg:w-auto">
-							<a
-								href="https://codepyne-io.vercel.app/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shadow-white/5 group/btn"
-							>
-								<GiSnake size={15} />
-								<span>Explore Codepyne.io</span>
-								<ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-							</a>
-
-							<a
-								href="/blog/announcing-codepyne-io-ai-machine-learning-upskilling-platform"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-bold transition-all text-center"
-							>
-								<span>Read Announcement</span>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				{/* DomoSkills Ecosystem Spotlight Banner */}
-				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/40 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/domoskills text-left">
-					<div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-					<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-						<div className="space-y-3 max-w-3xl">
-							<div>
-								<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
-									<span>DomoSkills — The Open Agent Skills Marketplace</span>
-									<Sparkles size={18} className="text-amber-300 shrink-0" />
-								</h2>
-								<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
-									Supercharge your coding assistants with 200+ verified capabilities. Single-command CLI installation for <span className="text-[#ECEBE9] font-semibold">Google Antigravity</span>, <span className="text-[#ECEBE9] font-semibold">Claude Code</span>, <span className="text-[#ECEBE9] font-semibold">Cursor</span>, <span className="text-[#ECEBE9] font-semibold">OpenCode</span>, <span className="text-[#ECEBE9] font-semibold">Codex</span>, and <span className="text-[#ECEBE9] font-semibold">Gemini CLI</span>.
-								</p>
-							</div>
-
-							{/* Supported Agent Tags */}
-							<div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-[#72706C]">
-								<span className="text-[#A3A09B] font-semibold">Supported:</span>
-								{['Antigravity', 'Claude Code', 'Cursor', 'OpenCode', 'Codex', 'Gemini CLI', 'Windsurf'].map((agent) => (
-									<span key={agent} className="px-2 py-0.5 rounded-md bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]">
-										{agent}
-									</span>
-								))}
-							</div>
-
-							{/* Quick Copy Command Snippet */}
-							<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
-								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-sky-300 font-bold flex items-center gap-1.5">
-									<Terminal size={12} />
-									<span>CLI</span>
-								</div>
-								<span className="text-[#ECEBE9] text-[11px] sm:text-xs">npx domoskills add react-performance owasp-agent-guardian</span>
-								<button
-									onClick={handleCopyDomoSkillsCli}
-									className="p-1 rounded bg-[#18191B] border border-[#2A2D30] hover:border-white/40 text-[#72706C] hover:text-[#ECEBE9] transition-all ml-1"
-									title="Copy installation command"
-								>
-									{copiedDomoSkillsCli ? <Check size={12} className="text-white" /> : <Copy size={12} />}
-								</button>
-							</div>
-						</div>
-
-						{/* Action Buttons */}
-						<div className="flex flex-wrap lg:flex-col sm:flex-row items-stretch gap-2.5 shrink-0 w-full lg:w-auto">
-							<a
-								href="https://web-beta-six-81.vercel.app/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shadow-white/5 group/btn"
-							>
-								<span>Explore Marketplace</span>
-								<ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-							</a>
-
-							<button
-								onClick={() => navigate('/tool/domoskills')}
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-bold transition-all"
-							>
-								<Sparkles size={13} className="text-amber-300" />
-								<span>In-App Tool Hub</span>
-							</button>
-
-							<a
-								href="https://github.com/darknecrocities/DomoSkills"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-semibold transition-all"
-							>
-								<Code size={13} />
-								<span>GitHub Repository</span>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				{/* DomoNote Ecosystem Spotlight Banner */}
-				<div className="rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/40 transition-all p-5 sm:p-6 relative overflow-hidden shadow-lg group/domonote text-left">
-					<div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-					<div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
-						<div className="space-y-3 max-w-3xl">
-							<div>
-								<div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-									<NotebookPenIcon size={13} />
-									<span>Official Ecosystem Partner</span>
-								</div>
-								<h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
-									<span>DomoNote — Personal AI Local Secretary</span>
-								</h2>
-								<p className="text-xs sm:text-sm text-[#A3A09B] mt-1.5 leading-relaxed">
-									Your intelligent offline-first personal secretary. Capture notes, set AI-powered reminders, draft documents, and manage your day — all with a private local AI that never sends your data to the cloud.
-								</p>
-							</div>
-
-							{/* Feature Highlights */}
-							<div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-[#72706C]">
-								<span className="text-[#A3A09B] font-semibold">Features:</span>
-								{[
-									'Smart Notes',
-									'AI Reminders',
-									'Local AI Assistant',
-									'Offline-First',
-									'Privacy Guaranteed',
-									'Voice Capture',
-								].map((feature) => (
-									<span key={feature} className="px-2 py-0.5 rounded-md bg-[#111213] border border-[#2A2D30] text-[#ECEBE9]">
-										{feature}
-									</span>
-								))}
-							</div>
-
-							{/* Highlight Pill */}
-							<div className="inline-flex items-center gap-2 p-1.5 pr-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-xs font-mono">
-								<div className="px-2.5 py-1 rounded-lg bg-[#18191B] border border-[#2A2D30] text-amber-300 font-bold flex items-center gap-1.5">
-									<NotebookPenIcon size={12} />
-									<span>Web App</span>
-								</div>
-								<span className="text-[#ECEBE9] text-[11px] sm:text-xs">https://domonote.vercel.app/</span>
-							</div>
-						</div>
-
-						{/* Action Buttons */}
-						<div className="flex flex-wrap lg:flex-col sm:flex-row items-stretch gap-2.5 shrink-0 w-full lg:w-auto">
-							<a
-								href="https://domonote.vercel.app/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shadow-white/5 group/btn"
-							>
-								<NotebookPenIcon size={15} />
-								<span>Open DomoNote</span>
-								<ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-							</a>
-
-							<a
-								href="/blog/announcing-domonote-personal-ai-local-secretary"
-								className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#111213] hover:bg-[#1E2022] text-[#ECEBE9] border border-[#2A2D30] hover:border-white/40 text-xs font-bold transition-all text-center"
-							>
-								<span>Read Announcement</span>
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
 
 			{/* Unified Command Bar Panel */}
 			<div className="sticky top-[56px] sm:top-[60px] z-30 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-between items-stretch sm:items-center bg-[#18191B] border border-[#2A2D30] p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl shadow-black/50">
