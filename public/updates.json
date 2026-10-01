@@ -1,7 +1,25 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:22:42.781Z",
+  "buildTime": "2026-10-01T08:23:59.347Z",
   "commits": [
+    {
+      "hash": "571f5a5",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge branch 'main' into staging"
+    },
+    {
+      "hash": "01e56b5",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge remote-tracking branch 'origin/staging' into staging"
+    },
+    {
+      "hash": "66babdf",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix(shell): remove Panda Tech Ecosystem footer from Explore dropdown"
+    },
     {
       "hash": "1457327",
       "date": "2026-10-01",
@@ -73,24 +91,6 @@
       "date": "2026-09-25",
       "author": "darknecrocities",
       "message": "feat(ecosystem): Add DomoNote Personal AI Local Secretary to Domo Ecosystem"
-    },
-    {
-      "hash": "3636f49",
-      "date": "2026-09-14",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "bb811b0",
-      "date": "2026-09-15",
-      "author": "darknecrocities",
-      "message": "feat(ui): festive winter overhaul, continuous snowfall background, monochrome tech theme, and purge AI buzzwords"
-    },
-    {
-      "hash": "108ff6e",
-      "date": "2026-09-13",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
     }
   ]
 }
