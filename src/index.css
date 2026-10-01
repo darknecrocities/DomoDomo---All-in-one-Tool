@@ -959,23 +959,36 @@ html.dark {
   animation: frost-shimmer 4s ease-in-out infinite;
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
+@keyframes marquee-continuous {
+  from {
+    transform: translate3d(0, 0, 0);
   }
-
-  100% {
-    transform: translateX(-50%);
+  to {
+    transform: translate3d(-100%, 0, 0);
   }
 }
 
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 35s linear infinite;
+@keyframes marquee-continuous-reverse {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
-.animate-marquee:hover {
+.animate-marquee-continuous {
+  animation: marquee-continuous 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-continuous-reverse {
+  animation: marquee-continuous-reverse 38s linear infinite;
+  will-change: transform;
+}
+
+.marquee-wrapper:hover .animate-marquee-continuous,
+.marquee-wrapper:hover .animate-marquee-continuous-reverse {
   animation-play-state: paused;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   ArrowUpRight,
@@ -172,10 +172,10 @@ export const EcosystemShowcase: React.FC = () => {
   const navigate = useNavigate();
   const [selectedApp, setSelectedApp] = useState<EcosystemApp | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const scrollTrackRef = useRef<HTMLDivElement>(null);
+  const [scrollDirection, setScrollDirection] = useState<'left' | 'right'>('left');
 
-  // Duplicate apps array 3 times to ensure continuous seamless infinite looping
-  const loopingApps = [...ECOSYSTEM_APPS, ...ECOSYSTEM_APPS, ...ECOSYSTEM_APPS];
+  // Duplicate apps array twice in each track to ensure full coverage across all desktop and mobile viewports
+  const carouselApps = [...ECOSYSTEM_APPS, ...ECOSYSTEM_APPS];
 
   // Close modal on Escape key
   useEffect(() => {
@@ -200,14 +200,72 @@ export const EcosystemShowcase: React.FC = () => {
     };
   }, [selectedApp]);
 
-  const handleManualScroll = (direction: 'left' | 'right') => {
-    if (!scrollTrackRef.current) return;
-    const distance = 320;
-    scrollTrackRef.current.scrollBy({
-      left: direction === 'left' ? -distance : distance,
-      behavior: 'smooth'
-    });
-  };
+  const renderAppCard = (app: EcosystemApp, uniqueKey: string, isAriaHidden = false) => (
+    <div
+      key={uniqueKey}
+      onClick={() => setSelectedApp(app)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setSelectedApp(app);
+        }
+      }}
+      tabIndex={isAriaHidden ? -1 : 0}
+      role="button"
+      aria-label={`View ${app.name} details`}
+      className="w-[280px] sm:w-[320px] shrink-0 p-4 sm:p-5 rounded-2xl bg-[#111213]/90 backdrop-blur-md border border-[#2A2D30] hover:border-white/40 hover:bg-[#161719] cursor-pointer transition-all duration-300 group/card relative flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 overflow-hidden"
+    >
+      {/* Subtle Top Highlight Line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover/card:via-white/30 transition-all duration-500" />
+
+      {/* Card Top: Frameless Floating B&W App Logo + Category */}
+      <div>
+        <div className="flex items-start justify-between gap-3 mb-3.5">
+          {/* Frameless Floating B&W Logo with Ambient Light */}
+          <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0">
+            {/* Ambient soft glow backdrop */}
+            <div className="absolute inset-0 bg-white/5 rounded-full blur-xl opacity-40 group-hover/card:opacity-100 group-hover/card:bg-white/10 transition-all duration-300 pointer-events-none" />
+            <img
+              src={app.logoSrc}
+              alt={`${app.name} logo`}
+              className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter grayscale contrast-125 brightness-110 group-hover/card:contrast-140 group-hover/card:brightness-125 drop-shadow-[0_4px_12px_rgba(255,255,255,0.06)] group-hover/card:drop-shadow-[0_8px_24px_rgba(255,255,255,0.22)] group-hover/card:scale-110 transition-all duration-300 relative z-10"
+              loading="lazy"
+            />
+          </div>
+
+          {/* Official Badge Pill */}
+          <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-white/5 border border-[#2A2D30] text-[#A3A09B] group-hover/card:text-[#ECEBE9] group-hover/card:border-white/20 transition-colors">
+            {app.category}
+          </span>
+        </div>
+
+        {/* App Title & Tagline */}
+        <h3 className="text-base sm:text-lg font-extrabold text-[#ECEBE9] group-hover/card:text-white transition-colors flex items-center gap-1.5">
+          <span>{app.name}</span>
+          <ArrowUpRight
+            size={14}
+            className="text-[#72706C] group-hover/card:text-white group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 transition-all"
+          />
+        </h3>
+
+        <p className="text-xs text-[#A3A09B] mt-1.5 line-clamp-2 leading-relaxed">
+          {app.shortDesc}
+        </p>
+      </div>
+
+      {/* Card Bottom: Sleek Interactive Indicator */}
+      <div className="mt-4 pt-3 border-t border-[#2A2D30]/80 flex items-center justify-between text-[11px] font-mono text-[#72706C]">
+        <span className="flex items-center gap-1 text-amber-300/90 font-medium">
+          <Zap size={11} />
+          <span>Quick View</span>
+        </span>
+        <span className="text-[#A3A09B] group-hover/card:text-white transition-colors flex items-center gap-1 font-semibold">
+          <span>View</span>
+          <ChevronRight size={12} className="group-hover/card:translate-x-0.5 transition-transform" />
+        </span>
+      </div>
+    </div>
+  );
 
   return (
     <section className="w-full relative my-2">
@@ -254,21 +312,25 @@ export const EcosystemShowcase: React.FC = () => {
               )}
             </button>
 
-            {/* Manual Nudge Buttons */}
+            {/* Direction toggle buttons */}
             <div className="flex items-center gap-1">
               <button
-                onClick={() => handleManualScroll('left')}
-                className="p-1.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/40 text-[#A3A09B] hover:text-white transition-all"
-                title="Scroll left"
-                aria-label="Scroll left"
+                onClick={() => setScrollDirection('left')}
+                className={`p-1.5 rounded-xl bg-[#111213] border transition-all ${
+                  scrollDirection === 'left' ? 'border-white/40 text-white' : 'border-[#2A2D30] text-[#A3A09B] hover:text-white'
+                }`}
+                title="Glide left"
+                aria-label="Glide left"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
-                onClick={() => handleManualScroll('right')}
-                className="p-1.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/40 text-[#A3A09B] hover:text-white transition-all"
-                title="Scroll right"
-                aria-label="Scroll right"
+                onClick={() => setScrollDirection('right')}
+                className={`p-1.5 rounded-xl bg-[#111213] border transition-all ${
+                  scrollDirection === 'right' ? 'border-white/40 text-white' : 'border-[#2A2D30] text-[#A3A09B] hover:text-white'
+                }`}
+                title="Glide right"
+                aria-label="Glide right"
               >
                 <ChevronRight size={16} />
               </button>
@@ -277,88 +339,39 @@ export const EcosystemShowcase: React.FC = () => {
         </div>
 
         {/* Continuous Automatic Carousel Track Viewport */}
-        <div className="relative mt-5 -mx-5 sm:-mx-7 px-5 sm:px-7 overflow-hidden">
+        <div className="relative mt-5 -mx-5 sm:-mx-7 px-5 sm:px-7 overflow-hidden marquee-wrapper">
           {/* Edge Fade Gradients for Seamless Visual Flow */}
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-[#18191B] via-[#18191B]/80 to-transparent z-10" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-[#18191B] via-[#18191B]/80 to-transparent z-10" />
 
-          {/* Marquee Track */}
-          <div
-            ref={scrollTrackRef}
-            className={`flex items-stretch gap-4 sm:gap-5 py-2 overflow-x-auto scrollbar-none select-none ${
-              isPaused ? '' : 'animate-marquee'
-            }`}
-            style={{
-              animationDuration: '38s',
-              animationPlayState: isPaused ? 'paused' : 'running',
-            }}
-          >
-            {loopingApps.map((app, index) => (
-              <div
-                key={`${app.id}-${index}`}
-                onClick={() => setSelectedApp(app)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setSelectedApp(app);
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label={`View ${app.name} details`}
-                className="w-[280px] sm:w-[320px] shrink-0 p-4 sm:p-5 rounded-2xl bg-[#111213]/90 backdrop-blur-md border border-[#2A2D30] hover:border-white/40 hover:bg-[#161719] cursor-pointer transition-all duration-300 group/card relative flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 overflow-hidden"
-              >
-                {/* Subtle Top Highlight Line */}
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover/card:via-white/30 transition-all duration-500" />
+          {/* Dual Seamless Continuous Tracks */}
+          <div className="flex select-none py-2 w-max">
+            {/* Primary Track */}
+            <div
+              className={`flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5 shrink-0 ${
+                scrollDirection === 'left' ? 'animate-marquee-continuous' : 'animate-marquee-continuous-reverse'
+              }`}
+              style={{
+                animationDuration: '38s',
+                animationPlayState: (isPaused || selectedApp !== null) ? 'paused' : undefined,
+              }}
+            >
+              {carouselApps.map((app, index) => renderAppCard(app, `track-a-${app.id}-${index}`))}
+            </div>
 
-                {/* Card Top: Frameless Floating B&W App Logo + Category */}
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-3.5">
-                    {/* Frameless Floating B&W Logo with Ambient Light */}
-                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0">
-                      {/* Ambient soft glow backdrop */}
-                      <div className="absolute inset-0 bg-white/5 rounded-full blur-xl opacity-40 group-hover/card:opacity-100 group-hover/card:bg-white/10 transition-all duration-300 pointer-events-none" />
-                      <img
-                        src={app.logoSrc}
-                        alt={`${app.name} logo`}
-                        className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter grayscale contrast-125 brightness-110 group-hover/card:contrast-140 group-hover/card:brightness-125 drop-shadow-[0_4px_12px_rgba(255,255,255,0.06)] group-hover/card:drop-shadow-[0_8px_24px_rgba(255,255,255,0.22)] group-hover/card:scale-110 transition-all duration-300 relative z-10"
-                        loading="lazy"
-                      />
-                    </div>
-
-                    {/* Official Badge Pill */}
-                    <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-white/5 border border-[#2A2D30] text-[#A3A09B] group-hover/card:text-[#ECEBE9] group-hover/card:border-white/20 transition-colors">
-                      {app.category}
-                    </span>
-                  </div>
-
-                  {/* App Title & Tagline */}
-                  <h3 className="text-base sm:text-lg font-extrabold text-[#ECEBE9] group-hover/card:text-white transition-colors flex items-center gap-1.5">
-                    <span>{app.name}</span>
-                    <ArrowUpRight
-                      size={14}
-                      className="text-[#72706C] group-hover/card:text-white group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 transition-all"
-                    />
-                  </h3>
-
-                  <p className="text-xs text-[#A3A09B] mt-1.5 line-clamp-2 leading-relaxed">
-                    {app.shortDesc}
-                  </p>
-                </div>
-
-                {/* Card Bottom: Sleek Interactive Indicator */}
-                <div className="mt-4 pt-3 border-t border-[#2A2D30]/80 flex items-center justify-between text-[11px] font-mono text-[#72706C]">
-                  <span className="flex items-center gap-1 text-amber-300/90 font-medium">
-                    <Zap size={11} />
-                    <span>Quick View</span>
-                  </span>
-                  <span className="text-[#A3A09B] group-hover/card:text-white transition-colors flex items-center gap-1 font-semibold">
-                    <span>View</span>
-                    <ChevronRight size={12} className="group-hover/card:translate-x-0.5 transition-transform" />
-                  </span>
-                </div>
-              </div>
-            ))}
+            {/* Twin Seamless Clone Track (ensures zero-jump continuous loop) */}
+            <div
+              aria-hidden="true"
+              className={`flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5 shrink-0 ${
+                scrollDirection === 'left' ? 'animate-marquee-continuous' : 'animate-marquee-continuous-reverse'
+              }`}
+              style={{
+                animationDuration: '38s',
+                animationPlayState: (isPaused || selectedApp !== null) ? 'paused' : undefined,
+              }}
+            >
+              {carouselApps.map((app, index) => renderAppCard(app, `track-b-${app.id}-${index}`, true))}
+            </div>
           </div>
         </div>
       </div>
