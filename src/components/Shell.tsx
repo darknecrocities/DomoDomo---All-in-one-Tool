@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch, Shield } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -503,87 +503,74 @@ export const Shell = () => {
                     </div>
 
                     {/* Right Column: Native Workspaces */}
-                    <div className="flex flex-col justify-between space-y-1">
-                      <div>
-                        <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
-                          <span>In-App Workspaces</span>
-                        </div>
-
-                        {/* Studio Lab */}
-                        <NavLink
-                          to="/ai-hub"
-                          onClick={() => setOpenDropdown(null)}
-                          className={({ isActive }) =>
-                            `flex items-start gap-2.5 p-2 rounded-xl transition-all group/item ${
-                              isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
-                            }`
-                          }
-                        >
-                          <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 text-white">
-                            <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
-                            <Bot size={20} className="relative z-10 group-hover/item:scale-110 transition-transform" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-1">
-                              <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
-                                Studio Lab
-                              </span>
-                              <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
-                                LOCAL AI
-                              </span>
-                            </div>
-                            <div className="text-[9px] font-mono text-[#A3A09B] mt-0.5">
-                              Offline AI Playground
-                            </div>
-                            <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
-                              Workflow automations &amp; local Ollama models
-                            </p>
-                          </div>
-                        </NavLink>
-
-                        {/* In-App Skills Hub */}
-                        <NavLink
-                          to="/tool/domoskills"
-                          onClick={() => setOpenDropdown(null)}
-                          className={({ isActive }) =>
-                            `flex items-start gap-2.5 p-2 rounded-xl transition-all group/item ${
-                              isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
-                            }`
-                          }
-                        >
-                          <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 text-white">
-                            <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
-                            <Terminal size={20} className="relative z-10 group-hover/item:scale-110 transition-transform" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-1">
-                              <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
-                                In-App Skills Hub
-                              </span>
-                              <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
-                                INTEGRATED
-                              </span>
-                            </div>
-                            <div className="text-[9px] font-mono text-[#A3A09B] mt-0.5">
-                              Agent Toolkit
-                            </div>
-                            <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
-                              Embedded catalog, CLI runner &amp; zoom sandbox
-                            </p>
-                          </div>
-                        </NavLink>
+                    <div className="space-y-1">
+                      <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
+                        <span>In-App Workspaces</span>
                       </div>
 
-                      {/* Client-Side Privacy Guarantee Card */}
-                      <div className="p-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-[11px] space-y-1">
-                        <div className="flex items-center gap-1.5 font-bold text-white text-xs">
-                          <Shield size={12} className="text-amber-300" />
-                          <span>100% Client-Side Privacy</span>
+                      {/* Studio Lab */}
+                      <NavLink
+                        to="/ai-hub"
+                        onClick={() => setOpenDropdown(null)}
+                        className={({ isActive }) =>
+                          `flex items-start gap-2.5 p-2 rounded-xl transition-all group/item ${
+                            isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                          }`
+                        }
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 text-white">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <Bot size={20} className="relative z-10 group-hover/item:scale-110 transition-transform" />
                         </div>
-                        <p className="leading-relaxed text-[#72706C] text-[11px]">
-                          Zero external telemetry. Every tool executes completely in your local browser sandbox.
-                        </p>
-                      </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              Studio Lab
+                            </span>
+                            <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
+                              LOCAL AI
+                            </span>
+                          </div>
+                          <div className="text-[9px] font-mono text-[#A3A09B] mt-0.5">
+                            Offline AI Playground
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            Workflow automations &amp; local Ollama models
+                          </p>
+                        </div>
+                      </NavLink>
+
+                      {/* In-App Skills Hub */}
+                      <NavLink
+                        to="/tool/domoskills"
+                        onClick={() => setOpenDropdown(null)}
+                        className={({ isActive }) =>
+                          `flex items-start gap-2.5 p-2 rounded-xl transition-all group/item ${
+                            isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                          }`
+                        }
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 text-white">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <Terminal size={20} className="relative z-10 group-hover/item:scale-110 transition-transform" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              In-App Skills Hub
+                            </span>
+                            <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
+                              INTEGRATED
+                            </span>
+                          </div>
+                          <div className="text-[9px] font-mono text-[#A3A09B] mt-0.5">
+                            Agent Toolkit
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            Embedded catalog, CLI runner &amp; zoom sandbox
+                          </p>
+                        </div>
+                      </NavLink>
                     </div>
                   </div>
                 </div>
