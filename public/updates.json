@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:55:34.781Z",
+  "buildTime": "2026-10-01T08:56:19.805Z",
   "commits": [
+    {
+      "hash": "4e3e6bc",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix(ecosystem): remove hover to pause and left right buttons from ecosystem showcase"
+    },
     {
       "hash": "2d92bbc",
       "date": "2026-10-01",
@@ -85,12 +91,6 @@
       "date": "2026-09-30",
       "author": "darknecrocities",
       "message": "fix(analytics): remove sync badge, support Vercel env prefixes, and ensure visit counter increments"
-    },
-    {
-      "hash": "5527c7f",
-      "date": "2026-09-30",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
     }
   ]
 }
