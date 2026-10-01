@@ -5,9 +5,6 @@ import {
   X,
   CheckCircle2,
   ChevronRight,
-  ChevronLeft,
-  Pause,
-  Play,
   BookOpen,
   Terminal,
   Layers,
@@ -171,8 +168,6 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
 export const EcosystemShowcase: React.FC = () => {
   const navigate = useNavigate();
   const [selectedApp, setSelectedApp] = useState<EcosystemApp | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState<'left' | 'right'>('left');
 
   // Duplicate apps array twice in each track to ensure full coverage across all desktop and mobile viewports
   const carouselApps = [...ECOSYSTEM_APPS, ...ECOSYSTEM_APPS];
@@ -276,66 +271,17 @@ export const EcosystemShowcase: React.FC = () => {
         <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -mb-20" />
 
         {/* Top Header Bar */}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#2A2D30]/80">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-              <Sparkles size={12} className="text-amber-300 animate-pulse" />
-              <span>Explore The Domo Ecosystem</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
-              <span>Connected Platforms &amp; Autonomous Tools</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-[#A3A09B] mt-1 max-w-2xl leading-relaxed">
-              Integrated, privacy-first companion applications engineered for modern developers, security analysts, and AI agents. Click any application below to view technical architecture and launch.
-            </p>
+        <div className="relative z-10 pb-5 border-b border-[#2A2D30]/80">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+            <Sparkles size={12} className="text-amber-300 animate-pulse" />
+            <span>Explore The Domo Ecosystem</span>
           </div>
-
-          {/* Controls & Indicators */}
-          <div className="flex items-center gap-2 shrink-0 self-start md:self-center">
-            {/* Play/Pause continuous loop toggle */}
-            <button
-              onClick={() => setIsPaused(!isPaused)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/40 text-[#ECEBE9] text-xs font-mono transition-all"
-              title={isPaused ? 'Resume non-stop loop' : 'Pause non-stop loop'}
-              aria-label={isPaused ? 'Resume loop' : 'Pause loop'}
-            >
-              {isPaused ? (
-                <>
-                  <Play size={12} className="text-amber-300" />
-                  <span className="text-[11px]">Resume Loop</span>
-                </>
-              ) : (
-                <>
-                  <Pause size={12} className="text-[#A3A09B]" />
-                  <span className="text-[11px] text-[#A3A09B]">Hover to Pause</span>
-                </>
-              )}
-            </button>
-
-            {/* Direction toggle buttons */}
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setScrollDirection('left')}
-                className={`p-1.5 rounded-xl bg-[#111213] border transition-all ${
-                  scrollDirection === 'left' ? 'border-white/40 text-white' : 'border-[#2A2D30] text-[#A3A09B] hover:text-white'
-                }`}
-                title="Glide left"
-                aria-label="Glide left"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                onClick={() => setScrollDirection('right')}
-                className={`p-1.5 rounded-xl bg-[#111213] border transition-all ${
-                  scrollDirection === 'right' ? 'border-white/40 text-white' : 'border-[#2A2D30] text-[#A3A09B] hover:text-white'
-                }`}
-                title="Glide right"
-                aria-label="Glide right"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2.5">
+            <span>Connected Platforms &amp; Autonomous Tools</span>
+          </h2>
+          <p className="text-xs sm:text-sm text-[#A3A09B] mt-1 max-w-2xl leading-relaxed">
+            Integrated, privacy-first companion applications engineered for modern developers, security analysts, and AI agents. Click any application below to view technical architecture and launch.
+          </p>
         </div>
 
         {/* Continuous Automatic Carousel Track Viewport */}
@@ -348,12 +294,10 @@ export const EcosystemShowcase: React.FC = () => {
           <div className="flex select-none py-2 w-max">
             {/* Primary Track */}
             <div
-              className={`flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5 shrink-0 ${
-                scrollDirection === 'left' ? 'animate-marquee-continuous' : 'animate-marquee-continuous-reverse'
-              }`}
+              className="flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5 shrink-0 animate-marquee-continuous"
               style={{
                 animationDuration: '38s',
-                animationPlayState: (isPaused || selectedApp !== null) ? 'paused' : undefined,
+                animationPlayState: selectedApp !== null ? 'paused' : undefined,
               }}
             >
               {carouselApps.map((app, index) => renderAppCard(app, `track-a-${app.id}-${index}`))}
@@ -362,12 +306,10 @@ export const EcosystemShowcase: React.FC = () => {
             {/* Twin Seamless Clone Track (ensures zero-jump continuous loop) */}
             <div
               aria-hidden="true"
-              className={`flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5 shrink-0 ${
-                scrollDirection === 'left' ? 'animate-marquee-continuous' : 'animate-marquee-continuous-reverse'
-              }`}
+              className="flex items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5 shrink-0 animate-marquee-continuous"
               style={{
                 animationDuration: '38s',
-                animationPlayState: (isPaused || selectedApp !== null) ? 'paused' : undefined,
+                animationPlayState: selectedApp !== null ? 'paused' : undefined,
               }}
             >
               {carouselApps.map((app, index) => renderAppCard(app, `track-b-${app.id}-${index}`, true))}
