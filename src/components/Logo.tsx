@@ -9,15 +9,15 @@ interface LogoProps {
 export const Logo = ({ className = '', size = 40, showText = true }: LogoProps) => {
   // Proportional sizing & alignment so hat is perched on panda cap crown across all icon sizes
   const hatSize = Math.round(size * 0.65);
-  const hatTop = -Math.round(size * 0.3);
-  const hatLeft = Math.round(size * 0.075);
+  const hatTop = -Math.round(size * 0.31);
+  const hatLeft = Math.round(size * 0.205);
 
   return (
     <div className={`flex items-center gap-3 select-none group ${className}`}>
       <div className="relative" style={{ width: size, height: size }}>
         {/* Festive Santa Hat overlay perched playfully on panda cap crown */}
         <div 
-          className="absolute pointer-events-none transform -rotate-[4deg] drop-shadow-md z-10 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110"
+          className="absolute pointer-events-none drop-shadow-md z-10 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
           style={{
             top: `${hatTop}px`,
             left: `${hatLeft}px`,
