@@ -1,7 +1,55 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T09:02:49.165Z",
+  "buildTime": "2026-10-01T13:30:37.055Z",
   "commits": [
+    {
+      "hash": "dea89c0",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "chore(backup): persist automated production count snapshot"
+    },
+    {
+      "hash": "535e3ac",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "ac12e5d",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix(security): mitigate Slowloris CVE-2007-6750, harden visitor counter against DDoS, and implement unified Firestore rules"
+    },
+    {
+      "hash": "04120fa",
+      "date": "2026-10-01",
+      "author": "RhonzKieee",
+      "message": "Merge pull request #68 from darknecrocities/staging"
+    },
+    {
+      "hash": "abf8bac",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "chore(merge): sync main into staging (Santa hat alignment fix)"
+    },
+    {
+      "hash": "e433fa2",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "53388ec",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix(brand): center and balance Santa hat on panda cap crown across all logo sizes"
+    },
+    {
+      "hash": "dc204d2",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
     {
       "hash": "84408e8",
       "date": "2026-10-01",
@@ -43,54 +91,6 @@
       "date": "2026-10-01",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "5e4b9f3",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "fix(shell): remove 100% Client-Side Privacy card from ecosystem dropdown"
-    },
-    {
-      "hash": "60cbe9d",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "chore: sync build artifacts on staging"
-    },
-    {
-      "hash": "571f5a5",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "Merge branch 'main' into staging"
-    },
-    {
-      "hash": "f34e393",
-      "date": "2026-10-01",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "01e56b5",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "Merge remote-tracking branch 'origin/staging' into staging"
-    },
-    {
-      "hash": "66babdf",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "fix(shell): remove Panda Tech Ecosystem footer from Explore dropdown"
-    },
-    {
-      "hash": "1457327",
-      "date": "2026-10-01",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "8500150",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "fix: update ecosystem app categories, rename inspect to view, and redesign Explore dropdown into spacious 2-column menu"
     }
   ]
 }
