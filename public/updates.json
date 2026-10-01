@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T07:53:54.267Z",
+  "buildTime": "2026-10-01T07:58:43.104Z",
   "commits": [
+    {
+      "hash": "c78e46f",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "feat: integrate DomoScope into Explore menu, redesign ecosystem showcase carousel, and fix Santa hat alignment on brand logo"
+    },
     {
       "hash": "148285e",
       "date": "2026-09-30",
@@ -85,12 +91,6 @@
       "date": "2026-09-08",
       "author": "darknecrocities",
       "message": "fix(blog): escape code block backticks in DomoSkills announcement post"
-    },
-    {
-      "hash": "c1cac7f",
-      "date": "2026-09-08",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
     }
   ]
 }

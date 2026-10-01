@@ -7,17 +7,17 @@ interface LogoProps {
 }
 
 export const Logo = ({ className = '', size = 40, showText = true }: LogoProps) => {
-  // Proportional sizing & alignment so hat is perfectly perched on panda's cap across all icon sizes
-  const hatSize = Math.round(size * 0.625);
-  const hatTop = -Math.round(size * 0.19);
-  const hatLeft = Math.round(size * 0.04);
+  // Proportional sizing & alignment so hat is perched on panda cap crown across all icon sizes
+  const hatSize = Math.round(size * 0.65);
+  const hatTop = -Math.round(size * 0.3);
+  const hatLeft = Math.round(size * 0.075);
 
   return (
     <div className={`flex items-center gap-3 select-none group ${className}`}>
       <div className="relative" style={{ width: size, height: size }}>
-        {/* Festive Santa Hat overlay perched playfully on panda head */}
+        {/* Festive Santa Hat overlay perched playfully on panda cap crown */}
         <div 
-          className="absolute pointer-events-none transform -rotate-[5deg] drop-shadow-md z-10 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110"
+          className="absolute pointer-events-none transform -rotate-[4deg] drop-shadow-md z-10 transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110"
           style={{
             top: `${hatTop}px`,
             left: `${hatLeft}px`,

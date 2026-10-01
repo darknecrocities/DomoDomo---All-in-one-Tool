@@ -306,23 +306,28 @@ export const EcosystemShowcase: React.FC = () => {
                 tabIndex={0}
                 role="button"
                 aria-label={`Inspect ${app.name} details`}
-                className="w-[280px] sm:w-[320px] shrink-0 p-4 sm:p-5 rounded-2xl bg-[#111213] border border-[#2A2D30] hover:border-white/50 hover:bg-[#1A1B1D] cursor-pointer transition-all duration-300 group/card relative flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-white/5 focus:outline-none focus:ring-2 focus:ring-white/40"
+                className="w-[280px] sm:w-[320px] shrink-0 p-4 sm:p-5 rounded-2xl bg-[#111213]/90 backdrop-blur-md border border-[#2A2D30] hover:border-white/40 hover:bg-[#161719] cursor-pointer transition-all duration-300 group/card relative flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 overflow-hidden"
               >
-                {/* Card Top: Black & White App Logo + Category */}
+                {/* Subtle Top Highlight Line */}
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover/card:via-white/30 transition-all duration-500" />
+
+                {/* Card Top: Frameless Floating B&W App Logo + Category */}
                 <div>
                   <div className="flex items-start justify-between gap-3 mb-3.5">
-                    {/* B&W Logo Container */}
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-[#18191B] border border-[#2A2D30] flex items-center justify-center p-2.5 overflow-hidden group-hover/card:border-white/40 transition-all duration-300 shrink-0">
+                    {/* Frameless Floating B&W Logo with Ambient Light */}
+                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0">
+                      {/* Ambient soft glow backdrop */}
+                      <div className="absolute inset-0 bg-white/5 rounded-full blur-xl opacity-40 group-hover/card:opacity-100 group-hover/card:bg-white/10 transition-all duration-300 pointer-events-none" />
                       <img
                         src={app.logoSrc}
                         alt={`${app.name} logo`}
-                        className="w-full h-full object-contain filter grayscale contrast-125 brightness-110 group-hover/card:scale-105 group-hover/card:contrast-150 transition-all duration-300"
+                        className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter grayscale contrast-125 brightness-110 group-hover/card:contrast-140 group-hover/card:brightness-125 drop-shadow-[0_4px_12px_rgba(255,255,255,0.06)] group-hover/card:drop-shadow-[0_8px_24px_rgba(255,255,255,0.22)] group-hover/card:scale-110 transition-all duration-300 relative z-10"
                         loading="lazy"
                       />
                     </div>
 
                     {/* Official Badge Pill */}
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/5 border border-[#2A2D30] text-[#A3A09B] group-hover/card:text-[#ECEBE9] group-hover/card:border-white/20 transition-colors">
+                    <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-white/5 border border-[#2A2D30] text-[#A3A09B] group-hover/card:text-[#ECEBE9] group-hover/card:border-white/20 transition-colors">
                       {app.category.split(' ')[0]}
                     </span>
                   </div>
@@ -341,7 +346,7 @@ export const EcosystemShowcase: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Card Bottom: Feature Pills & Click Hint */}
+                {/* Card Bottom: Sleek Interactive Indicator */}
                 <div className="mt-4 pt-3 border-t border-[#2A2D30]/80 flex items-center justify-between text-[11px] font-mono text-[#72706C]">
                   <span className="flex items-center gap-1 text-amber-300/90 font-medium">
                     <Zap size={11} />
@@ -355,12 +360,6 @@ export const EcosystemShowcase: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Footer Hint */}
-        <div className="mt-3 text-center sm:text-left flex items-center justify-between text-[11px] font-mono text-[#72706C] pt-2">
-          <span>Continuous non-stop looping • Hover anywhere to pause • Click to inspect details</span>
-          <span className="hidden sm:inline-block text-[#A3A09B]">4 Connected Platforms</span>
         </div>
       </div>
 
@@ -381,6 +380,9 @@ export const EcosystemShowcase: React.FC = () => {
             }}
             className="relative w-full max-w-2xl bg-[#18191B] border border-[#2A2D30] rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-8 overflow-hidden text-left max-h-[90vh] flex flex-col focus:outline-none"
           >
+            {/* Subtle Top Highlight Line */}
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+
             {/* Top Close Button */}
             <button
               onClick={() => setSelectedApp(null)}
@@ -391,14 +393,15 @@ export const EcosystemShowcase: React.FC = () => {
               <X size={18} />
             </button>
 
-            {/* Modal Header: App Logo in B&W + Title + Badge */}
+            {/* Modal Header: Frameless App Logo with Ambient Glow + Title + Badge */}
             <div className="flex items-start gap-4 sm:gap-5 pb-5 border-b border-[#2A2D30] shrink-0 pr-10">
-              {/* B&W Logo Container */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#111213] border border-[#2A2D30] p-2.5 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+              {/* Frameless Floating B&W Logo with Ambient Glow */}
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shrink-0">
+                <div className="absolute inset-0 bg-white/10 rounded-full blur-xl pointer-events-none" />
                 <img
                   src={selectedApp.logoSrc}
                   alt={`${selectedApp.name} logo`}
-                  className="w-full h-full object-contain filter grayscale contrast-125 brightness-110"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain relative z-10 filter grayscale contrast-125 brightness-110 drop-shadow-[0_8px_24px_rgba(255,255,255,0.2)]"
                 />
               </div>
 
