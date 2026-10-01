@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:00:27.620Z",
+  "buildTime": "2026-10-01T08:12:29.937Z",
   "commits": [
+    {
+      "hash": "2076921",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
     {
       "hash": "892b67a",
       "date": "2026-10-01",
@@ -85,12 +91,6 @@
       "date": "2026-09-10",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "bcf36b4",
-      "date": "2026-09-10",
-      "author": "darknecrocities",
-      "message": "feat(ecosystem): integrate Codepyne.io in navigation and dashboard, publish blog announcement, and rename Desktop Client to Download"
     }
   ]
 }

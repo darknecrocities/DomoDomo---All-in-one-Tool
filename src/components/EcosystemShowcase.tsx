@@ -39,7 +39,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     id: 'domoscope',
     name: 'DomoScope',
     tagline: 'GitHub Repository Inspection, Architecture Visualization & Security Intelligence',
-    category: 'Code Architecture & Security',
+    category: 'Reverse Engineer Platform',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/domoscope.png',
     url: 'https://domoscope.vercel.app/',
@@ -73,7 +73,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     id: 'codepyne',
     name: 'Codepyne.io',
     tagline: 'Engineering & Data Science AI/ML Technical Upskilling Platform',
-    category: 'Machine Learning Mastery',
+    category: 'Learning Platform',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/codepyne.png',
     url: 'https://codepyne-io.vercel.app/',
@@ -105,7 +105,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     id: 'domoskills',
     name: 'DomoSkills',
     tagline: 'The Open Agent Skills Marketplace & CLI Capability Hub',
-    category: 'Autonomous AI Capabilities',
+    category: 'Skills Marketplace',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/domoskills.png',
     url: 'https://web-beta-six-81.vercel.app/',
@@ -138,7 +138,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     id: 'domonote',
     name: 'DomoNote',
     tagline: 'Personal AI Local Secretary & Offline Productivity Suite',
-    category: 'Privacy-First Productivity',
+    category: 'AI Secretary',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/domonote.png',
     url: 'https://domonote.vercel.app/',
@@ -228,7 +228,7 @@ export const EcosystemShowcase: React.FC = () => {
               <span>Connected Platforms &amp; Autonomous Tools</span>
             </h2>
             <p className="text-xs sm:text-sm text-[#A3A09B] mt-1 max-w-2xl leading-relaxed">
-              Integrated, privacy-first companion applications engineered for modern developers, security analysts, and AI agents. Click any application below to inspect technical architecture and launch.
+              Integrated, privacy-first companion applications engineered for modern developers, security analysts, and AI agents. Click any application below to view technical architecture and launch.
             </p>
           </div>
 
@@ -305,7 +305,7 @@ export const EcosystemShowcase: React.FC = () => {
                 }}
                 tabIndex={0}
                 role="button"
-                aria-label={`Inspect ${app.name} details`}
+                aria-label={`View ${app.name} details`}
                 className="w-[280px] sm:w-[320px] shrink-0 p-4 sm:p-5 rounded-2xl bg-[#111213]/90 backdrop-blur-md border border-[#2A2D30] hover:border-white/40 hover:bg-[#161719] cursor-pointer transition-all duration-300 group/card relative flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 overflow-hidden"
               >
                 {/* Subtle Top Highlight Line */}
@@ -328,7 +328,7 @@ export const EcosystemShowcase: React.FC = () => {
 
                     {/* Official Badge Pill */}
                     <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-white/5 border border-[#2A2D30] text-[#A3A09B] group-hover/card:text-[#ECEBE9] group-hover/card:border-white/20 transition-colors">
-                      {app.category.split(' ')[0]}
+                      {app.category}
                     </span>
                   </div>
 
@@ -353,7 +353,7 @@ export const EcosystemShowcase: React.FC = () => {
                     <span>Quick View</span>
                   </span>
                   <span className="text-[#A3A09B] group-hover/card:text-white transition-colors flex items-center gap-1 font-semibold">
-                    <span>Inspect</span>
+                    <span>View</span>
                     <ChevronRight size={12} className="group-hover/card:translate-x-0.5 transition-transform" />
                   </span>
                 </div>

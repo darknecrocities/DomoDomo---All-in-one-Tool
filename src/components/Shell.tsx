@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch, ArrowUpRight, Shield } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -360,168 +360,248 @@ export const Shell = () => {
               </button>
 
               {openDropdown === 'ecosystem' && (
-                <div className="absolute left-0 mt-2 w-92 bg-[#18191B] border border-[#2A2D30] rounded-2xl p-2 shadow-2xl z-50 animate-fadeIn space-y-1">
-                  <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
-                    Explore Platforms &amp; Ecosystem
+                <div className="absolute left-0 mt-2 w-[590px] bg-[#141517] border border-[#2A2D30] rounded-2xl p-3.5 shadow-2xl z-50 animate-fadeIn overflow-hidden">
+                  {/* Subtle Top Highlight Line */}
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+
+                  {/* 2-Column Grid */}
+                  <div className="grid grid-cols-2 gap-3.5">
+                    {/* Left Column: Connected Platforms */}
+                    <div className="space-y-1">
+                      <div className="px-2 py-1 flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
+                        <span>Connected Platforms</span>
+                        <span className="text-amber-400 font-medium">Official</span>
+                      </div>
+
+                      {/* DomoScope */}
+                      <a
+                        href="https://domoscope.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpenDropdown(null)}
+                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <img
+                            src="/ecosystem-logos/domoscope.png"
+                            alt="DomoScope"
+                            className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              DomoScope
+                            </span>
+                            <ExternalLink size={10} className="text-[#72706C] group-hover/item:text-white transition-colors" />
+                          </div>
+                          <div className="text-[9px] font-mono text-amber-300 font-medium mt-0.5">
+                            Reverse Engineer Platform
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            AST graphs, database ERDs &amp; security audits
+                          </p>
+                        </div>
+                      </a>
+
+                      {/* DomoSkills */}
+                      <a
+                        href="https://web-beta-six-81.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpenDropdown(null)}
+                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <img
+                            src="/ecosystem-logos/domoskills.png"
+                            alt="DomoSkills"
+                            className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              DomoSkills
+                            </span>
+                            <ExternalLink size={10} className="text-[#72706C] group-hover/item:text-white transition-colors" />
+                          </div>
+                          <div className="text-[9px] font-mono text-amber-300 font-medium mt-0.5">
+                            Skills Marketplace
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            200+ verified capabilities for AI coding agents
+                          </p>
+                        </div>
+                      </a>
+
+                      {/* Codepyne.io */}
+                      <a
+                        href="https://codepyne-io.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpenDropdown(null)}
+                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <img
+                            src="/ecosystem-logos/codepyne.png"
+                            alt="Codepyne.io"
+                            className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              Codepyne.io
+                            </span>
+                            <ExternalLink size={10} className="text-[#72706C] group-hover/item:text-white transition-colors" />
+                          </div>
+                          <div className="text-[9px] font-mono text-amber-300 font-medium mt-0.5">
+                            Learning Platform
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            Hands-on Python, autograd &amp; ML algorithms
+                          </p>
+                        </div>
+                      </a>
+
+                      {/* DomoNote */}
+                      <a
+                        href="https://domonote.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpenDropdown(null)}
+                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <img
+                            src="/ecosystem-logos/domonote.png"
+                            alt="DomoNote"
+                            className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              DomoNote
+                            </span>
+                            <ExternalLink size={10} className="text-[#72706C] group-hover/item:text-white transition-colors" />
+                          </div>
+                          <div className="text-[9px] font-mono text-amber-300 font-medium mt-0.5">
+                            AI Secretary
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            Offline smart notes, reminders &amp; voice capture
+                          </p>
+                        </div>
+                      </a>
+                    </div>
+
+                    {/* Right Column: Native Workspaces */}
+                    <div className="flex flex-col justify-between space-y-1">
+                      <div>
+                        <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-[#72706C] font-bold">
+                          <span>In-App Workspaces</span>
+                        </div>
+
+                        {/* Studio Lab */}
+                        <NavLink
+                          to="/ai-hub"
+                          onClick={() => setOpenDropdown(null)}
+                          className={({ isActive }) =>
+                            `flex items-start gap-2.5 p-2 rounded-xl transition-all group/item ${
+                              isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                            }`
+                          }
+                        >
+                          <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 text-white">
+                            <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                            <Bot size={20} className="relative z-10 group-hover/item:scale-110 transition-transform" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                                Studio Lab
+                              </span>
+                              <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
+                                LOCAL AI
+                              </span>
+                            </div>
+                            <div className="text-[9px] font-mono text-[#A3A09B] mt-0.5">
+                              Offline AI Playground
+                            </div>
+                            <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                              Workflow automations &amp; local Ollama models
+                            </p>
+                          </div>
+                        </NavLink>
+
+                        {/* In-App Skills Hub */}
+                        <NavLink
+                          to="/tool/domoskills"
+                          onClick={() => setOpenDropdown(null)}
+                          className={({ isActive }) =>
+                            `flex items-start gap-2.5 p-2 rounded-xl transition-all group/item ${
+                              isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
+                            }`
+                          }
+                        >
+                          <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 text-white">
+                            <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                            <Terminal size={20} className="relative z-10 group-hover/item:scale-110 transition-transform" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                                In-App Skills Hub
+                              </span>
+                              <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
+                                INTEGRATED
+                              </span>
+                            </div>
+                            <div className="text-[9px] font-mono text-[#A3A09B] mt-0.5">
+                              Agent Toolkit
+                            </div>
+                            <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                              Embedded catalog, CLI runner &amp; zoom sandbox
+                            </p>
+                          </div>
+                        </NavLink>
+                      </div>
+
+                      {/* Client-Side Privacy Guarantee Card */}
+                      <div className="p-3 rounded-xl bg-[#111213] border border-[#2A2D30] text-[11px] space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold text-white text-xs">
+                          <Shield size={12} className="text-amber-300" />
+                          <span>100% Client-Side Privacy</span>
+                        </div>
+                        <p className="leading-relaxed text-[#72706C] text-[11px]">
+                          Zero external telemetry. Every tool executes completely in your local browser sandbox.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* DomoScope GitHub Repository Inspection */}
-                  <a
-                    href="https://domoscope.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
-                  >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
-                      <GitBranch size={16} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
-                            DomoScope
-                          </span>
-                          <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
-                            NEW
-                          </span>
-                        </div>
-                        <ExternalLink size={11} className="text-[#72706C]" />
-                      </div>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-2">
-                        GitHub repo inspection — architecture graphs, database ERD schemas &amp; security audits
-                      </p>
-                    </div>
-                  </a>
-
-                  {/* Studio Lab */}
-                  <NavLink
-                    to="/ai-hub"
-                    onClick={() => setOpenDropdown(null)}
-                    className={({ isActive }) =>
-                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
-                      }`
-                    }
-                  >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5">
-                      <Bot size={15} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-xs text-[#ECEBE9]">Studio Lab</span>
-                        <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
-                          NEW
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
-                        Offline workflow automations, local models &amp; prompt testing
-                      </p>
-                    </div>
-                  </NavLink>
-
-                  {/* Codepyne.io Platform */}
-                  <a
-                    href="https://codepyne-io.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
-                  >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
-                      <GiSnake size={16} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
-                            Codepyne.io
-                          </span>
-                          <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
-                            NEW
-                          </span>
-                        </div>
-                        <ExternalLink size={11} className="text-[#72706C]" />
-                      </div>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-2">
-                        Interactive developer upskilling — algorithm sandboxes &amp; Python engineering
-                      </p>
-                    </div>
-                  </a>
-
-                  {/* DomoNote Personal AI Secretary */}
-                  <a
-                    href="https://domonote.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
-                  >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
-                      <NotebookPen size={16} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
-                            DomoNote
-                          </span>
-                          <span className="text-[9px] font-mono font-bold bg-white/10 text-[#ECEBE9] border border-white/20 px-1.5 py-0.2 rounded-full">
-                            NEW
-                          </span>
-                        </div>
-                        <ExternalLink size={11} className="text-[#72706C]" />
-                      </div>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-2">
-                        Personal AI local secretary — smart notes, reminders &amp; offline AI assistant
-                      </p>
-                    </div>
-                  </a>
-
-                  {/* DomoSkills Marketplace */}
-                  <a
-                    href="https://web-beta-six-81.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
-                  >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-amber-300 shrink-0 mt-0.5 group-hover/item:scale-105 transition-transform">
-                      <Sparkles size={15} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-amber-300 transition-colors">
-                          DomoSkills Marketplace
-                        </span>
-                        <ExternalLink size={11} className="text-[#72706C]" />
-                      </div>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
-                        200+ verified coding &amp; productivity skills for modern developer tools
-                      </p>
-                    </div>
-                  </a>
-
-                  {/* In-App DomoSkills Hub */}
-                  <NavLink
-                    to="/tool/domoskills"
-                    onClick={() => setOpenDropdown(null)}
-                    className={({ isActive }) =>
-                      `flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive ? 'bg-white/10 text-[#ECEBE9]' : 'hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9]'
-                      }`
-                    }
-                  >
-                    <div className="p-2 rounded-lg bg-[#111213] border border-[#2A2D30] text-[#A3A09B] shrink-0 mt-0.5">
-                      <Terminal size={15} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="font-bold text-xs text-[#ECEBE9]">In-App Skills Hub</span>
-                      <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug">
-                        Embedded catalog, CLI generator &amp; zoom sandbox
-                      </p>
-                    </div>
-                  </NavLink>
+                  {/* Sleek Bottom Bar */}
+                  <div className="mt-3 pt-2.5 border-t border-[#2A2D30] flex items-center justify-between text-[11px] text-[#72706C]">
+                    <span className="flex items-center gap-1.5 font-mono">
+                      <Sparkles size={11} className="text-amber-300" />
+                      <span>Panda Tech Ecosystem</span>
+                    </span>
+                    <NavLink
+                      to="/blog"
+                      onClick={() => setOpenDropdown(null)}
+                      className="text-[#A3A09B] hover:text-white transition-colors flex items-center gap-1 font-semibold"
+                    >
+                      <span>Announcements &amp; Releases</span>
+                      <ArrowUpRight size={11} />
+                    </NavLink>
+                  </div>
                 </div>
               )}
             </div>
@@ -802,7 +882,7 @@ export const Shell = () => {
                 <div className="flex items-center gap-2">
                   <GitBranch size={16} className="text-amber-300" />
                   <span>DomoScope</span>
-                  <span className="text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-1.5 py-0.2 rounded-full">NEW</span>
+                  <span className="text-[9px] font-mono font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-full">Reverse Engineer Platform</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
               </a>
@@ -818,7 +898,7 @@ export const Shell = () => {
                 <div className="flex items-center gap-2">
                   <GiSnake size={16} className="text-amber-300" />
                   <span>Codepyne.io</span>
-                  <span className="text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-1.5 py-0.2 rounded-full">NEW</span>
+                  <span className="text-[9px] font-mono font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-full">Learning Platform</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
               </a>
@@ -834,11 +914,12 @@ export const Shell = () => {
                 <div className="flex items-center gap-2">
                   <NotebookPen size={15} className="text-amber-300" />
                   <span>DomoNote</span>
-                  <span className="text-[9px] font-mono font-bold bg-white/10 text-white border border-white/20 px-1.5 py-0.2 rounded-full">NEW</span>
+                  <span className="text-[9px] font-mono font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-full">AI Secretary</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
               </a>
 
+              {/* DomoSkills Marketplace */}
               <a
                 href="https://web-beta-six-81.vercel.app/"
                 target="_blank"
@@ -848,7 +929,8 @@ export const Shell = () => {
               >
                 <div className="flex items-center gap-2">
                   <Sparkles size={15} className="text-amber-300" />
-                  <span>DomoSkills Marketplace</span>
+                  <span>DomoSkills</span>
+                  <span className="text-[9px] font-mono font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-full">Skills Marketplace</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
               </a>
