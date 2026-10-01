@@ -1,12 +1,12 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T09:02:25.298Z",
+  "buildTime": "2026-10-01T09:02:49.165Z",
   "commits": [
     {
-      "hash": "dc204d2",
+      "hash": "84408e8",
       "date": "2026-10-01",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
+      "author": "darknecrocities",
+      "message": "chore(merge): sync main into staging (remove hover to pause and arrow buttons)"
     },
     {
       "hash": "4e3e6bc",
@@ -21,10 +21,22 @@
       "message": "chore: auto-generate public/updates.json [skip ci]"
     },
     {
+      "hash": "f6a3ccd",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge branch 'main' into staging"
+    },
+    {
       "hash": "2d250df",
       "date": "2026-10-01",
       "author": "darknecrocities",
       "message": "fix(ecosystem): implement seamless zero-jump dual-track infinite marquee loop"
+    },
+    {
+      "hash": "0d007c4",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge branch 'main' into staging"
     },
     {
       "hash": "40cc676",
@@ -39,10 +51,28 @@
       "message": "fix(shell): remove 100% Client-Side Privacy card from ecosystem dropdown"
     },
     {
+      "hash": "60cbe9d",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "chore: sync build artifacts on staging"
+    },
+    {
+      "hash": "571f5a5",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge branch 'main' into staging"
+    },
+    {
       "hash": "f34e393",
       "date": "2026-10-01",
       "author": "github-actions[bot]",
       "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "01e56b5",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge remote-tracking branch 'origin/staging' into staging"
     },
     {
       "hash": "66babdf",
@@ -61,36 +91,6 @@
       "date": "2026-10-01",
       "author": "darknecrocities",
       "message": "fix: update ecosystem app categories, rename inspect to view, and redesign Explore dropdown into spacious 2-column menu"
-    },
-    {
-      "hash": "2076921",
-      "date": "2026-10-01",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "892b67a",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "fix: adjust santa hat to cap crown, make ecosystem app icons frameless with creative glow, and clean footer hints"
-    },
-    {
-      "hash": "07bb90d",
-      "date": "2026-10-01",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "c78e46f",
-      "date": "2026-10-01",
-      "author": "darknecrocities",
-      "message": "feat: integrate DomoScope into Explore menu, redesign ecosystem showcase carousel, and fix Santa hat alignment on brand logo"
-    },
-    {
-      "hash": "148285e",
-      "date": "2026-09-30",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
     }
   ]
 }
