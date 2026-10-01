@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "domodomocounter": {
+      "visits": {
+        ".read": true,
+        ".write": "newData.isNumber() && (!data.exists() ? newData.val() >= 8180 : newData.val() === data.val() + 1)"
+      }
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

@@ -141,11 +141,21 @@ ensureOllamaRunning();
 
 console.log(`🐍 Starting Python FastAPI backend using: ${pythonBin}...`);
 
-// Launch Uvicorn server as a child process
-const backendProcess = spawn(pythonBin, ['-m', 'uvicorn', 'backend.main:app', '--port', '8000', '--reload'], {
-  stdio: 'inherit',
-  shell: true
-});
+// Launch Uvicorn server as a child process with Slowloris mitigation flags
+const backendProcess = spawn(
+  pythonBin,
+  [
+    '-m', 'uvicorn', 'backend.main:app',
+    '--port', '8000',
+    '--reload',
+    '--timeout-keep-alive', '5',
+    '--limit-concurrency', '150'
+  ],
+  {
+    stdio: 'inherit',
+    shell: true
+  }
+);
 
 backendProcess.on('close', (code) => {
   process.exit(code || 0);

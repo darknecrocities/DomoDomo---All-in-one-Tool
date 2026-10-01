@@ -8,8 +8,10 @@ import {
 const INITIAL_BASE_COUNT = 8180;
 const STORAGE_KEY = 'domodomo_active_users_count';
 const LAST_VISIT_TIMESTAMP_KEY = 'domodomo_last_visit_timestamp';
+const UNIQUE_VISIT_RECORDED_KEY = 'domodomo_unique_visit_recorded_at';
 const EVENT_NAME = 'domodomo_count_updated';
 const VISIT_DEBOUNCE_MS = 5000; // 5s debounce to prevent double-firing in React 19 StrictMode
+const UNIQUE_VISIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24-hour unique visitor window to shield backend from flood
 
 /**
  * Gets the current stored visit count from localStorage or returns base count (8,180).
@@ -32,9 +34,11 @@ export function getStoredVisitCount(): number {
 
 /**
  * Persists and broadcasts updated count across tabs and components.
+ * Strictly guarantees monotonic increases (count can never decrease or be tampered backwards).
  */
 export function setStoredVisitCount(count: number): number {
-  const nextCount = Math.max(INITIAL_BASE_COUNT, count);
+  const current = getStoredVisitCount();
+  const nextCount = Math.max(INITIAL_BASE_COUNT, current, count);
   if (typeof window !== 'undefined') {
     try {
       localStorage.setItem(STORAGE_KEY, nextCount.toString());
@@ -98,23 +102,38 @@ export function useVisitCounter(_trackClicks?: boolean) {
         // Ignore sessionStorage restrictions in private browsing
       }
 
-      if (isFirebaseConfigured()) {
+      // 24-hour unique visitor check to protect Firebase against reload flood & DoS
+      let lastUniqueVisit = 0;
+      try {
+        const recordedStr = localStorage.getItem(UNIQUE_VISIT_RECORDED_KEY);
+        lastUniqueVisit = recordedStr ? parseInt(recordedStr, 10) : 0;
+      } catch {
+        lastUniqueVisit = 0;
+      }
+
+      const isNewDailyVisitor = (now - lastUniqueVisit >= UNIQUE_VISIT_WINDOW_MS);
+
+      if (isNewDailyVisitor && isFirebaseConfigured()) {
         try {
           const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
+          try {
+            localStorage.setItem(UNIQUE_VISIT_RECORDED_KEY, now.toString());
+          } catch {
+            // Ignore storage restrictions
+          }
           if (remoteTotal && isMounted) {
             const updated = setStoredVisitCount(remoteTotal);
             setCount(updated);
             return;
           }
         } catch (err) {
-          console.warn('[VisitCounter] Failed to record visit in Firebase, using local fallback:', err);
+          console.warn('[VisitCounter] Remote visit record failed, using local fallback:', err);
         }
       }
 
-      // If Firebase failed, returned null, or not configured: increment locally
-      const updated = incrementVisitCount(1);
+      // If already recorded today or remote skipped, sync local count
       if (isMounted) {
-        setCount(updated);
+        setCount(getStoredVisitCount());
       }
     };
 

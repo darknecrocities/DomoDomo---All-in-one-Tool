@@ -1,6 +1,6 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getDatabase, ref, onValue, runTransaction, type Database } from 'firebase/database';
-import { getFirestore, doc, onSnapshot, getDoc, setDoc, updateDoc, increment, type Firestore } from 'firebase/firestore';
+import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, type Firestore } from 'firebase/firestore';
 
 export interface FirebaseConfig {
   apiKey?: string;
@@ -123,18 +123,50 @@ export function getFirestoreDB(): Firestore | null {
   return firestoreInstance;
 }
 
+// Anti-DDoS & Circuit Breaker state
+let isRecordVisitInProgress = false;
+let lastClientWriteTimestamp = 0;
+let circuitBreakerActiveUntil = 0;
+const CLIENT_WRITE_COOLDOWN_MS = 30000; // 30s client-side cooldown between remote write attempts
+const CIRCUIT_BREAKER_PENALTY_MS = 5 * 60 * 1000; // 5 minute cool-off on quota/DDoS/denied errors
+
 /**
  * Atomically increments the visitor count in Firebase (domodomocounter).
- * Ensures the value starts at or above the designated initialBaseCount (8,180).
+ * Features built-in DDoS mitigation, in-flight concurrency locks, and an automatic
+ * circuit breaker to prevent quota exhaustion or UI stalls during flood attacks.
  */
 export async function recordVisitToFirebase(initialBaseCount: number): Promise<number | null> {
   if (!isFirebaseConfigured()) return null;
 
-  const mode = getFirebaseMode();
-  if (mode === 'firestore') {
-    return recordVisitToFirestore(initialBaseCount);
+  const now = Date.now();
+
+  // 1. Circuit Breaker: If quota exceeded or service attacked recently, skip remote calls
+  if (now < circuitBreakerActiveUntil) {
+    return null;
   }
-  return recordVisitToRTDB(initialBaseCount);
+
+  // 2. Client-side Rate Limiting: Prevent rapid-fire writes from a single tab/client
+  if (now - lastClientWriteTimestamp < CLIENT_WRITE_COOLDOWN_MS) {
+    return null;
+  }
+
+  // 3. Concurrency Lock: Prevent multiple in-flight writes
+  if (isRecordVisitInProgress) {
+    return null;
+  }
+
+  isRecordVisitInProgress = true;
+  lastClientWriteTimestamp = now;
+
+  try {
+    const mode = getFirebaseMode();
+    if (mode === 'firestore') {
+      return await recordVisitToFirestore(initialBaseCount);
+    }
+    return await recordVisitToRTDB(initialBaseCount);
+  } finally {
+    isRecordVisitInProgress = false;
+  }
 }
 
 async function recordVisitToRTDB(initialBaseCount: number): Promise<number | null> {
@@ -157,8 +189,14 @@ async function recordVisitToRTDB(initialBaseCount: number): Promise<number | nul
       }
     }
     return null;
-  } catch (err) {
-    console.warn('[Firebase VisitCounter] RTDB transaction error:', err);
+  } catch (err: unknown) {
+    const errorObj = err as { code?: string; message?: string };
+    if (errorObj?.code === 'PERMISSION_DENIED' || errorObj?.code === 'RESOURCE_EXHAUSTED') {
+      circuitBreakerActiveUntil = Date.now() + CIRCUIT_BREAKER_PENALTY_MS;
+      console.warn('[Firebase VisitCounter] RTDB rate limit / quota reached. Circuit breaker engaged for 5m.');
+    } else {
+      console.warn('[Firebase VisitCounter] RTDB transaction error:', err);
+    }
     return null;
   }
 }
@@ -169,29 +207,37 @@ async function recordVisitToFirestore(initialBaseCount: number): Promise<number 
     if (!db) return null;
 
     const docRef = doc(db, FIRESTORE_COLLECTION, FIRESTORE_DOCUMENT);
-    const snap = await getDoc(docRef);
 
-    if (!snap.exists()) {
-      const nextCount = initialBaseCount + 1;
-      await setDoc(docRef, { count: nextCount, updatedAt: Date.now() }, { merge: true });
-      return nextCount;
+    // Fast-path: Attempt atomic increment directly to avoid redundant getDoc read costs
+    try {
+      await updateDoc(docRef, {
+        count: increment(1),
+        updatedAt: Date.now()
+      });
+      // Return null here to let real-time onSnapshot handle the updated total
+      return null;
+    } catch (updateErr: unknown) {
+      const updateError = updateErr as { code?: string };
+      // If doc does not exist yet (first time initialization), create it
+      if (updateError?.code === 'not-found') {
+        const nextCount = initialBaseCount + 1;
+        await setDoc(docRef, { count: nextCount, updatedAt: Date.now() }, { merge: true });
+        return nextCount;
+      }
+      throw updateErr;
     }
-
-    const currentCount = snap.data()?.count;
-    if (typeof currentCount === 'number' && currentCount < initialBaseCount) {
-      const nextCount = initialBaseCount + 1;
-      await setDoc(docRef, { count: nextCount, updatedAt: Date.now() }, { merge: true });
-      return nextCount;
-    }
-
-    await updateDoc(docRef, { count: increment(1), updatedAt: Date.now() });
-    return typeof currentCount === 'number' ? Math.max(initialBaseCount, currentCount) + 1 : initialBaseCount + 1;
   } catch (err: unknown) {
     const errorObj = err as { code?: string; message?: string };
     if (errorObj?.code === 'permission-denied') {
       console.warn(
-        '[Firebase VisitCounter] Firestore PERMISSION_DENIED. Please update Firestore security rules in Firebase Console to allow read/write to domodomocounter collection.'
+        '[Firebase VisitCounter] Firestore PERMISSION_DENIED. Please ensure firestore.rules are deployed.'
       );
+      circuitBreakerActiveUntil = Date.now() + CIRCUIT_BREAKER_PENALTY_MS;
+    } else if (errorObj?.code === 'resource-exhausted' || errorObj?.code === 'unavailable') {
+      console.warn(
+        '[Firebase VisitCounter] Firestore quota exhausted or DDoS detected. Circuit breaker engaged for 5m.'
+      );
+      circuitBreakerActiveUntil = Date.now() + CIRCUIT_BREAKER_PENALTY_MS;
     } else {
       console.warn('[Firebase VisitCounter] Firestore record error:', err);
     }

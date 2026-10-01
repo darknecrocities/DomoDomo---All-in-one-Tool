@@ -1,0 +1,140 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // 1. DOMODOMO VISITOR COUNTER (/domodomocounter/visits)
+    // =========================================================================
+    match /domodomocounter/visits {
+      // Allow public read for landing page live counter
+      allow read: if true;
+
+      // Prevent accidental or malicious deletion of the counter document
+      allow delete: if false;
+
+      // Initial document creation: only allow count >= 8180 (initial baseline)
+      allow create: if request.resource.data.keys().hasAll(['count', 'updatedAt'])
+                    && request.resource.data.count is int
+                    && request.resource.data.count >= 8180;
+
+      // Anti-tamper & anti-DDoS update enforcement:
+      // - Only 'count' and 'updatedAt' can be updated
+      // - Count can only be incremented (+1), preventing resets or arbitrary overwrites
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'updatedAt'])
+                    && request.resource.data.count == resource.data.count + 1
+                    && request.resource.data.updatedAt is int;
+    }
+
+    // =========================================================================
+    // 2. SITE STATS & METRICS (/stats/{document=**})
+    // Used by your other project (DomoNote / Site Stats / Global Metrics)
+    // =========================================================================
+    match /stats/{document=**} {
+      // Allow public read for site statistics & dashboard counters
+      allow read: if true;
+
+      // Forbid deleting the stats documents
+      allow delete: if false;
+
+      // Allow creating new stats documents with reasonable payload limits
+      allow create: if request.resource.data.keys().size() <= 30;
+
+      // Protected updates: prevents wiping fields or injecting malicious bloatware,
+      // while allowing your other project's visitor & download tracking to work seamlessly.
+      allow update: if (
+        // Forbid massive payload injections (keeps documents under control)
+        request.resource.data.keys().size() <= 30
+
+        // If visitors count is being updated, it must be a valid number and cannot decrease
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['visitors']) ||
+          (request.resource.data.visitors is number && request.resource.data.visitors >= resource.data.visitors)
+        )
+
+        // If downloads count is being updated, it cannot decrease
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['downloads']) ||
+          (request.resource.data.downloads is number && request.resource.data.downloads >= resource.data.downloads)
+        )
+
+        // If count is being updated, it cannot decrease
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['count']) ||
+          (request.resource.data.count is number && request.resource.data.count >= resource.data.count)
+        )
+      );
+    }
+
+    // =========================================================================
+    // 3. DOMOSKILLS TELEMETRY & LIVE METRICS (/telemetry/{document=**})
+    // =========================================================================
+    match /telemetry/{document=**} {
+      allow read: if true;
+      allow delete: if false;
+      allow create: if request.resource.data.keys().size() <= 20;
+      allow update: if (
+        request.resource.data.keys().size() <= 20
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['totalVisits']) ||
+          (request.resource.data.totalVisits is number && request.resource.data.totalVisits >= resource.data.totalVisits)
+        )
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['totalInstalls']) ||
+          (request.resource.data.totalInstalls is number && request.resource.data.totalInstalls >= resource.data.totalInstalls)
+        )
+      );
+    }
+
+    // =========================================================================
+    // 4. DOMOSKILLS SKILLS, STATS & STARS (/skills, /skill_stats)
+    // =========================================================================
+    match /skills/{skillSlug} {
+      allow read: if true;
+      allow delete: if false;
+      allow create, update: if request.resource.data.keys().size() <= 30;
+    }
+
+    match /skill_stats/{skillSlug} {
+      allow read: if true;
+      allow delete: if false;
+      allow create, update: if request.resource.data.keys().size() <= 20;
+    }
+
+    // =========================================================================
+    // 5. USER ACCOUNTS & PROFILES (/users/{userId})
+    // =========================================================================
+    match /users/{userId} {
+      // Anyone can view public author profiles
+      allow read: if true;
+      // Users can only create or update their own profile
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // =========================================================================
+    // 6. COMMUNITY SUBMISSIONS & STACKS (/submissions, /stacks)
+    // =========================================================================
+    match /submissions/{submissionId} {
+      allow read: if true;
+      // Allow users to submit skills
+      allow create: if request.resource.data.keys().size() <= 30;
+      allow update, delete: if request.auth != null && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.authorUid == request.auth.uid
+      );
+    }
+
+    match /stacks/{manifestId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().size() <= 30;
+      allow update, delete: if request.auth != null;
+    }
+
+    // =========================================================================
+    // 7. DEFAULT DENY
+    // Completely lock down any unknown or internal collections
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
