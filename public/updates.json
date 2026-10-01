@@ -1,7 +1,19 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T07:58:43.104Z",
+  "buildTime": "2026-10-01T08:00:27.620Z",
   "commits": [
+    {
+      "hash": "892b67a",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix: adjust santa hat to cap crown, make ecosystem app icons frameless with creative glow, and clean footer hints"
+    },
+    {
+      "hash": "07bb90d",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "c78e46f",
       "date": "2026-10-01",
@@ -79,18 +91,6 @@
       "date": "2026-09-10",
       "author": "darknecrocities",
       "message": "feat(ecosystem): integrate Codepyne.io in navigation and dashboard, publish blog announcement, and rename Desktop Client to Download"
-    },
-    {
-      "hash": "157d27d",
-      "date": "2026-09-08",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "e6accbd",
-      "date": "2026-09-08",
-      "author": "darknecrocities",
-      "message": "fix(blog): escape code block backticks in DomoSkills announcement post"
     }
   ]
 }
