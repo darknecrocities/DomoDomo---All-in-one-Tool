@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T13:30:37.055Z",
+  "buildTime": "2026-10-01T13:34:51.261Z",
   "commits": [
+    {
+      "hash": "6c470d3",
+      "date": "2026-10-01",
+      "author": "DomoDomo Bot",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
     {
       "hash": "dea89c0",
       "date": "2026-10-01",
@@ -11,14 +17,14 @@
     {
       "hash": "535e3ac",
       "date": "2026-10-01",
-      "author": "github-actions[bot]",
+      "author": "DomoDomo Bot",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
     },
     {
       "hash": "ac12e5d",
       "date": "2026-10-01",
       "author": "darknecrocities",
-      "message": "fix(security): mitigate Slowloris CVE-2007-6750, harden visitor counter against DDoS, and implement unified Firestore rules"
+      "message": "chore(system): performance, stability, and reliability improvements"
     },
     {
       "hash": "04120fa",
@@ -35,7 +41,7 @@
     {
       "hash": "e433fa2",
       "date": "2026-10-01",
-      "author": "github-actions[bot]",
+      "author": "DomoDomo Bot",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
     },
     {
@@ -47,7 +53,7 @@
     {
       "hash": "dc204d2",
       "date": "2026-10-01",
-      "author": "github-actions[bot]",
+      "author": "DomoDomo Bot",
       "message": "chore: auto-generate public/updates.json [skip ci]"
     },
     {
@@ -65,7 +71,7 @@
     {
       "hash": "2d92bbc",
       "date": "2026-10-01",
-      "author": "github-actions[bot]",
+      "author": "DomoDomo Bot",
       "message": "chore: auto-generate public/updates.json [skip ci]"
     },
     {
@@ -85,12 +91,6 @@
       "date": "2026-10-01",
       "author": "darknecrocities",
       "message": "Merge branch 'main' into staging"
-    },
-    {
-      "hash": "40cc676",
-      "date": "2026-10-01",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
     }
   ]
 }
