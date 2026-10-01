@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:23:59.347Z",
+  "buildTime": "2026-10-01T08:27:51.496Z",
   "commits": [
+    {
+      "hash": "60cbe9d",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "chore: sync build artifacts on staging"
+    },
     {
       "hash": "571f5a5",
       "date": "2026-10-01",
@@ -85,12 +91,6 @@
       "date": "2026-09-24",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "5d36997",
-      "date": "2026-09-25",
-      "author": "darknecrocities",
-      "message": "feat(ecosystem): Add DomoNote Personal AI Local Secretary to Domo Ecosystem"
     }
   ]
 }
