@@ -1,7 +1,19 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:27:51.496Z",
+  "buildTime": "2026-10-01T08:43:55.970Z",
   "commits": [
+    {
+      "hash": "0d007c4",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "Merge branch 'main' into staging"
+    },
+    {
+      "hash": "5e4b9f3",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix(shell): remove 100% Client-Side Privacy card from ecosystem dropdown"
+    },
     {
       "hash": "60cbe9d",
       "date": "2026-10-01",
@@ -13,6 +25,12 @@
       "date": "2026-10-01",
       "author": "darknecrocities",
       "message": "Merge branch 'main' into staging"
+    },
+    {
+      "hash": "f34e393",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
     },
     {
       "hash": "01e56b5",
@@ -73,24 +91,6 @@
       "date": "2026-09-30",
       "author": "darknecrocities",
       "message": "fix(analytics): remove sync badge, support Vercel env prefixes, and ensure visit counter increments"
-    },
-    {
-      "hash": "5527c7f",
-      "date": "2026-09-30",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "06b8608",
-      "date": "2026-09-30",
-      "author": "darknecrocities",
-      "message": "feat(analytics): sync realtime visitor counter with Firebase domodomocounter"
-    },
-    {
-      "hash": "282589f",
-      "date": "2026-09-24",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
     }
   ]
 }
