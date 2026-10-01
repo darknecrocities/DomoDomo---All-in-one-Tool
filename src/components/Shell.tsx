@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch, ArrowUpRight, Shield } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch, Shield } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -585,22 +585,6 @@ export const Shell = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Sleek Bottom Bar */}
-                  <div className="mt-3 pt-2.5 border-t border-[#2A2D30] flex items-center justify-between text-[11px] text-[#72706C]">
-                    <span className="flex items-center gap-1.5 font-mono">
-                      <Sparkles size={11} className="text-amber-300" />
-                      <span>Panda Tech Ecosystem</span>
-                    </span>
-                    <NavLink
-                      to="/blog"
-                      onClick={() => setOpenDropdown(null)}
-                      className="text-[#A3A09B] hover:text-white transition-colors flex items-center gap-1 font-semibold"
-                    >
-                      <span>Announcements &amp; Releases</span>
-                      <ArrowUpRight size={11} />
-                    </NavLink>
                   </div>
                 </div>
               )}
