@@ -1,0 +1,287 @@
+{
+  "timestamp": "2026-10-01T13:22:54.501Z",
+  "environment": "production",
+  "firebaseProject": "domoskills",
+  "collections": {
+    "domodomocounter": {
+      "error": {
+        "code": 403,
+        "message": "Missing or insufficient permissions.",
+        "status": "PERMISSION_DENIED"
+      }
+    },
+    "stats": {
+      "documents": [
+        {
+          "name": "projects/domoskills/databases/(default)/documents/stats/global",
+          "fields": {
+            "createdAt": {
+              "stringValue": "2026-09-26T05:16:37.051Z"
+            },
+            "visitors": {
+              "integerValue": "802"
+            },
+            "downloads": {
+              "integerValue": "342"
+            },
+            "lastDownloadedAt": {
+              "stringValue": "2026-09-26T12:07:44.269Z"
+            },
+            "lastVisitedAt": {
+              "stringValue": "2026-09-30T06:21:35.120Z"
+            }
+          },
+          "createTime": "2026-09-26T05:16:38.009554Z",
+          "updateTime": "2026-09-30T06:21:36.533782Z"
+        }
+      ]
+    },
+    "telemetry": {
+      "documents": [
+        {
+          "name": "projects/domoskills/databases/(default)/documents/telemetry/stats",
+          "fields": {
+            "totalVisits": {
+              "integerValue": "187"
+            },
+            "updatedAt": {
+              "timestampValue": "2026-09-24T08:47:36.570Z"
+            },
+            "registeredUsers": {
+              "integerValue": "18"
+            },
+            "lastVisitedAt": {
+              "timestampValue": "2026-09-24T08:47:34.841Z"
+            },
+            "totalInstalls": {
+              "integerValue": "23"
+            }
+          },
+          "createTime": "2026-09-02T11:34:43.837803Z",
+          "updateTime": "2026-09-24T08:47:36.628113Z"
+        }
+      ]
+    },
+    "skills": {
+      "documents": [
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skills/ios-design",
+          "fields": {
+            "lastInstalledAt": {
+              "timestampValue": "2026-09-19T02:53:47.206Z"
+            },
+            "installs": {
+              "integerValue": "1"
+            },
+            "slug": {
+              "stringValue": "ios-design"
+            }
+          },
+          "createTime": "2026-09-19T02:53:47.249289Z",
+          "updateTime": "2026-09-19T02:53:47.249289Z"
+        },
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skills/karpathy-guidelines",
+          "fields": {
+            "slug": {
+              "stringValue": "karpathy-guidelines"
+            },
+            "lastInstalledAt": {
+              "timestampValue": "2026-09-19T02:43:02.195Z"
+            },
+            "installs": {
+              "integerValue": "1"
+            }
+          },
+          "createTime": "2026-09-19T02:43:02.230992Z",
+          "updateTime": "2026-09-19T02:43:02.230992Z"
+        },
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skills/my-agent-capability",
+          "fields": {
+            "repositoryUrl": {
+              "stringValue": "https://github.com/arronparejas/my-agent-capability"
+            },
+            "contactEmail": {
+              "stringValue": "parejasarronkian@gmail.com"
+            },
+            "name": {
+              "stringValue": "My Agent Capability"
+            },
+            "markdown": {
+              "stringValue": "---\nname: my-agent-capability\ndescription: High-performance instructions, architectural guidelines, and optimization rules for AI coding assistants.\nlicense: MIT\nversion: 1.0.0\ntags:\n  - React\n  - Performance\n  - Optimization\n---\n\n# Best Practice Instructions & AI Rules\n\n1. Use semantic HTML and type-safe interfaces.\n2. Eliminate redundant re-renders and unnecessary state duplication.\n3. Write clean, idiomatic code with clear error handling.\n\n## Example Interaction\nWhen the user asks for optimization, inspect component dependency trees and apply memoization.\n"
+            },
+            "userEmail": {
+              "stringValue": "parejasarronkian@gmail.com"
+            },
+            "description": {
+              "stringValue": "High-performance instructions, architectural guidelines, and optimization rules for AI coding assistants."
+            },
+            "userId": {
+              "stringValue": "lj7AwoNDRcUW68h8ZKunYmzw7Sx1"
+            },
+            "category": {
+              "stringValue": "frontend"
+            },
+            "license": {
+              "stringValue": "MIT"
+            },
+            "version": {
+              "stringValue": "1.0.0"
+            },
+            "authorName": {
+              "stringValue": "Arron Parejas"
+            },
+            "slug": {
+              "stringValue": "my-agent-capability"
+            },
+            "submittedAt": {
+              "stringValue": "2026-08-31T18:19:12.791Z"
+            },
+            "skillPath": {
+              "stringValue": "skills/"
+            },
+            "updatedAt": {
+              "timestampValue": "2026-08-31T18:19:15.230Z"
+            },
+            "verified": {
+              "booleanValue": true
+            }
+          },
+          "createTime": "2026-08-31T18:19:15.417679Z",
+          "updateTime": "2026-08-31T18:19:15.417679Z"
+        },
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skills/nextjs-app-router",
+          "fields": {
+            "installs": {
+              "integerValue": "3"
+            },
+            "slug": {
+              "stringValue": "nextjs-app-router"
+            },
+            "lastInstalledAt": {
+              "timestampValue": "2026-09-08T08:25:01.376Z"
+            }
+          },
+          "createTime": "2026-09-08T08:23:40.742344Z",
+          "updateTime": "2026-09-08T08:25:01.407934Z"
+        },
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skills/sveltekit-fullstack-superforms",
+          "fields": {
+            "lastInstalledAt": {
+              "timestampValue": "2026-09-12T05:27:20.072Z"
+            },
+            "slug": {
+              "stringValue": "sveltekit-fullstack-superforms"
+            },
+            "installs": {
+              "integerValue": "2"
+            }
+          },
+          "createTime": "2026-09-12T05:26:43.548481Z",
+          "updateTime": "2026-09-12T05:27:20.147376Z"
+        },
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skills/tech-green-dark-mode-modern",
+          "fields": {
+            "slug": {
+              "stringValue": "tech-green-dark-mode-modern"
+            },
+            "lastInstalledAt": {
+              "timestampValue": "2026-09-12T05:30:49.765Z"
+            },
+            "installs": {
+              "integerValue": "1"
+            }
+          },
+          "createTime": "2026-09-12T05:30:49.827143Z",
+          "updateTime": "2026-09-12T05:30:49.827143Z"
+        }
+      ]
+    },
+    "submissions": {
+      "documents": [
+        {
+          "name": "projects/domoskills/databases/(default)/documents/submissions/LgRoIkKO0s7OUcw7svTa",
+          "fields": {
+            "status": {
+              "stringValue": "approved"
+            },
+            "category": {
+              "stringValue": "frontend"
+            },
+            "userId": {
+              "stringValue": "lj7AwoNDRcUW68h8ZKunYmzw7Sx1"
+            },
+            "userEmail": {
+              "stringValue": "parejasarronkian@gmail.com"
+            },
+            "version": {
+              "stringValue": "1.0.0"
+            },
+            "markdown": {
+              "stringValue": "---\nname: my-agent-capability\ndescription: High-performance instructions, architectural guidelines, and optimization rules for AI coding assistants.\nlicense: MIT\nversion: 1.0.0\ntags:\n  - React\n  - Performance\n  - Optimization\n---\n\n# Best Practice Instructions & AI Rules\n\n1. Use semantic HTML and type-safe interfaces.\n2. Eliminate redundant re-renders and unnecessary state duplication.\n3. Write clean, idiomatic code with clear error handling.\n\n## Example Interaction\nWhen the user asks for optimization, inspect component dependency trees and apply memoization.\n"
+            },
+            "createdAt": {
+              "timestampValue": "2026-08-31T18:19:14.601Z"
+            },
+            "license": {
+              "stringValue": "MIT"
+            },
+            "skillPath": {
+              "stringValue": "skills/"
+            },
+            "submittedAt": {
+              "stringValue": "2026-08-31T18:19:12.791Z"
+            },
+            "slug": {
+              "stringValue": "my-agent-capability"
+            },
+            "description": {
+              "stringValue": "High-performance instructions, architectural guidelines, and optimization rules for AI coding assistants."
+            },
+            "securityScore": {
+              "integerValue": "100"
+            },
+            "repositoryUrl": {
+              "stringValue": "https://github.com/arronparejas/my-agent-capability"
+            },
+            "authorName": {
+              "stringValue": "Arron Parejas"
+            },
+            "contactEmail": {
+              "stringValue": "parejasarronkian@gmail.com"
+            },
+            "name": {
+              "stringValue": "My Agent Capability"
+            }
+          },
+          "createTime": "2026-08-31T18:19:14.992565Z",
+          "updateTime": "2026-08-31T18:19:14.992565Z"
+        }
+      ]
+    },
+    "skill_stats": {
+      "documents": [
+        {
+          "name": "projects/domoskills/databases/(default)/documents/skill_stats/tanstack-form-headless-validation-v17",
+          "fields": {
+            "starCount": {
+              "integerValue": "0"
+            },
+            "lastStarredAt": {
+              "stringValue": "2026-09-02T14:24:41.638Z"
+            },
+            "slug": {
+              "stringValue": "tanstack-form-headless-validation-v17"
+            }
+          },
+          "createTime": "2026-09-02T14:24:37.253762Z",
+          "updateTime": "2026-09-02T14:24:41.871123Z"
+        }
+      ]
+    }
+  }
+}
