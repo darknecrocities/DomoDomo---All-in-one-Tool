@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:22:42.781Z",
+  "buildTime": "2026-10-01T08:23:28.258Z",
   "commits": [
+    {
+      "hash": "66babdf",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix(shell): remove Panda Tech Ecosystem footer from Explore dropdown"
+    },
     {
       "hash": "1457327",
       "date": "2026-10-01",
@@ -85,12 +91,6 @@
       "date": "2026-09-15",
       "author": "darknecrocities",
       "message": "feat(ui): festive winter overhaul, continuous snowfall background, monochrome tech theme, and purge AI buzzwords"
-    },
-    {
-      "hash": "108ff6e",
-      "date": "2026-09-13",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
     }
   ]
 }
