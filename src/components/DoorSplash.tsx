@@ -193,7 +193,7 @@ export const DoorSplash = () => {
         style={{ opacity: areDoorsOpen ? 0 : 1 }}
       >
         <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-ping" />
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
           <span className="text-[9px] font-mono uppercase font-bold tracking-wider text-[#A3A09B]">
             {animStage === 'walk' ? 'Gaining Entrance Authorization...' : 
              'Unlocking Sandbox secure shield...'}

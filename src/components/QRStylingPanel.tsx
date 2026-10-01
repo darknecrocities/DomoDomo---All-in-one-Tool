@@ -16,8 +16,8 @@ export interface QRStyleSettings {
 }
 
 export const QR_THEMES = [
-  { id: 'custom', name: 'Custom (Manual Colors)', fg: '#4E8E5E', bg: '#0B0F19' },
-  { id: 'emerald', name: 'Emerald Mint', fg: '#4E8E5E', bg: '#0B0F19' },
+  { id: 'custom', name: 'Custom (Manual Colors)', fg: '#ECEBE9', bg: '#0B0F19' },
+  { id: 'frosted', name: 'Frosted Silver', fg: '#ECEBE9', bg: '#0D0D0D' },
   { id: 'amber', name: 'Amber Gold', fg: '#E29E2D', bg: '#111213' },
   { id: 'cyberpunk', name: 'Cyberpunk Neon', fg: '#BC34FA', bg: '#09090E' },
   { id: 'ocean', name: 'Ocean Breeze', fg: '#3482FA', bg: '#050A14' },
@@ -49,7 +49,7 @@ export const QRStylingPanel = ({
   return (
     <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-4 text-left w-full">
       <div className="flex items-center gap-2 border-b border-slate-800 pb-2 flex-row">
-        <Palette className="text-[#4E8E5E]" size={15} />
+        <Palette className="text-[#ECEBE9]" size={15} />
         <span className="text-[10px] font-bold text-slate-350 uppercase tracking-wider">Style Controls & Branding</span>
       </div>
 
@@ -101,7 +101,7 @@ export const QRStylingPanel = ({
         <div className="flex flex-col gap-1.5 justify-center">
           <div className="flex justify-between text-[9px] text-slate-500 font-bold uppercase tracking-wider">
             <span>Quiet Zone</span>
-            <span className="text-[#4E8E5E]">{settings.margin}px</span>
+            <span className="text-[#ECEBE9]">{settings.margin}px</span>
           </div>
           <input
             type="range"
@@ -109,7 +109,7 @@ export const QRStylingPanel = ({
             max="8"
             value={settings.margin}
             onChange={(e) => updateSetting('margin', Number(e.target.value))}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E] mt-1"
+            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-white mt-1"
           />
         </div>
 

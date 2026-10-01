@@ -368,7 +368,7 @@ export const CollageMakerTool = () => {
 
           {images.length === 0 ? (
             <div className="z-10 flex flex-col items-center gap-3 py-10">
-              <div className="p-4 bg-slate-900/80 rounded-full border border-slate-800 text-[#4E8E5E]">
+              <div className="p-4 bg-slate-900/80 rounded-full border border-slate-800 text-white">
                 <Grid size={32} />
               </div>
               <label className="btn-primary cursor-pointer mt-2">
@@ -433,7 +433,7 @@ export const CollageMakerTool = () => {
                     onClick={() => setSelectedTemplate(t.id)}
                     className={`flex items-center gap-2.5 p-2 rounded-xl border text-left transition-all ${
                       selectedTemplate === t.id
-                        ? 'bg-[#3C6B4D]/10 border-[#3C6B4D] text-[#ECEBE9]'
+                        ? 'bg-white text-black/10 border-white/30 text-[#ECEBE9]'
                         : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -474,7 +474,7 @@ export const CollageMakerTool = () => {
                 max="40"
                 value={border}
                 onChange={(e) => setBorder(parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4E8E5E]"
+                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-white"
               />
             </div>
 
@@ -507,7 +507,7 @@ export const CollageMakerTool = () => {
 
         {/* Local Processing Banner */}
         <div className="bg-[#151C2C]/50 border border-slate-800 rounded-2xl p-4 flex gap-3 text-slate-400 text-left">
-          <ShieldAlert size={20} className="text-[#4E8E5E] shrink-0 mt-0.5" />
+          <ShieldAlert size={20} className="text-white shrink-0 mt-0.5" />
           <div className="flex flex-col gap-0.5">
             <span className="text-xs font-semibold text-slate-300">100% In-Browser Rendering</span>
             <span className="text-[10px] leading-relaxed">Images are loaded as local graphic nodes and stitched dynamically inside canvas memory arrays.</span>

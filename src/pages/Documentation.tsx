@@ -78,11 +78,11 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                 onClick={() => setActiveSection(item.id)}
                 className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center gap-3 transition-all ${
                   isActive
-                    ? 'bg-[#3C6B4D]/10 text-[#ECEBE9] border border-[#3C6B4D]/40'
+                    ? 'bg-white text-black font-bold border-white shadow-sm'
                     : 'text-[#A3A09B] hover:text-[#ECEBE9] hover:bg-[#111213] border border-transparent'
                 }`}
               >
-                <Icon size={16} className={isActive ? 'text-[#3C6B4D]' : 'text-[#72706C]'} />
+                <Icon size={16} className={isActive ? 'text-black' : 'text-[#72706C]'} />
                 <span>{item.label}</span>
               </button>
             );
@@ -99,13 +99,13 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
-                  <h3 className="text-[#3C6B4D] font-bold text-xs mb-1 uppercase tracking-wide">Device Privacy</h3>
+                  <h3 className="text-white font-bold text-xs mb-1 uppercase tracking-wide">Device Privacy</h3>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed">
                     Zero data packets representing your documents or input coordinates leave your local device. Work on sensitive company datasets or credentials with complete peace of mind.
                   </p>
                 </div>
                 <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl">
-                  <h3 className="text-[#3C6B4D] font-bold text-xs mb-1 uppercase tracking-wide">Offline Native</h3>
+                  <h3 className="text-white font-bold text-xs mb-1 uppercase tracking-wide">Offline Native</h3>
                   <p className="text-[#A3A09B] text-[11px] leading-relaxed">
                     The entire dashboard compiles down to client assets. Once cached, the application functions fully with no internet connections or router access.
                   </p>
@@ -118,30 +118,34 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
             <div className="flex flex-col gap-6">
               <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">System Architecture Spec</h2>
               <p className="text-[#A3A09B] text-xs md:text-sm leading-relaxed">
-                DomoDomo executes functional scripts, local vector indexing, and neural operations inside a <strong className="font-bold text-[#ECEBE9]">telemetry-free client sandbox</strong>. Below is the multi-layered layout containing 24 distinct system components:
+                DomoDomo is organized into three completely offline architectural tiers:
               </p>
 
-              {/* Extended Architecture SVG Map */}
-              <div className="bg-[#111213] border border-[#2A2D30] p-6 rounded-2xl flex items-center justify-center overflow-x-auto">
-                <svg width="640" height="560" viewBox="0 0 640 560" fill="none" className="min-w-[620px]">
+              {/* Architecture Blueprint SVG Canvas */}
+              <div className="bg-[#111213] border border-[#2A2D30] p-6 rounded-2xl flex flex-col items-center justify-center overflow-x-auto gap-4">
+                <svg width="640" height="560" viewBox="0 0 640 560" fill="none" className="min-w-[500px]">
                   {/* Layer 1: Client Sandbox */}
-                  <rect x="15" y="45" width="610" height="235" rx="10" fill="#141517" stroke="#2A2D30" strokeWidth="1.5" />
-                  <text x="30" y="60" fill="#72706C" fontSize="8" fontFamily="monospace" fontWeight="bold">1. CLIENT BROWSER SANDBOX (REACT SPA / WEB ENVIRONMENT)</text>
-                  
-                  {/* Row 1 components */}
-                  <rect x="30" y="75" width="70" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
-                  <text x="65" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">UI Viewport</text>
-                  
-                  <rect x="110" y="75" width="80" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
-                  <text x="150" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">Tool Registry</text>
+                  <rect x="15" y="15" width="610" height="260" rx="10" fill="#141517" stroke="#2A2D30" strokeWidth="1.5" />
+                  <text x="30" y="38" fill="#72706C" fontSize="8" fontFamily="monospace" fontWeight="bold">1. CLIENT-SIDE BROWSER ISOLATION ZONE (ZERO NETWORK TRAFFIC)</text>
 
-                  <rect x="200" y="75" width="110" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
-                  <text x="255" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">Agent Orchestrator</text>
+                  {/* Client Sub-modules */}
+                  <rect x="30" y="50" width="580" height="120" rx="6" fill="#111213" stroke="#2A2D30" />
+                  <text x="45" y="66" fill="#A3A09B" fontSize="8" fontFamily="monospace">Client Processing Sandbox</text>
 
-                  <rect x="320" y="75" width="75" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
-                  <text x="357" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">Auto Pilot</text>
+                  {/* Row 1 storage blocks */}
+                  <rect x="30" y="75" width="90" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="75" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">localStorage</text>
 
-                  <rect x="405" y="75" width="100" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <rect x="125" y="75" width="95" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="172" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">sessionStorage</text>
+
+                  <rect x="225" y="75" width="85" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="267" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">IndexedDB</text>
+
+                  <rect x="315" y="75" width="90" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
+                  <text x="360" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">Origin Private FS</text>
+
+                  <rect x="410" y="75" width="100" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="455" y="95" fill="#ECEBE9" fontSize="8" textAnchor="middle">IDB user_profile</text>
 
                   <rect x="515" y="75" width="95" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
@@ -154,24 +158,24 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <rect x="125" y="125" width="90" height="35" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="170" y="145" fill="#A3A09B" fontSize="8" textAnchor="middle">Web Audio API</text>
 
-                  <rect x="225" y="125" width="95" height="35" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
-                  <text x="272" y="145" fill="#3C6B4D" fontSize="8" textAnchor="middle" fontWeight="bold">pdf-lib (WASM)</text>
+                  <rect x="225" y="125" width="95" height="35" rx="4" fill="#18191B" stroke="#ECEBE9" strokeWidth="1" />
+                  <text x="272" y="145" fill="#ECEBE9" fontSize="8" textAnchor="middle" fontWeight="bold">pdf-lib (WASM)</text>
 
-                  <rect x="330" y="125" width="105" height="35" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
-                  <text x="382" y="145" fill="#3C6B4D" fontSize="8" textAnchor="middle" fontWeight="bold">Tesseract (WASM)</text>
+                  <rect x="330" y="125" width="105" height="35" rx="4" fill="#18191B" stroke="#ECEBE9" strokeWidth="1" />
+                  <text x="382" y="145" fill="#ECEBE9" fontSize="8" textAnchor="middle" fontWeight="bold">Tesseract (WASM)</text>
 
-                  <rect x="445" y="125" width="165" height="35" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
-                  <text x="527" y="145" fill="#3C6B4D" fontSize="8" textAnchor="middle" fontWeight="bold">Transformers.js (Embedder)</text>
+                  <rect x="445" y="125" width="165" height="35" rx="4" fill="#18191B" stroke="#ECEBE9" strokeWidth="1" />
+                  <text x="527" y="145" fill="#ECEBE9" fontSize="8" textAnchor="middle" fontWeight="bold">Transformers.js (Embedder)</text>
 
                   {/* Core engine integration box */}
-                  <rect x="180" y="185" width="280" height="40" rx="6" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="180" y="185" width="280" height="40" rx="6" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="320" y="205" fill="#ECEBE9" fontSize="10" textAnchor="middle" fontWeight="bold">DomoDomo Unified Memory Manager</text>
 
                   {/* Flow arrows */}
                   <path d="M70 110 V125" stroke="#2A2D30" strokeWidth="1.5" />
                   <path d="M150 110 V125" stroke="#2A2D30" strokeWidth="1.5" />
                   <path d="M357 110 V125" stroke="#2A2D30" strokeWidth="1.5" />
-                  <path d="M320 225 V245" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#archi-arrow)" />
+                  <path d="M320 225 V245" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#archi-arrow)" />
 
 
                   {/* Layer 2: Network transport & Security */}
@@ -181,15 +185,15 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <rect x="30" y="312" width="160" height="25" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="110" y="327" fill="#E29E2D" fontSize="8" textAnchor="middle">CORS Origin Validator</text>
 
-                  <rect x="200" y="312" width="180" height="25" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
-                  <text x="290" y="327" fill="#3C6B4D" fontSize="8" textAnchor="middle" fontWeight="bold">Fetch Stream Packet Reader</text>
+                  <rect x="200" y="312" width="180" height="25" rx="4" fill="#18191B" stroke="#ECEBE9" strokeWidth="1" />
+                  <text x="290" y="327" fill="#ECEBE9" fontSize="8" textAnchor="middle" fontWeight="bold">Fetch Stream Packet Reader</text>
 
                   <rect x="390" y="312" width="220" height="25" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="500" y="327" fill="#ECEBE9" fontSize="8" textAnchor="middle">Port Sockets (SSE / HTTP 3001 & 8000)</text>
 
 
                   {/* Layer 3: Python FastAPI Backend */}
-                  <rect x="15" y="360" width="610" height="100" rx="10" fill="#141517" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="15" y="360" width="610" height="100" rx="10" fill="#141517" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="30" y="373" fill="#72706C" fontSize="8" fontFamily="monospace" fontWeight="bold">3. LOCAL FASTAPI PY-ENGINE (PORT 8000 BACKEND CONTEXT)</text>
 
                   <rect x="30" y="380" width="130" height="30" rx="4" fill="#18191B" stroke="#2A2D30" />
@@ -204,8 +208,8 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <rect x="455" y="380" width="155" height="30" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="532" y="398" fill="#ECEBE9" fontSize="8" textAnchor="middle">Similarity Dot-Evaluator</text>
 
-                  <rect x="180" y="420" width="280" height="30" rx="4" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
-                  <text x="320" y="438" fill="#3C6B4D" fontSize="9" textAnchor="middle" fontWeight="bold">SQLite WAL Database (activityevent & thought schemas)</text>
+                  <rect x="180" y="420" width="280" height="30" rx="4" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
+                  <text x="320" y="438" fill="#ECEBE9" fontSize="9" textAnchor="middle" fontWeight="bold">SQLite WAL Database (activityevent & thought schemas)</text>
 
 
                   {/* Layer 4: Host Machine Runtimes */}
@@ -221,8 +225,8 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <rect x="320" y="495" width="135" height="40" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="387" y="515" fill="#ECEBE9" fontSize="8" textAnchor="middle">Mounted Directories</text>
 
-                  <rect x="465" y="495" width="145" height="40" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
-                  <text x="537" y="515" fill="#3C6B4D" fontSize="8" textAnchor="middle" fontWeight="bold">start-backend controller</text>
+                  <rect x="465" y="495" width="145" height="40" rx="4" fill="#18191B" stroke="#ECEBE9" strokeWidth="1" />
+                  <text x="537" y="515" fill="#ECEBE9" fontSize="8" textAnchor="middle" fontWeight="bold">start-backend controller</text>
 
                   {/* Connecting flow lines */}
                   <path d="M95 410 V475" stroke="#2A2D30" strokeWidth="1" strokeDasharray="2 2" />
@@ -231,29 +235,23 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
 
                   <defs>
                     <marker id="archi-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ECEBE9" />
                     </marker>
                   </defs>
                 </svg>
               </div>
 
               {/* Advantages Spec */}
-              <div className="flex flex-col gap-5 text-xs text-left mt-3">
-                <h3 className="font-bold text-[#ECEBE9] text-sm">Key Architectural Highlights & Advantages</h3>
-                <p className="text-[#A3A09B] leading-relaxed">
-                  DomoDomo's decentralized multi-layer system architecture yields multiple operational, security, and performance benefits compared to traditional SaaS utilities:
-                </p>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-[#111213] border border-[#2A2D30] p-4.5 rounded-2xl flex flex-col gap-1.5">
-                    <span className="font-bold text-[#3C6B4D]">🛡️ Zero data-leakage (Sovereign Privacy)</span>
+                    <span className="font-bold text-white">🛡️ Zero data-leakage (Sovereign Privacy)</span>
                     <p className="text-[#A3A09B] leading-relaxed text-[11px]">
                       Because all binaries compile and process client-side inside isolated browser worker threads, no data packets containing credentials, documents, or photos cross network interfaces. This fully satisfies enterprise data classification boundaries.
                     </p>
                   </div>
 
                   <div className="bg-[#111213] border border-[#2A2D30] p-4.5 rounded-2xl flex flex-col gap-1.5">
-                    <span className="font-bold text-[#3C6B4D]">⚡ Low-Latency Processing & SSE Streams</span>
+                    <span className="font-bold text-white">⚡ Low-Latency Processing & SSE Streams</span>
                     <p className="text-[#A3A09B] leading-relaxed text-[11px]">
                       Bypassing external REST queries eliminates connection overhead. Local Python and Ollama responses stream directly via Server-Sent Events (SSE), reducing initial token loading response times from 20+ seconds to under 300ms.
                     </p>
@@ -267,12 +265,65 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   </div>
 
                   <div className="bg-[#111213] border border-[#2A2D30] p-4.5 rounded-2xl flex flex-col gap-1.5">
-                    <span className="font-bold text-[#E29E2D]">🔨 Automated Environment Setup</span>
+                    <span className="font-bold text-[#72706C]">💻 Offline Hardware Acceleration</span>
                     <p className="text-[#A3A09B] leading-relaxed text-[11px]">
-                      The Node virtualenv auto-bootstrapper removes the need for manual python environments setup. The launcher installs pip packages dynamically when requirements are modified, keeping workspace dependencies in sync.
+                      Harnesses WebGPU and client-side WebAssembly primitives for matrix math calculations, audio filters, and image transformations without sending raw image buffers to remote servers.
                     </p>
                   </div>
                 </div>
+              </div>
+          )}
+
+          {activeSection === 'offline-flow' && (
+            <div className="flex flex-col gap-6">
+              <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">Zero-Data Leak Verification Flow</h2>
+              <p className="text-[#A3A09B] text-xs md:text-sm leading-relaxed">
+                Every tool in DomoDomo follows a strict client-side sandbox policy. Before any processing occurs, data stays in memory and is never dispatched via HTTP/XHR:
+              </p>
+
+              {/* Data Flow Diagram */}
+              <div className="bg-[#111213] border border-[#2A2D30] p-6 rounded-2xl flex flex-col items-center justify-center overflow-x-auto gap-4">
+                <svg width="600" height="400" viewBox="0 0 600 400" fill="none" className="min-w-[500px]">
+                  {/* Step 1 */}
+                  <rect x="200" y="20" width="200" height="45" rx="8" fill="#18191B" stroke="#2A2D30" />
+                  <text x="300" y="46" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">1. File Dropped or Input Pasted</text>
+                  <path d="M300 65 V95" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+
+                  {/* Step 2 */}
+                  <rect x="200" y="90" width="200" height="45" rx="8" fill="#111213" stroke="#2A2D30" />
+                  <text x="300" y="116" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">2. Parsed into File Blob</text>
+                  <path d="M300 135 V170" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+
+                  {/* Step 3 */}
+                  <polygon points="300,170 420,195 300,220 180,195" fill="#18191B" stroke="#ECEBE9" strokeWidth="1.5" />
+                  <text x="300" y="199" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">3. Network Call?</text>
+                  
+                  {/* Yes Branch */}
+                  <path d="M420 195 H500 V240" stroke="#E29E2D" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+                  <text x="455" y="185" fill="#E29E2D" fontSize="10" fontFamily="sans-serif" fontWeight="bold">Yes</text>
+                  <rect x="425" y="240" width="150" height="45" rx="8" fill="#18191B" stroke="#E29E2D" />
+                  <text x="500" y="266" fill="#E29E2D" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">Operation Blocked</text>
+
+                  {/* No Branch */}
+                  <path d="M300 220 V260" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+                  <text x="315" y="240" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" fontWeight="bold">No</text>
+                  
+                  {/* Step 4 */}
+                  <rect x="185" y="260" width="230" height="45" rx="8" fill="#18191B" stroke="#ECEBE9" strokeWidth="1.5" />
+                  <text x="300" y="286" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">4. Sandboxed Compilation</text>
+                  <path d="M300 305 V335" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+
+                  {/* Step 5 */}
+                  <rect x="200" y="335" width="200" height="45" rx="22" fill="#ECEBE9" />
+                  <text x="300" y="361" fill="#000000" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">5. Local Download Triggered</text>
+
+                  {/* Markers definition */}
+                  <defs>
+                    <marker id="flow-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2A2D30" />
+                    </marker>
+                  </defs>
+                </svg>
               </div>
             </div>
           )}
@@ -298,7 +349,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <path d="M300 135 V170" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
 
                   {/* Step 3 */}
-                  <polygon points="300,170 420,195 300,220 180,195" fill="#18191B" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <polygon points="300,170 420,195 300,220 180,195" fill="#18191B" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="300" y="199" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">3. Network Call?</text>
                   
                   {/* Yes Branch */}
@@ -308,17 +359,17 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <text x="500" y="266" fill="#E29E2D" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">Operation Blocked</text>
 
                   {/* No Branch */}
-                  <path d="M300 220 V260" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
-                  <text x="315" y="240" fill="#3C6B4D" fontSize="10" fontFamily="sans-serif" fontWeight="bold">No</text>
+                  <path d="M300 220 V260" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
+                  <text x="315" y="240" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" fontWeight="bold">No</text>
                   
                   {/* Step 4 */}
-                  <rect x="185" y="260" width="230" height="45" rx="8" fill="#18191B" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="185" y="260" width="230" height="45" rx="8" fill="#18191B" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="300" y="286" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="semibold">4. Sandboxed Compilation</text>
                   <path d="M300 305 V335" stroke="#2A2D30" strokeWidth="1.5" markerEnd="url(#flow-arrow)" />
 
                   {/* Step 5 */}
-                  <rect x="200" y="335" width="200" height="45" rx="22" fill="#3C6B4D" />
-                  <text x="300" y="361" fill="#ECEBE9" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">5. Local Download Triggered</text>
+                  <rect x="200" y="335" width="200" height="45" rx="22" fill="#ECEBE9" />
+                  <text x="300" y="361" fill="#000000" fontSize="11" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">5. Local Download Triggered</text>
 
                   {/* Markers definition */}
                   <defs>
@@ -351,16 +402,16 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <text x="85" y="170" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Chat / Log event</text>
 
                   {/* Arrow 1: User -> Ollama Proxy */}
-                  <path d="M140 160 H210" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+                  <path d="M140 160 H210" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
 
                   {/* Node 2: Ollama Proxy */}
-                  <rect x="210" y="125" width="130" height="70" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="210" y="125" width="130" height="70" rx="8" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="275" y="145" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Ollama Proxy</text>
-                  <text x="275" y="163" fill="#3C6B4D" fontSize="8" fontFamily="monospace" textAnchor="middle">FastAPI (Port 8000)</text>
+                  <text x="275" y="163" fill="#ECEBE9" fontSize="8" fontFamily="monospace" textAnchor="middle">FastAPI (Port 8000)</text>
                   <text x="275" y="178" fill="#A3A09B" fontSize="8" fontFamily="sans-serif" textAnchor="middle">Bypasses CORS & Caches</text>
 
                   {/* Arrow 2: Proxy -> SQLite Vector DB */}
-                  <path d="M275 125 V75 H370" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+                  <path d="M275 125 V75 H370" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
                   <text x="310" y="70" fill="#72706C" fontSize="8" fontFamily="sans-serif">Vector Search</text>
 
                   {/* Node 3: SQLite Vector Store */}
@@ -369,7 +420,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <text x="460" y="85" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Cosine Similarity / RAG</text>
 
                   {/* Arrow 3: SQLite -> Proxy (Context injection) */}
-                  <path d="M370 90 H300 V125" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+                  <path d="M370 90 H300 V125" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
 
                   {/* Arrow 4: Proxy -> Local Journal (Async task) */}
                   <path d="M275 195 V255 H370" stroke="#E29E2D" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#cog-arrow)" />
@@ -381,12 +432,12 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <text x="460" y="265" fill="#E29E2D" fontSize="8" fontFamily="monospace" textAnchor="middle">Append-Only MD Logs</text>
 
                   {/* Return Arrow: Proxy -> User */}
-                  <path d="M210 175 H140" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
-                  <text x="175" y="188" fill="#3C6B4D" fontSize="8" fontFamily="sans-serif" textAnchor="middle">SSE Stream</text>
+                  <path d="M210 175 H140" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#cog-arrow)" />
+                  <text x="175" y="188" fill="#ECEBE9" fontSize="8" fontFamily="sans-serif" textAnchor="middle">SSE Stream</text>
 
                   <defs>
                     <marker id="cog-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ECEBE9" />
                     </marker>
                   </defs>
                 </svg>
@@ -407,17 +458,17 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <text x="110" y="203" fill="#A3A09B" fontSize="9" textAnchor="middle">Knowledge Vault Cache</text>
 
                   {/* Arrow IDB -> SQLite */}
-                  <path d="M190 155 H230" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#schema-arrow)" />
+                  <path d="M190 155 H230" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#schema-arrow)" />
 
                   {/* Group 2: Local Python SQL Database */}
-                  <rect x="230" y="65" width="160" height="180" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="230" y="65" width="160" height="180" rx="8" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="310" y="85" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Python Backend (SQLite)</text>
                   <rect x="245" y="105" width="130" height="40" rx="4" fill="#18191B" stroke="#2A2D30" />
                   <text x="310" y="121" fill="#A3A09B" fontSize="9" textAnchor="middle">Activity DB Events</text>
                   <text x="310" y="136" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">Table: activityevent</text>
-                  <rect x="245" y="160" width="130" height="55" rx="4" fill="#18191B" stroke="#3C6B4D" strokeWidth="1" />
+                  <rect x="245" y="160" width="130" height="55" rx="4" fill="#18191B" stroke="#ECEBE9" strokeWidth="1" />
                   <text x="310" y="176" fill="#ECEBE9" fontSize="9" textAnchor="middle" fontWeight="bold">Vector Thoughts Table</text>
-                  <text x="310" y="191" fill="#3C6B4D" fontSize="8" fontFamily="monospace" textAnchor="middle">content + embedding_json</text>
+                  <text x="310" y="191" fill="#ECEBE9" fontSize="8" fontFamily="monospace" textAnchor="middle">content + embedding_json</text>
                   <text x="310" y="203" fill="#72706C" fontSize="7" fontFamily="monospace" textAnchor="middle">Table: thought</text>
 
                   {/* Arrow SQLite -> MD Journal */}
@@ -433,7 +484,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
 
                   <defs>
                     <marker id="schema-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ECEBE9" />
                     </marker>
                   </defs>
                 </svg>
@@ -449,16 +500,16 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   <text x="80" y="160" fill="#72706C" fontSize="8" fontFamily="monospace" textAnchor="middle">"coding sports"</text>
 
                   {/* Arrow 1 */}
-                  <path d="M130 150 H180" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#sim-arrow)" />
+                  <path d="M130 150 H180" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#sim-arrow)" />
 
                   {/* Embedding Generator */}
-                  <rect x="180" y="115" width="140" height="70" rx="8" fill="#111213" stroke="#3C6B4D" strokeWidth="1.5" />
+                  <rect x="180" y="115" width="140" height="70" rx="8" fill="#111213" stroke="#ECEBE9" strokeWidth="1.5" />
                   <text x="250" y="135" fill="#ECEBE9" fontSize="10" fontFamily="sans-serif" textAnchor="middle" fontWeight="bold">Embedding Engine</text>
-                  <text x="250" y="153" fill="#3C6B4D" fontSize="8" fontFamily="monospace" textAnchor="middle">all-MiniLM-L6-v2</text>
+                  <text x="250" y="153" fill="#ECEBE9" fontSize="8" fontFamily="monospace" textAnchor="middle">all-MiniLM-L6-v2</text>
                   <text x="250" y="168" fill="#A3A09B" fontSize="8" fontFamily="sans-serif" textAnchor="middle">384-Dimension Vector</text>
 
                   {/* Arrow 2 */}
-                  <path d="M320 150 H370" stroke="#3C6B4D" strokeWidth="1.5" markerEnd="url(#sim-arrow)" />
+                  <path d="M320 150 H370" stroke="#ECEBE9" strokeWidth="1.5" markerEnd="url(#sim-arrow)" />
 
                   {/* Vector Array Output */}
                   <rect x="370" y="125" width="120" height="50" rx="6" fill="#111213" stroke="#2A2D30" />
@@ -476,7 +527,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
 
                   <defs>
                     <marker id="sim-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3C6B4D" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ECEBE9" />
                     </marker>
                   </defs>
                 </svg>
@@ -486,7 +537,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
               <div className="flex flex-col gap-6 text-xs text-left">
                 {/* 1. Unified Memory Systems */}
                 <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
-                  <span className="text-xs uppercase tracking-wider text-[#3C6B4D] font-bold">1. Unified Memory Architecture</span>
+                  <span className="text-xs uppercase tracking-wider text-white font-bold">1. Unified Memory Architecture</span>
                   <p className="text-[#A3A09B] leading-relaxed">
                     DomoDomo's memory layout coordinates browser-local caches and background SQL systems to ensure context continuity:
                   </p>
@@ -523,9 +574,9 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                   </ul>
                 </div>
 
-                {/* 4. Domo Companion (Floating AI Assistant) */}
+                {/* 4. Domo Companion (Floating Guide) */}
                 <div className="flex flex-col gap-2.5 bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl">
-                  <span className="text-xs uppercase tracking-wider text-[#3C6B4D] font-bold">4. Domo Companion (Floating AI Assistant)</span>
+                  <span className="text-xs uppercase tracking-wider text-white font-bold">4. Domo Companion (Floating Guide)</span>
                   <p className="text-[#A3A09B] leading-relaxed">
                     DomoDomo incorporates a persistent, overlay companion assistant designed for interactive queries and workspace navigation. It runs completely offline and bridges active screen state with local LLM prompts:
                   </p>
@@ -548,7 +599,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                     <thead>
                       <tr className="bg-[#111213] border-b border-[#2A2D30] text-[#ECEBE9]">
                         <th className="p-3 border-r border-[#2A2D30] font-bold">Feature Metric</th>
-                        <th className="p-3 border-r border-[#2A2D30] font-bold text-[#3C6B4D]">DomoDomo Local RAG</th>
+                        <th className="p-3 border-r border-[#2A2D30] font-bold text-white">DomoDomo Local RAG</th>
                         <th className="p-3 font-bold text-[#E29E2D]">Standard Cloud AI Systems</th>
                       </tr>
                     </thead>
@@ -605,11 +656,13 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                     audio: 'Audio',
                     dev: 'Developer',
                     security: 'Security',
-                    ai: 'Local AI',
+                    ai: 'Smart Assistants',
                     data: 'Data',
                     cv: 'Computer Vision',
                     ml: 'Machine Learning',
                     spatial: 'Spatial 3D',
+                    design: 'Design & UI/UX',
+                    network: 'Network & Web',
                     investigation: 'Investigative',
                   };
                   return (
@@ -618,7 +671,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                       onClick={() => handleCategoryChange(key as ToolCategory)}
                       className={`py-1.5 px-3 rounded-lg text-[11px] font-bold transition-all border ${
                         activeToolCategory === key
-                          ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border-[#3C6B4D]/25 shadow-sm'
+                          ? 'bg-white text-black font-bold border-white shadow-sm'
                           : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#A3A09B]'
                       }`}
                     >
@@ -642,7 +695,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                     <div
                       key={tool.id}
                       className={`bg-[#111213] border border-[#2A2D30] p-5 rounded-2xl flex flex-col gap-3 transition-all duration-300 ${
-                        isExpanded ? 'col-span-1 md:col-span-2 border-[#3C6B4D]/60 bg-[#141618]' : 'hover:border-[#2A2D30]/80'
+                        isExpanded ? 'col-span-1 md:col-span-2 border-white/40 bg-[#141618]' : 'hover:border-[#2A2D30]/80'
                       }`}
                     >
                       <div className="flex flex-col gap-1.5">
@@ -650,7 +703,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                           <span className="font-bold text-[#ECEBE9] text-xs font-mono leading-snug flex-1 min-w-[140px]">
                             {tool.name}
                           </span>
-                          <span className="px-2 py-0.5 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded text-[9px] font-mono leading-tight whitespace-normal max-w-full">
+                          <span className="px-2 py-0.5 bg-white/5 text-neutral-300 border border-white/10 rounded text-[9px] font-mono leading-tight whitespace-normal max-w-full">
                             {tool.engine}
                           </span>
                         </div>
@@ -664,7 +717,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                       {isExpanded && (
                         <div className="mt-2 pt-4 border-t border-[#2A2D30] flex flex-col gap-4">
                           <div className="flex flex-col gap-1.5">
-                            <span className="text-[10px] uppercase tracking-wider text-[#3C6B4D] font-bold">Key Functionality</span>
+                            <span className="text-[10px] uppercase tracking-wider text-white font-bold">Key Functionality</span>
                             <p className="text-[11px] text-[#ECEBE9] leading-relaxed bg-[#111213] border border-[#2A2D30] p-3 rounded-xl">
                               {tool.functionality}
                             </p>
@@ -689,7 +742,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                       <button
                         onClick={() => setExpandedToolId(isExpanded ? null : tool.id)}
                         className={`text-left text-[10px] font-bold w-fit mt-1 flex items-center gap-1 transition-all ${
-                          isExpanded ? 'text-[#E29E2D] hover:text-[#E29E2D]/80' : 'text-[#3C6B4D] hover:text-[#3C6B4D]/80'
+                          isExpanded ? 'text-[#E29E2D] hover:text-[#E29E2D]/80' : 'text-white hover:text-neutral-300'
                         }`}
                       >
                         <span>{isExpanded ? 'Collapse Details' : 'Expand Details & Mechanics'}</span>
@@ -712,7 +765,7 @@ export const Documentation = ({ integrated = false }: { integrated?: boolean }) 
                 {/* Step 1 */}
                 <div className="flex flex-col gap-2">
                   <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">1</span>
+                    <span className="w-5 h-5 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xs font-mono">1</span>
                     <span>Clone & Install Dev Assets</span>
                   </h3>
                   <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
@@ -727,7 +780,7 @@ npm install`}
                 {/* Step 2 */}
                 <div className="flex flex-col gap-2 border-t border-[#2A2D30]/60 pt-4">
                   <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">2</span>
+                    <span className="w-5 h-5 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xs font-mono">2</span>
                     <span>Launch Local Dev Server</span>
                   </h3>
                   <div className="bg-[#111213] p-4 rounded-xl border border-[#2A2D30] font-mono text-[11px] text-[#ECEBE9] relative group">
@@ -740,11 +793,11 @@ npm install`}
                 {/* Step 3 */}
                 <div className="flex flex-col gap-2 border-t border-[#2A2D30]/60 pt-4">
                   <h3 className="font-bold text-[#ECEBE9] text-sm flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#3C6B4D]/10 border border-[#3C6B4D]/30 text-[#3C6B4D] flex items-center justify-center text-xs font-mono">3</span>
+                    <span className="w-5 h-5 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center text-xs font-mono">3</span>
                     <span>Configure Local Ollama AI Origins</span>
                   </h3>
                   <p className="text-[#A3A09B] text-xs leading-relaxed">
-                    By default, browsers block network traffic to local ports unless appropriate Cross-Origin Resource Sharing (CORS) headers are sent. Configure the environment variable <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*"</code> before launching Ollama:
+                    By default, browsers block network traffic to local ports unless appropriate Cross-Origin Resource Sharing (CORS) headers are sent. Configure the environment variable <code className="text-white font-mono">OLLAMA_ORIGINS="*"</code> before launching Ollama:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-[#111213] border border-[#2A2D30] p-3.5 rounded-xl">
@@ -775,7 +828,7 @@ npm install`}
               </p>
               <div className="flex flex-col gap-4 text-xs">
                 <div className="flex gap-4 p-4 bg-[#111213] rounded-2xl border border-[#2A2D30]">
-                  <div className="p-3 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded-xl shrink-0 h-fit">
+                  <div className="p-3 bg-white/5 text-white border border-white/10 rounded-xl shrink-0 h-fit">
                     <Cpu size={20} />
                   </div>
                   <div className="flex flex-col gap-1 text-left">
@@ -785,7 +838,7 @@ npm install`}
                 </div>
 
                 <div className="flex gap-4 p-4 bg-[#111213] rounded-2xl border border-[#2A2D30]">
-                  <div className="p-3 bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/25 rounded-xl shrink-0 h-fit">
+                  <div className="p-3 bg-white/5 text-white border border-white/10 rounded-xl shrink-0 h-fit">
                     <Settings size={20} />
                   </div>
                   <div className="flex flex-col gap-1 text-left">
@@ -811,8 +864,8 @@ npm install`}
             <div className="flex flex-col gap-5">
               <h2 className="text-xl font-bold text-[#ECEBE9] border-b border-[#2A2D30] pb-3">Security & Compliance</h2>
               
-              <div className="bg-[#3C6B4D]/10 border border-[#3C6B4D]/20 p-4 rounded-xl flex items-start gap-3">
-                <Shield size={20} className="text-[#3C6B4D] shrink-0 mt-0.5" />
+              <div className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-start gap-3">
+                <Shield size={20} className="text-white shrink-0 mt-0.5" />
                 <div className="flex flex-col gap-1 text-left">
                   <span className="text-[#ECEBE9] font-bold text-sm">100% Zero-Telemetry Policy</span>
                   <p className="text-[#A3A09B] text-xs leading-relaxed">
@@ -827,7 +880,7 @@ npm install`}
 
               <div className="flex flex-col gap-3 p-4 bg-[#111213] rounded-2xl border border-[#2A2D30] text-xs text-left">
                 <h3 className="font-bold text-[#ECEBE9] flex items-center gap-2">
-                  <Server size={14} className="text-[#3C6B4D]" />
+                  <Server size={14} className="text-white" />
                   <span>Corporate Self-Hosting Deployments</span>
                 </h3>
                 <p className="text-[#A3A09B] leading-relaxed">

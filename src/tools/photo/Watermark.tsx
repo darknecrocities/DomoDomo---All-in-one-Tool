@@ -179,8 +179,8 @@ export const WatermarkTool = () => {
           </h3>
 
           <div className="flex gap-2">
-            <button onClick={() => setType('text')} className={`flex-1 py-1 rounded text-xs font-bold ${type === 'text' ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-400 border border-slate-850'}`}>Text Stamp</button>
-            <button onClick={() => setType('logo')} className={`flex-1 py-1 rounded text-xs font-bold ${type === 'logo' ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-400 border border-slate-850'}`}>Logo Image</button>
+            <button onClick={() => setType('text')} className={`flex-1 py-1 rounded text-xs font-bold ${type === 'text' ? 'bg-white text-black' : 'bg-slate-900 text-slate-400 border border-slate-850'}`}>Text Stamp</button>
+            <button onClick={() => setType('logo')} className={`flex-1 py-1 rounded text-xs font-bold ${type === 'logo' ? 'bg-white text-black' : 'bg-slate-900 text-slate-400 border border-slate-850'}`}>Logo Image</button>
           </div>
 
           {type === 'text' ? (
@@ -223,7 +223,7 @@ export const WatermarkTool = () => {
                 <span className="text-slate-400">Opacity</span>
                 <span className="text-slate-300">{Math.round(opacity * 100)}%</span>
               </div>
-              <input type="range" min="0.1" max="1" step="0.05" value={opacity} onChange={(e) => setOpacity(parseFloat(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="0.1" max="1" step="0.05" value={opacity} onChange={(e) => setOpacity(parseFloat(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             <div className="flex flex-col gap-1">
@@ -231,7 +231,7 @@ export const WatermarkTool = () => {
                 <span className="text-slate-400">Scale / Size</span>
                 <span className="text-slate-300">{scale}%</span>
               </div>
-              <input type="range" min="2" max="30" step="1" value={scale} onChange={(e) => setScale(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="2" max="30" step="1" value={scale} onChange={(e) => setScale(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             <div className="flex flex-col gap-1">
@@ -239,7 +239,7 @@ export const WatermarkTool = () => {
                 <span className="text-slate-400">Rotation Angle</span>
                 <span className="text-slate-300">{angle}°</span>
               </div>
-              <input type="range" min="-180" max="180" step="5" value={angle} onChange={(e) => setAngle(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="-180" max="180" step="5" value={angle} onChange={(e) => setAngle(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
           </div>
 

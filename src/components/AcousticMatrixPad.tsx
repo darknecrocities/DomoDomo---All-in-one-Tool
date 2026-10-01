@@ -244,8 +244,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-[#3C6B4D] text-white shadow-md shadow-[#3C6B4D]/30 border border-[#3C6B4D]'
-                  : 'bg-[#18191B] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-[#3C6B4D]/40 border border-[#2A2D30]'
+                  ? 'bg-white text-black shadow-md border border-white'
+                  : 'bg-[#18191B] text-[#A3A09B] hover:text-[#ECEBE9] hover:border-white/30 border border-[#2A2D30]'
               }`}
             >
               {cat}
@@ -256,8 +256,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
         <div className="flex items-center gap-3 ml-auto">
           {/* Live Auto-Saved Indicator */}
           {justSaved && (
-            <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#6EC48E] bg-[#3C6B4D]/20 px-3 py-0.5 rounded-full border border-[#3C6B4D]/40 animate-in fade-in zoom-in-95 duration-150 shadow-[0_0_12px_rgba(60,107,77,0.3)]">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#6EC48E]" />
+            <span className="flex items-center gap-1.5 text-[10px] font-bold text-white bg-white/10 px-3 py-0.5 rounded-full border border-white/20 animate-in fade-in zoom-in-95 duration-150 shadow-[0_0_12px_rgba(255,255,255,0.15)]">
+              <CheckCircle2 className="w-3.5 h-3.5 text-white" />
               <span>Location Saved & Active</span>
             </span>
           )}
@@ -291,7 +291,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           style={{
             backgroundImage: `
               radial-gradient(circle, rgba(255, 255, 255, 0.25) 1.2px, transparent 1.2px),
-              radial-gradient(circle, rgba(60, 107, 77, 0.45) 1.8px, transparent 1.8px)
+              radial-gradient(circle, rgba(255, 255, 255, 0.08) 1.8px, transparent 1.8px)
             `,
             backgroundSize: '20px 20px, 40px 40px',
             backgroundPosition: '0 0, 10px 10px',
@@ -299,7 +299,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
         />
 
         {/* Ambient Radial Center Glow */}
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(60,107,77,0.18)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)]" />
 
         {/* Quadrant Axis Lines */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#2A2D30] to-transparent pointer-events-none" />
@@ -338,11 +338,11 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
         >
           {/* Laser Crosshairs Tracking Active Puck */}
           <div
-            className="absolute inset-y-0 w-[1px] bg-gradient-to-b from-transparent via-[#6EC48E]/70 to-transparent pointer-events-none transition-all duration-75 shadow-[0_0_8px_#3C6B4D]"
+            className="absolute inset-y-0 w-[1px] bg-gradient-to-b from-transparent via-white/60 to-transparent pointer-events-none transition-all duration-75 shadow-[0_0_8px_rgba(255,255,255,0.4)]"
             style={{ left: `${coords.x}%` }}
           />
           <div
-            className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#6EC48E]/70 to-transparent pointer-events-none transition-all duration-75 shadow-[0_0_8px_#3C6B4D]"
+            className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none transition-all duration-75 shadow-[0_0_8px_rgba(255,255,255,0.4)]"
             style={{ top: `${100 - coords.y}%` }}
           />
 
@@ -376,14 +376,14 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
                 <div
                   className={`relative rounded-full flex items-center justify-center transition-all duration-300 ${
                     isCurrent
-                      ? 'w-4 h-4 sm:w-5 sm:h-5 bg-[#3C6B4D] ring-4 ring-white/40 shadow-[0_0_18px_#ffffff,0_0_30px_#3C6B4D]'
+                      ? 'w-4 h-4 sm:w-5 sm:h-5 bg-white ring-4 ring-white/30 shadow-[0_0_18px_#ffffff]'
                       : isNearest || isClose
-                      ? 'w-3.5 h-3.5 sm:w-4 sm:h-4 bg-white ring-2 ring-[#3C6B4D]/80 shadow-[0_0_14px_#ffffff,0_0_24px_rgba(60,107,77,0.7)] scale-110'
-                      : 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white/80 border border-white/60 hover:bg-white hover:scale-125 shadow-[0_0_8px_rgba(255,255,255,0.7),0_0_16px_rgba(60,107,77,0.35)]'
+                      ? 'w-3.5 h-3.5 sm:w-4 sm:h-4 bg-white ring-2 ring-white/50 shadow-[0_0_14px_#ffffff] scale-110'
+                      : 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white/80 border border-white/60 hover:bg-white hover:scale-125 shadow-[0_0_8px_rgba(255,255,255,0.5)]'
                   }`}
                 >
                   {isCurrent ? (
-                    <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
+                    <Check className="w-2.5 h-2.5 text-black stroke-[3]" />
                   ) : (
                     <div className="w-1 h-1 rounded-full bg-white/90" />
                   )}
@@ -393,7 +393,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
                 <span
                   className={`absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-0.5 rounded-md text-[8px] font-mono font-bold whitespace-nowrap pointer-events-none transition-all duration-150 backdrop-blur-md ${
                     isCurrent || isNearest
-                      ? 'opacity-100 bg-[#18191B]/95 border border-[#3C6B4D]/60 text-[#ECEBE9] shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 scale-105'
+                      ? 'opacity-100 bg-[#18191B]/95 border border-white/40 text-[#ECEBE9] shadow-[0_4px_12px_rgba(0,0,0,0.5)] z-20 scale-105'
                       : 'opacity-0 group-hover:opacity-100 bg-[#18191B]/90 text-[#ECEBE9] border border-[#2A2D30] z-20'
                   }`}
                 >
@@ -416,10 +416,10 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             <div className="relative flex items-center justify-center">
               {/* Outer pulsing spatial radar wave rings */}
               <div className="absolute w-12 h-12 rounded-full border border-white/40 animate-ping opacity-60" />
-              <div className="absolute w-8 h-8 rounded-full border-2 border-[#6EC48E] animate-pulse opacity-80" />
+              <div className="absolute w-8 h-8 rounded-full border-2 border-white/60 animate-pulse opacity-80" />
               
               {/* Center Holographic Target Puck */}
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#3C6B4D] to-[#56976d] border-2 border-white text-white flex items-center justify-center shadow-[0_0_24px_#ffffff,0_0_30px_#3C6B4D]">
+              <div className="w-6 h-6 rounded-full bg-white border-2 border-white text-black flex items-center justify-center shadow-[0_0_24px_#ffffff]">
                 <Target className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '8s' }} />
               </div>
             </div>
@@ -433,7 +433,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
       <div className="p-4 rounded-2xl bg-[#18191B] border border-[#2A2D30] space-y-3.5">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <Gauge className="w-4 h-4 text-[#3C6B4D]" />
+            <Gauge className="w-4 h-4 text-white" />
             <h4 className="text-xs font-bold text-[#ECEBE9]">Real-Time Audio Output Level (VU Meter)</h4>
           </div>
 
@@ -447,8 +447,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
                 ⚠️ Low Level (Weak) — Increase Booster Below
               </span>
             ) : (
-              <span className="text-[#6EC48E] font-semibold flex items-center gap-1">
-                <Check className="w-3 h-3 text-[#3C6B4D]" /> Optimal Resonance ({peakLevel}%)
+              <span className="text-white font-semibold flex items-center gap-1">
+                <Check className="w-3 h-3 text-white" /> Optimal Resonance ({peakLevel}%)
               </span>
             )}
           </div>
@@ -458,9 +458,9 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
         <div className="flex items-center gap-1 p-2 rounded-xl bg-[#111213] border border-[#2A2D30]">
           {Array.from({ length: totalBars }).map((_, i) => {
             const isLit = i < activeBars;
-            // First 10 bars: Green, Next 5 bars: Yellow/Amber, Last 3 bars: Red
-            let color = '#3C6B4D';
-            let glow = 'rgba(60, 107, 77, 0.8)';
+            // First 10 bars: White/Silver, Next 5 bars: Yellow/Amber, Last 3 bars: Red
+            let color = '#ECEBE9';
+            let glow = 'rgba(255, 255, 255, 0.7)';
             if (i >= 15) {
               color = '#EF4444';
               glow = 'rgba(239, 68, 68, 0.8)';
@@ -488,7 +488,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-[#ECEBE9] flex items-center gap-1.5">
-                <Volume2 className="w-3.5 h-3.5 text-[#3C6B4D]" />
+                <Volume2 className="w-3.5 h-3.5 text-white" />
                 Master Volume Level
               </span>
               <span className="font-mono text-[11px] text-[#A3A09B]">
@@ -502,7 +502,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
               step="0.01"
               value={settings.volume}
               onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-              className="w-full h-2 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D] border border-[#2A2D30]"
+              className="w-full h-2 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-white border border-[#2A2D30]"
             />
           </div>
 
@@ -530,7 +530,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
                   onClick={() => handleGainBoostChange(btn.val)}
                   className={`flex-1 py-1 px-1.5 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer border ${
                     (settings.gainBoost || 1.25) === btn.val
-                      ? 'bg-[#3C6B4D] text-white border-[#3C6B4D] shadow-sm'
+                      ? 'bg-white text-black border-white shadow-sm'
                       : 'bg-[#111213] text-[#A3A09B] hover:text-[#ECEBE9] border-[#2A2D30]'
                   }`}
                 >
@@ -552,7 +552,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             <div>
               <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Tone / Pitch (X)</span>
               <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1">
-                <span className="text-[#3C6B4D] font-mono">{coords.x}%</span>
+                <span className="text-white font-mono">{coords.x}%</span>
                 <span>{toneLabel}</span>
               </span>
             </div>
@@ -560,7 +560,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             <div>
               <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Density / Weight (Y)</span>
               <span className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1">
-                <span className="text-[#3C6B4D] font-mono">{coords.y}%</span>
+                <span className="text-white font-mono">{coords.y}%</span>
                 <span>{densityLabel}</span>
               </span>
             </div>
@@ -584,8 +584,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[#2A2D30]">
             <div className="text-left sm:text-right">
               <span className="text-[9px] font-mono font-bold text-[#72706C] uppercase block">Closest Switch</span>
-              <span className="text-xs font-black text-[#3C6B4D] flex items-center sm:justify-end gap-1">
-                <Sparkles className="w-3 h-3 text-[#3C6B4D]" />
+              <span className="text-xs font-black text-white flex items-center sm:justify-end gap-1">
+                <Sparkles className="w-3 h-3 text-white" />
                 {nearestSwitch.name}
               </span>
             </div>
@@ -593,7 +593,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => playCoordinateSound(coords.x, coords.y, true)}
-                className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#ECEBE9] hover:text-[#3C6B4D] transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/50 text-[#ECEBE9] hover:text-white transition-colors cursor-pointer"
                 title="Audition synthesized acoustic tone at current (X, Y)"
               >
                 <Volume2 className="w-4 h-4" />
@@ -601,7 +601,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
 
               <button
                 onClick={() => applySwitch(nearestSwitch)}
-                className="px-3.5 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#477e5b] text-white text-xs font-extrabold transition-all cursor-pointer shadow-md shadow-[#3C6B4D]/20 flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-extrabold transition-all cursor-pointer shadow-md shadow-white/10 flex items-center gap-1.5"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>Apply Switch</span>
@@ -621,8 +621,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
             className="text-[#72706C] hover:text-[#ECEBE9] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 cursor-pointer transition-colors"
             title="Click to toggle 3D Spatial Audio stereo panning"
           >
-            <span className={`w-2 h-2 rounded-full ${settings.spatialAudioEnabled !== false ? 'bg-[#3C6B4D] animate-pulse shadow-[0_0_8px_#3C6B4D]' : 'bg-[#72706C]'}`} />
-            3D Spatial: <span className={settings.spatialAudioEnabled !== false ? 'text-[#6EC48E]' : 'text-[#72706C]'}>{settings.spatialAudioEnabled !== false ? 'ON' : 'OFF'}</span>
+            <span className={`w-2 h-2 rounded-full ${settings.spatialAudioEnabled !== false ? 'bg-white animate-pulse shadow-[0_0_8px_white]' : 'bg-[#72706C]'}`} />
+            3D Spatial: <span className={settings.spatialAudioEnabled !== false ? 'text-white' : 'text-[#72706C]'}>{settings.spatialAudioEnabled !== false ? 'ON' : 'OFF'}</span>
           </button>
 
           <div className="flex items-center gap-2 flex-1 max-w-xs">
@@ -632,14 +632,14 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
               <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-[#2A2D30]" />
               {/* Spatial Balance Dot */}
               <div
-                className="absolute top-0 bottom-0 w-2.5 rounded-full bg-gradient-to-r from-[#6EC48E] to-white shadow-[0_0_8px_#ffffff] -translate-x-1/2 transition-all duration-75"
+                className="absolute top-0 bottom-0 w-2.5 rounded-full bg-gradient-to-r from-white/70 to-white shadow-[0_0_8px_#ffffff] -translate-x-1/2 transition-all duration-75"
                 style={{ left: `${coords.x}%` }}
               />
             </div>
             <span className="text-[#72706C] font-bold">R</span>
           </div>
 
-          <span className="font-bold text-[#6EC48E] shrink-0 text-right min-w-[95px]">
+          <span className="font-bold text-white shrink-0 text-right min-w-[95px]">
             {spatialPanLabel}
           </span>
         </div>
@@ -647,9 +647,9 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
 
       {/* Hovered Switch Detail Card (when user hovers any plotted node) */}
       {hoveredSwitch && (
-        <div className="p-3 rounded-xl bg-[#141517] border border-[#3C6B4D]/40 text-xs flex items-center justify-between animate-in fade-in duration-150">
+        <div className="p-3 rounded-xl bg-[#141517] border border-white/20 text-xs flex items-center justify-between animate-in fade-in duration-150">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#3C6B4D]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-white" />
             <div>
               <span className="font-extrabold text-[#ECEBE9]">{hoveredSwitch.name}</span>
               <span className="text-[10px] text-[#A3A09B] ml-2 font-mono">
@@ -659,7 +659,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           </div>
           <button
             onClick={() => applySwitch(hoveredSwitch)}
-            className="text-[10px] font-bold text-[#3C6B4D] hover:underline cursor-pointer"
+            className="text-[10px] font-bold text-white hover:underline cursor-pointer"
           >
             Select
           </button>

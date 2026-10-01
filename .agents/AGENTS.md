@@ -6,7 +6,7 @@ Welcome coding agent! This file defines project-wide standards, architectural co
 
 ## 1. Core Principles & Privacy Guarantees
 - **100% Client-Side / Local-First**: Tools run inside the user's browser sandbox (using WebAssembly, Canvas API, Web Audio, WebCrypto, or local Ollama API). Never transmit user files, images, passwords, or document data to external cloud servers.
-- **Vibrant Dark Mode Aesthetics**: Follow DomoDomo's signature design system (`#111213` main background, `#18191B` card containers, `#2A2D30` subtle borders, `#3C6B4D` vibrant primary accents, rounded `rounded-2xl`, glassmorphism, responsive canvas viewports).
+- **Vibrant Dark Mode Aesthetics**: Follow DomoDomo's signature Monochrome Panda Tech design system (`#0D0D0D` main background, `#18191B` card containers, `#2A2D30` subtle borders, high-contrast Panda Monochrome `#FFFFFF` crisp primary accents, frosted silver and warm gold/amber `#D4AF37` for awards, rounded `rounded-2xl`, glassmorphism, responsive canvas viewports. Strictly avoid using green across all components and tools).
 - **Interactive Viewport Standards**: All image and canvas editing tools MUST feature **Zoom In**, **Zoom Out**, **Reset Zoom**, and **Zoom % Display** controls.
 
 ---

@@ -59,7 +59,7 @@ export const BackgroundRemoverTool = () => {
   
   // Background replacement settings
   const [bgMode, setBgMode] = useState<'transparent' | 'color' | 'image'>('transparent');
-  const [bgColor, setBgColor] = useState('#4E8E5E');
+  const [bgColor, setBgColor] = useState('#18191B');
   const [bgImageUrl, setBgImageUrl] = useState('');
 
   // Canvas references
@@ -642,19 +642,19 @@ export const BackgroundRemoverTool = () => {
           <div className="grid grid-cols-3 gap-1">
             <button 
               onClick={() => { setActiveTool('key'); setTracePoints([]); }} 
-              className={`py-1.5 rounded text-[11px] font-bold flex items-center justify-center gap-1 transition-colors ${activeTool === 'key' ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-400 border border-slate-850 hover:bg-slate-850'}`}
+              className={`py-1.5 rounded text-[11px] font-bold flex items-center justify-center gap-1 transition-colors ${activeTool === 'key' ? 'bg-white text-black' : 'bg-slate-900 text-slate-400 border border-slate-850 hover:bg-slate-850'}`}
             >
               <Pipette size={11} /> Chroma Key
             </button>
             <button 
               onClick={() => { setActiveTool('eraser'); setTracePoints([]); }} 
-              className={`py-1.5 rounded text-[11px] font-bold flex items-center justify-center gap-1 transition-colors ${activeTool === 'eraser' ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-400 border border-slate-850 hover:bg-slate-850'}`}
+              className={`py-1.5 rounded text-[11px] font-bold flex items-center justify-center gap-1 transition-colors ${activeTool === 'eraser' ? 'bg-white text-black' : 'bg-slate-900 text-slate-400 border border-slate-850 hover:bg-slate-850'}`}
             >
               <Paintbrush size={11} /> Eraser
             </button>
             <button 
               onClick={() => { setActiveTool('trace'); }} 
-              className={`py-1.5 rounded text-[11px] font-bold flex items-center justify-center gap-1 transition-colors ${activeTool === 'trace' ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-400 border border-slate-850 hover:bg-slate-850'}`}
+              className={`py-1.5 rounded text-[11px] font-bold flex items-center justify-center gap-1 transition-colors ${activeTool === 'trace' ? 'bg-white text-black' : 'bg-slate-900 text-slate-400 border border-slate-850 hover:bg-slate-850'}`}
             >
               <Scissors size={11} /> Trace Lasso
             </button>
@@ -688,7 +688,7 @@ export const BackgroundRemoverTool = () => {
                   max="150" 
                   value={tolerance} 
                   onChange={(e) => setTolerance(parseInt(e.target.value))} 
-                  className="w-full accent-[#4E8E5E]" 
+                  className="w-full accent-white" 
                 />
               </div>
             </div>
@@ -697,7 +697,7 @@ export const BackgroundRemoverTool = () => {
           {activeTool === 'eraser' && (
             <div className="flex flex-col gap-1">
               <div className="flex justify-between text-xs"><span className="text-slate-400">Brush Size</span><span className="text-slate-300">{brushSize}px</span></div>
-              <input type="range" min="3" max="80" value={brushSize} onChange={(e) => setBrushSize(parseInt(e.target.value))} className="w-full accent-[#4E8E5E]" />
+              <input type="range" min="3" max="80" value={brushSize} onChange={(e) => setBrushSize(parseInt(e.target.value))} className="w-full accent-white" />
             </div>
           )}
 
@@ -734,7 +734,7 @@ export const BackgroundRemoverTool = () => {
               <button
                 key={m}
                 onClick={() => setBgMode(m)}
-                className={`py-1 rounded text-[10px] font-bold ${bgMode === m ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-450 border border-slate-850'}`}
+                className={`py-1 rounded text-[10px] font-bold ${bgMode === m ? 'bg-white text-black' : 'bg-slate-900 text-slate-450 border border-slate-850'}`}
               >
                 {m.toUpperCase()}
               </button>

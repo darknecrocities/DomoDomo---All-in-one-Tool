@@ -26,15 +26,15 @@ export const parseMarkdown = (md: string): string => {
     const languageLabel = lang ? lang.toUpperCase() : 'CODE';
     return `<div class="my-3 rounded-xl bg-[#111213] border border-[#2A2D30] overflow-hidden text-xs font-mono shadow-md">
       <div class="flex items-center justify-between px-3.5 py-1.5 bg-[#18191B] border-b border-[#2A2D30] text-[11px] text-[#A3A09B]">
-        <span class="font-bold text-[#3C6B4D] tracking-wider">${languageLabel}</span>
+        <span class="font-bold text-white tracking-wider">${languageLabel}</span>
         <span class="text-[10px] text-[#72706C]">Snippet</span>
       </div>
-      <pre class="p-3.5 overflow-x-auto text-[#4E8E5E] text-[12px] leading-relaxed whitespace-pre font-mono"><code>${code}</code></pre>
+      <pre class="p-3.5 overflow-x-auto text-[#ECEBE9] text-[12px] leading-relaxed whitespace-pre font-mono"><code>${code}</code></pre>
     </div>`;
   });
 
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-[#18191B] border border-[#2A2D30] px-1.5 py-0.5 rounded text-[#4E8E5E] font-mono text-[12px] font-semibold">$1</code>');
+  html = html.replace(/`([^`]+)`/g, '<code class="bg-[#18191B] border border-[#2A2D30] px-1.5 py-0.5 rounded text-white font-mono text-[12px] font-semibold">$1</code>');
 
   // Headers
   html = html.replace(/^### (.*$)/gim, '<h4 class="text-sm font-bold text-[#ECEBE9] mt-4 mb-2">$1</h4>');
@@ -50,11 +50,11 @@ export const parseMarkdown = (md: string): string => {
   html = html.replace(/~~([^~]+)~~/g, '<del class="line-through text-[#72706C]">$1</del>');
 
   // Blockquotes
-  html = html.replace(/^\s*>\s+(.*$)/gim, '<blockquote class="border-l-4 border-[#3C6B4D] bg-[#18191B]/80 pl-3 py-1.5 my-3 text-[#A3A09B] italic rounded-r-lg">$1</blockquote>');
+  html = html.replace(/^\s*>\s+(.*$)/gim, '<blockquote class="border-l-4 border-white bg-[#18191B]/80 pl-3 py-1.5 my-3 text-[#A3A09B] italic rounded-r-lg">$1</blockquote>');
 
   // Task lists / checkboxes
-  html = html.replace(/^\s*-\s+\[\s*\]\s+(.*$)/gim, '<li class="ml-4 list-none text-[#ECEBE9] flex items-center gap-2 my-1"><input type="checkbox" disabled class="rounded border-[#2A2D30] bg-[#111213] accent-[#3C6B4D]" /> <span>$1</span></li>');
-  html = html.replace(/^\s*-\s+\[x\]\s+(.*$)/gim, '<li class="ml-4 list-none text-[#72706C] line-through flex items-center gap-2 my-1"><input type="checkbox" checked disabled class="rounded border-[#2A2D30] bg-[#111213] accent-[#3C6B4D]" /> <span>$1</span></li>');
+  html = html.replace(/^\s*-\s+\[\s*\]\s+(.*$)/gim, '<li class="ml-4 list-none text-[#ECEBE9] flex items-center gap-2 my-1"><input type="checkbox" disabled class="rounded border-[#2A2D30] bg-[#111213] accent-white" /> <span>$1</span></li>');
+  html = html.replace(/^\s*-\s+\[x\]\s+(.*$)/gim, '<li class="ml-4 list-none text-[#72706C] line-through flex items-center gap-2 my-1"><input type="checkbox" checked disabled class="rounded border-[#2A2D30] bg-[#111213] accent-white" /> <span>$1</span></li>');
 
   // Unordered Lists
   html = html.replace(/^\s*-\s+(.*$)/gim, '<li class="ml-4 list-disc text-[#ECEBE9] my-1">$1</li>');
@@ -84,7 +84,7 @@ export const parseMarkdown = (md: string): string => {
       trimmedUrl.startsWith('#') ||
       (!trimmedUrl.includes(':') && !trimmedUrl.startsWith('//'));
     const safeUrl = isSafe ? url : '#';
-    return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-[#3C6B4D] hover:text-[#4E8E5E] underline font-semibold transition-colors">${text}</a>`;
+    return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-semibold transition-colors">${text}</a>`;
   });
 
   // Paragraphs and Tables Parser

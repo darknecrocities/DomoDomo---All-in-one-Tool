@@ -16,7 +16,7 @@ export const FloatingDomo: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState('llama3.2:1b');
   const [activeTabName, setActiveTabName] = useState('Dashboard');
-  const [assistantPersona, setAssistantPersona] = useState('You are Domo, a helpful offline AI assistant inside the DomoDomo application. Respond briefly and friendly.');
+  const [assistantPersona, setAssistantPersona] = useState('You are Domo, a helpful offline smart assistant inside the DomoDomo application. Respond briefly and friendly.');
   const [glowEffect, setGlowEffect] = useState('regular');
 
   // Draggable position coordinates
@@ -297,11 +297,11 @@ export const FloatingDomo: React.FC = () => {
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={handleTriggerClick}
-          className={`flex items-center justify-center w-14 h-14 rounded-full bg-[#3C6B4D] hover:bg-[#467c59] text-[#ECEBE9] hover:scale-105 transition-transform duration-300 relative group border cursor-grab active:cursor-grabbing overflow-hidden ${
-            glowEffect === 'none' ? 'shadow-xl border-[#4d8661]' :
-            glowEffect === 'mini' ? 'shadow-[0_0_12px_rgba(60,107,77,0.3)] animate-pulse border-[#4d8661]' :
-            glowEffect === 'high' ? 'shadow-[0_0_30px_rgba(60,107,77,0.85)] animate-pulse border-[#7cdba3]' :
-            'shadow-[0_0_20px_rgba(60,107,77,0.55)] animate-pulse border-[#4d8661]'
+          className={`flex items-center justify-center w-14 h-14 rounded-full bg-[#18191B] hover:bg-[#222428] text-white hover:scale-105 transition-all duration-300 relative group border cursor-grab active:cursor-grabbing overflow-hidden ${
+            glowEffect === 'none' ? 'shadow-xl border-white/20' :
+            glowEffect === 'mini' ? 'shadow-[0_0_12px_rgba(255,255,255,0.2)] animate-pulse border-white/30' :
+            glowEffect === 'high' ? 'shadow-[0_0_25px_rgba(255,255,255,0.4)] animate-pulse border-white/50' :
+            'shadow-[0_0_20px_rgba(255,255,255,0.25)] animate-pulse border-white/30'
           }`}
           title="Drag me / Click to chat with Domo"
         >
@@ -310,7 +310,7 @@ export const FloatingDomo: React.FC = () => {
             alt="Domo Logo"
             className="w-full h-full object-cover pointer-events-none"
           />
-          <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-[#111213]"></span>
+          <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-sky-400 rounded-full border-2 border-[#111213]"></span>
         </button>
       )}
 
@@ -356,7 +356,7 @@ export const FloatingDomo: React.FC = () => {
               <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] text-xs px-3.5 py-2.5 rounded-2xl leading-relaxed whitespace-pre-wrap ${
                   msg.sender === 'user'
-                    ? 'bg-[#3C6B4D] rounded-tr-none'
+                    ? 'bg-white text-black font-medium rounded-tr-none shadow-md'
                     : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9]/95 rounded-tl-none'
                 }`}>
                   {msg.sender === 'user' ? msg.text : <div dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.text) }} className="markdown-chat-content" />}
@@ -366,9 +366,9 @@ export const FloatingDomo: React.FC = () => {
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-[#18191B] border border-[#2A2D30] text-xs px-4 py-3 rounded-2xl rounded-tl-none text-[#A3A09B] flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-[#3C6B4D] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-1.5 h-1.5 bg-[#3C6B4D] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-1.5 h-1.5 bg-[#3C6B4D] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div className="w-1.5 h-1.5 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-1.5 h-1.5 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-1.5 h-1.5 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             )}
@@ -379,24 +379,24 @@ export const FloatingDomo: React.FC = () => {
           <div className="bg-[#111213]/60 px-4 py-2 border-t border-[#2A2D30]/60 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-none cursor-default">
             <button
               onClick={() => setInputVal(`Summarize what the ${activeTabName} screen is designed for.`)}
-              className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-[#3C6B4D]/25 border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
+              className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-white/10 border border-[#2A2D30] hover:border-white/30 text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
             >
               <FileText size={10} />
               <span>Explain screen</span>
             </button>
             <button
               onClick={() => setInputVal("Explain standard Ollama settings configuration in DomoDomo.")}
-              className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-[#3C6B4D]/25 border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
+              className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-white/10 border border-[#2A2D30] hover:border-white/30 text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
             >
               <img src={domodomoLogo} alt="Domo" className="w-2.5 h-2.5 rounded-sm" />
               <span>Configure Ollama</span>
             </button>
             <button
-              onClick={() => setInputVal("How does offline vector embeddings semantic search function?")}
-              className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-[#3C6B4D]/25 border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
+              onClick={() => setInputVal("How does offline document search and query indexing work?")}
+              className="text-[9px] font-bold px-2.5 py-1 bg-[#18191B] hover:bg-white/10 border border-[#2A2D30] hover:border-white/30 text-[#A3A09B] hover:text-[#ECEBE9] rounded-lg transition-all flex items-center gap-1"
             >
               <HelpCircle size={10} />
-              <span>Ask about RAG</span>
+              <span>Ask about search</span>
             </button>
           </div>
 
@@ -408,12 +408,12 @@ export const FloatingDomo: React.FC = () => {
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              className="flex-grow bg-[#111213] text-xs px-3.5 py-2.5 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+              className="flex-grow bg-[#111213] text-xs px-3.5 py-2.5 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50"
             />
             <button
               onClick={handleSend}
               disabled={isLoading || !inputVal.trim()}
-              className="p-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#467c59] disabled:bg-[#2A2D30] text-[#ECEBE9] disabled:text-[#A3A09B] transition-colors"
+              className="p-2.5 rounded-xl bg-white hover:bg-neutral-200 disabled:bg-[#2A2D30] text-black disabled:text-[#A3A09B] transition-colors"
             >
               <Send size={13} />
             </button>

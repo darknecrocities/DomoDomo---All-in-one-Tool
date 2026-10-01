@@ -115,13 +115,13 @@ export const DomoSettings: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 bg-[#111213] text-[#ECEBE9] font-sans">
       <div className="flex items-center gap-3 mb-8 border-b border-[#2A2D30] pb-6">
-        <div className="p-3 rounded-2xl bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20">
+        <div className="p-3 rounded-2xl bg-white/10 text-white border border-white/20">
           <Settings size={28} className="animate-spin" style={{ animationDuration: '6s' }} />
         </div>
         <div>
           <h1 className="text-2xl font-black tracking-tight">DomoDomo System Settings</h1>
           <p className="text-xs text-[#A3A09B]">
-            Tune local server connections, configure cognitive memory pipelines, and set up the cross-site assistant extension.
+            Tune local server connections, configure smart search pipelines, and set up the companion extension.
           </p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export const DomoSettings: React.FC = () => {
           <div>
             <h4 className="font-bold text-red-300">Settings Disabled (Running Online)</h4>
             <p className="text-[10px] text-[#A3A09B] mt-0.5">
-              DomoDomo settings, local LLMs configurations, and cognitive RAG database logs are disabled in the hosted public web version. Clone the repository and run locally to configure and use offline models.
+              DomoDomo settings, local model configurations, and offline search logs are disabled in the hosted public web version. Clone the repository and run locally to configure and use offline models.
             </p>
           </div>
         </div>
@@ -144,27 +144,27 @@ export const DomoSettings: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-4 justify-between w-full">
               <div className="flex items-center gap-2">
-                <Cpu size={18} className="text-[#3C6B4D]" />
-                <h2 className="text-sm font-bold tracking-wide">Domo Assistant Offline Model Settings</h2>
+                <Cpu size={18} className="text-white" />
+                <h2 className="text-sm font-bold tracking-wide">Offline Smart Assistant Settings</h2>
               </div>
               <span className="text-[8px] font-black tracking-widest text-[#E29E2D] bg-[#E29E2D]/10 px-2 py-0.5 rounded border border-[#E29E2D]/25 uppercase">Offline Exclusive</span>
             </div>
             
             <div className="flex flex-col gap-4">
               <div>
-                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Ollama API Server Address</label>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Ollama Server Address</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={ollamaEndpoint}
                     onChange={(e) => setOllamaEndpoint(e.target.value)}
                     disabled={isOnlineProd}
-                    className="flex-grow bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-grow bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <button
                     onClick={checkOllamaConnection}
                     disabled={isOnlineProd}
-                    className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl hover:text-[#3C6B4D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <RefreshCw size={14} />
                   </button>
@@ -172,13 +172,13 @@ export const DomoSettings: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Select Downloaded Assistant Local LLM Model</label>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Select Local Assistant Model</label>
                 {ollamaStatus === 'online' ? (
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
                     disabled={isOnlineProd}
-                    className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {ollamaModels.map(m => (
                       <option key={m} value={m}>{m}</option>
@@ -187,11 +187,11 @@ export const DomoSettings: React.FC = () => {
                 ) : (
                   <div className="bg-[#111213] border border-red-500/20 text-red-400 p-3.5 rounded-2xl flex items-center gap-2 text-xs font-semibold">
                     <ShieldAlert size={14} />
-                    Ollama is offline. Start the Ollama app on port 11434 to retrieve models.
+                    Ollama is offline. Start Ollama on port 11434 to retrieve models.
                   </div>
                 )}
                 <span className="text-[9px] text-[#A3A09B] mt-1.5 block leading-relaxed">
-                  Select any downloaded model on your computer (e.g. Llama 3.2, Qwen 2.5, Gemma 2) to power the floating assistant widget.
+                  Select any downloaded model on your computer (e.g. Llama 3.2, Qwen 2.5, Gemma 2) to power the companion widget.
                 </span>
               </div>
             </div>
@@ -200,7 +200,7 @@ export const DomoSettings: React.FC = () => {
           <div className="mt-6 pt-4 border-t border-[#2A2D30]/60 flex items-center justify-between text-[11px]">
             <span className="text-[#A3A09B] font-bold">Ollama Status:</span>
             <span className={`px-2.5 py-1 rounded-lg font-black uppercase text-[9px] ${
-              ollamaStatus === 'online' ? 'bg-[#3C6B4D]/10 text-[#3C6B4D] border border-[#3C6B4D]/20' :
+              ollamaStatus === 'online' ? 'bg-white/10 text-white border border-white/20' :
               ollamaStatus === 'offline' ? 'bg-red-400/10 text-red-400 border border-red-400/20' : 'bg-[#E29E2D]/10 text-[#E29E2D] border border-[#E29E2D]/20'
             }`}>
               {ollamaStatus}
@@ -208,13 +208,13 @@ export const DomoSettings: React.FC = () => {
           </div>
         </div>
 
-        {/* Local Memory & RAG Card */}
+        {/* Local Memory & Search Card */}
         <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-4 justify-between w-full">
               <div className="flex items-center gap-2">
-                <Brain size={18} className="text-[#3C6B4D]" />
-                <h2 className="text-sm font-bold tracking-wide">RAG & Local Cognitive Memory</h2>
+                <Brain size={18} className="text-white" />
+                <h2 className="text-sm font-bold tracking-wide">Offline Search & Smart Memory</h2>
               </div>
               <span className="text-[8px] font-black tracking-widest text-[#E29E2D] bg-[#E29E2D]/10 px-2 py-0.5 rounded border border-[#E29E2D]/25 uppercase">Offline Exclusive</span>
             </div>
@@ -222,7 +222,7 @@ export const DomoSettings: React.FC = () => {
             <div className="flex flex-col gap-4">
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-[10px] font-bold text-[#A3A09B]">Cosine Similarity Threshold</label>
+                  <label className="text-[10px] font-bold text-[#A3A09B]">Search Relevance Threshold</label>
                   <span className="text-xs font-bold text-[#ECEBE9]">{similarityThreshold}</span>
                 </div>
                 <input
@@ -233,17 +233,17 @@ export const DomoSettings: React.FC = () => {
                   value={similarityThreshold}
                   onChange={(e) => setSimilarityThreshold(parseFloat(e.target.value))}
                   disabled={isOnlineProd}
-                  className="w-full h-1 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-1 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-white disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Max RAG Context Retrieval Chunks</label>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Max Search Context Chunks</label>
                 <select
                   value={maxChunks}
                   onChange={(e) => setMaxChunks(parseInt(e.target.value))}
                   disabled={isOnlineProd}
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value={2}>2 Chunks</option>
                   <option value={4}>4 Chunks (Recommended)</option>
@@ -253,50 +253,50 @@ export const DomoSettings: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between mt-2">
-                <span className="text-[10px] font-bold text-[#A3A09B]">Track & Log User Habit Timeline</span>
+                <span className="text-[10px] font-bold text-[#A3A09B]">Track & Log Reading Timeline</span>
                 <input
                   type="checkbox"
                   checked={enableHabitsLog}
                   onChange={(e) => setEnableHabitsLog(e.target.checked)}
                   disabled={isOnlineProd}
-                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-4 h-4 accent-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Global Floating AI Assistant Settings */}
+        {/* Global Floating Assistant Settings */}
         <div className="bg-[#18191B] border border-[#2A2D30] rounded-3xl p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-4 justify-between w-full">
               <div className="flex items-center gap-2">
-                <Monitor size={18} className="text-[#3C6B4D]" />
-                <h2 className="text-sm font-bold tracking-wide">Floating AI Assistant Configuration</h2>
+                <Monitor size={18} className="text-white" />
+                <h2 className="text-sm font-bold tracking-wide">Companion Widget Configuration</h2>
               </div>
               <span className="text-[8px] font-black tracking-widest text-[#E29E2D] bg-[#E29E2D]/10 px-2 py-0.5 rounded border border-[#E29E2D]/25 uppercase">Offline Exclusive</span>
             </div>
 
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-[#A3A09B]">Enable Global Floating AI Assistant</span>
+                <span className="text-[10px] font-bold text-[#A3A09B]">Enable Global Companion Widget</span>
                 <input
                   type="checkbox"
                   checked={showFloatingDomo}
                   onChange={(e) => setShowFloatingDomo(e.target.checked)}
                   disabled={isOnlineProd}
-                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-4 h-4 accent-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-[#A3A09B]">Auto-Ambient Voice Chat Mode</span>
+                <span className="text-[10px] font-bold text-[#A3A09B]">Auto-Ambient Voice Mode</span>
                 <input
                   type="checkbox"
                   checked={ambientVoiceChat}
                   onChange={(e) => setAmbientVoiceChat(e.target.checked)}
                   disabled={isOnlineProd}
-                  className="w-4 h-4 accent-[#3C6B4D] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-4 h-4 accent-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -306,7 +306,7 @@ export const DomoSettings: React.FC = () => {
                   value={glowEffect}
                   onChange={(e) => setGlowEffect(e.target.value)}
                   disabled={isOnlineProd}
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="none">No Glow (Static)</option>
                   <option value="mini">Subtle Glow</option>
@@ -316,14 +316,14 @@ export const DomoSettings: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Custom Assistant Persona / System Instructions</label>
+                <label className="text-[10px] font-bold text-[#A3A09B] block mb-1">Custom Assistant Persona / Guidelines</label>
                 <textarea
                   value={assistantPersona}
                   onChange={(e) => setAssistantPersona(e.target.value)}
                   disabled={isOnlineProd}
                   rows={3}
-                  placeholder="e.g. You are Domo, a helpful offline AI assistant. Respond briefly with a friendly, coding-buddy tone."
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-3 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="e.g. You are Domo, a helpful offline smart assistant. Respond briefly with a friendly, helpful tone."
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-3 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -335,10 +335,10 @@ export const DomoSettings: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-4 justify-between w-full">
               <div className="flex items-center gap-2">
-                <Volume2 size={18} className="text-[#3C6B4D]" />
+                <Volume2 size={18} className="text-white" />
                 <h2 className="text-sm font-bold tracking-wide">Acoustic SFX & Mechanical Switches</h2>
               </div>
-              <span className="text-[8px] font-black tracking-widest text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded border border-[#3C6B4D]/25 uppercase">
+              <span className="text-[8px] font-black tracking-widest text-white bg-white/10 px-2 py-0.5 rounded border border-white/20 uppercase">
                 40 Profiles
               </span>
             </div>
@@ -357,7 +357,7 @@ export const DomoSettings: React.FC = () => {
                       previewSoundProfile(newProfile);
                     }
                   }}
-                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] text-xs font-semibold px-4 py-2 border border-[#2A2D30] rounded-xl text-[#ECEBE9] focus:outline-none focus:border-white/50"
                 >
                   <optgroup label="Linear (8)">
                     {SWITCH_PROFILES.filter(s => s.category === 'Linear').map(s => (
@@ -398,7 +398,7 @@ export const DomoSettings: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-[10px] font-bold text-[#A3A09B]">Switch Master Volume</label>
-                  <span className="text-xs font-mono font-bold text-[#3C6B4D]">
+                  <span className="text-xs font-mono font-bold text-white">
                     {Math.round(sfxSettings.volume * 100)}%
                   </span>
                 </div>
@@ -414,7 +414,7 @@ export const DomoSettings: React.FC = () => {
                     setSfxSettings(updated);
                     saveExperienceSettings(updated);
                   }}
-                  className="w-full h-1.5 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-[#3C6B4D]"
+                  className="w-full h-1.5 bg-[#111213] rounded-lg appearance-none cursor-pointer accent-white"
                 />
               </div>
 
@@ -429,7 +429,7 @@ export const DomoSettings: React.FC = () => {
                       setSfxSettings(updated);
                       saveExperienceSettings(updated);
                     }}
-                    className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                    className="w-4 h-4 accent-white cursor-pointer"
                   />
                 </label>
 
@@ -443,7 +443,7 @@ export const DomoSettings: React.FC = () => {
                       setSfxSettings(updated);
                       saveExperienceSettings(updated);
                     }}
-                    className="w-4 h-4 accent-[#3C6B4D] cursor-pointer"
+                    className="w-4 h-4 accent-white cursor-pointer"
                   />
                 </label>
               </div>
@@ -454,7 +454,7 @@ export const DomoSettings: React.FC = () => {
             <span className="text-[10px] text-[#A3A09B]">Typing HUD & Ambient</span>
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('open_sfx_settings'))}
-              className="px-3 py-1.5 rounded-xl bg-[#3C6B4D]/15 hover:bg-[#3C6B4D]/25 border border-[#3C6B4D]/40 text-[#3C6B4D] text-[11px] font-bold transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white text-[11px] font-bold transition-all flex items-center gap-1.5"
             >
               <Sliders size={12} />
               <span>Open SFX Studio</span>
@@ -467,8 +467,8 @@ export const DomoSettings: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-3 justify-between w-full">
               <div className="flex items-center gap-2">
-                <Download size={18} className="text-[#3C6B4D]" />
-                <h2 className="text-sm font-bold tracking-wide">Cross-Site Floating AI Extension</h2>
+                <Download size={18} className="text-white" />
+                <h2 className="text-sm font-bold tracking-wide">Cross-Site Companion Extension</h2>
               </div>
               <span className="text-[8px] font-black tracking-widest text-[#E29E2D] bg-[#E29E2D]/10 px-2 py-0.5 rounded border border-[#E29E2D]/25 uppercase">Offline Exclusive</span>
             </div>
@@ -479,14 +479,14 @@ export const DomoSettings: React.FC = () => {
 
             <div className="bg-[#111213] border border-[#2A2D30]/60 p-3.5 rounded-2xl text-[10px] leading-relaxed text-[#ECEBE9]/90 font-semibold mb-4">
               <div className="font-bold text-[#E29E2D] mb-1">To Load the Extension:</div>
-              1. Open Chrome and navigate to <code className="text-[#3C6B4D]">chrome://extensions/</code><br />
+              1. Open Chrome and navigate to <code className="text-white bg-white/10 px-1 py-0.5 rounded">chrome://extensions/</code><br />
               2. Toggle <strong className="text-[#E29E2D]">Developer Mode</strong> in the top right.<br />
-              3. Click <strong className="text-[#ECEBE9]">Load Unpacked</strong> and select the <code className="text-[#3C6B4D]">chrome-extension</code> folder in this project root directory.
+              3. Click <strong className="text-[#ECEBE9]">Load Unpacked</strong> and select the <code className="text-white bg-white/10 px-1 py-0.5 rounded">chrome-extension</code> folder in this project root directory.
             </div>
           </div>
           
           <div className="flex items-center gap-2 text-[10px] text-[#A3A09B] bg-[#111213] border border-[#2A2D30]/30 px-3.5 py-2.5 rounded-2xl">
-            <CheckCircle size={14} className="text-[#3C6B4D] flex-shrink-0" />
+            <CheckCircle size={14} className="text-white flex-shrink-0" />
             <span>Extension files are generated in the repository root. Ready to load unpack!</span>
           </div>
         </div>
@@ -505,7 +505,7 @@ export const DomoSettings: React.FC = () => {
         <button
           onClick={saveSettings}
           disabled={isOnlineProd}
-          className="w-full sm:w-auto py-3 px-8 bg-[#3C6B4D] hover:bg-[#467c59] text-[#ECEBE9] text-xs font-bold rounded-2xl transition-all shadow-md shadow-[#3C6B4D]/10 text-center disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto py-3 px-8 bg-white hover:bg-neutral-200 text-black text-xs font-bold rounded-2xl transition-all shadow-md shadow-white/10 text-center disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Save Configurations
         </button>

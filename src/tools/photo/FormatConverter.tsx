@@ -64,7 +64,7 @@ export const FormatConverterTool = () => {
       <div className="lg:col-span-8 glass-card p-6 flex flex-col justify-center min-h-[350px]">
         {files.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-10">
-            <div className="p-4 bg-slate-900/60 rounded-full border border-slate-800 text-[#4E8E5E]">
+            <div className="p-4 bg-slate-900/60 rounded-full border border-slate-800 text-white">
               <Upload size={32} />
             </div>
             <label className="btn-primary cursor-pointer mt-2">

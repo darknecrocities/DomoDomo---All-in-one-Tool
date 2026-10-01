@@ -1507,7 +1507,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="flex items-center gap-2">
                 <Logo size={24} showText={false} />
                 <span className="text-sm font-extrabold text-[#ECEBE9] tracking-tight">AI Hub</span>
-                <span className="text-[9px] font-mono font-black bg-[#3C6B4D] text-white px-1.5 py-0.5 rounded-full">BETA</span>
+                <span className="text-[9px] font-mono font-black bg-white text-white px-1.5 py-0.5 rounded-full">BETA</span>
               </div>
             ) : (
               <div className="mx-auto">
@@ -1529,7 +1529,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <span className={`w-2 h-2 rounded-full ${
-                    ollamaStatus === 'connected' ? 'bg-emerald-500' :
+                    ollamaStatus === 'connected' ? 'bg-white' :
                     ollamaStatus === 'checking' ? 'bg-amber-400 animate-ping' : 'bg-red-500'
                   }`} />
                   <span className="text-[11px] text-[#A3A09B] font-medium">
@@ -1546,7 +1546,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="flex items-center justify-between pt-0.5">
                 <div className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${
-                    fastApiStatus === 'connected' ? 'bg-[#3C6B4D]' : 'bg-[#72706C]'
+                    fastApiStatus === 'connected' ? 'bg-white' : 'bg-[#72706C]'
                   }`} />
                   <span className="text-[10px] text-[#72706C]">
                     {fastApiStatus === 'connected' ? 'Python ML Engine Ready' : 'Python ML Standby'}
@@ -1568,7 +1568,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               onClick={handleNewChat}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-semibold transition-all ${
                 activeTab === 'chat'
-                  ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40'
+                  ? 'bg-white/10 text-white border border-white/20'
                   : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
               }`}
               title="Start New Chat Session"
@@ -1610,15 +1610,15 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               href="https://codepyne-io.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all group"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-white/30 transition-all group"
               title="Codepyne.io — The AI & Machine Learning Upskilling Platform"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <GiSnake size={15} className="shrink-0 text-emerald-400 group-hover:scale-110 transition-transform" />
+                <GiSnake size={15} className="shrink-0 text-white group-hover:scale-110 transition-transform" />
                 {!sidebarCollapsed && <span className="truncate">Codepyne.io</span>}
               </div>
               {!sidebarCollapsed && (
-                <ExternalLink size={12} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-white transition-colors" />
               )}
             </a>
 
@@ -1627,15 +1627,15 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               href="https://web-beta-six-81.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-[#3C6B4D]/50 transition-all group"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-white/30 transition-all group"
               title="DomoSkills — The Open Agent Skills Marketplace (External Webapp)"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <Sparkles size={15} className="shrink-0 text-emerald-400 group-hover:rotate-12 transition-transform" />
+                <Sparkles size={15} className="shrink-0 text-white group-hover:rotate-12 transition-transform" />
                 {!sidebarCollapsed && <span className="truncate">DomoSkills</span>}
               </div>
               {!sidebarCollapsed && (
-                <ExternalLink size={12} className="text-[#72706C] group-hover:text-emerald-400 transition-colors" />
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-white transition-colors" />
               )}
             </a>
           </nav>
@@ -1651,7 +1651,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] ${
-                    collapsedSections.train ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.train ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -1662,7 +1662,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   onClick={() => setActiveTab('library')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
                     activeTab === 'library'
-                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      ? 'bg-white/10 text-white'
                       : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Model Library & Downloader"
@@ -1675,7 +1675,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   onClick={() => setActiveTab('huggingface')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
                     activeTab === 'huggingface'
-                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      ? 'bg-white/10 text-white'
                       : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="HuggingFace Model Hub"
@@ -1688,7 +1688,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   onClick={() => setActiveTab('train')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
                     activeTab === 'train'
-                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      ? 'bg-white/10 text-white'
                       : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Fine-Tune QLoRA Studio"
@@ -1701,7 +1701,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   onClick={() => setActiveTab('eval')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
                     activeTab === 'eval'
-                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      ? 'bg-white/10 text-white'
                       : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Eval Benchmarks"
@@ -1714,7 +1714,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   onClick={() => setActiveTab('workflow')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
                     activeTab === 'workflow'
-                      ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]'
+                      ? 'bg-white/10 text-white'
                       : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Flow Automation"
@@ -1737,7 +1737,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] ${
-                    collapsedSections.vector ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.vector ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -1747,7 +1747,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('rag')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'rag' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'rag' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="RAG Vector Search Studio"
                 >
@@ -1758,7 +1758,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('extractor')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'extractor' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'extractor' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Structured JSON Extractor"
                 >
@@ -1769,7 +1769,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('knowledge-graph')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'knowledge-graph' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'knowledge-graph' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Knowledge Graph Visualizer"
                 >
@@ -1791,7 +1791,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] ${
-                    collapsedSections.agent ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.agent ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -1801,18 +1801,18 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('prompts')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'prompts' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'prompts' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Prompt Engineering Lab"
                 >
-                  <Wand2 size={14} className="shrink-0 text-emerald-400" />
+                  <Wand2 size={14} className="shrink-0 text-white" />
                   {!sidebarCollapsed && <span>Prompt Lab</span>}
                 </button>
 
                 <button
                   onClick={() => setActiveTab('function-calling')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'function-calling' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'function-calling' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Function Calling Studio"
                 >
@@ -1823,7 +1823,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('code-patch')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'code-patch' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'code-patch' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Code Refactoring & AI Patch"
                 >
@@ -1845,7 +1845,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] ${
-                    collapsedSections.safety ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.safety ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -1855,7 +1855,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('guardrails')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'guardrails' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'guardrails' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="AI Guardrails Inspector"
                 >
@@ -1866,7 +1866,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('router')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'router' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'router' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Multi-Model Router"
                 >
@@ -1877,7 +1877,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('vision-studio')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'vision-studio' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'vision-studio' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Vision & Multimodal Studio"
                 >
@@ -1888,18 +1888,18 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <button
                   onClick={() => setActiveTab('quant-calc')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'quant-calc' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'quant-calc' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Quantization & VRAM Calculator"
                 >
-                  <Gauge size={14} className="shrink-0 text-[#3C6B4D]" />
+                  <Gauge size={14} className="shrink-0 text-white" />
                   {!sidebarCollapsed && <span>VRAM Calculator</span>}
                 </button>
 
                 <button
                   onClick={() => setActiveTab('model-settings')}
                   className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                    activeTab === 'model-settings' ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                    activeTab === 'model-settings' ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                   }`}
                   title="Model Settings & Storage Manager"
                 >
@@ -1924,7 +1924,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
-                    collapsedSections.category_agents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.category_agents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -1933,7 +1933,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="emil-accordion-content flex flex-col gap-0.5">
                 {[
                   { id: 'swarm', label: 'Agent Swarm', icon: Network, color: 'text-purple-400' },
-                  { id: 'agent-func', label: 'Function Sandbox', icon: Zap, color: 'text-[#3C6B4D]' },
+                  { id: 'agent-func', label: 'Function Sandbox', icon: Zap, color: 'text-white' },
                 ].map((tool) => {
                   const IconC = tool.icon;
                   const isActive = activeTab === tool.id;
@@ -1942,7 +1942,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       key={tool.id}
                       onClick={() => setActiveTab(tool.id as any)}
                       className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                        isActive ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                       }`}
                       title={tool.label}
                     >
@@ -1963,13 +1963,13 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
               >
                 <div className="flex items-center gap-1.5 truncate">
-                  <Wand2 size={12} className="text-[#3C6B4D] shrink-0" />
+                  <Wand2 size={12} className="text-white shrink-0" />
                   <span className="truncate">PROMPT &amp; DATA</span>
                 </div>
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
-                    collapsedSections.category_prompt_data ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.category_prompt_data ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -1977,7 +1977,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             <div className={`emil-accordion-grid ${collapsedSections.category_prompt_data && !sidebarCollapsed ? 'collapsed' : ''}`}>
               <div className="emil-accordion-content flex flex-col gap-0.5">
                 {[
-                  { id: 'prompt-opt', label: 'Prompt Auto-Tuner', icon: Wand2, color: 'text-[#3C6B4D]' },
+                  { id: 'prompt-opt', label: 'Prompt Auto-Tuner', icon: Wand2, color: 'text-white' },
                   { id: 'synth-data', label: 'Dataset Synthesizer', icon: Database, color: 'text-blue-400' },
                   { id: 'schema-form', label: 'JSON Form Generator', icon: FileCode, color: 'text-teal-400' },
                 ].map((tool) => {
@@ -1988,7 +1988,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       key={tool.id}
                       onClick={() => setActiveTab(tool.id as any)}
                       className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                        isActive ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                       }`}
                       title={tool.label}
                     >
@@ -2009,13 +2009,13 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
               >
                 <div className="flex items-center gap-1.5 truncate">
-                  <Layers size={12} className="text-emerald-400 shrink-0" />
+                  <Layers size={12} className="text-white shrink-0" />
                   <span className="truncate">RAG &amp; MULTIMODAL</span>
                 </div>
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
-                    collapsedSections.category_multimodal ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.category_multimodal ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -2023,7 +2023,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             <div className={`emil-accordion-grid ${collapsedSections.category_multimodal && !sidebarCollapsed ? 'collapsed' : ''}`}>
               <div className="emil-accordion-content flex flex-col gap-0.5">
                 {[
-                  { id: 'rag-lab', label: 'RAG Vector Lab', icon: Layers, color: 'text-emerald-400' },
+                  { id: 'rag-lab', label: 'RAG Vector Lab', icon: Layers, color: 'text-white' },
                   { id: 'audio-speech', label: 'Audio & STT/TTS', icon: Mic, color: 'text-amber-400' },
                   { id: 'doc-extractor', label: 'Vision OCR Parser', icon: Eye, color: 'text-indigo-400' },
                 ].map((tool) => {
@@ -2034,7 +2034,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       key={tool.id}
                       onClick={() => setActiveTab(tool.id as any)}
                       className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                        isActive ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                       }`}
                       title={tool.label}
                     >
@@ -2055,13 +2055,13 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 className="w-full flex items-center justify-between text-[10px] font-bold text-[#72706C] hover:text-[#ECEBE9] uppercase tracking-widest px-1 py-1 mb-1 transition-colors cursor-pointer active:scale-[0.98]"
               >
                 <div className="flex items-center gap-1.5 truncate">
-                  <Activity size={12} className="text-[#3C6B4D] shrink-0" />
+                  <Activity size={12} className="text-white shrink-0" />
                   <span className="truncate">HARDWARE &amp; TELEMETRY</span>
                 </div>
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
-                    collapsedSections.category_hardware ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.category_hardware ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -2069,9 +2069,9 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             <div className={`emil-accordion-grid ${collapsedSections.category_hardware && !sidebarCollapsed ? 'collapsed' : ''}`}>
               <div className="emil-accordion-content flex flex-col gap-0.5">
                 {[
-                  { id: 'telemetry', label: 'VRAM Telemetry', icon: Activity, color: 'text-[#3C6B4D]' },
+                  { id: 'telemetry', label: 'VRAM Telemetry', icon: Activity, color: 'text-white' },
                   { id: 'quant-bench', label: 'Quant Auditor', icon: Gauge, color: 'text-rose-400' },
-                  { id: 'context-shrink', label: 'Context Shrinker', icon: Sliders, color: 'text-[#3C6B4D]' },
+                  { id: 'context-shrink', label: 'Context Shrinker', icon: Sliders, color: 'text-white' },
                   { id: 'gguf-gen', label: 'Modelfile Generator', icon: Terminal, color: 'text-cyan-400' },
                 ].map((tool) => {
                   const IconC = tool.icon;
@@ -2081,7 +2081,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       key={tool.id}
                       onClick={() => setActiveTab(tool.id as any)}
                       className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                        isActive ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                       }`}
                       title={tool.label}
                     >
@@ -2108,7 +2108,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <ChevronDown
                   size={12}
                   className={`transition-transform duration-200 ease-[var(--ease-out)] shrink-0 ${
-                    collapsedSections.category_security_code ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                    collapsedSections.category_security_code ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                   }`}
                 />
               </button>
@@ -2127,7 +2127,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       key={tool.id}
                       onClick={() => setActiveTab(tool.id as any)}
                       className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-160 ease-[var(--ease-out)] active:scale-[0.97] ${
-                        isActive ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
+                        isActive ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#1E2022]'
                       }`}
                       title={tool.label}
                     >
@@ -2166,7 +2166,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <ChevronDown
                       size={12}
                       className={`transition-transform duration-200 ease-[var(--ease-out)] ${
-                        collapsedSections.recents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-[#3C6B4D]'
+                        collapsedSections.recents ? '-rotate-90 text-[#72706C]' : 'rotate-0 text-white'
                       }`}
                     />
                   </button>
@@ -2189,7 +2189,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                           }`}
                         >
                           <div className="flex items-center gap-2 truncate">
-                            <MessageSquare size={12} className="shrink-0 text-[#3C6B4D]" />
+                            <MessageSquare size={12} className="shrink-0 text-white" />
                             <span className="truncate">{session.title}</span>
                           </div>
                           <button
@@ -2217,7 +2217,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <select
                   value={selectedModel}
                   onChange={e => setSelectedModel(e.target.value)}
-                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1.5 text-[11px] text-[#ECEBE9] font-medium focus:outline-none focus:border-[#3C6B4D]"
+                  className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2 py-1.5 text-[11px] text-[#ECEBE9] font-medium focus:outline-none focus:border-white/50"
                 >
                   {models.length > 0 ? (
                     models.map(m => (
@@ -2265,17 +2265,17 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="py-3 border-b border-[#2A2D30] space-y-1 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[#A3A09B]">Ollama: {ollamaStatus}</span>
-                  <button onClick={() => checkOllama(true)} className="text-[#3C6B4D] font-bold">Refresh</button>
+                  <button onClick={() => checkOllama(true)} className="text-white font-bold">Refresh</button>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#72706C]">
                   <span>Python ML: {fastApiStatus}</span>
-                  <button onClick={() => checkFastApi(true)} className="text-[#3C6B4D]">Check</button>
+                  <button onClick={() => checkFastApi(true)} className="text-white">Check</button>
                 </div>
               </div>
 
               {/* Mobile Navigation Links */}
               <nav className="flex flex-col gap-1 mt-2 overflow-y-auto max-h-[70vh] pr-1">
-                <button onClick={() => { handleNewChat(); setMobileMenuOpen(false); }} className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40">
+                <button onClick={() => { handleNewChat(); setMobileMenuOpen(false); }} className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 text-white border border-white/20">
                   <Plus size={14} /> <span>New Chat</span>
                 </button>
                 <button onClick={() => { setActiveTab('chat'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'chat' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
@@ -2303,7 +2303,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <Layers size={14} className="text-amber-400" /> <span>Knowledge Graph</span>
                 </button>
                 <button onClick={() => { setActiveTab('prompts'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'prompts' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <Wand2 size={14} className="text-emerald-400" /> <span>Prompt Lab</span>
+                  <Wand2 size={14} className="text-white" /> <span>Prompt Lab</span>
                 </button>
                 <button onClick={() => { setActiveTab('function-calling'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'function-calling' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
                   <Zap size={14} className="text-amber-400" /> <span>Function Calling</span>
@@ -2321,7 +2321,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <Eye size={14} className="text-indigo-400" /> <span>Vision Studio</span>
                 </button>
                 <button onClick={() => { setActiveTab('quant-calc'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'quant-calc' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
-                  <Gauge size={14} className="text-[#3C6B4D]" /> <span>VRAM Calculator</span>
+                  <Gauge size={14} className="text-white" /> <span>VRAM Calculator</span>
                 </button>
                 <button onClick={() => { setActiveTab('docs'); setMobileMenuOpen(false); }} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold ${activeTab === 'docs' ? 'bg-[#2A2D30] text-[#ECEBE9]' : 'text-[#72706C]'}`}>
                   <Layers size={14} /> <span>Docs &amp; Integration</span>
@@ -2345,7 +2345,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             <div className="flex items-center gap-2 text-[13px] font-semibold text-[#A3A09B]">
               <button
                 onClick={() => setMobileMenuOpen(prev => !prev)}
-                className="md:hidden p-1.5 rounded-lg text-[#ECEBE9] bg-[#2A2D30] hover:bg-[#3C6B4D]/30 transition-all flex items-center gap-1 text-xs font-bold"
+                className="md:hidden p-1.5 rounded-lg text-[#ECEBE9] bg-[#2A2D30] hover:bg-white/10 transition-all flex items-center gap-1 text-xs font-bold"
                 title="Toggle AI Hub Menu"
               >
                 <PanelLeftOpen size={16} />
@@ -2375,10 +2375,10 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             <div className="flex items-center gap-2">
               <span className={`flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border max-w-[140px] xs:max-w-[180px] sm:max-w-none ${
                 ollamaStatus === 'connected'
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                  ? 'bg-white/10 border-white/20 text-white'
                   : 'bg-[#1E2022] border-[#2A2D30] text-[#72706C]'
               }`}>
-                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${ollamaStatus === 'connected' ? 'bg-emerald-500' : 'bg-[#2A2D30]'}`} />
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${ollamaStatus === 'connected' ? 'bg-white' : 'bg-[#2A2D30]'}`} />
                 <span className="truncate">
                   {ollamaStatus === 'connected' ? `Ollama · ${selectedModel}` : 'Ollama Offline'}
                 </span>
@@ -2418,7 +2418,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   onClick={() => setActiveTab(item.id as any)}
                   className={`px-3 py-1 rounded-xl text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all ${
                     isActive
-                      ? 'bg-[#3C6B4D] text-white shadow-sm'
+                      ? 'bg-white text-white shadow-sm'
                       : 'bg-[#18191B] border border-[#2A2D30] text-[#72706C] hover:text-[#ECEBE9]'
                   }`}
                 >
@@ -2436,18 +2436,18 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
             {/* ── ONLINE DEMO / LOCAL OLLAMA LOCK BANNER ── */}
             {(ollamaStatus !== 'connected' || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) && (
-              <div className="mb-6 bg-[#18191B] border border-[#3C6B4D]/40 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xl animate-fadeIn">
+              <div className="mb-6 bg-[#18191B] border border-white/20 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xl animate-fadeIn">
                 <div className="flex items-center gap-2.5 text-[#ECEBE9]">
                   <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-mono font-bold text-[10px] border border-amber-500/30 uppercase tracking-wider shrink-0 flex items-center gap-1">
                     <Lock size={11} /> Online Demo Mode
                   </span>
                   <span className="text-[#A3A09B] text-xs">
-                    Running client-side simulation on web host. Connect local Ollama at <code className="text-[#3C6B4D] font-mono font-bold">http://localhost:11434</code> for live AI inference &amp; 1-click model downloads.
+                    Running client-side simulation on web host. Connect local Ollama at <code className="text-white font-mono font-bold">http://localhost:11434</code> for live AI inference &amp; 1-click model downloads.
                   </span>
                 </div>
                 <button
                   onClick={() => setShowLocalGuideModal(true)}
-                  className="px-3.5 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-md shadow-[#3C6B4D]/20"
+                  className="px-3.5 py-2 bg-white hover:bg-neutral-200 text-black font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-md shadow-white/10"
                 >
                   <Terminal size={14} />
                   <span>How to Run Locally</span>
@@ -2461,7 +2461,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl max-w-2xl w-full p-6 space-y-5 text-xs text-[#ECEBE9] max-h-[90vh] overflow-y-auto shadow-2xl animate-fadeIn" onClick={e => e.stopPropagation()}>
                   <div className="flex items-center justify-between border-b border-[#2A2D30] pb-3">
                     <div className="flex items-center gap-2">
-                      <Terminal size={18} className="text-[#3C6B4D]" />
+                      <Terminal size={18} className="text-white" />
                       <h3 className="text-base font-extrabold text-[#ECEBE9]">How to Run DomoDomo AI Hub Locally</h3>
                     </div>
                     <button onClick={() => setShowLocalGuideModal(false)} className="p-1 text-[#72706C] hover:text-[#ECEBE9] rounded-lg">
@@ -2471,25 +2471,25 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
                   <div className="space-y-4 font-mono">
                     <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
-                      <span className="text-[#3C6B4D] font-bold block">STEP 1: Install Ollama Engine (macOS, Windows, Linux)</span>
+                      <span className="text-white font-bold block">STEP 1: Install Ollama Engine (macOS, Windows, Linux)</span>
                       <p className="text-[#A3A09B] text-[11px] font-sans">Run terminal command or download from ollama.com:</p>
-                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-emerald-400 select-all">curl -fsSL https://ollama.com/install.sh</pre>
+                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-white select-all">curl -fsSL https://ollama.com/install.sh</pre>
                     </div>
 
                     <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
-                      <span className="text-[#3C6B4D] font-bold block">STEP 2: Start a Local LLM / Vision Model</span>
+                      <span className="text-white font-bold block">STEP 2: Start a Local LLM / Vision Model</span>
                       <p className="text-[#A3A09B] text-[11px] font-sans">In your terminal, pull and start a local model:</p>
-                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-emerald-400 select-all">ollama run llama3.2:1b # Text &amp; Tool Calling&#10;ollama run llava:7b      # Vision &amp; OCR Inspection</pre>
+                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-white select-all">ollama run llama3.2:1b # Text &amp; Tool Calling&#10;ollama run llava:7b      # Vision &amp; OCR Inspection</pre>
                     </div>
 
                     <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
-                      <span className="text-[#3C6B4D] font-bold block">STEP 3: Clone &amp; Run DomoDomo Repository</span>
+                      <span className="text-white font-bold block">STEP 3: Clone &amp; Run DomoDomo Repository</span>
                       <p className="text-[#A3A09B] text-[11px] font-sans">Clone the repository and launch dev server:</p>
-                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-emerald-400 select-all">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git&#10;cd DomoDomo---All-in-one-Tool&#10;npm install&#10;npm run dev</pre>
+                      <pre className="p-2 bg-[#18191B] rounded border border-[#2A2D30] text-white select-all">git clone https://github.com/darknecrocities/DomoDomo---All-in-one-Tool.git&#10;cd DomoDomo---All-in-one-Tool&#10;npm install&#10;npm run dev</pre>
                     </div>
 
                     <div className="bg-[#111213] border border-[#2A2D30] p-4 rounded-xl space-y-2">
-                      <span className="text-[#3C6B4D] font-bold block">STEP 4: Open Local AI Hub</span>
+                      <span className="text-white font-bold block">STEP 4: Open Local AI Hub</span>
                       <p className="text-[#A3A09B] text-[11px] font-sans">Open http://localhost:5173/ai-hub with zero server data transfer!</p>
                     </div>
                   </div>
@@ -2497,7 +2497,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="pt-2 flex justify-end border-t border-[#2A2D30]">
                     <button
                       onClick={() => setShowLocalGuideModal(false)}
-                      className="px-4 py-2 bg-[#3C6B4D] hover:bg-[#2E533B] text-white font-bold rounded-xl"
+                      className="px-4 py-2 bg-white hover:bg-neutral-200 text-black font-bold rounded-xl"
                     >
                       Got It, Let's Continue Demo
                     </button>
@@ -2514,7 +2514,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="flex items-center gap-2 min-w-0 flex-1">
                     <button
                       onClick={handleNewChat}
-                      className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all shadow-md shrink-0"
+                      className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all shadow-md shrink-0"
                     >
                       <Plus size={14} />
                       <span className="hidden xs:inline">New Chat</span>
@@ -2524,7 +2524,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <select
                       value={selectedModel}
                       onChange={e => setSelectedModel(e.target.value)}
-                      className="bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-[#3C6B4D] truncate flex-1 max-w-[170px] sm:max-w-[260px]"
+                      className="bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1 text-xs text-[#ECEBE9] font-bold focus:outline-none focus:border-white/50 truncate flex-1 max-w-[170px] sm:max-w-[260px]"
                     >
                       {models.length > 0 ? (
                         models.map(m => (
@@ -2545,16 +2545,16 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       onClick={() => setChatInput('Generate a conventional git commit message for these changes:\n- Add dynamic Ollama model selector\n- Add PII redaction guardrail\n- Add voice dictation and file drop context')}
-                      className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-xs text-[#A3A09B] hover:text-[#ECEBE9] font-bold transition-all"
+                      className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/30 text-xs text-[#A3A09B] hover:text-[#ECEBE9] font-bold transition-all"
                       title="Git Commit Template"
                     >
-                      <GitCommit size={13} className="text-[#3C6B4D]" />
+                      <GitCommit size={13} className="text-white" />
                       <span>Git Commit</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab('library')}
-                      className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all"
+                      className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/10 text-xs font-bold transition-all"
                     >
                       <Download size={12} />
                       <span>Pull Model</span>
@@ -2562,7 +2562,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
                     <button
                       onClick={() => setIsChatHeaderMinimized(p => !p)}
-                      className="p-1.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-[#3C6B4D]/50 text-[#72706C] hover:text-[#ECEBE9] transition-all"
+                      className="p-1.5 rounded-xl bg-[#111213] border border-[#2A2D30] hover:border-white/30 text-[#72706C] hover:text-[#ECEBE9] transition-all"
                       title={isChatHeaderMinimized ? 'Expand Header' : 'Minimize Header'}
                     >
                       {isChatHeaderMinimized ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
@@ -2575,11 +2575,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-center min-h-[320px] h-full text-center gap-4 py-4 px-2 my-auto">
                       <div className="relative flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full bg-[#3C6B4D]/20 blur-xl animate-pulse-slow" />
-                        <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#3C6B4D]/25 to-[#18191B] border border-[#3C6B4D]/40 flex items-center justify-center shadow-xl">
-                          <Bot size={28} className="sm:hidden text-[#3C6B4D]" />
-                          <Bot size={38} className="hidden sm:block text-[#3C6B4D]" />
-                          <div className="absolute -top-1 -right-1 p-1 bg-[#18191B] border border-[#3C6B4D]/40 rounded-full">
+                        <div className="absolute inset-0 rounded-full bg-white/10 blur-xl animate-pulse-slow" />
+                        <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-white/10 to-[#18191B] border border-white/20 flex items-center justify-center shadow-xl">
+                          <Bot size={28} className="sm:hidden text-white" />
+                          <Bot size={38} className="hidden sm:block text-white" />
+                          <div className="absolute -top-1 -right-1 p-1 bg-[#18191B] border border-white/20 rounded-full">
                             <Sparkles size={11} className="text-amber-400" />
                           </div>
                         </div>
@@ -2588,7 +2588,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       <div className="max-w-md px-2">
                         <h2 className="text-[#ECEBE9] font-black text-lg sm:text-xl tracking-tight leading-snug">What would you like to build today?</h2>
                         <p className="text-[#72706C] text-[11px] sm:text-xs mt-1 leading-relaxed">
-                          Connected model: <span className="text-[#3C6B4D] font-mono font-bold">{selectedModel}</span> · 100% Client-Side Local Execution
+                          Connected model: <span className="text-white font-mono font-bold">{selectedModel}</span> · 100% Client-Side Local Execution
                         </p>
                       </div>
 
@@ -2626,13 +2626,13 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                               onClick={() => {
                                 setChatInput(card.prompt);
                               }}
-                              className="group p-3.5 rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-[#3C6B4D]/60 hover:bg-[#1E2022] transition-all text-left flex flex-col justify-between gap-2 shadow-sm hover:shadow-md"
+                              className="group p-3.5 rounded-2xl bg-[#18191B] border border-[#2A2D30] hover:border-white/30 hover:bg-[#1E2022] transition-all text-left flex flex-col justify-between gap-2 shadow-sm hover:shadow-md"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-mono font-bold text-[#3C6B4D] bg-[#3C6B4D]/10 px-2 py-0.5 rounded-full border border-[#3C6B4D]/20">
+                                <span className="text-[10px] font-mono font-bold text-white bg-white/10 px-2 py-0.5 rounded-full border border-white/20">
                                   {card.category}
                                 </span>
-                                <IconComp size={14} className="text-[#72706C] group-hover:text-[#3C6B4D] transition-colors" />
+                                <IconComp size={14} className="text-[#72706C] group-hover:text-white transition-colors" />
                               </div>
                               <div>
                                 <p className="text-xs font-bold text-[#ECEBE9] group-hover:text-white transition-colors">{card.title}</p>
@@ -2647,13 +2647,13 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   {messages.map((msg, i) => (
                     <div key={i} className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                       {msg.sender === 'assistant' && (
-                        <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 flex items-center justify-center shrink-0 mt-0.5">
-                          <Bot size={15} className="text-[#3C6B4D]" />
+                        <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 mt-0.5">
+                          <Bot size={15} className="text-white" />
                         </div>
                       )}
                       <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                         msg.sender === 'user'
-                          ? 'bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 text-[#ECEBE9] rounded-tr-sm'
+                          ? 'bg-white/10 border border-white/20 text-[#ECEBE9] rounded-tr-sm'
                           : 'bg-[#18191B] border border-[#2A2D30] text-[#ECEBE9] rounded-tl-sm'
                       }`}>
                         {msg.sender === 'user' ? (
@@ -2681,14 +2681,14 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                                 className="p-1 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
                                 title="Copy message content"
                               >
-                                {copiedMsgId === msg.id ? <Check size={12} className="text-[#3C6B4D]" /> : <Copy size={12} />}
+                                {copiedMsgId === msg.id ? <Check size={12} className="text-white" /> : <Copy size={12} />}
                               </button>
                               <button
                                 onClick={() => toggleSpeech(msg.id, msg.content)}
                                 className="p-1 text-[#72706C] hover:text-[#ECEBE9] transition-colors"
                                 title="Read out loud"
                               >
-                                {speakingMsgId === msg.id ? <VolumeX size={12} className="text-[#3C6B4D]" /> : <Volume2 size={12} />}
+                                {speakingMsgId === msg.id ? <VolumeX size={12} className="text-white" /> : <Volume2 size={12} />}
                               </button>
                             </div>
                           </div>
@@ -2698,12 +2698,12 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   ))}
                   {isStreaming && (
                     <div className="flex gap-3 justify-start">
-                      <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/30 flex items-center justify-center shrink-0">
-                        <Bot size={15} className="text-[#3C6B4D] animate-pulse" />
+                      <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+                        <Bot size={15} className="text-white animate-pulse" />
                       </div>
                       <div className="bg-[#18191B] border border-[#2A2D30] px-4 py-3 rounded-2xl rounded-tl-sm">
                         <div className="flex gap-1">
-                          {[0,1,2].map(d => <span key={d} className="w-1.5 h-1.5 rounded-full bg-[#3C6B4D] animate-bounce" style={{ animationDelay: `${d * 150}ms` }} />)}
+                          {[0,1,2].map(d => <span key={d} className="w-1.5 h-1.5 rounded-full bg-white animate-bounce" style={{ animationDelay: `${d * 150}ms` }} />)}
                         </div>
                       </div>
                     </div>
@@ -2713,9 +2713,9 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
 
                 {/* Attached File Preview */}
                 {attachedFile && (
-                  <div className="flex items-center justify-between bg-[#111213] border border-[#3C6B4D]/50 px-3 py-1.5 rounded-xl text-xs text-[#ECEBE9] font-mono shrink-0">
+                  <div className="flex items-center justify-between bg-[#111213] border border-white/30 px-3 py-1.5 rounded-xl text-xs text-[#ECEBE9] font-mono shrink-0">
                     <div className="flex items-center gap-2 truncate">
-                      <Paperclip size={13} className="text-[#3C6B4D]" />
+                      <Paperclip size={13} className="text-white" />
                       <span className="truncate">{attachedFile.name} ({attachedFile.content.length} chars)</span>
                     </div>
                     <button onClick={() => setAttachedFile(null)} className="text-[#72706C] hover:text-red-400">
@@ -2725,7 +2725,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 )}
 
                 {/* Input row with voice & file attachment */}
-                <div className="bg-[#18191B] border border-[#2A2D30] focus-within:border-[#3C6B4D]/70 focus-within:shadow-[0_0_20px_rgba(60,107,77,0.12)] rounded-2xl p-3 flex gap-3 items-end transition-all">
+                <div className="bg-[#18191B] border border-[#2A2D30] focus-within:border-white/50 focus-within:shadow-[0_0_20px_rgba(60,107,77,0.12)] rounded-2xl p-3 flex gap-3 items-end transition-all">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -2754,7 +2754,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <button
                       onClick={() => setShowChatConfig(prev => !prev)}
                       className={`p-2 rounded-xl transition-all ${
-                        showChatConfig ? 'bg-[#3C6B4D]/20 text-[#3C6B4D]' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30]'
+                        showChatConfig ? 'bg-white/10 text-white' : 'text-[#72706C] hover:text-[#ECEBE9] hover:bg-[#2A2D30]'
                       }`}
                       title="Toggle Inference Options (Temperature, Tokens, PII)"
                     >
@@ -2779,7 +2779,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <button
                       onClick={handleSendChat}
                       disabled={(!chatInput.trim() && !attachedFile) || isStreaming}
-                      className="px-4 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 text-white text-sm font-bold transition-all flex items-center gap-2"
+                      className="px-4 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black disabled:opacity-40 text-white text-sm font-bold transition-all flex items-center gap-2"
                     >
                       <Send size={14} />
                       <span>Send</span>
@@ -2794,8 +2794,8 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       <div className="flex items-center gap-1.5">
                         <SlidersIcon size={11} />
                         <span>Temp:</span>
-                        <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-[#3C6B4D]" />
-                        <span className="font-mono text-[#3C6B4D]">{temperature}</span>
+                        <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} className="w-20 h-1 accent-white" />
+                        <span className="font-mono text-white">{temperature}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span>Max tokens:</span>
@@ -2809,7 +2809,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                           type="checkbox"
                           checked={aiSettings.piiRedaction}
                           onChange={e => setAiSettings(prev => ({ ...prev, piiRedaction: e.target.checked }))}
-                          className="w-3 h-3 accent-[#3C6B4D]"
+                          className="w-3 h-3 accent-white"
                         />
                         <span>PII Masking</span>
                       </label>
@@ -2835,7 +2835,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                         onClick={() => setCatalogFilter(f)}
                         className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
                           catalogFilter === f
-                            ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border border-[#3C6B4D]/40'
+                            ? 'bg-white/10 text-white border border-white/20'
                             : 'bg-[#18191B] text-[#72706C] border border-[#2A2D30] hover:text-[#ECEBE9]'
                         }`}
                       >{f}</button>
@@ -2857,18 +2857,18 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   </div>
 
                   <div className="bg-[#18191B] border border-[#2A2D30] p-3 rounded-2xl flex items-center gap-2">
-                    <Terminal size={14} className="text-[#3C6B4D] shrink-0" />
+                    <Terminal size={14} className="text-white shrink-0" />
                     <input
                       type="text"
                       value={customPullInput}
                       onChange={e => setCustomPullInput(e.target.value)}
                       placeholder="e.g. deepseek-r1:7b, llama3.3:70b..."
-                      className="flex-1 w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="flex-1 w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-2.5 py-1 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     />
                     <button
                       onClick={() => handleDownloadModel(customPullInput)}
                       disabled={!customPullInput.trim() || downloadingModelId === customPullInput}
-                      className="px-3 py-1 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1"
+                      className="px-3 py-1 rounded-xl bg-white hover:bg-neutral-200 text-black disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1"
                       title={!customPullInput.trim() ? 'Locked: Enter model name to pull' : downloadingModelId === customPullInput ? 'Locked: Download in progress' : 'Pull model'}
                     >
                       {downloadingModelId === customPullInput ? <Lock size={12} className="animate-spin text-amber-300" /> : !customPullInput.trim() ? <Lock size={12} className="text-gray-400" /> : <Download size={12} />}
@@ -2882,14 +2882,14 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     const isInstalled = models.some(m => m.name === model.id);
                     const isDownloading = downloadingModelId === model.id;
                     return (
-                      <div key={model.id} className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-4 hover:border-[#3C6B4D]/40 transition-all flex flex-col gap-3">
+                      <div key={model.id} className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-4 hover:border-white/20 transition-all flex flex-col gap-3">
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <p className="text-sm font-bold text-[#ECEBE9]">{model.name}</p>
                             <p className="text-[11px] text-[#72706C] font-mono">{model.id}</p>
                           </div>
                           {isInstalled && (
-                            <span className="text-[9px] font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1">
+                            <span className="text-[9px] font-black bg-white/10 text-white border border-white/20 px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1">
                               <Lock size={10} /> INSTALLED
                             </span>
                           )}
@@ -2907,21 +2907,21 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                             disabled={isDownloading || isInstalled}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
                               isInstalled
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 cursor-not-allowed'
+                                ? 'bg-white/10 text-white border border-white/20 cursor-not-allowed'
                                 : isDownloading
-                                ? 'bg-[#3C6B4D]/15 text-[#3C6B4D] border border-[#3C6B4D]/30 cursor-wait'
-                                : 'bg-[#3C6B4D] hover:bg-[#2E533B] text-white border-0'
+                                ? 'bg-white/10 text-white border border-white/20 cursor-wait'
+                                : 'bg-white hover:bg-neutral-200 text-black border-0'
                             }`}
                             title={isInstalled ? 'Locked: Model is already installed' : isDownloading ? 'Locked: Download in progress' : `Download ${model.name}`}
                           >
-                            {isInstalled ? <><Lock size={12} className="text-emerald-400" /> Ready (Locked)</> :
-                             isDownloading ? <><Lock size={12} className="animate-spin text-[#3C6B4D]" /> {downloadProgress}%</> :
+                            {isInstalled ? <><Lock size={12} className="text-white" /> Ready (Locked)</> :
+                             isDownloading ? <><Lock size={12} className="animate-spin text-white" /> {downloadProgress}%</> :
                              <><Download size={12} /> Pull</>}
                           </button>
                         </div>
                         {isDownloading && (
                           <div className="h-1.5 bg-[#111213] rounded-full overflow-hidden">
-                            <div className="h-full bg-[#3C6B4D] transition-all duration-300 rounded-full" style={{ width: `${downloadProgress}%` }} />
+                            <div className="h-full bg-white transition-all duration-300 rounded-full" style={{ width: `${downloadProgress}%` }} />
                           </div>
                         )}
                       </div>
@@ -2974,18 +2974,18 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     onChange={e => setEvalPrompt(e.target.value)}
                     rows={3}
                     placeholder="Enter your evaluation prompt..."
-                    className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-sm text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
+                    className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-sm text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50 resize-none"
                   />
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-[#72706C] uppercase">Model A</label>
-                      <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)} className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]">
+                      <select value={selectedModel} onChange={e => setSelectedModel(e.target.value)} className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-white/50">
                         {models.length > 0 ? models.map(m => <option key={m.digest} value={m.name}>{m.name}</option>) : <option>llama3.2:3b (sim)</option>}
                       </select>
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-[#72706C] uppercase">Model B</label>
-                      <select value={secondaryModel} onChange={e => setSecondaryModel(e.target.value)} className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-[#3C6B4D]">
+                      <select value={secondaryModel} onChange={e => setSecondaryModel(e.target.value)} className="w-full bg-[#111213] border border-[#2A2D30] rounded-lg px-2.5 py-1.5 text-xs text-[#ECEBE9] focus:outline-none focus:border-white/50">
                         {models.length > 0 ? models.map(m => <option key={m.digest} value={m.name}>{m.name}</option>) : <option>qwen2.5:1.5b (sim)</option>}
                       </select>
                     </div>
@@ -2993,7 +2993,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <button
                     onClick={handleRunEval}
                     disabled={isEvalRunning || !evalPrompt.trim()}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-black transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-black transition-all"
                     title={isEvalRunning ? 'Locked: Benchmark in progress' : !evalPrompt.trim() ? 'Locked: Prompt required' : 'Run Benchmark'}
                   >
                     {isEvalRunning ? <Lock size={14} className="animate-pulse text-amber-300" /> : !evalPrompt.trim() ? <Lock size={14} className="text-gray-400" /> : <BarChart2 size={14} />}
@@ -3004,7 +3004,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       {[{ label: 'Model A', output: evalOutput1, latency: evalLatency1, tps: evalTps1 }, { label: 'Model B', output: evalOutput2, latency: evalLatency2, tps: evalTps2 }].map(({ label, output, latency, tps }) => (
                         <div key={label} className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 space-y-3">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="font-bold text-[#3C6B4D]">{label}</span>
+                            <span className="font-bold text-white">{label}</span>
                             <div className="flex items-center gap-3 text-[#72706C] font-mono">
                               <span>{latency}ms</span>
                               <span>{tps} tok/s</span>
@@ -3043,12 +3043,12 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     {(['javascript', 'python', 'curl', 'react', 'n8n-workflow', 'fine-tune', 'langchain', 'llamaindex', 'mcp-protocol'] as const).map(lang => (
                       <button key={lang} onClick={() => setCodeLang(lang)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border uppercase font-mono ${
                         codeLang === lang
-                          ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                          ? 'bg-white/10 text-white border-white/20'
                           : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
                       }`}>{lang}</button>
                     ))}
                     <button onClick={handleCopyCode} className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#111213] border border-[#2A2D30] text-[#A3A09B] hover:text-[#ECEBE9] transition-all">
-                      {copiedCode ? <><Check size={12} className="text-emerald-400" /> Copied!</> : <><Copy size={12} /> Copy Code</>}
+                      {copiedCode ? <><Check size={12} className="text-white" /> Copied!</> : <><Copy size={12} /> Copy Code</>}
                     </button>
                   </div>
                   <pre className="bg-[#111213] border border-[#2A2D30] rounded-xl p-4 text-[11px] text-[#ECEBE9] font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto">
@@ -3061,25 +3061,25 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   {/* Quick Start Guide */}
                   <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
                     <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                      <Terminal size={16} className="text-[#3C6B4D]" /> How to Start (Local Setup in 3 Steps)
+                      <Terminal size={16} className="text-white" /> How to Start (Local Setup in 3 Steps)
                     </h3>
                     <div className="space-y-3 text-xs text-[#ECEBE9]">
                       <div className="space-y-1">
-                        <span className="font-bold text-[#3C6B4D]">Step 1: Install &amp; Launch Ollama</span>
+                        <span className="font-bold text-white">Step 1: Install &amp; Launch Ollama</span>
                         <pre className="bg-[#111213] border border-[#2A2D30] p-2.5 rounded-xl font-mono text-[10px] text-amber-300">
                           # macOS: brew install ollama && ollama serve{'\n'}
                           # Linux: curl -fsSL https://ollama.com/install.sh | sh
                         </pre>
                       </div>
                       <div className="space-y-1">
-                        <span className="font-bold text-[#3C6B4D]">Step 2: Enable CORS for Browser Access</span>
+                        <span className="font-bold text-white">Step 2: Enable CORS for Browser Access</span>
                         <pre className="bg-[#111213] border border-[#2A2D30] p-2.5 rounded-xl font-mono text-[10px] text-amber-300">
                           export OLLAMA_ORIGINS="*"{'\n'}
                           ollama serve
                         </pre>
                       </div>
                       <div className="space-y-1">
-                        <span className="font-bold text-[#3C6B4D]">Step 3: Pull Recommended Models</span>
+                        <span className="font-bold text-white">Step 3: Pull Recommended Models</span>
                         <pre className="bg-[#111213] border border-[#2A2D30] p-2.5 rounded-xl font-mono text-[10px] text-amber-300">
                           ollama pull llama3.2:1b{'\n'}
                           ollama pull qwen2.5-coder:1.5b
@@ -3091,7 +3091,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   {/* Core Features Breakdown */}
                   <div className="bg-[#18191B] border border-[#2A2D30] rounded-2xl p-5 space-y-4">
                     <h3 className="text-sm font-extrabold text-[#ECEBE9] flex items-center gap-2 border-b border-[#2A2D30] pb-3">
-                      <Layers size={16} className="text-[#3C6B4D]" /> Application Features Breakdown
+                      <Layers size={16} className="text-white" /> Application Features Breakdown
                     </h3>
                     <div className="space-y-2.5 text-xs">
                       <div className="p-2.5 bg-[#111213] border border-[#2A2D30] rounded-xl space-y-0.5">
@@ -3125,10 +3125,10 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#2A2D30]/60 text-[#ECEBE9]">
-                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/generate</td><td>Stream token completion for local prompts</td></tr>
-                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/chat</td><td>Multi-turn chat completion with message role history</td></tr>
-                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/create</td><td>1-Click build &amp; register local fine-tuned Modelfile</td></tr>
-                        <tr><td className="py-2 text-emerald-400 font-bold">POST</td><td>/api/embeddings</td><td>Generate high-density vector embeddings</td></tr>
+                        <tr><td className="py-2 text-white font-bold">POST</td><td>/api/generate</td><td>Stream token completion for local prompts</td></tr>
+                        <tr><td className="py-2 text-white font-bold">POST</td><td>/api/chat</td><td>Multi-turn chat completion with message role history</td></tr>
+                        <tr><td className="py-2 text-white font-bold">POST</td><td>/api/create</td><td>1-Click build &amp; register local fine-tuned Modelfile</td></tr>
+                        <tr><td className="py-2 text-white font-bold">POST</td><td>/api/embeddings</td><td>Generate high-density vector embeddings</td></tr>
                         <tr><td className="py-2 text-blue-400 font-bold">GET</td><td>/api/tags</td><td>List local installed models and digests</td></tr>
                         <tr><td className="py-2 text-amber-400 font-bold">POST</td><td>/api/ml/extract-document-pairs</td><td>Extract Q&amp;A instruction pairs from documents</td></tr>
                       </tbody>
@@ -3255,8 +3255,8 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-[#2A2D30] pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#3C6B4D]/20 border border-[#3C6B4D]/40 flex items-center justify-center">
-                  <Settings size={16} className="text-[#3C6B4D]" />
+                <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                  <Settings size={16} className="text-white" />
                 </div>
                 <div>
                   <h3 className="text-base font-extrabold text-[#ECEBE9]">AI Hub Settings &amp; Privacy</h3>
@@ -3277,7 +3277,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 onClick={() => setSettingsTab('endpoints')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   settingsTab === 'endpoints'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    ? 'bg-white/10 text-white border-white/20'
                     : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
                 }`}
               >
@@ -3289,7 +3289,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 onClick={() => setSettingsTab('generation')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   settingsTab === 'generation'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    ? 'bg-white/10 text-white border-white/20'
                     : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
                 }`}
               >
@@ -3301,7 +3301,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 onClick={() => setSettingsTab('hardware')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   settingsTab === 'hardware'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    ? 'bg-white/10 text-white border-white/20'
                     : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
                 }`}
               >
@@ -3313,7 +3313,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                 onClick={() => setSettingsTab('privacy')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   settingsTab === 'privacy'
-                    ? 'bg-[#3C6B4D]/20 text-[#3C6B4D] border-[#3C6B4D]/40'
+                    ? 'bg-white/10 text-white border-white/20'
                     : 'bg-[#111213] text-[#72706C] border-[#2A2D30] hover:text-[#ECEBE9]'
                 }`}
               >
@@ -3330,7 +3330,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-[#A3A09B]">Local Ollama API Endpoint</label>
                     <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
-                      ollamaStatus === 'connected' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                      ollamaStatus === 'connected' ? 'bg-white/10 text-white border-white/20' : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                     }`}>
                       {ollamaStatus === 'connected' ? 'CONNECTED' : 'OFFLINE'}
                     </span>
@@ -3340,11 +3340,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="text"
                       value={aiSettings.ollamaEndpoint}
                       onChange={e => setAiSettings(prev => ({ ...prev, ollamaEndpoint: e.target.value }))}
-                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     />
                     <button
                       onClick={() => checkOllama(true)}
-                      className="px-3 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all shrink-0"
+                      className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/10 text-xs font-bold transition-all shrink-0"
                     >
                       Test Connection
                     </button>
@@ -3356,7 +3356,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-[#A3A09B]">Python FastAPI ML Backend Endpoint</label>
                     <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
-                      fastApiStatus === 'connected' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                      fastApiStatus === 'connected' ? 'bg-white/10 text-white border-white/20' : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
                     }`}>
                       {fastApiStatus === 'connected' ? 'CONNECTED' : 'OFFLINE'}
                     </span>
@@ -3366,11 +3366,11 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="text"
                       value={aiSettings.fastApiEndpoint}
                       onChange={e => setAiSettings(prev => ({ ...prev, fastApiEndpoint: e.target.value }))}
-                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="flex-1 bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     />
                     <button
                       onClick={() => checkFastApi(true)}
-                      className="px-3 py-2 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/40 text-[#3C6B4D] hover:bg-[#3C6B4D]/25 text-xs font-bold transition-all shrink-0"
+                      className="px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/10 text-xs font-bold transition-all shrink-0"
                     >
                       Test Backend
                     </button>
@@ -3392,7 +3392,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       setSystemPrompt(v);
                     }}
                     rows={2}
-                    className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D] resize-none"
+                    className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl p-3 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50 resize-none"
                   />
                 </div>
 
@@ -3400,7 +3400,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs">
                       <span className="font-bold text-[#A3A09B]">Default Temperature</span>
-                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings?.temperature ?? DEFAULT_SETTINGS.temperature}</span>
+                      <span className="font-mono text-white font-bold">{aiSettings?.temperature ?? DEFAULT_SETTINGS.temperature}</span>
                     </div>
                     <input
                       type="range"
@@ -3413,14 +3413,14 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                         setAiSettings(prev => ({ ...prev, temperature: v }));
                         setTemperature(v);
                       }}
-                      className="w-full h-1 accent-[#3C6B4D]"
+                      className="w-full h-1 accent-white"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-xs">
                       <span className="font-bold text-[#A3A09B]">Default Top-P</span>
-                      <span className="font-mono text-[#3C6B4D] font-bold">{aiSettings?.topP ?? DEFAULT_SETTINGS.topP}</span>
+                      <span className="font-mono text-white font-bold">{aiSettings?.topP ?? DEFAULT_SETTINGS.topP}</span>
                     </div>
                     <input
                       type="range"
@@ -3433,7 +3433,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                         setAiSettings(prev => ({ ...prev, topP: v }));
                         setTopP(v);
                       }}
-                      className="w-full h-1 accent-[#3C6B4D]"
+                      className="w-full h-1 accent-white"
                     />
                   </div>
                 </div>
@@ -3449,7 +3449,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                         setAiSettings(prev => ({ ...prev, maxTokens: v }));
                         setMaxTokens(v);
                       }}
-                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     />
                   </div>
 
@@ -3458,7 +3458,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <select
                       value={aiSettings?.numCtx ?? DEFAULT_SETTINGS.numCtx}
                       onChange={e => setAiSettings(prev => ({ ...prev, numCtx: parseInt(e.target.value) || 4096 }))}
-                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     >
                       <option value={2048}>2048 tokens (2K)</option>
                       <option value={4096}>4096 tokens (4K)</option>
@@ -3480,7 +3480,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="number"
                       value={aiSettings?.gpuLayers ?? DEFAULT_SETTINGS.gpuLayers}
                       onChange={e => setAiSettings(prev => ({ ...prev, gpuLayers: parseInt(e.target.value) || 0 }))}
-                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     />
                   </div>
 
@@ -3490,7 +3490,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="number"
                       value={aiSettings?.cpuThreads ?? DEFAULT_SETTINGS.cpuThreads}
                       onChange={e => setAiSettings(prev => ({ ...prev, cpuThreads: parseInt(e.target.value) || 4 }))}
-                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     />
                   </div>
                 </div>
@@ -3501,7 +3501,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                     <select
                       value={aiSettings.quantization}
                       onChange={e => setAiSettings(prev => ({ ...prev, quantization: e.target.value as any }))}
-                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-[#3C6B4D]"
+                      className="w-full bg-[#111213] border border-[#2A2D30] rounded-xl px-3 py-2 text-xs text-[#ECEBE9] font-mono focus:outline-none focus:border-white/50"
                     >
                       <option value="q4_k_m">Q4_K_M (4-bit NF4 Recommended)</option>
                       <option value="q8_0">Q8_0 (8-bit High Precision)</option>
@@ -3518,7 +3518,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="checkbox"
                       checked={aiSettings.flashAttention}
                       onChange={e => setAiSettings(prev => ({ ...prev, flashAttention: e.target.checked }))}
-                      className="w-4 h-4 accent-[#3C6B4D] rounded cursor-pointer"
+                      className="w-4 h-4 accent-white rounded cursor-pointer"
                     />
                   </div>
                 </div>
@@ -3532,7 +3532,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                   <div className="flex items-center justify-between p-3.5 bg-[#111213] border border-[#2A2D30] rounded-xl">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
-                        <EyeOff size={13} className="text-[#3C6B4D]" /> Automatic PII Masking Guardrail
+                        <EyeOff size={13} className="text-white" /> Automatic PII Masking Guardrail
                       </p>
                       <p className="text-[10px] text-[#72706C]">Redacts emails, IP addresses, and credit card numbers before processing</p>
                     </div>
@@ -3540,14 +3540,14 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="checkbox"
                       checked={aiSettings.piiRedaction}
                       onChange={e => setAiSettings(prev => ({ ...prev, piiRedaction: e.target.checked }))}
-                      className="w-4 h-4 accent-[#3C6B4D] rounded cursor-pointer"
+                      className="w-4 h-4 accent-white rounded cursor-pointer"
                     />
                   </div>
 
                   <div className="flex items-center justify-between p-3.5 bg-[#111213] border border-[#2A2D30] rounded-xl">
                     <div className="space-y-0.5">
                       <p className="text-xs font-bold text-[#ECEBE9] flex items-center gap-1.5">
-                        <Volume2 size={13} className="text-[#3C6B4D]" /> Auto Text-to-Speech Playback
+                        <Volume2 size={13} className="text-white" /> Auto Text-to-Speech Playback
                       </p>
                       <p className="text-[10px] text-[#72706C]">Reads local assistant responses out loud using browser speech synthesis</p>
                     </div>
@@ -3555,7 +3555,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
                       type="checkbox"
                       checked={aiSettings.autoSpeakResponse}
                       onChange={e => setAiSettings(prev => ({ ...prev, autoSpeakResponse: e.target.checked }))}
-                      className="w-4 h-4 accent-[#3C6B4D] rounded cursor-pointer"
+                      className="w-4 h-4 accent-white rounded cursor-pointer"
                     />
                   </div>
                 </div>
@@ -3585,7 +3585,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <span className="text-[10px] text-[#72706C]">Settings auto-saved to browser storage</span>
               <button
                 onClick={() => setSettingsOpen(false)}
-                className="px-5 py-2 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-xs font-bold transition-all"
+                className="px-5 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all"
               >
                 Done
               </button>
@@ -3599,17 +3599,17 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
       {showTeaserModal && (
         <div className="fixed inset-0 bg-[#0A0B0C]/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="w-full max-w-lg bg-[#18191B] border border-[#2A2D30] rounded-3xl p-8 space-y-6 shadow-2xl text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 flex items-center justify-center mx-auto">
-              <Bot size={28} className="text-[#3C6B4D]" />
+            <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mx-auto">
+              <Bot size={28} className="text-white" />
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-extrabold text-[#ECEBE9]">AI Hub Studio</h2>
               <p className="text-[#A3A09B] text-sm leading-relaxed">
-                This is a <span className="text-[#3C6B4D] font-bold">local-only</span> feature. AI Hub Studio requires Ollama running on your machine (<code className="bg-[#111213] px-1 py-0.5 rounded text-[#3C6B4D] font-mono">localhost:11434</code>) to power LLM inference, fine-tuning, and flow automation.
+                This is a <span className="text-white font-bold">local-only</span> feature. AI Hub Studio requires Ollama running on your machine (<code className="bg-[#111213] px-1 py-0.5 rounded text-white font-mono">localhost:11434</code>) to power LLM inference, fine-tuning, and flow automation.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <a href="https://ollama.ai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#3C6B4D] hover:bg-[#2E533B] text-white text-sm font-black transition-all">
+              <a href="https://ollama.ai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white hover:bg-neutral-200 text-black text-sm font-black transition-all">
                 <Download size={15} /> Get Ollama
               </a>
               <a href="/download" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#2A2D30] text-[#ECEBE9] text-sm font-bold hover:bg-[#1E2022] transition-all">

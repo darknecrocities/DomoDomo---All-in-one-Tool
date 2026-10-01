@@ -85,7 +85,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Brightness</span>
                 <span className="text-slate-300">{brightness}%</span>
               </div>
-              <input type="range" min="50" max="200" value={brightness} onChange={(e) => setBrightness(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="50" max="200" value={brightness} onChange={(e) => setBrightness(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             {/* Contrast */}
@@ -94,7 +94,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Contrast</span>
                 <span className="text-slate-300">{contrast}%</span>
               </div>
-              <input type="range" min="50" max="200" value={contrast} onChange={(e) => setContrast(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="50" max="200" value={contrast} onChange={(e) => setContrast(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             {/* Saturation */}
@@ -103,7 +103,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Saturation</span>
                 <span className="text-slate-300">{saturate}%</span>
               </div>
-              <input type="range" min="0" max="200" value={saturate} onChange={(e) => setSaturate(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="0" max="200" value={saturate} onChange={(e) => setSaturate(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             {/* Sepia */}
@@ -112,7 +112,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Sepia Tone</span>
                 <span className="text-slate-300">{sepia}%</span>
               </div>
-              <input type="range" min="0" max="100" value={sepia} onChange={(e) => setSepia(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="0" max="100" value={sepia} onChange={(e) => setSepia(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             {/* Grayscale */}
@@ -121,7 +121,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Grayscale</span>
                 <span className="text-slate-300">{grayscale}%</span>
               </div>
-              <input type="range" min="0" max="100" value={grayscale} onChange={(e) => setGrayscale(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="0" max="100" value={grayscale} onChange={(e) => setGrayscale(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             {/* Invert */}
@@ -130,7 +130,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Invert Colors</span>
                 <span className="text-slate-300">{invert}%</span>
               </div>
-              <input type="range" min="0" max="100" value={invert} onChange={(e) => setInvert(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="0" max="100" value={invert} onChange={(e) => setInvert(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
 
             {/* Blur */}
@@ -139,7 +139,7 @@ export const AIImageEnhancerTool = () => {
                 <span className="text-slate-400">Gaussian Blur</span>
                 <span className="text-slate-300">{blur}px</span>
               </div>
-              <input type="range" min="0" max="10" step="0.5" value={blur} onChange={(e) => setBlur(parseFloat(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+              <input type="range" min="0" max="10" step="0.5" value={blur} onChange={(e) => setBlur(parseFloat(e.target.value))} className="w-full accent-white cursor-pointer" />
             </div>
           </div>
 

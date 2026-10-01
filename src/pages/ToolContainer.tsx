@@ -189,7 +189,7 @@ export const ToolContainer = () => {
           <div className="flex items-center gap-2 text-xs font-semibold text-[#72706C] uppercase tracking-wider">
             <button
               onClick={() => navigate('/')}
-              className="hover:text-[#3C6B4D] flex items-center gap-1 transition-colors"
+              className="hover:text-white flex items-center gap-1 transition-colors"
             >
               <Home size={12} />
               <span>Dashboard</span>
@@ -199,7 +199,7 @@ export const ToolContainer = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-1">
-            <div className="p-2.5 bg-[#3C6B4D]/10 border border-[#3C6B4D]/25 text-[#3C6B4D] rounded-xl">
+            <div className="p-2.5 bg-white/10 border border-white/20 text-white rounded-xl">
               <DynamicIcon name={tool.icon} size={20} />
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold text-[#ECEBE9] font-heading tracking-tight">
@@ -226,7 +226,7 @@ export const ToolContainer = () => {
         </button>
       </div>
 
-      {/* Non-blocking Local AI Offline Banner if Ollama is not detected */}
+      {/* Non-blocking Local Offline Banner if Ollama is not detected */}
       {requiresLocalAI && hasOllama === false && (
         <div className="bg-[#18191B] border border-[#E29E2D]/30 p-3.5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left shadow-lg">
           <div className="flex items-center gap-3">
@@ -238,7 +238,7 @@ export const ToolContainer = () => {
                 Local Ollama Offline — Browser Fallback Active
               </span>
               <span className="text-[11px] text-[#A3A09B] block">
-                Running in client-side fallback/simulation mode. Start Ollama with <code className="text-[#3C6B4D] font-mono">OLLAMA_ORIGINS="*" ollama serve</code> for local LLM inference.
+                Running in client-side fallback mode. Start Ollama with <code className="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded">OLLAMA_ORIGINS="*" ollama serve</code> for local assistant models.
               </span>
             </div>
           </div>

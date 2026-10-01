@@ -299,12 +299,12 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 				{/* Modal Header */}
 				<div className="flex items-start justify-between border-b border-[#2A2D30] pb-5">
 					<div className="flex items-center gap-3">
-						<div className="p-3 bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 rounded-2xl shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+						<div className="p-3 bg-white/10 border border-white/20 text-sky-300 rounded-2xl shrink-0 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
 							<ShieldCheck size={26} />
 						</div>
 						<div>
 							<div className="flex items-center gap-2">
-								<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+								<span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-white/10 text-[#ECEBE9] border border-white/20">
 									Sandbox Access Controls
 								</span>
 								<span className="text-[10px] font-mono text-[#A3A09B]">
@@ -333,9 +333,9 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 				{/* Permissions Checklist */}
 				<div className="flex flex-col gap-3">
 					{/* 1. Local AI & Ollama API Access */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
-							<div className="p-2.5 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/30 text-emerald-400 shrink-0 mt-0.5">
+							<div className="p-2.5 rounded-xl bg-white/10 border border-white/20 text-sky-300 shrink-0 mt-0.5">
 								<Bot size={20} />
 							</div>
 							<div>
@@ -344,7 +344,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										Local AI & Ollama Engine Access
 									</h3>
 									{status.ollama === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Active
 										</span>
 									) : status.ollama === "checking" ? (
@@ -371,7 +371,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										onOllamaFixRequested();
 										onClose();
 									}}
-									className="px-3 py-1.5 rounded-xl bg-[#3C6B4D]/15 border border-[#3C6B4D]/35 text-emerald-300 hover:bg-[#3C6B4D]/25 text-xs font-semibold transition-all"
+									className="px-3 py-1.5 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/15 text-xs font-semibold transition-all"
 								>
 									Setup Ollama
 								</button>
@@ -390,9 +390,9 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 					</div>
 
 					{/* 2. Persistent Storage & IndexedDB */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
-							<div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0 mt-0.5">
+							<div className="p-2.5 rounded-xl bg-white/10 border border-white/20 text-sky-300 shrink-0 mt-0.5">
 								<HardDrive size={20} />
 							</div>
 							<div>
@@ -401,7 +401,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										Persistent Storage & File Sandbox
 									</h3>
 									{status.storage === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Persistent
 										</span>
 									) : (
@@ -421,12 +421,12 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 								<button
 									onClick={handleRequestStorage}
 									disabled={testingItem === "storage"}
-									className="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all"
+									className="px-3.5 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 text-xs font-semibold transition-all shadow-sm"
 								>
 									{testingItem === "storage" ? "Requesting..." : "Make Persistent"}
 								</button>
 							) : (
-								<div className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+								<div className="text-sky-300 text-xs font-semibold flex items-center gap-1">
 									<CheckCircle2 size={14} /> Ready
 								</div>
 							)}
@@ -434,9 +434,9 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 					</div>
 
 					{/* 3. WebGPU & Hardware Acceleration */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
-							<div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0 mt-0.5">
+							<div className="p-2.5 rounded-xl bg-white/10 border border-white/20 text-sky-300 shrink-0 mt-0.5">
 								<Cpu size={20} />
 							</div>
 							<div>
@@ -445,7 +445,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										WebGPU & SIMD Acceleration
 									</h3>
 									{status.webgpu === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Active
 										</span>
 									) : (
@@ -463,7 +463,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 						</div>
 						<div className="shrink-0 text-xs font-semibold text-[#A3A09B]">
 							{status.webgpu === "granted" ? (
-								<span className="text-emerald-400 flex items-center gap-1">
+								<span className="text-sky-300 flex items-center gap-1">
 									<CheckCircle2 size={14} /> Accelerated
 								</span>
 							) : (
@@ -473,7 +473,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 					</div>
 
 					{/* 4. Camera Privileges (OCR, QR, Vision) */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
 							<div className="p-2.5 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/25 text-[#E29E2D] shrink-0 mt-0.5">
 								<Camera size={20} />
@@ -484,7 +484,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										Camera & Visual Scanner Access
 									</h3>
 									{status.camera === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Granted
 										</span>
 									) : (
@@ -509,7 +509,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 									{testingItem === "camera" ? "Testing..." : "Grant Access"}
 								</button>
 							) : (
-								<span className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+								<span className="text-sky-300 text-xs font-semibold flex items-center gap-1">
 									<CheckCircle2 size={14} /> Ready
 								</span>
 							)}
@@ -517,7 +517,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 					</div>
 
 					{/* 5. Microphone & Audio Sandbox */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
 							<div className="p-2.5 rounded-xl bg-[#E29E2D]/10 border border-[#E29E2D]/25 text-[#E29E2D] shrink-0 mt-0.5">
 								<Mic size={20} />
@@ -528,7 +528,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										Microphone & Audio Sandbox
 									</h3>
 									{status.microphone === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Granted
 										</span>
 									) : (
@@ -553,7 +553,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 									{testingItem === "microphone" ? "Testing..." : "Grant Access"}
 								</button>
 							) : (
-								<span className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+								<span className="text-sky-300 text-xs font-semibold flex items-center gap-1">
 									<CheckCircle2 size={14} /> Ready
 								</span>
 							)}
@@ -561,9 +561,9 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 					</div>
 
 					{/* 6. Clipboard Access */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
-							<div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0 mt-0.5">
+							<div className="p-2.5 rounded-xl bg-white/10 border border-white/20 text-sky-300 shrink-0 mt-0.5">
 								<Clipboard size={20} />
 							</div>
 							<div>
@@ -572,7 +572,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										System Clipboard API
 									</h3>
 									{status.clipboard === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Active
 										</span>
 									) : (
@@ -592,12 +592,12 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 								<button
 									onClick={handleRequestClipboard}
 									disabled={testingItem === "clipboard"}
-									className="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all"
+									className="px-3.5 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 text-xs font-semibold transition-all shadow-sm"
 								>
 									{testingItem === "clipboard" ? "Testing..." : "Test Access"}
 								</button>
 							) : (
-								<span className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+								<span className="text-sky-300 text-xs font-semibold flex items-center gap-1">
 									<CheckCircle2 size={14} /> Ready
 								</span>
 							)}
@@ -605,9 +605,9 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 					</div>
 
 					{/* 7. Notifications */}
-					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-emerald-500/30 transition-all">
+					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/30 transition-all">
 						<div className="flex items-start gap-3">
-							<div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 shrink-0 mt-0.5">
+							<div className="p-2.5 rounded-xl bg-white/10 border border-white/20 text-sky-300 shrink-0 mt-0.5">
 								<Bell size={20} />
 							</div>
 							<div>
@@ -616,7 +616,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 										Desktop Notifications & Task Completion
 									</h3>
 									{status.notifications === "granted" ? (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white border border-white/20 flex items-center gap-1">
 											<CheckCircle2 size={10} /> Granted
 										</span>
 									) : (
@@ -636,14 +636,14 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 								<button
 									onClick={handleRequestNotifications}
 									disabled={testingItem === "notifications"}
-									className="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition-all"
+									className="px-3.5 py-1.5 rounded-xl bg-white text-black hover:bg-neutral-200 text-xs font-semibold transition-all shadow-sm"
 								>
 									{testingItem === "notifications"
 										? "Requesting..."
 										: "Enable Alerts"}
 								</button>
 							) : (
-								<span className="text-emerald-400 text-xs font-semibold flex items-center gap-1">
+								<span className="text-sky-300 text-xs font-semibold flex items-center gap-1">
 									<CheckCircle2 size={14} /> Ready
 								</span>
 							)}
@@ -654,7 +654,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 				{/* Modal Footer */}
 				<div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#2A2D30]">
 					<div className="flex items-center gap-2 text-xs text-[#A3A09B]">
-						<Shield size={14} className="text-emerald-400" />
+						<Shield size={14} className="text-sky-300" />
 						<span>
 							Zero cloud sync. All privileges are confined to your local sandbox.
 						</span>
@@ -669,7 +669,7 @@ export const DesktopPermissionsModal: React.FC<DesktopPermissionsModalProps> = (
 						<button
 							onClick={handleGrantAll}
 							disabled={grantAllLoading}
-							className="px-5 py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 text-xs font-bold transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.1)] active:scale-95"
+							className="px-5 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-bold transition-all flex items-center gap-2 shadow-lg active:scale-95"
 						>
 							<Sparkles size={14} />
 							<span>

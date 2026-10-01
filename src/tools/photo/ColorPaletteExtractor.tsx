@@ -98,7 +98,7 @@ export const ColorPaletteExtractorTool = () => {
               <span className="text-slate-400">Swatches Count</span>
               <span className="text-slate-300 font-bold">{count} Colors</span>
             </div>
-            <input type="range" min="3" max="12" value={count} onChange={(e) => setCount(parseInt(e.target.value))} className="w-full accent-[#4E8E5E] cursor-pointer" />
+            <input type="range" min="3" max="12" value={count} onChange={(e) => setCount(parseInt(e.target.value))} className="w-full accent-white cursor-pointer" />
           </div>
 
           {colors.length > 0 ? (

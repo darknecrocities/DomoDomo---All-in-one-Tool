@@ -74,7 +74,7 @@ export const ImageUpscalerTool = () => {
               <button
                 key={s}
                 onClick={() => setScale(s)}
-                className={`py-1.5 rounded text-xs font-bold ${scale === s ? 'bg-[#4E8E5E] text-white' : 'bg-slate-900 text-slate-450 border border-slate-850'}`}
+                className={`py-1.5 rounded text-xs font-bold ${scale === s ? 'bg-white text-black' : 'bg-slate-900 text-slate-450 border border-slate-850'}`}
               >
                 {s}X
               </button>
@@ -85,13 +85,13 @@ export const ImageUpscalerTool = () => {
           <div className="flex gap-2">
             <button 
               onClick={() => setMethod('bicubic')} 
-              className={`flex-1 py-1.5 rounded text-xs font-bold ${method === 'bicubic' ? 'bg-[#4E8E5E]' : 'bg-slate-900 border border-slate-850'}`}
+              className={`flex-1 py-1.5 rounded text-xs font-bold ${method === 'bicubic' ? 'bg-white text-black' : 'bg-slate-900 border border-slate-850'}`}
             >
               Bicubic (Smooth)
             </button>
             <button 
               onClick={() => setMethod('nearest')} 
-              className={`flex-1 py-1.5 rounded text-xs font-bold ${method === 'nearest' ? 'bg-[#4E8E5E]' : 'bg-slate-900 border border-slate-850'}`}
+              className={`flex-1 py-1.5 rounded text-xs font-bold ${method === 'nearest' ? 'bg-white text-black' : 'bg-slate-900 border border-slate-850'}`}
             >
               Nearest (Pixel Art)
             </button>
