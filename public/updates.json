@@ -1,7 +1,13 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-10-01T08:12:29.937Z",
+  "buildTime": "2026-10-01T08:13:19.252Z",
   "commits": [
+    {
+      "hash": "8500150",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix: update ecosystem app categories, rename inspect to view, and redesign Explore dropdown into spacious 2-column menu"
+    },
     {
       "hash": "2076921",
       "date": "2026-10-01",
@@ -85,12 +91,6 @@
       "date": "2026-09-13",
       "author": "darknecrocities",
       "message": "docs(readme): update README with Domo Ecosystem and Explore showcase for Codepyne.io and DomoSkills"
-    },
-    {
-      "hash": "5acf40c",
-      "date": "2026-09-10",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
     }
   ]
 }
