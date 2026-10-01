@@ -13,6 +13,121 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-domoscope-github-repository-inspection-visualization',
+    title: 'Announcing DomoScope: Deep GitHub Repository Inspection, Architecture Visualization & Security Intelligence',
+    excerpt: 'DomoScope (https://domoscope.vercel.app/) officially joins the Domo ecosystem. Inspect any GitHub repository with interactive AST architecture graphs, automatic database ERDs, API catalogs, static security audits, reverse-engineering blueprints, and native Model Context Protocol (MCP) server support for AI coding agents.',
+    date: 'October 1, 2026',
+    readTime: '5 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'domoscope, github repository inspection, architecture visualizer, database erd generator, api catalog, security audit, reverse engineering blueprint, mcp server, ai coding agents, domo ecosystem, domodomo',
+    content: `# Announcing DomoScope: Deep GitHub Repository Inspection, Architecture Visualization & Security Intelligence
+
+**Platform:** [https://domoscope.vercel.app/](https://domoscope.vercel.app/)  
+**Ecosystem Partner:** DomoScope × DomoDomo × DomoSkills × Codepyne.io × DomoNote  
+**Category:** Ecosystem Announcements  
+
+---
+
+We are excited to announce that **DomoScope** has officially joined the Domo developer ecosystem!
+
+Understanding modern software projects has become one of the steepest friction points in software engineering. Repositories have grown to encompass hundreds of components, nested API routes, multifaceted database schemas, third-party microservices, and subtle security vulnerabilities. Cloning repositories locally and manually navigating dense file trees wastes precious development hours and risks running unverified scripts.
+
+**[DomoScope](https://domoscope.vercel.app/)** solves this at the root: simply paste any public GitHub repository URL, and DomoScope reverse-engineers and visualizes the entire system topology in seconds — completely inside the browser sandbox.
+
+\`\`\`text
+DOMOSCOPE_
+Inspect Any GitHub Repository. Visual Topology. Security Audit. Agent Ready.
+Paste Repo. Map Graph. Generate ERD. Audit CWE. Stream to MCP.
+\`\`\`
+
+---
+
+## 🔬 What is DomoScope?
+
+**[DomoScope](https://domoscope.vercel.app/)** is an open web platform and Model Context Protocol (MCP) engine for deep repository inspection and architectural reverse engineering. 
+
+Whether you are evaluating a new open-source dependency, onboarding onto an enterprise codebase, conducting a security pre-flight audit, or provisioning architectural context to autonomous AI coding agents like Google Antigravity or Claude Code, DomoScope gives you total codebase clarity in a single, high-contrast dashboard.
+
+---
+
+## ⚡ Core Capabilities & Architectural Pillars
+
+### 1. 🕸️ Interactive Architecture & Dependency Graph
+DomoScope parses Abstract Syntax Tree (AST) imports, component boundaries, and utility service relationships across your codebase. It synthesizes an interactive node-and-edge graph illustrating how modules connect, allowing you to trace data paths and discover circular dependencies visually.
+
+### 2. 🗄️ Database Schema & Automated ERD Generation
+Say goodbye to guessing database relationships. DomoScope detects Prisma schemas, Drizzle ORM definitions, raw SQL DDL migrations, Supabase configurations, and Mongoose schemas, instantly generating interactive Entity-Relationship Diagrams (ERDs) with types, primary keys, and foreign relationships.
+
+### 3. 🌐 API Route Catalog & Endpoint Breakdown
+Automatically dissects backend and full-stack routing layers. DomoScope catalogs endpoints for Next.js App Router, Express, FastAPI, NestJS, and Flask, displaying HTTP methods (GET, POST, PUT, DELETE), path parameters, handlers, and request middleware.
+
+### 4. 📂 Categorized Exhaustive File Registry
+Every file in the repository is indexed, categorized (components, services, API routes, database schemas, configs, styles, tests), and annotated with byte sizes and specific architectural responsibility descriptions.
+
+### 5. 🛡️ Static Security Audit & CWE Vulnerability Scanner
+Scans source files for critical software weaknesses before deployment. DomoScope flags dangerous patterns such as arbitrary code execution (\`eval\`, dynamic constructors), unvalidated request parameters, hardcoded API credentials, and insecure file handling, accompanied by actionable remediation guidelines.
+
+### 6. 📝 Reverse Engineering System Blueprint Generator
+Need to port, clone, or document a codebase? DomoScope auto-synthesizes an exhaustive reverse-engineering specification in clean Markdown, breaking down technical foundations, component trees, state dependencies, API contracts, and AI agent prompts.
+
+### 7. 🤖 Native Model Context Protocol (MCP) Server for AI Agents
+DomoScope exposes first-class tools for coding agents:
+- \`get_repository_architecture\` — Retrieve high-level frameworks and module topologies
+- \`get_reverse_engineer_blueprint\` — Synthesize comprehensive specs for LLM execution
+- \`get_database_schema\` — Extract normalized relational tables and ERD structures
+- \`get_api_catalog\` — Query discovered routes and parameter schemas
+- \`get_security_audit\` — Retrieve flagged CWE security findings
+- \`get_file_tree\` — Search and categorize repository file trees
+
+Compatible out of the box with **Google Antigravity**, **Claude Code**, **Cursor**, **OpenCode**, **Codex**, and **Gemini CLI**.
+
+### 8. 💬 Scoped AI Repository Assistant
+Ask questions directly about the inspected repository. DomoScope's built-in intelligent assistant is strictly guardrailed to answer questions within the scope of the target codebase, providing exact file references and architectural rationale.
+
+---
+
+## 🌐 How DomoScope Completes the Domo Ecosystem
+
+DomoScope introduces a vital code intelligence and repository inspection layer to our growing family of developer tools:
+
+| Platform | Role in Ecosystem | Key Capabilities |
+| :--- | :--- | :--- |
+| **DomoScope** | Repository Inspection & Architecture | AST Graphs, Database ERDs, API Catalogs, Security Audits, MCP Server |
+| **DomoDomo** | Sandboxed Developer Utilities | AI Hub Studio, 100+ Offline Browser Tools, Local AI Execution |
+| **DomoSkills** | Agent Skills Registry & CLI | 200+ Skills for Google Antigravity, Claude, Cursor, Codex |
+| **Codepyne.io** | AI/ML Upskilling Platform | Autograd Engines, Transformer Fine-Tuning, Multi-Agent Swarms |
+| **DomoNote** | Personal AI Local Secretary | Smart Notes, AI Reminders, Voice Capture, 0% Cloud Leakage |
+
+Together, these companion platforms empower developers to learn, build, inspect, secure, and automate without cloud paywalls or privacy compromises.
+
+---
+
+## 🚀 Getting Started with DomoScope
+
+DomoScope requires zero installations, no GitHub account linking, and zero API tokens to get started:
+
+1. 🌐 **Open DomoScope:** [https://domoscope.vercel.app/](https://domoscope.vercel.app/)
+2. 🔗 **Paste any public GitHub repository URL** (e.g. \`facebook/react\`, \`vercel/next.js\`, or your own projects)
+3. 🗺️ **Explore the Architecture Tab** to view module connections and AST dependencies
+4. 🗄️ **Switch to Database ERD** to visualize tables, columns, and relations
+5. 🛡️ **Inspect Security Findings** to audit code quality before shipping
+6. 🤖 **Copy the MCP configuration** to give your AI coding assistant full repository vision!
+
+---
+
+## 🔗 Explore the Full Domo Ecosystem
+
+- 🔬 **Inspect Repositories with DomoScope:** [https://domoscope.vercel.app/](https://domoscope.vercel.app/)
+- 🛠️ **Launch DomoDomo AI Hub:** [/ai-hub](/ai-hub)
+- 📦 **Explore DomoSkills:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)
+- 🐍 **Upskill with Codepyne.io:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)
+- 📒 **Start using DomoNote:** [https://domonote.vercel.app/](https://domonote.vercel.app/)
+
+*DomoScope is another huge leap toward open, transparent, and private developer tooling. Happy inspecting!*
+`
+  },
+  {
     slug: 'announcing-domonote-personal-ai-local-secretary',
     title: 'Announcing DomoNote: Your Personal AI Local Secretary Joins the Domo Ecosystem',
     excerpt: 'DomoNote (https://domonote.vercel.app/) officially joins the Domo ecosystem as our personal AI local secretary platform. Capture smart notes, set AI-powered reminders, draft documents, and manage your entire day with a fully private, offline-first AI assistant that never sends your data to the cloud.',

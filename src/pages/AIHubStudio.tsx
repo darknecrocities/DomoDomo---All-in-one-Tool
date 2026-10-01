@@ -47,6 +47,8 @@ import {
   Globe,
   Activity,
   Network,
+  GitBranch,
+  NotebookPen,
   ExternalLink
 } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
@@ -1605,6 +1607,40 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               {!sidebarCollapsed && <span>Docs & Integration</span>}
             </button>
 
+            {/* DomoScope GitHub Inspection */}
+            <a
+              href="https://domoscope.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-white/30 transition-all group"
+              title="DomoScope — GitHub Repository Inspection & Visualization"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <GitBranch size={15} className="shrink-0 text-white group-hover:scale-110 transition-transform" />
+                {!sidebarCollapsed && <span className="truncate">DomoScope</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-white transition-colors" />
+              )}
+            </a>
+
+            {/* DomoNote AI Secretary */}
+            <a
+              href="https://domonote.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-white/30 transition-all group"
+              title="DomoNote — Personal AI Local Secretary"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <NotebookPen size={15} className="shrink-0 text-white group-hover:scale-110 transition-transform" />
+                {!sidebarCollapsed && <span className="truncate">DomoNote</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-white transition-colors" />
+              )}
+            </a>
+
             {/* Codepyne.io Upskilling Platform */}
             <a
               href="https://codepyne-io.vercel.app/"
@@ -1639,6 +1675,7 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               )}
             </a>
           </nav>
+
 
           {/* Section: Train & Flow */}
           <div className="px-2 mt-1">

@@ -1,7 +1,85 @@
 {
   "version": "2.5.0",
-  "buildTime": "2026-09-24T18:36:53.080Z",
+  "buildTime": "2026-10-01T08:22:42.781Z",
   "commits": [
+    {
+      "hash": "1457327",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "8500150",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix: update ecosystem app categories, rename inspect to view, and redesign Explore dropdown into spacious 2-column menu"
+    },
+    {
+      "hash": "2076921",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "892b67a",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "fix: adjust santa hat to cap crown, make ecosystem app icons frameless with creative glow, and clean footer hints"
+    },
+    {
+      "hash": "07bb90d",
+      "date": "2026-10-01",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "c78e46f",
+      "date": "2026-10-01",
+      "author": "darknecrocities",
+      "message": "feat: integrate DomoScope into Explore menu, redesign ecosystem showcase carousel, and fix Santa hat alignment on brand logo"
+    },
+    {
+      "hash": "148285e",
+      "date": "2026-09-30",
+      "author": "github-actions[bot]",
+      "message": "chore: auto-generate public/updates.json [skip ci]"
+    },
+    {
+      "hash": "d0e7afb",
+      "date": "2026-09-30",
+      "author": "darknecrocities",
+      "message": "fix(analytics): remove sync badge, support Vercel env prefixes, and ensure visit counter increments"
+    },
+    {
+      "hash": "5527c7f",
+      "date": "2026-09-30",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "06b8608",
+      "date": "2026-09-30",
+      "author": "darknecrocities",
+      "message": "feat(analytics): sync realtime visitor counter with Firebase domodomocounter"
+    },
+    {
+      "hash": "282589f",
+      "date": "2026-09-24",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
+    {
+      "hash": "5d36997",
+      "date": "2026-09-25",
+      "author": "darknecrocities",
+      "message": "feat(ecosystem): Add DomoNote Personal AI Local Secretary to Domo Ecosystem"
+    },
+    {
+      "hash": "3636f49",
+      "date": "2026-09-14",
+      "author": "github-actions[bot]",
+      "message": "docs: update CONTRIBUTORS.md [skip ci]"
+    },
     {
       "hash": "bb811b0",
       "date": "2026-09-15",
@@ -13,84 +91,6 @@
       "date": "2026-09-13",
       "author": "github-actions[bot]",
       "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "dc2bde5",
-      "date": "2026-09-13",
-      "author": "darknecrocities",
-      "message": "docs(readme): update README with Domo Ecosystem and Explore showcase for Codepyne.io and DomoSkills"
-    },
-    {
-      "hash": "5acf40c",
-      "date": "2026-09-10",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "bcf36b4",
-      "date": "2026-09-10",
-      "author": "darknecrocities",
-      "message": "feat(ecosystem): integrate Codepyne.io in navigation and dashboard, publish blog announcement, and rename Desktop Client to Download"
-    },
-    {
-      "hash": "157d27d",
-      "date": "2026-09-08",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "e6accbd",
-      "date": "2026-09-08",
-      "author": "darknecrocities",
-      "message": "fix(blog): escape code block backticks in DomoSkills announcement post"
-    },
-    {
-      "hash": "c1cac7f",
-      "date": "2026-09-08",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "8fc3a77",
-      "date": "2026-09-08",
-      "author": "darknecrocities",
-      "message": "docs: update DomoSkills announcement blog in DomoDomo credited to Arron Parejas"
-    },
-    {
-      "hash": "abf7061",
-      "date": "2026-09-05",
-      "author": "github-actions[bot]",
-      "message": "docs: update CONTRIBUTORS.md [skip ci]"
-    },
-    {
-      "hash": "c4d1322",
-      "date": "2026-09-05",
-      "author": "darknecrocities",
-      "message": "feat(photo,pdf): add Canon CR2 to PNG batch converter & multiline text alignment in PDF editor"
-    },
-    {
-      "hash": "b8727b7",
-      "date": "2026-09-02",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "3e0619b",
-      "date": "2026-09-02",
-      "author": "darknecrocities",
-      "message": "refactor(ui): remove ecosystem project and vercel badges from domoskills cards"
-    },
-    {
-      "hash": "c43549a",
-      "date": "2026-09-02",
-      "author": "github-actions[bot]",
-      "message": "chore: auto-generate public/updates.json [skip ci]"
-    },
-    {
-      "hash": "923db51",
-      "date": "2026-09-02",
-      "author": "darknecrocities",
-      "message": "feat(nav): streamline navbar with dropdown menus and unclutter header UI"
     }
   ]
 }

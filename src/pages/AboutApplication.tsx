@@ -629,7 +629,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.7.0 (Latest)",
+                    version: "v2.8.0 (Latest)",
+                    date: "October 1, 2026",
+                    title: "DomoScope GitHub Inspection & Reverse-Engineering Platform Integration & Ecosystem Showcase Redesign",
+                    changes: [
+                      "DomoScope Ecosystem Partnership: Official integration with https://domoscope.vercel.app/ — deep GitHub repository architecture visualization, AST dependency graphs, automated database ERDs, API catalogs, security vulnerability audits, and native Model Context Protocol (MCP) server for autonomous agents.",
+                      "Explore Menu & Navigation Updates: Added DomoScope to the Explore / Ecosystem navigation menu, mobile drawer, and platform footer.",
+                      "Animated Ecosystem Showcase Carousel: Redesigned the Dashboard ecosystem section into a continuous, non-stop looping monochrome carousel with black-and-white logos, interactive animated popup modal cards with rich descriptions, recommendations, and direct application launch buttons."
+                    ]
+                  },
+                  {
+                    version: "v2.7.0",
                     date: "September 25, 2026",
                     title: "DomoNote Personal AI Secretary Integration & Ecosystem Expansion",
                     changes: [

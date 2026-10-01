@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
+import {
+  isFirebaseConfigured,
+  recordVisitToFirebase,
+  subscribeToFirebaseVisits
+} from './firebase';
 
 const INITIAL_BASE_COUNT = 8180;
 const STORAGE_KEY = 'domodomo_active_users_count';
-const SESSION_KEY = 'domodomo_session_tracked';
+const LAST_VISIT_TIMESTAMP_KEY = 'domodomo_last_visit_timestamp';
 const EVENT_NAME = 'domodomo_count_updated';
+const VISIT_DEBOUNCE_MS = 5000; // 5s debounce to prevent double-firing in React 19 StrictMode
 
 /**
  * Gets the current stored visit count from localStorage or returns base count (8,180).
@@ -56,32 +62,85 @@ export function formatCount(count: number): string {
 }
 
 /**
- * React hook to manage visit count starting at 8,180.
- * Zero clickListeners, zero external API calls.
+ * React hook to manage real-time visit count starting at 8,180.
+ * Automatically synchronizes with Firebase in real time if configured,
+ * and increments on each visit with resilient local storage fallback.
  */
 export function useVisitCounter(_trackClicks?: boolean) {
   const [count, setCount] = useState<number>(() => {
     return getStoredVisitCount();
   });
 
-  // Increment visit count once on initial session mount
+  // Track visit on mount (with 5-second debounce)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    try {
-      const sessionTracked = sessionStorage.getItem(SESSION_KEY);
-      if (!sessionTracked) {
-        sessionStorage.setItem(SESSION_KEY, 'true');
-        const updated = incrementVisitCount(1);
+    let isMounted = true;
+
+    const trackVisit = async () => {
+      const now = Date.now();
+      let lastVisit = 0;
+      try {
+        const lastVisitStr = sessionStorage.getItem(LAST_VISIT_TIMESTAMP_KEY);
+        lastVisit = lastVisitStr ? parseInt(lastVisitStr, 10) : 0;
+      } catch {
+        lastVisit = 0;
+      }
+
+      // 5-second debounce to prevent React 19 StrictMode double-mounting
+      if (now - lastVisit < VISIT_DEBOUNCE_MS) {
+        return;
+      }
+
+      try {
+        sessionStorage.setItem(LAST_VISIT_TIMESTAMP_KEY, now.toString());
+      } catch {
+        // Ignore sessionStorage restrictions in private browsing
+      }
+
+      if (isFirebaseConfigured()) {
+        try {
+          const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
+          if (remoteTotal && isMounted) {
+            const updated = setStoredVisitCount(remoteTotal);
+            setCount(updated);
+            return;
+          }
+        } catch (err) {
+          console.warn('[VisitCounter] Failed to record visit in Firebase, using local fallback:', err);
+        }
+      }
+
+      // If Firebase failed, returned null, or not configured: increment locally
+      const updated = incrementVisitCount(1);
+      if (isMounted) {
         setCount(updated);
       }
-    } catch (e) {
-      const updated = incrementVisitCount(1);
-      setCount(updated);
-    }
+    };
+
+    trackVisit();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Sync state across browser tabs & components
+  // Real-time synchronization subscription with Firebase
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!isFirebaseConfigured()) return;
+
+    const unsubscribe = subscribeToFirebaseVisits(INITIAL_BASE_COUNT, (liveCount) => {
+      const persisted = setStoredVisitCount(liveCount);
+      setCount(persisted);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Sync state across browser tabs & components via storage events and custom events
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -112,7 +171,20 @@ export function useVisitCounter(_trackClicks?: boolean) {
     };
   }, []);
 
-  const manuallyIncrement = useCallback((step: number = 1) => {
+  const manuallyIncrement = useCallback(async (step: number = 1) => {
+    if (isFirebaseConfigured()) {
+      try {
+        const remoteTotal = await recordVisitToFirebase(INITIAL_BASE_COUNT);
+        if (remoteTotal) {
+          const updated = setStoredVisitCount(remoteTotal);
+          setCount(updated);
+          return;
+        }
+      } catch (e) {
+        console.warn('[VisitCounter] Manual remote increment error:', e);
+      }
+    }
+
     const next = incrementVisitCount(step);
     setCount(next);
   }, []);

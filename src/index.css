@@ -11,28 +11,36 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   /* Light Mode - Monochrome Bamboo */
-  --background: #f9f9f9;
+  --background: #f8f9fa;
   --card: #ffffff;
-  --text: #1a1c1c;
-  --text-secondary: #444748;
-  --text-tertiary: #747878;
+  --card-rgb: 255, 255, 255;
+  --text: #111315;
+  --text-secondary: #3c4043;
+  --text-tertiary: #5f6368;
   --primary: #000000;
   --primary-hover: #1c1b1b;
   --primary-rgb: 0, 0, 0;
   --secondary: #5e5e5e;
-  --secondary-hover: #636262;
-  --accent: #5f5e5e;
-  --border: #c4c7c7;
-  --surface-dim: #f3f3f3;
-  --surface-container: #eeeeee;
-  --primary-glow: rgba(0, 0, 0, 0.02);
+  --secondary-hover: #454545;
+  --accent: #202124;
+  --border: #d2d6dc;
+  --surface-dim: #f1f3f4;
+  --surface-container: #e8eaed;
+  --primary-glow: rgba(0, 0, 0, 0.03);
+}
+
+html.light {
+  color-scheme: light;
 }
 
 :root:not(.light),
-.dark {
+.dark,
+html.dark {
   /* Dark Mode - Panda Charcoal (Default) */
+  color-scheme: dark;
   --background: #0d0d0d;
   --card: #18191B;
+  --card-rgb: 24, 25, 27;
   --text: #f9f9f9;
   --text-secondary: #c7c6c6;
   --text-tertiary: #858383;
@@ -303,11 +311,16 @@
 @layer utilities {
 
   /* Tailwind Static Hex Color Class Overrides to support dynamic dark/light swapping */
-  .bg-\[\#111213\] {
-    background-color: var(--background) !important;
-  }
-
-  .bg-\[\#0A0B0C\] {
+  .bg-\[\#111213\],
+  .bg-\[\#0A0B0C\],
+  .bg-\[\#0C0D0E\],
+  .bg-\[\#0c0d0e\],
+  .bg-\[\#0D0E0F\],
+  .bg-\[\#0B0F19\],
+  .bg-\[\#070809\],
+  .bg-\[\#131416\],
+  .bg-\[\#141517\],
+  .bg-\[\#151618\] {
     background-color: var(--background) !important;
   }
 
@@ -315,16 +328,54 @@
     background-color: var(--card) !important;
   }
 
-  .bg-\[\#1E2022\] {
+  .bg-\[\#1E2022\],
+  .bg-\[\#1D2022\],
+  .bg-\[\#1A1B1E\],
+  .bg-\[\#1C1D1F\],
+  .bg-\[\#1e1e1e\],
+  .bg-\[\#222426\] {
     background-color: var(--surface-dim) !important;
   }
 
-  .bg-\[\#2A2D30\] {
+  .bg-\[\#2A2D30\],
+  .bg-\[\#25282B\],
+  .bg-\[\#282a2e\],
+  .bg-\[\#3A3D40\],
+  .bg-\[\#3C3F44\] {
     background-color: var(--surface-container) !important;
   }
 
+  /* Opacity variants for dark hex backgrounds */
+  .bg-\[\#18191B\]\/95,
+  .bg-\[\#18191B\]\/90,
+  .bg-\[\#18191B\]\/85,
+  .bg-\[\#18191B\]\/80,
+  .bg-\[\#18191B\]\/70,
+  .bg-\[\#18191B\]\/60,
+  .bg-\[\#18191B\]\/50,
+  .bg-\[\#18191B\]\/40 {
+    background-color: rgba(var(--card-rgb, 255, 255, 255), 0.95) !important;
+  }
+
+  .bg-\[\#111213\]\/90,
+  .bg-\[\#111213\]\/80,
+  .bg-\[\#111213\]\/60,
+  .bg-\[\#111213\]\/40,
+  .bg-\[\#111213\]\/25 {
+    background-color: rgba(var(--primary-rgb), 0.05) !important;
+  }
+
+  .bg-\[\#1E2022\]\/60,
+  .bg-\[\#1E2022\]\/40,
+  .bg-\[\#141517\]\/50,
+  .bg-\[\#151C2C\]\/50,
   .bg-\[\#151C2C\]\/60 {
     background-color: var(--surface-dim) !important;
+  }
+
+  .bg-\[\#2A2D30\]\/80,
+  .bg-\[\#2A2D30\]\/50 {
+    background-color: var(--surface-container) !important;
   }
 
   .bg-slate-950\/40 {
@@ -335,32 +386,26 @@
     background-color: var(--surface-dim) !important;
   }
 
-  .bg-\[\#222426\] {
-    background-color: var(--surface-dim) !important;
-  }
-
-  .bg-\[\#1D2022\] {
-    background-color: var(--surface-dim) !important;
-  }
-
   .bg-black\/20 {
     background-color: rgba(var(--primary-rgb), 0.08) !important;
   }
 
-  .border-\[\#2A2D30\] {
-    border-color: var(--border) !important;
-  }
-
-  .border-\[\#3C3F44\] {
+  /* Borders */
+  .border-\[\#2A2D30\],
+  .border-\[\#2a2d30\],
+  .border-\[\#3C3F44\],
+  .border-\[\#4A4D52\],
+  .border-\[\#3A3D40\],
+  .border-\[\#33363A\] {
     border-color: var(--border) !important;
   }
 
   .border-\[\#52565A\] {
-    border-color: var(--text-tertiary) !important;
+    border-color: var(--border) !important;
   }
 
   .hover\:border-\[\#52565A\]:hover {
-    border-color: var(--text-tertiary) !important;
+    border-color: var(--text-secondary) !important;
   }
 
   .hover\:border-\[\#3C3F44\]:hover {
@@ -371,18 +416,30 @@
     background-color: var(--surface-container) !important;
   }
 
+  .hover\:bg-\[\#25282B\]:hover {
+    background-color: var(--surface-container) !important;
+  }
+
   .hover\:bg-\[\#222426\]:hover {
     background-color: var(--surface-dim) !important;
   }
 
+  .hover\:bg-\[\#1C1D1F\]:hover,
+  .hover\:bg-\[\#1E2022\]:hover,
+  .hover\:bg-\[\#18191B\]:hover,
+  .hover\:bg-\[\#111213\]:hover {
+    background-color: var(--surface-dim) !important;
+  }
+
   .focus\:border-\[\#52565A\]:focus {
-    border-color: var(--text-tertiary) !important;
+    border-color: var(--primary) !important;
   }
 
   .focus\:ring-\[\#52565A\]\/40:focus {
     --tw-ring-color: rgba(var(--primary-rgb), 0.15) !important;
   }
 
+  /* Text Colors */
   .text-\[\#C5C3C0\] {
     color: var(--text-secondary) !important;
   }
@@ -391,7 +448,18 @@
     color: var(--text) !important;
   }
 
+  .text-\[\#ECEBE9\]\/95,
+  .text-\[\#ECEBE9\]\/90,
+  .text-\[\#ECEBE9\]\/80,
+  .text-\[\#ECEBE9\]\/70 {
+    color: var(--text) !important;
+  }
+
   .text-\[\#A3A09B\] {
+    color: var(--text-secondary) !important;
+  }
+
+  .text-\[\#A3A09B\]\/70 {
     color: var(--text-secondary) !important;
   }
 
@@ -399,203 +467,387 @@
     color: var(--text-tertiary) !important;
   }
 
-  .text-\[\#4E8E5E\] {
-    color: var(--primary) !important;
-  }
-
-  .text-\[\#3C6B4D\] {
-    color: var(--primary) !important;
-  }
-
+  .text-\[\#4E8E5E\],
+  .text-\[\#3C6B4D\],
   .text-emerald-400 {
     color: var(--primary) !important;
   }
 
+  .hover\:text-\[\#ECEBE9\]:hover {
+    color: var(--text) !important;
+  }
+
   /* Override static Tailwind text colors to support dynamic dark/light swapping */
-  .text-slate-50 {
-    color: var(--text) !important;
-  }
-
-  .text-slate-100 {
-    color: var(--text) !important;
-  }
-
-  .text-slate-200 {
-    color: var(--text) !important;
-  }
-
-  .text-slate-300 {
-    color: var(--text) !important;
-  }
-
-  .text-slate-350 {
-    color: var(--text) !important;
-  }
-
-  .text-slate-400 {
-    color: var(--text-secondary) !important;
-  }
-
-  .text-slate-450 {
-    color: var(--text-secondary) !important;
-  }
-
-  .text-slate-500 {
-    color: var(--text-tertiary) !important;
-  }
-
-  .text-slate-600 {
-    color: var(--text-tertiary) !important;
-  }
-
-  .text-slate-700 {
-    color: var(--text-tertiary) !important;
-  }
-
-  .text-gray-50 {
-    color: var(--text) !important;
-  }
-
-  .text-gray-100 {
-    color: var(--text) !important;
-  }
-
-  .text-gray-200 {
-    color: var(--text) !important;
-  }
-
-  .text-gray-300 {
-    color: var(--text) !important;
-  }
-
-  .text-gray-400 {
-    color: var(--text-secondary) !important;
-  }
-
-  .text-gray-500 {
-    color: var(--text-tertiary) !important;
-  }
-
-  .text-zinc-50 {
-    color: var(--text) !important;
-  }
-
-  .text-zinc-100 {
-    color: var(--text) !important;
-  }
-
-  .text-zinc-200 {
-    color: var(--text) !important;
-  }
-
-  .text-zinc-300 {
-    color: var(--text) !important;
-  }
-
-  .text-zinc-400 {
-    color: var(--text-secondary) !important;
-  }
-
-  .text-zinc-500 {
-    color: var(--text-tertiary) !important;
-  }
-
-  .text-neutral-50 {
-    color: var(--text) !important;
-  }
-
-  .text-neutral-100 {
-    color: var(--text) !important;
-  }
-
-  .text-neutral-200 {
-    color: var(--text) !important;
-  }
-
-  .text-neutral-300 {
-    color: var(--text) !important;
-  }
-
-  .text-neutral-400 {
-    color: var(--text-secondary) !important;
-  }
-
-  .text-neutral-500 {
-    color: var(--text-tertiary) !important;
-  }
-
-  .text-stone-50 {
-    color: var(--text) !important;
-  }
-
-  .text-stone-100 {
-    color: var(--text) !important;
-  }
-
-  .text-stone-200 {
-    color: var(--text) !important;
-  }
-
+  .text-slate-50,
+  .text-slate-100,
+  .text-slate-200,
+  .text-slate-300,
+  .text-slate-350,
+  .text-gray-50,
+  .text-gray-100,
+  .text-gray-200,
+  .text-gray-300,
+  .text-zinc-50,
+  .text-zinc-100,
+  .text-zinc-200,
+  .text-zinc-300,
+  .text-neutral-50,
+  .text-neutral-100,
+  .text-neutral-200,
+  .text-neutral-300,
+  .text-stone-50,
+  .text-stone-100,
+  .text-stone-200,
   .text-stone-300 {
     color: var(--text) !important;
   }
 
+  .text-slate-400,
+  .text-slate-450,
+  .text-gray-400,
+  .text-zinc-400,
+  .text-neutral-400,
   .text-stone-400 {
     color: var(--text-secondary) !important;
   }
 
+  .text-slate-500,
+  .text-slate-600,
+  .text-slate-700,
+  .text-gray-500,
+  .text-zinc-500,
+  .text-neutral-500,
   .text-stone-500 {
     color: var(--text-tertiary) !important;
   }
 
-  /* In light mode, text-white should become dark text (var(--text)), unless on buttons, links, or inside colored bg elements */
+  /* =========================================================
+     LIGHT MODE COMPLETE POLISH & COMPATIBILITY LAYER
+     ========================================================= */
+
+  /* In light mode, default text-white becomes dark text (var(--text)) */
   .light .text-white {
     color: var(--text) !important;
   }
 
-  .light button.text-white,
-  .light button .text-white,
-  .light a.text-white,
-  .light a .text-white,
+  /* Only genuine dark/black elements or buttons retain white text in light mode */
   .light .btn-primary,
   .light .btn-primary *,
-  .light [class*="bg-indigo"].text-white,
-  .light [class*="bg-indigo"] .text-white,
-  .light [class*="bg-teal"].text-white,
-  .light [class*="bg-teal"] .text-white,
-  .light [class*="bg-rose"].text-white,
-  .light [class*="bg-rose"] .text-white,
-  .light [class*="bg-emerald"].text-white,
-  .light [class*="bg-emerald"] .text-white,
-  .light [class*="bg-green"].text-white,
-  .light [class*="bg-green"] .text-white,
-  .light [class*="bg-red"].text-white,
-  .light [class*="bg-red"] .text-white,
-  .light [class*="bg-violet"].text-white,
-  .light [class*="bg-violet"] .text-white,
-  .light [class*="bg-sky"].text-white,
-  .light [class*="bg-sky"] .text-white,
-  .light [class*="bg-cyan"].text-white,
-  .light [class*="bg-cyan"] .text-white,
-  .light [class*="bg-orange"].text-white,
-  .light [class*="bg-orange"] .text-white,
-  .light [class*="bg-amber"].text-white,
-  .light [class*="bg-amber"] .text-white,
-  .light [class*="bg-[#3C6B4D]"].text-white,
-  .light [class*="bg-[#3C6B4D]"] .text-white,
-  .light [class*="bg-[#4E8E5E]"].text-white,
-  .light [class*="bg-[#4E8E5E]"] .text-white,
-  .light [class*="bg-blue"].text-white,
-  .light [class*="bg-blue"] .text-white,
-  .light [class*="bg-purple"].text-white,
-  .light [class*="bg-purple"] .text-white {
+  .light .bg-black,
+  .light .bg-black *,
+  .light [class*="bg-black"],
+  .light [class*="bg-black"] *,
+  .light [class*="bg-[#000]"],
+  .light [class*="bg-[#000]"] *,
+  .light [class*="bg-[#000000]"],
+  .light [class*="bg-[#000000]"] *,
+  .light [class*="bg-[#0D0D0D]"],
+  .light [class*="bg-[#0D0D0D]"] *,
+  .light [class*="bg-[#0d0d0d]"],
+  .light [class*="bg-[#0d0d0d]"] *,
+  .light [class*="bg-indigo-6"],
+  .light [class*="bg-indigo-7"],
+  .light [class*="bg-indigo-8"],
+  .light [class*="bg-indigo-9"],
+  .light [class*="bg-teal-6"],
+  .light [class*="bg-teal-7"],
+  .light [class*="bg-teal-8"],
+  .light [class*="bg-rose-6"],
+  .light [class*="bg-rose-7"],
+  .light [class*="bg-rose-8"],
+  .light [class*="bg-emerald-6"],
+  .light [class*="bg-emerald-7"],
+  .light [class*="bg-emerald-8"],
+  .light [class*="bg-green-6"],
+  .light [class*="bg-green-7"],
+  .light [class*="bg-green-8"],
+  .light [class*="bg-red-6"],
+  .light [class*="bg-red-7"],
+  .light [class*="bg-red-8"],
+  .light [class*="bg-violet-6"],
+  .light [class*="bg-violet-7"],
+  .light [class*="bg-violet-8"],
+  .light [class*="bg-sky-6"],
+  .light [class*="bg-sky-7"],
+  .light [class*="bg-sky-8"],
+  .light [class*="bg-blue-6"],
+  .light [class*="bg-blue-7"],
+  .light [class*="bg-blue-8"],
+  .light [class*="bg-purple-6"],
+  .light [class*="bg-purple-7"],
+  .light [class*="bg-purple-8"],
+  .light [class*="bg-[#3C6B4D]"],
+  .light [class*="bg-[#3C6B4D]"] *,
+  .light [class*="bg-[#4E8E5E]"],
+  .light [class*="bg-[#4E8E5E]"] * {
     color: #ffffff !important;
   }
 
-  .border-\[\#2A2D30\] {
+  /* Active Indicator underlines */
+  .light .h-0\.5.bg-white,
+  .light .h-1.bg-white,
+  .light .h-\[2px\].bg-white {
+    background-color: var(--primary) !important;
+  }
+
+  /* Hover to dark in light mode */
+  .light .hover\:text-white:hover {
+    color: var(--primary) !important;
+  }
+
+  /* Light Mode Translucent White / Frosted Glass Overrides */
+  .light [class*="bg-white/5"],
+  .light .bg-white\/5 {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+  }
+  .light [class*="bg-white/10"],
+  .light .bg-white\/10 {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+  .light [class*="bg-white/15"],
+  .light .bg-white\/15 {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+  }
+  .light [class*="bg-white/20"],
+  .light .bg-white\/20 {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+  }
+  .light [class*="bg-white/30"],
+  .light .bg-white\/30 {
+    background-color: rgba(0, 0, 0, 0.16) !important;
+  }
+  .light [class*="bg-white/40"],
+  .light .bg-white\/40 {
+    background-color: rgba(0, 0, 0, 0.22) !important;
+  }
+  .light .hover\:bg-white\/10:hover {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  .light .hover\:bg-white\/15:hover {
+    background-color: rgba(0, 0, 0, 0.09) !important;
+  }
+  .light .hover\:bg-white\/20:hover {
+    background-color: rgba(0, 0, 0, 0.14) !important;
+  }
+  .light .hover\:bg-white\/30:hover {
+    background-color: rgba(0, 0, 0, 0.20) !important;
+  }
+
+  /* Light Mode Translucent White Borders */
+  .light [class*="border-white/5"],
+  .light .border-white\/5 {
+    border-color: rgba(0, 0, 0, 0.06) !important;
+  }
+  .light [class*="border-white/10"],
+  .light .border-white\/10 {
+    border-color: rgba(0, 0, 0, 0.10) !important;
+  }
+  .light [class*="border-white/15"],
+  .light .border-white\/15 {
+    border-color: rgba(0, 0, 0, 0.14) !important;
+  }
+  .light [class*="border-white/20"],
+  .light .border-white\/20 {
+    border-color: rgba(0, 0, 0, 0.18) !important;
+  }
+  .light [class*="border-white/30"],
+  .light .border-white\/30 {
+    border-color: rgba(0, 0, 0, 0.24) !important;
+  }
+  .light [class*="border-white/40"],
+  .light .border-white\/40 {
+    border-color: rgba(0, 0, 0, 0.32) !important;
+  }
+  .light .hover\:border-white\/30:hover {
+    border-color: rgba(0, 0, 0, 0.30) !important;
+  }
+  .light .hover\:border-white\/40:hover {
+    border-color: rgba(0, 0, 0, 0.40) !important;
+  }
+  .light .hover\:border-white\/50:hover {
+    border-color: rgba(0, 0, 0, 0.50) !important;
+  }
+
+  /* Light Mode Translucent White Text */
+  .light .text-white\/40 {
+    color: rgba(17, 19, 21, 0.45) !important;
+  }
+  .light .text-white\/50 {
+    color: rgba(17, 19, 21, 0.55) !important;
+  }
+  .light .text-white\/60 {
+    color: rgba(17, 19, 21, 0.65) !important;
+  }
+  .light .text-white\/70 {
+    color: rgba(17, 19, 21, 0.75) !important;
+  }
+  .light .text-white\/80 {
+    color: rgba(17, 19, 21, 0.85) !important;
+  }
+  .light .text-white\/90 {
+    color: rgba(17, 19, 21, 0.95) !important;
+  }
+
+  /* Slate, Zinc, Neutral, Gray Containers & Borders in Light Mode */
+  .light .bg-slate-950,
+  .light .bg-zinc-950,
+  .light .bg-neutral-950,
+  .light .bg-gray-950 {
+    background-color: var(--card) !important;
+  }
+
+  .light .bg-slate-900,
+  .light .bg-zinc-900,
+  .light .bg-neutral-900,
+  .light .bg-gray-900 {
+    background-color: var(--surface-dim) !important;
+  }
+
+  .light .bg-slate-850,
+  .light .bg-slate-800,
+  .light .bg-slate-750,
+  .light .bg-slate-700,
+  .light .bg-zinc-850,
+  .light .bg-zinc-800,
+  .light .bg-neutral-800,
+  .light .bg-gray-800 {
+    background-color: var(--surface-container) !important;
+  }
+
+  .light [class*="bg-slate-950/"],
+  .light [class*="bg-slate-900/"],
+  .light [class*="bg-zinc-950/"],
+  .light [class*="bg-black/20"],
+  .light [class*="bg-black/30"],
+  .light [class*="bg-black/40"] {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .light .border-slate-950,
+  .light .border-slate-900,
+  .light .border-slate-850,
+  .light .border-slate-800,
+  .light .border-slate-700,
+  .light .border-zinc-900,
+  .light .border-zinc-800,
+  .light .border-zinc-700,
+  .light .border-neutral-900,
+  .light .border-neutral-800,
+  .light .border-gray-900,
+  .light .border-gray-800 {
     border-color: var(--border) !important;
   }
 
+  /* Pastel Text Tuning for Ultra-Crisp Light Backgrounds */
+  .light .text-sky-300,
+  .light .text-sky-400 {
+    color: #0284c7 !important;
+  }
+  .light .text-blue-300,
+  .light .text-blue-400 {
+    color: #1d4ed8 !important;
+  }
+  .light .text-amber-300,
+  .light .text-amber-400 {
+    color: #b45309 !important;
+  }
+  .light .text-emerald-300,
+  .light .text-emerald-400 {
+    color: #047857 !important;
+  }
+  .light .text-teal-300,
+  .light .text-teal-400 {
+    color: #0f766e !important;
+  }
+  .light .text-rose-300,
+  .light .text-rose-400 {
+    color: #be123c !important;
+  }
+  .light .text-purple-300,
+  .light .text-purple-400,
+  .light .text-violet-300,
+  .light .text-violet-400 {
+    color: #6d28d9 !important;
+  }
+  .light .text-yellow-300,
+  .light .text-yellow-400 {
+    color: #b45309 !important;
+  }
+
+  /* Specific Award & Gold Badges in Light Mode */
+  .light .text-\[\#d4af37\],
+  .light [class*="text-[#d4af37]"] {
+    color: #966f1c !important;
+  }
+  .light .border-\[\#d4af37\]\/40 {
+    border-color: rgba(150, 111, 28, 0.4) !important;
+  }
+
+  /* Tool Links and "Open →" Arrow in Light Mode */
+  .light .text-\[\#E29E2D\] {
+    color: #b45309 !important;
+  }
+
+  /* Primary CTA Buttons Inversion on Light Cards */
+  .light a[class~="bg-white"][class~="text-black"],
+  .light button[class~="bg-white"][class~="text-black"] {
+    background-color: var(--primary) !important;
+    color: #ffffff !important;
+    border: 1px solid transparent !important;
+  }
+  .light a[class~="bg-white"][class~="text-black"]:hover,
+  .light button[class~="bg-white"][class~="text-black"]:hover {
+    background-color: var(--primary-hover) !important;
+    color: #ffffff !important;
+  }
+
+  /* Native Form Controls in Light Mode */
+  .light input[type="range"] {
+    background-color: var(--surface-container) !important;
+    accent-color: var(--primary) !important;
+  }
+  .light input[type="checkbox"] {
+    accent-color: var(--primary) !important;
+  }
+  .light select option {
+    background-color: var(--card);
+    color: var(--text);
+  }
+  .light input::placeholder,
+  .light textarea::placeholder {
+    color: var(--text-tertiary) !important;
+  }
+
+  /* Code Blocks & Terminal Console in Light Mode */
+  .light pre {
+    color: var(--text);
+  }
+  .light code {
+    color: inherit;
+  }
+  .light .group\/terminal .bg-\[\#111213\] {
+    background-color: var(--surface-dim) !important;
+    border-color: var(--border) !important;
+  }
+  .light .group\/terminal .bg-\[\#18191B\] {
+    background-color: var(--surface-container) !important;
+    border-color: var(--border) !important;
+  }
+  .light .group\/terminal .text-\[\#ECEBE9\] {
+    color: var(--text) !important;
+    font-weight: 600;
+  }
+  .light .group\/terminal .text-\[\#72706C\] {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Modal Backdrops in Light Mode */
+  .light .bg-black\/80,
+  .light .bg-\[\#0A0B0C\]\/85 {
+    background-color: rgba(15, 23, 42, 0.45) !important;
+  }
+
+  /* Borders & Highlights for domo themed green/emerald fallback */
   .border-\[\#3C6B4D\] {
     border-color: var(--primary) !important;
   }
@@ -610,26 +862,6 @@
 
   .hover\:bg-\[\#2E533B\]:hover {
     background-color: var(--primary-hover) !important;
-  }
-
-  .hover\:bg-\[\#25282B\]:hover {
-    background-color: var(--surface-container) !important;
-  }
-
-  .hover\:bg-\[\#1C1D1F\]:hover {
-    background-color: var(--surface-dim) !important;
-  }
-
-  .hover\:bg-\[\#1E2022\]:hover {
-    background-color: var(--surface-dim) !important;
-  }
-
-  .hover\:bg-\[\#111213\]:hover {
-    background-color: var(--surface-dim) !important;
-  }
-
-  .hover\:text-\[\#ECEBE9\]:hover {
-    color: var(--text) !important;
   }
 
   .hover\:border-\[\#3C6B4D\]\/40:hover {
@@ -745,6 +977,17 @@
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+@keyframes popupScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -928,4 +1171,49 @@
 }
 .markdown-chat-content tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Light mode overrides for Markdown Chat Content */
+.light .markdown-chat-content {
+  color: var(--text);
+}
+.light .markdown-chat-content strong {
+  color: var(--text);
+}
+.light .markdown-chat-content em {
+  color: var(--text-secondary);
+}
+.light .markdown-chat-content code {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: var(--text);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.light .markdown-chat-content h1,
+.light .markdown-chat-content h2,
+.light .markdown-chat-content h3,
+.light .markdown-chat-content h4 {
+  color: var(--text);
+  border-color: var(--border);
+}
+.light .markdown-chat-content blockquote {
+  border-left-color: var(--border);
+  background-color: var(--surface-dim);
+  color: var(--text-secondary);
+}
+.light .markdown-chat-content hr {
+  border-top-color: var(--border);
+}
+.light .markdown-chat-content a {
+  color: #0284c7;
+}
+.light .markdown-chat-content th,
+.light .markdown-chat-content td {
+  border-color: var(--border);
+}
+.light .markdown-chat-content th {
+  background-color: var(--surface-dim);
+  color: var(--text);
+}
+.light .markdown-chat-content tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
 }

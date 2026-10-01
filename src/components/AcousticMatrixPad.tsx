@@ -290,8 +290,8 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
           className="absolute inset-0 pointer-events-none opacity-60"
           style={{
             backgroundImage: `
-              radial-gradient(circle, rgba(255, 255, 255, 0.25) 1.2px, transparent 1.2px),
-              radial-gradient(circle, rgba(255, 255, 255, 0.08) 1.8px, transparent 1.8px)
+              radial-gradient(circle, rgba(var(--primary-rgb), 0.25) 1.2px, transparent 1.2px),
+              radial-gradient(circle, rgba(var(--primary-rgb), 0.08) 1.8px, transparent 1.8px)
             `,
             backgroundSize: '20px 20px, 40px 40px',
             backgroundPosition: '0 0, 10px 10px',
@@ -299,7 +299,7 @@ export const AcousticMatrixPad: React.FC<AcousticMatrixPadProps> = ({ onSelectSw
         />
 
         {/* Ambient Radial Center Glow */}
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(var(--primary-rgb),0.06)_0%,transparent_70%)]" />
 
         {/* Quadrant Axis Lines */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#2A2D30] to-transparent pointer-events-none" />
