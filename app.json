@@ -1,0 +1,10 @@
+{
+  "name": "DomoDomo",
+  "slug": "domodomo",
+  "category": "utilities",
+  "tagline": "100% client-side agentic AI & local-first offline toolbox for developers and creators.",
+  "description": "DomoDomo is an open-source, 100% client-side agentic AI platform and productivity workshop. Run multi-agent orchestrations, local MCP tool execution, document conversions, OCR scanning, and media editing entirely in your browser without cloud dependencies.",
+  "homepage_url": "https://domodomo.site",
+  "support_url": "mailto:parejasarronkian@gmail.com",
+  "privacy_url": "https://domodomo.site/privacy"
+}

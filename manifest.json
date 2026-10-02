@@ -1,0 +1,41 @@
+{
+  "schema": 2,
+  "required_executas": [],
+  "optional_executas": [],
+  "permissions": [
+    "storage.read",
+    "storage.write",
+    "chat.append_artifact",
+    "llm.complete"
+  ],
+  "system_prompt_addendum": "You are DomoDomo Assistant. When the user wants to convert files, process documents, edit media, run local AI tools, or execute utility pipelines, summon DomoDomo via open_app_view('main'). Help users complete client-side processing tasks smoothly.",
+  "user_message_prefix_template": "[DomoDomo] {user_message}",
+  "tags": ["utilities", "productivity", "developer-tools", "tools", "privacy"],
+  "ui": {
+    "bundle": {
+      "format": "static-spa",
+      "entry": "index.html",
+      "external_origins": []
+    },
+    "views": [
+      {
+        "name": "main",
+        "title": "DomoDomo - Client-Side AI & Productivity Toolbox",
+        "default": true,
+        "entry": "index.html",
+        "min_size": { "w": 640, "h": 480 },
+        "default_size": { "w": 1280, "h": 800 },
+        "max_size": { "w": 2560, "h": 1440 },
+        "single_instance": true,
+        "summary_template": "DomoDomo Studio"
+      }
+    ],
+    "host_api": {
+      "chat": ["append_artifact"],
+      "storage": ["get", "set", "delete", "list"],
+      "window": ["set_title", "open_view", "close"],
+      "llm": ["complete", "stream"]
+    },
+    "csp_overrides": {}
+  }
+}

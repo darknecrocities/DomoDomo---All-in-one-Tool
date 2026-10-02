@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build && node scripts/build-desktop-installers.js",
     "postbuild": "node scripts/generate-updates.js && node scripts/generate-sitemap.js && node scripts/prerender.js && node scripts/audit-client-bundles.js",
     "lint": "eslint .",
+    "bundle:anna": "node scripts/bundle-anna.cjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "use-image": "^1.1.4"
   },
   "devDependencies": {
+    "@anna-ai/cli": "^0.1.57",
     "@eslint/js": "^10.0.1",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^24.13.2",
