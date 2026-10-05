@@ -12,11 +12,13 @@ export const DoorSplash = () => {
      window.location.protocol === 'file:' ||
      import.meta.env.BASE_URL === './');
 
-  if (isAnna) return null;
-
-  const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>('walk');
+  const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>(
+    isAnna ? 'gone' : 'walk'
+  );
 
   useEffect(() => {
+    if (isAnna) return;
+
     let fadeStartTimeout: NodeJS.Timeout;
     let openStartTimeout: NodeJS.Timeout;
     let revealStartTimeout: NodeJS.Timeout;
@@ -51,7 +53,7 @@ export const DoorSplash = () => {
     };
   }, []);
 
-  if (animStage === 'gone') return null;
+  if (isAnna || animStage === 'gone') return null;
 
   const areDoorsOpen = animStage === 'door-open' || animStage === 'reveal';
 
