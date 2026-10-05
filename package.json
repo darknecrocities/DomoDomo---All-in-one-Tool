@@ -10,6 +10,7 @@
     "postbuild": "node scripts/generate-updates.js && node scripts/generate-sitemap.js && node scripts/prerender.js && node scripts/audit-client-bundles.js",
     "lint": "eslint .",
     "bundle:anna": "node scripts/bundle-anna.cjs",
+    "build:anna": "ANNA=1 vite build && node scripts/bundle-anna.cjs",
     "preview": "vite preview"
   },
   "dependencies": {

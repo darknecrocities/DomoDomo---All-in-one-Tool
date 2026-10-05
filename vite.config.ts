@@ -16,6 +16,7 @@ const buildTimestamp = new Date().toISOString();
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.ANNA === '1' ? './' : '/',
   envPrefix: ['VITE_', 'FIREBASE_'],
   define: {
     __APP_VERSION__: JSON.stringify(appVersion),

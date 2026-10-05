@@ -3,7 +3,14 @@
   "slug": "domodomo",
   "category": "utilities",
   "tagline": "100% client-side agentic AI & local-first offline toolbox for developers and creators.",
-  "description": "DomoDomo is an open-source, 100% client-side agentic AI platform and productivity workshop. Run multi-agent orchestrations, local MCP tool execution, document conversions, OCR scanning, and media editing entirely in your browser without cloud dependencies.",
+  "logo_file": "public/icon-512.png",
+  "screenshots": [
+    "store/screenshots/01-dashboard.png",
+    "store/screenshots/02-ai-hub.png",
+    "store/screenshots/03-tool.png",
+    "store/screenshots/04-settings.png"
+  ],
+  "description": "DomoDomo is an open-source, 100% client-side agentic AI platform and productivity toolbox featuring over 230+ private browser utilities.\n\n### What It Does\nDomoDomo runs complex data transformations, file conversions, AI model inference, document processing, and developer utilities directly inside your browser using WebAssembly, WebGPU, and client-side processing—with zero server uploads and zero privacy compromises.\n\n### Key Features\n- **230+ Offline-First Tools**: PDF merger & compression, background removal, SVG/PNG optimization, QR code creation, JSON/SQL formatters, Base64 decoders, and audio/video converters.\n- **Local AI Hub Studio**: Run small language models, vision analyzers, and embeddings directly in-browser using WebLLM, Transformers.js, and local Ollama bridges.\n- **Autonomous AutoPilot Assistant**: An integrated agentic AI helper that recommends tools, explains workflows, and executes batch tasks on command.\n- **Developer Utility Suite**: JWT debuggers, regex testers, hash generators, UUID creators, curl converters, and network payload analyzers.\n- **100% Client-Side Privacy**: All file processing happens in local browser memory. Files are never sent to external servers or cloud storage buckets.\n\n### Who It's For\n- **Developers & Engineers**: Quickly format payloads, inspect tokens, and convert files without opening untrusted third-party websites.\n- **Creators & Designers**: Batch-resize images, strip backgrounds, edit video clips, and optimize assets instantly.\n- **Privacy-Conscious Teams**: Process sensitive internal documents and confidential datasets with complete air-gapped confidence.\n\n### How to Get Started\n1. Launch DomoDomo from Anna to open the interactive Dashboard.\n2. Search for any tool in the header (e.g. \"JSON Formatter\", \"PDF Merge\", or \"Image Compress\").\n3. Click into a tool card to immediately process files with local drag-and-drop.\n4. Explore the AI Hub tab to experiment with on-device models and multimodal agentic workflows.",
   "homepage_url": "https://domodomo.site",
   "support_url": "mailto:parejasarronkian@gmail.com",
   "privacy_url": "https://domodomo.site/privacy"

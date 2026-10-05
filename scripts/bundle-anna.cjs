@@ -22,4 +22,11 @@ function copyFiltered(src, dest) {
 console.log('[Anna Bundle] Preparing bundle/ from dist/...');
 fs.rmSync('bundle', { recursive: true, force: true });
 copyFiltered('dist', 'bundle');
+
+if (fs.existsSync('bundle/index.html')) {
+  let html = fs.readFileSync('bundle/index.html', 'utf-8');
+  html = html.replace(/<script[^>]*pagead2\.googlesyndication\.com[^>]*>[\s\S]*?<\/script>/gi, '');
+  fs.writeFileSync('bundle/index.html', html, 'utf-8');
+}
+
 console.log('✅ Prepared clean bundle/ directory for Anna platform.');

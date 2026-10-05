@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Shell } from './components/Shell';
 import { Dashboard } from './pages/Dashboard';
 import { ToolContainer } from './pages/ToolContainer';
@@ -36,11 +36,19 @@ function App() {
     }
   }, []);
 
+  const isSubpathOrAnna =
+    typeof window !== 'undefined' &&
+    (window.location.pathname.includes('/anna-apps/') ||
+     window.location.protocol === 'file:' ||
+     import.meta.env.BASE_URL === './');
+
+  const Router = isSubpathOrAnna ? HashRouter : BrowserRouter;
+
   return (
     <AutoPilotProvider>
       <DoorSplash />
       {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
-      <BrowserRouter>
+      <Router>
         <ScrollToTop />
         <FloatingDomo />
         <GlobalSFXController />
@@ -61,7 +69,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </Router>
       <FloatingAutoPilot />
     </AutoPilotProvider>
   );

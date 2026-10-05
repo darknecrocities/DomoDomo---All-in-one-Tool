@@ -6,6 +6,14 @@ import welcomeDomoGif from '../assets/domotest.gif';
 import { forceUnlockAudio } from '../utils/soundEffects';
 
 export const DoorSplash = () => {
+  const isAnna =
+    typeof window !== 'undefined' &&
+    (window.location.pathname.includes('/anna-apps/') ||
+     window.location.protocol === 'file:' ||
+     import.meta.env.BASE_URL === './');
+
+  if (isAnna) return null;
+
   const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>('walk');
 
   useEffect(() => {
