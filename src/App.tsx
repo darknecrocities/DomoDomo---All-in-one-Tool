@@ -19,59 +19,76 @@ import { GlobalSFXController } from './components/GlobalSFXController';
 import { AIHubStudio } from './pages/AIHubStudio';
 import { useVisitCounter } from './utils/visitCounter';
 import { UpdateNotificationToast } from './components/UpdateNotificationToast';
+import { RootErrorBoundary } from './components/RootErrorBoundary';
 
 function App() {
   useVisitCounter(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
-    const onboardingDone = localStorage.getItem('domodomo_onboarding_completed') === 'true';
-    if (isLocalhost && !onboardingDone) {
-      // Wait for splash transition before showing questionnaire
-      const timer = setTimeout(() => {
-        setShowOnboarding(true);
-      }, 2200);
-      return () => clearTimeout(timer);
+    try {
+      const isIframeOrAnna =
+        window.self !== window.top ||
+        window.location.pathname.includes('/anna-apps/') ||
+        window.location.protocol === 'file:' ||
+        import.meta.env.BASE_URL === './';
+      if (isIframeOrAnna) {
+        setShowOnboarding(false);
+        return;
+      }
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+      const onboardingDone = localStorage.getItem('domodomo_onboarding_completed') === 'true';
+      if (isLocalhost && !onboardingDone) {
+        // Wait for splash transition before showing questionnaire
+        const timer = setTimeout(() => {
+          setShowOnboarding(true);
+        }, 2200);
+        return () => clearTimeout(timer);
+      }
+    } catch (_) {
+      setShowOnboarding(false);
     }
   }, []);
 
   const isSubpathOrAnna =
     typeof window !== 'undefined' &&
-    (window.location.pathname.includes('/anna-apps/') ||
+    (window.self !== window.top ||
+     window.location.pathname.includes('/anna-apps/') ||
      window.location.protocol === 'file:' ||
      import.meta.env.BASE_URL === './');
 
   const Router = isSubpathOrAnna ? HashRouter : BrowserRouter;
 
   return (
-    <AutoPilotProvider>
-      <DoorSplash />
-      {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
-      <Router>
-        <ScrollToTop />
-        <FloatingDomo />
-        <GlobalSFXController />
-        <UpdateNotificationToast />
-        <Routes>
-          <Route path="/" element={<Shell />}>
-            <Route index element={<Dashboard />} />
-            <Route path="about" element={<AboutApplication />} />
-            <Route path="download" element={<DownloadPage />} />
-            <Route path="tool/:id" element={<ToolContainer />} />
-            <Route path="tool/:id/:variation" element={<ToolContainer />} />
-            <Route path="docs" element={<AboutApplication defaultTab="docs" />} />
-            <Route path="library-api" element={<LibraryApi />} />
-            <Route path="blog" element={<BlogContainer />} />
-            <Route path="blog/:slug" element={<BlogPost />} />
-            <Route path="settings" element={<DomoSettings />} />
-            <Route path="ai-hub" element={<AIHubStudio />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </Router>
-      <FloatingAutoPilot />
-    </AutoPilotProvider>
+    <RootErrorBoundary>
+      <AutoPilotProvider>
+        <DoorSplash />
+        {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
+        <Router>
+          <ScrollToTop />
+          <FloatingDomo />
+          <GlobalSFXController />
+          <UpdateNotificationToast />
+          <Routes>
+            <Route path="/" element={<Shell />}>
+              <Route index element={<Dashboard />} />
+              <Route path="about" element={<AboutApplication />} />
+              <Route path="download" element={<DownloadPage />} />
+              <Route path="tool/:id" element={<ToolContainer />} />
+              <Route path="tool/:id/:variation" element={<ToolContainer />} />
+              <Route path="docs" element={<AboutApplication defaultTab="docs" />} />
+              <Route path="library-api" element={<LibraryApi />} />
+              <Route path="blog" element={<BlogContainer />} />
+              <Route path="blog/:slug" element={<BlogPost />} />
+              <Route path="settings" element={<DomoSettings />} />
+              <Route path="ai-hub" element={<AIHubStudio />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </Router>
+        <FloatingAutoPilot />
+      </AutoPilotProvider>
+    </RootErrorBoundary>
   );
 }
 

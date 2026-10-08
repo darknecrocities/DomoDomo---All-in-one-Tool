@@ -8,6 +8,7 @@ import { localMemory } from '../utils/localMemory';
 import { unifiedMemory } from '../utils/unifiedMemory';
 import { TOOL_VARIATIONS } from '../data/seoVariations';
 import { aiService } from '../utils/aiService';
+import { ToolErrorBoundary } from '../components/ToolErrorBoundary';
 
 export const ToolContainer = () => {
   const { id, variation } = useParams<{ id: string; variation?: string }>();
@@ -254,7 +255,9 @@ export const ToolContainer = () => {
       )}
 
       <div className="w-full">
-        <ToolComponent />
+        <ToolErrorBoundary toolName={toolName} onNavigateHome={() => navigate('/')}>
+          <ToolComponent />
+        </ToolErrorBoundary>
       </div>
     </div>
   );

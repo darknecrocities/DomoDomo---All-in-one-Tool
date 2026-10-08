@@ -3,6 +3,13 @@ import { Sparkles, RefreshCw, X } from 'lucide-react';
 import { APP_VERSION, BUILD_TIME, isNewerVersion } from '../utils/version';
 
 export const UpdateNotificationToast: React.FC = () => {
+  const isIframeOrAnna =
+    typeof window !== 'undefined' &&
+    (window.self !== window.top ||
+     window.location.pathname.includes('/anna-apps/') ||
+     window.location.protocol === 'file:' ||
+     import.meta.env.BASE_URL === './');
+
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -12,23 +19,26 @@ export const UpdateNotificationToast: React.FC = () => {
   // Check if a specific version update has been dismissed recently
   const isVersionDismissed = useCallback((version: string | null): boolean => {
     if (!version) return false;
-    const sessionDismissed = sessionStorage.getItem(`domodomo_dismissed_update_${version}`);
-    if (sessionDismissed === 'true') return true;
+    try {
+      const sessionDismissed = sessionStorage.getItem(`domodomo_dismissed_update_${version}`);
+      if (sessionDismissed === 'true') return true;
 
-    const localDismissedTime = localStorage.getItem(`domodomo_dismissed_update_${version}`);
-    if (localDismissedTime) {
-      const elapsed = Date.now() - parseInt(localDismissedTime, 10);
-      // Suppress for 12 hours once dismissed
-      if (elapsed < 1000 * 60 * 60 * 12) {
-        return true;
+      const localDismissedTime = localStorage.getItem(`domodomo_dismissed_update_${version}`);
+      if (localDismissedTime) {
+        const elapsed = Date.now() - parseInt(localDismissedTime, 10);
+        // Suppress for 12 hours once dismissed
+        if (elapsed < 1000 * 60 * 60 * 12) {
+          return true;
+        }
       }
-    }
+    } catch (_) {}
     return false;
   }, []);
 
   const checkUpdatesJson = useCallback(async () => {
+    if (isIframeOrAnna) return;
     try {
-      const res = await fetch(`/updates.json?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`./updates.json?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) return;
 
       const data = await res.json();
@@ -155,7 +165,7 @@ export const UpdateNotificationToast: React.FC = () => {
     }, 300);
   };
 
-  if (!updateAvailable || dismissed) return null;
+  if (!updateAvailable || dismissed || isIframeOrAnna) return null;
 
   return (
     <aside

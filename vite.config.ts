@@ -56,10 +56,10 @@ export default defineConfig({
         const swContent = `// DomoDomo PWA Service Worker (Auto-generated on build)
 const CACHE_NAME = 'domodomo-cache-${commitHash}';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/favicon.png',
-  '/icons.svg'
+  './',
+  './index.html',
+  './favicon.png',
+  './icons.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -135,7 +135,7 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       }).catch(() => {
         if (event.request.headers.get('accept')?.includes('text/html')) {
-          return caches.match('/index.html') || caches.match('/');
+          return caches.match('./index.html') || caches.match('./') || caches.match('/index.html') || caches.match('/');
         }
       });
     })

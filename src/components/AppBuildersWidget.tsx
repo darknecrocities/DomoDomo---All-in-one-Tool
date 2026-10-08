@@ -18,7 +18,7 @@ export const AppBuildersWidget: React.FC<AppBuildersWidgetProps> = ({ className 
         title="Vote for DomoDomo on App Builders PH"
       >
         <img
-          src="/appbuildersph_logo.png"
+          src="./appbuildersph_logo.png"
           alt="AppBuildersPH"
           className="w-6 h-6 object-contain rounded-md shrink-0"
         />

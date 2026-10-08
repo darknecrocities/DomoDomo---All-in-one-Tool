@@ -1,49 +1,52 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { TransparentVideoMascot } from './TransparentVideoMascot';
-import welcomeDomo from '../assets/domotest.webm';
-import welcomeDomoMov from '../assets/domotest.mov';
 import welcomeDomoGif from '../assets/domotest.gif';
 import { forceUnlockAudio } from '../utils/soundEffects';
 
 export const DoorSplash = () => {
-  const isAnna =
+  const isAnnaOrIframe =
     typeof window !== 'undefined' &&
-    (window.location.pathname.includes('/anna-apps/') ||
+    (window.self !== window.top ||
+     window.location.pathname.includes('/anna-apps/') ||
      window.location.protocol === 'file:' ||
-     import.meta.env.BASE_URL === './');
+     import.meta.env.BASE_URL === './' ||
+     sessionStorage.getItem('domo_splash_dismissed') === 'true');
 
   const [animStage, setAnimStage] = useState<'walk' | 'knock' | 'wave' | 'fade-out' | 'door-open' | 'reveal' | 'gone'>(
-    isAnna ? 'gone' : 'walk'
+    isAnnaOrIframe ? 'gone' : 'walk'
   );
 
+  const dismissSplash = useCallback(() => {
+    try {
+      sessionStorage.setItem('domo_splash_dismissed', 'true');
+    } catch (_) {}
+    setAnimStage('gone');
+  }, []);
+
   useEffect(() => {
-    if (isAnna) return;
+    if (isAnnaOrIframe) return;
 
     let fadeStartTimeout: NodeJS.Timeout;
     let openStartTimeout: NodeJS.Timeout;
     let revealStartTimeout: NodeJS.Timeout;
     let goneTimeout: NodeJS.Timeout;
 
-    // Start video animation triggers tuned for 6.2s domotest.webm duration
-    // 1. Fade out mascot starts at 4.8s (as domotest.webm animation finishes)
+    // Fast-tracked standalone splash (1.5s total failsafe, click-to-dismiss active)
     fadeStartTimeout = setTimeout(() => {
       setAnimStage('fade-out');
-    }, 4800);
+    }, 700);
 
-    // 2. Door opens at 5.3s (0.5s after mascot starts fading)
     openStartTimeout = setTimeout(() => {
       setAnimStage('door-open');
-    }, 5300);
+    }, 1000);
 
-    // 3. Reveal starts at 6.0s (doors almost fully open)
     revealStartTimeout = setTimeout(() => {
       setAnimStage('reveal');
-    }, 6000);
+    }, 1300);
 
-    // 4. Splash gone at 6.8s
     goneTimeout = setTimeout(() => {
-      setAnimStage('gone');
-    }, 6800);
+      dismissSplash();
+    }, 1600);
 
     return () => {
       if (fadeStartTimeout) clearTimeout(fadeStartTimeout);
@@ -51,16 +54,17 @@ export const DoorSplash = () => {
       if (revealStartTimeout) clearTimeout(revealStartTimeout);
       if (goneTimeout) clearTimeout(goneTimeout);
     };
-  }, []);
+  }, [isAnnaOrIframe, dismissSplash]);
 
-  if (isAnna || animStage === 'gone') return null;
+  if (isAnnaOrIframe || animStage === 'gone') return null;
 
   const areDoorsOpen = animStage === 'door-open' || animStage === 'reveal';
 
   return (
     <div 
       onPointerDown={forceUnlockAudio}
-      className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-none"
+      onClick={dismissSplash}
+      className="fixed inset-0 z-[9999] overflow-hidden select-none pointer-events-auto cursor-pointer"
       style={{
         backgroundColor: '#0d0e0f',
         opacity: animStage === 'reveal' ? 0 : 1,
@@ -177,7 +181,7 @@ export const DoorSplash = () => {
         </div>
       </div>
 
-      {/* Animated Welcome Domo Video Overlay */}
+      {/* Animated Welcome Domo Mascot Overlay */}
       {animStage !== 'reveal' && (
         <div
           className="absolute inset-0 z-30 pointer-events-none"
@@ -187,8 +191,6 @@ export const DoorSplash = () => {
           }}
         >
           <TransparentVideoMascot
-            src={welcomeDomo}
-            movSrc={welcomeDomoMov}
             gifSrc={welcomeDomoGif}
             clickable={false}
             objectFit="cover"

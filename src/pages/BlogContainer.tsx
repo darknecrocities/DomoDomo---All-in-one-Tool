@@ -135,7 +135,7 @@ export const BlogContainer = () => {
               title="Featured on Abakada.org"
             >
               <div className="flex items-center gap-2 min-w-0">
-                <img src="/abakada.jpg" alt="Abakada.org" className="w-6 h-6 object-cover rounded shrink-0" />
+                <img src="./abakada.jpg" alt="Abakada.org" className="w-6 h-6 object-cover rounded shrink-0" />
                 <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/abakada:text-white transition-colors truncate">Abakada.org</span>
               </div>
               <ExternalLink size={12} className="text-[#72706C] group-hover/abakada:text-[#ECEBE9] shrink-0 ml-1" />
@@ -191,7 +191,7 @@ export const BlogContainer = () => {
               title="Featured on AppBuildersPH Daily Top Apps"
             >
               <div className="flex items-center gap-2 min-w-0">
-                <img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-6 h-6 object-contain rounded shrink-0" />
+                <img src="./appbuildersph_logo.png" alt="AppBuildersPH" className="w-6 h-6 object-contain rounded shrink-0" />
                 <span className="text-[11px] font-bold text-[#ECEBE9] group-hover/appbuildersph:text-white transition-colors truncate">AppBuildersPH</span>
               </div>
               <ExternalLink size={12} className="text-[#72706C] group-hover/appbuildersph:text-[#ECEBE9] shrink-0 ml-1" />

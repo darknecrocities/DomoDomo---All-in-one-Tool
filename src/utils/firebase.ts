@@ -40,6 +40,13 @@ export function getFirebaseConfig(): FirebaseConfig {
  * Determine whether Firebase credentials have been configured.
  */
 export function isFirebaseConfigured(): boolean {
+  if (typeof window !== 'undefined' && (
+    window.self !== window.top ||
+    window.location.pathname.includes('/anna-apps/') ||
+    import.meta.env.BASE_URL === './'
+  )) {
+    return false;
+  }
   const config = getFirebaseConfig();
   return Boolean((config.apiKey && config.projectId) || config.databaseURL);
 }

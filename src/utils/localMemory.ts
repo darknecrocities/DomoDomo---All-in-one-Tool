@@ -55,6 +55,9 @@ export const localMemory = {
   },
 
   async saveToWorkspace(events: MemoryEvent[]) {
+    if (typeof window !== 'undefined' && (window.self !== window.top || window.location.pathname.includes('/anna-apps/') || import.meta.env.BASE_URL === './')) {
+      return;
+    }
     try {
       await fetch('/api/memory', {
         method: 'POST',
@@ -67,6 +70,9 @@ export const localMemory = {
   },
 
   async loadFromWorkspace() {
+    if (typeof window !== 'undefined' && (window.self !== window.top || window.location.pathname.includes('/anna-apps/') || import.meta.env.BASE_URL === './')) {
+      return;
+    }
     try {
       const res = await fetch('/api/memory');
       if (res.ok) {

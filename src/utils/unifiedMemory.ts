@@ -490,6 +490,9 @@ export const unifiedMemory = {
   },
 
   async syncWithBackend(): Promise<void> {
+    if (typeof window !== 'undefined' && (window.self !== window.top || window.location.pathname.includes('/anna-apps/') || import.meta.env.BASE_URL === './')) {
+      return;
+    }
     try {
       // 1. Sync User Profile & Identity
       const identity = await this.getUserIdentity();

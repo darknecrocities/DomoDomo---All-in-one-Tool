@@ -185,8 +185,14 @@ export const Shell = () => {
 
   useEffect(() => {
     const checkForUpdates = async () => {
+      const isIframeOrAnna =
+        typeof window !== 'undefined' &&
+        (window.self !== window.top ||
+         window.location.pathname.includes('/anna-apps/') ||
+         window.location.protocol === 'file:' ||
+         import.meta.env.BASE_URL === './');
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (!isLocalhost) {
+      if (!isLocalhost || isIframeOrAnna) {
         return;
       }
 
@@ -276,6 +282,17 @@ export const Shell = () => {
   };
 
   useEffect(() => {
+    const isIframeOrAnna =
+      typeof window !== 'undefined' &&
+      (window.self !== window.top ||
+       window.location.pathname.includes('/anna-apps/') ||
+       window.location.protocol === 'file:' ||
+       import.meta.env.BASE_URL === './');
+
+    if (isIframeOrAnna) {
+      return;
+    }
+
     const CACHE_KEY = 'github_stars_cache';
     const CACHE_TTL = 3600000; // 1 hour
 
@@ -309,7 +326,7 @@ export const Shell = () => {
           }
         }
       })
-      .catch((err) => console.error('Failed to fetch github stars:', err));
+      .catch((err) => console.warn('Failed to fetch github stars:', err));
   }, []);
 
   return (
@@ -384,7 +401,7 @@ export const Shell = () => {
                         <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
                           <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
                           <img
-                            src="/ecosystem-logos/domoscope.png"
+                            src="./ecosystem-logos/domoscope.png"
                             alt="DomoScope"
                             className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
                           />
@@ -416,7 +433,7 @@ export const Shell = () => {
                         <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
                           <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
                           <img
-                            src="/ecosystem-logos/domoskills.png"
+                            src="./ecosystem-logos/domoskills.png"
                             alt="DomoSkills"
                             className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
                           />
@@ -448,7 +465,7 @@ export const Shell = () => {
                         <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
                           <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
                           <img
-                            src="/ecosystem-logos/codepyne.png"
+                            src="./ecosystem-logos/codepyne.png"
                             alt="Codepyne.io"
                             className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
                           />
@@ -480,7 +497,7 @@ export const Shell = () => {
                         <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
                           <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
                           <img
-                            src="/ecosystem-logos/domonote.png"
+                            src="./ecosystem-logos/domonote.png"
                             alt="DomoNote"
                             className="w-7 h-7 object-contain filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
                           />
@@ -1230,7 +1247,7 @@ export const Shell = () => {
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
                         <img
-                          src="/abakada.jpg"
+                          src="./abakada.jpg"
                           alt="Abakada.org Logo"
                           className="w-7 h-7 object-cover rounded-md"
                         />
@@ -1330,7 +1347,7 @@ export const Shell = () => {
                     >
                       <div className="relative flex items-center justify-center shrink-0 w-7 h-7">
                         <img
-                          src="/appbuildersph_logo.png"
+                          src="./appbuildersph_logo.png"
                           alt="AppBuildersPH Logo"
                           className="w-7 h-7 object-contain rounded-md"
                         />

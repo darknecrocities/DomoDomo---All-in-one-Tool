@@ -2493,7 +2493,7 @@ export const Dashboard = () => {
 								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured on Abakada.org"
 							>
-								<img src="/abakada.jpg" alt="Abakada.org" className="w-4 h-4 object-cover rounded-sm" />
+								<img src="./abakada.jpg" alt="Abakada.org" className="w-4 h-4 object-cover rounded-sm" />
 								<span>Abakada.org</span>
 							</a>
 						</TiltContainer>
@@ -2549,7 +2549,7 @@ export const Dashboard = () => {
 								className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl border border-[#2A2D30] bg-[#111213] hover:border-white/40 text-xs font-semibold text-[#ECEBE9] transition-all"
 								title="Featured on AppBuildersPH Daily Top Apps"
 							>
-								<img src="/appbuildersph_logo.png" alt="AppBuildersPH" className="w-4 h-4 object-contain rounded-sm" />
+								<img src="./appbuildersph_logo.png" alt="AppBuildersPH" className="w-4 h-4 object-contain rounded-sm" />
 								<span>AppBuildersPH</span>
 							</a>
 						</TiltContainer>

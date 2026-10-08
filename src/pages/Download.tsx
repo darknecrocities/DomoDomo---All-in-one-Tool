@@ -354,12 +354,12 @@ OFFLINE & PRIVACY GUARANTEE:
 
 			// 5. Fetch app icon (.ico and .png) and bundle
 			try {
-				const icoRes = await fetch("/DomoDomo.ico");
+				const icoRes = await fetch("./DomoDomo.ico");
 				if (icoRes.ok) {
 					const icoBlob = await icoRes.blob();
 					zip.file("DomoDomo.ico", icoBlob);
 				}
-				const iconRes = await fetch("/favicon.png");
+				const iconRes = await fetch("./favicon.png");
 				if (iconRes.ok) {
 					const iconBlob = await iconRes.blob();
 					zip.file("DomoDomo-Icon.png", iconBlob);
@@ -454,12 +454,12 @@ INSTRUCTIONS:
 
 			// 4. Icons (.icns and .png)
 			try {
-				const icnsRes = await fetch("/AppIcon.icns");
+				const icnsRes = await fetch("./AppIcon.icns");
 				if (icnsRes.ok) {
 					const icnsBlob = await icnsRes.blob();
 					zip.file("AppIcon.icns", icnsBlob);
 				}
-				const iconRes = await fetch("/favicon.png");
+				const iconRes = await fetch("./favicon.png");
 				if (iconRes.ok) {
 					const iconBlob = await iconRes.blob();
 					zip.file("DomoDomo-Icon.png", iconBlob);
@@ -868,7 +868,7 @@ INSTRUCTIONS:
 										</div>
 									</div>
 									<img
-										src="/favicon.png"
+										src="./favicon.png"
 										alt="Icon"
 										className="w-10 h-10 object-contain drop-shadow"
 									/>
@@ -916,7 +916,7 @@ INSTRUCTIONS:
 							{/* Download Actions */}
 							<div className="z-10 mt-8 pt-6 border-t border-[#2A2D30] flex flex-col sm:flex-row items-center gap-3">
 								<a
-									href="/DomoDomo-Setup-x64.exe"
+									href="./DomoDomo-Setup-x64.exe"
 									download="DomoDomo-Setup-x64.exe"
 									className="w-full sm:flex-1 py-3.5 px-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-sm transition-all shadow-[0_0_25px_rgba(37,99,235,0.3)] active:scale-[0.98] flex items-center justify-center gap-2"
 								>
@@ -1097,7 +1097,7 @@ INSTRUCTIONS:
 										</div>
 									</div>
 									<img
-										src="/favicon.png"
+										src="./favicon.png"
 										alt="Icon"
 										className="w-10 h-10 object-contain drop-shadow"
 									/>
@@ -1143,7 +1143,7 @@ INSTRUCTIONS:
 
 							<div className="z-10 mt-8 pt-6 border-t border-[#2A2D30] flex flex-col sm:flex-row items-center gap-3">
 								<a
-									href="/DomoDomo-Universal.dmg"
+									href="./DomoDomo-Universal.dmg"
 									download="DomoDomo-Universal.dmg"
 									className="w-full sm:flex-1 py-3.5 px-4 rounded-2xl bg-white hover:bg-neutral-200 text-black font-black text-sm transition-all shadow-[0_0_25px_rgba(255,255,255,0.2)] active:scale-[0.98] flex items-center justify-center gap-2"
 								>
@@ -1373,7 +1373,7 @@ INSTRUCTIONS:
 
 							<div className="mt-8 pt-6 border-t border-[#2A2D30] flex flex-col sm:flex-row items-center gap-3">
 								<a
-									href="/DomoDomo.AppImage"
+									href="./DomoDomo.AppImage"
 									download="DomoDomo.AppImage"
 									className="w-full sm:flex-1 py-3.5 px-4 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-sm transition-all shadow-[0_0_25px_rgba(245,158,11,0.3)] active:scale-[0.98] flex items-center justify-center gap-2"
 								>
@@ -1382,7 +1382,7 @@ INSTRUCTIONS:
 								</a>
 
 								<a
-									href="/DomoDomo.deb"
+									href="./DomoDomo.deb"
 									download="DomoDomo.deb"
 									className="w-full sm:w-auto py-3.5 px-5 rounded-2xl bg-[#111213] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] font-bold text-xs transition-all flex items-center justify-center gap-2"
 								>
@@ -1721,7 +1721,7 @@ INSTRUCTIONS:
 
 					<div className="flex flex-wrap items-center gap-2">
 						<a
-							href="/favicon.png"
+							href="./favicon.png"
 							download="DomoDomo-Icon-512x512.png"
 							className="px-3 py-1.5 rounded-xl bg-[#111213] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold flex items-center gap-1.5 transition-all"
 						>
@@ -1730,7 +1730,7 @@ INSTRUCTIONS:
 						</a>
 
 						<a
-							href="/favicon.png"
+							href="./favicon.png"
 							download="DomoDomo-Icon.ico"
 							className="px-3 py-1.5 rounded-xl bg-[#111213] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold flex items-center gap-1.5 transition-all"
 						>
@@ -1739,7 +1739,7 @@ INSTRUCTIONS:
 						</a>
 
 						<a
-							href="/icons.svg"
+							href="./icons.svg"
 							download="DomoDomo-Vector.svg"
 							className="px-3 py-1.5 rounded-xl bg-[#111213] hover:bg-[#25282B] text-[#ECEBE9] border border-[#2A2D30] text-xs font-semibold flex items-center gap-1.5 transition-all"
 						>
@@ -1752,7 +1752,7 @@ INSTRUCTIONS:
 				<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
 					<div className="bg-[#111213] border border-[#2A2D30] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center">
 						<img
-							src="/favicon.png"
+							src="./favicon.png"
 							alt="App Icon"
 							className="w-12 h-12 object-contain drop-shadow"
 						/>
@@ -1763,7 +1763,7 @@ INSTRUCTIONS:
 					</div>
 
 					<a
-						href="/DomoDomo-Setup-x64.exe"
+						href="./DomoDomo-Setup-x64.exe"
 						download="DomoDomo-Setup-x64.exe"
 						className="bg-[#111213] hover:bg-[#18191B] border border-[#2A2D30] hover:border-blue-500/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center transition-all group"
 					>
@@ -1777,7 +1777,7 @@ INSTRUCTIONS:
 					</a>
 
 					<a
-						href="/DomoDomo-Universal.dmg"
+						href="./DomoDomo-Universal.dmg"
 						download="DomoDomo-Universal.dmg"
 						className="bg-[#111213] hover:bg-[#18191B] border border-[#2A2D30] hover:border-white/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center transition-all group"
 					>

@@ -52,6 +52,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
+import { Link } from 'react-router-dom';
 import { aiService } from '../utils/aiService';
 import { Logo } from '../components/Logo';
 import { N8nFlowCanvas } from '../tools/ai/components/N8nFlowCanvas';
@@ -3649,9 +3650,9 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <a href="https://ollama.ai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white hover:bg-neutral-200 text-black text-sm font-black transition-all">
                 <Download size={15} /> Get Ollama
               </a>
-              <a href="/download" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#2A2D30] text-[#ECEBE9] text-sm font-bold hover:bg-[#1E2022] transition-all">
+              <Link to="/download" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#2A2D30] text-[#ECEBE9] text-sm font-bold hover:bg-[#1E2022] transition-all">
                 Download Desktop App
-              </a>
+              </Link>
             </div>
             <button onClick={() => setShowTeaserModal(false)} className="text-[#72706C] text-xs hover:text-[#A3A09B] transition-colors">
               Preview anyway (simulation mode)
