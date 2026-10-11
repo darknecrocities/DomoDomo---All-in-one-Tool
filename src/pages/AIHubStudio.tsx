@@ -49,7 +49,8 @@ import {
   Network,
   GitBranch,
   NotebookPen,
-  ExternalLink
+  ExternalLink,
+  Video
 } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
@@ -1670,6 +1671,23 @@ ollama run domodomo-fine-tuned:latest "Test your fine-tuned prompt"
               <div className="flex items-center gap-2.5 min-w-0">
                 <Sparkles size={15} className="shrink-0 text-white group-hover:rotate-12 transition-transform" />
                 {!sidebarCollapsed && <span className="truncate">DomoSkills</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <ExternalLink size={12} className="text-[#72706C] group-hover:text-white transition-colors" />
+              )}
+            </a>
+
+            {/* DomoLens Screen Recorder & Studio */}
+            <a
+              href="https://domolens.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between px-2.5 py-2 rounded-lg text-[13px] font-semibold text-[#ECEBE9] bg-[#1E2022]/60 hover:bg-[#1E2022] border border-[#2A2D30] hover:border-white/30 transition-all group"
+              title="DomoLens — Auto-Zoom Screen Recorder & Studio Demo Creator"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Video size={15} className="shrink-0 text-white group-hover:scale-110 transition-transform" />
+                {!sidebarCollapsed && <span className="truncate">DomoLens</span>}
               </div>
               {!sidebarCollapsed && (
                 <ExternalLink size={12} className="text-[#72706C] group-hover:text-white transition-colors" />

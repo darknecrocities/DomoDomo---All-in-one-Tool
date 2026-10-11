@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch } from 'lucide-react';
+import { Star, Menu, X, Zap, Download, Sun, Moon, MessageSquare, Coffee, Trash2, Bot, Settings, Trophy, Award, Volume2, VolumeX, Sparkles, ExternalLink, ChevronDown, Code, BookOpen, FileText, Terminal, Snowflake, NotebookPen, GitBranch, Video } from 'lucide-react';
 import { GiSnake } from 'react-icons/gi';
 import { AdSenseUnit } from './AdSenseUnit';
 import { Logo } from './Logo';
@@ -517,6 +517,38 @@ export const Shell = () => {
                           </p>
                         </div>
                       </a>
+
+                      {/* DomoLens */}
+                      <a
+                        href="https://domolens.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpenDropdown(null)}
+                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#1E2022] text-[#A3A09B] hover:text-[#ECEBE9] transition-all group/item"
+                      >
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="absolute inset-0 bg-white/5 rounded-full blur-md group-hover/item:bg-white/10 transition-all pointer-events-none" />
+                          <img
+                            src="./ecosystem-logos/domolens.png"
+                            alt="DomoLens"
+                            className="w-7 h-7 object-contain rounded-md filter grayscale contrast-125 brightness-110 group-hover/item:contrast-140 group-hover/item:brightness-125 group-hover/item:scale-105 transition-all relative z-10"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-bold text-xs text-[#ECEBE9] group-hover/item:text-white transition-colors">
+                              DomoLens
+                            </span>
+                            <ExternalLink size={10} className="text-[#72706C] group-hover/item:text-white transition-colors" />
+                          </div>
+                          <div className="text-[9px] font-mono text-amber-300 font-medium mt-0.5">
+                            Screen Recording &amp; Demo Studio
+                          </div>
+                          <p className="text-[11px] text-[#72706C] mt-0.5 leading-snug line-clamp-1">
+                            Auto-zoom camera motion, studio framing &amp; tactile audio
+                          </p>
+                        </div>
+                      </a>
                     </div>
 
                     {/* Right Column: Native Workspaces */}
@@ -919,6 +951,22 @@ export const Shell = () => {
                   <Sparkles size={15} className="text-amber-300" />
                   <span>DomoSkills</span>
                   <span className="text-[9px] font-mono font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-full">Skills Marketplace</span>
+                </div>
+                <ExternalLink size={13} className="text-[#72706C]" />
+              </a>
+
+              {/* DomoLens Studio Demo Platform */}
+              <a
+                href="https://domolens.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2.5 rounded-lg text-sm font-semibold tracking-wide transition-all flex items-center justify-between text-[#ECEBE9] bg-[#1E2022] hover:bg-[#2A2D30] border border-[#2A2D30]"
+              >
+                <div className="flex items-center gap-2">
+                  <Video size={15} className="text-amber-300" />
+                  <span>DomoLens</span>
+                  <span className="text-[9px] font-mono font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded-full">Demo Studio</span>
                 </div>
                 <ExternalLink size={13} className="text-[#72706C]" />
               </a>
@@ -1448,6 +1496,28 @@ export const Shell = () => {
                         </span>
                       </div>
                     </a>
+
+                    {/* DomoLens Demo Studio Badge */}
+                    <a
+                      href="https://domolens.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-2xl transition-all shadow-md group/domolens w-fit border border-[#2A2D30] bg-[#18191B] hover:border-white/40"
+                      title="DomoLens — Automatic Zoom Screen Recorder &amp; Studio Demo Creator"
+                    >
+                      <div className="relative flex items-center justify-center shrink-0 w-7 h-7 bg-[#111213] rounded-md border border-[#2A2D30] text-amber-300 group-hover/domolens:scale-105 transition-transform">
+                        <Video size={15} />
+                      </div>
+                      <div className="flex flex-col text-left leading-tight">
+                        <span className="text-[9px] tracking-wider text-amber-400 font-bold uppercase">
+                          Domo Ecosystem
+                        </span>
+                        <span className="text-xs font-extrabold text-[#ECEBE9] group-hover/domolens:text-amber-300 transition-colors flex items-center gap-1">
+                          <span>DomoLens</span>
+                          <ExternalLink size={10} className="text-[#72706C]" />
+                        </span>
+                      </div>
+                    </a>
                   </div>
 
                   <div className="flex flex-col gap-1.5 text-xs text-[#A3A09B] font-semibold">
@@ -1512,6 +1582,17 @@ export const Shell = () => {
                         className="hover:text-white transition-colors flex items-center gap-1 text-[#ECEBE9] font-bold"
                       >
                         <span>DomoNote</span>
+                        <ExternalLink size={10} className="text-[#72706C]" />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="https://domolens.vercel.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-white transition-colors flex items-center gap-1 text-[#ECEBE9] font-bold"
+                      >
+                        <span>DomoLens</span>
                         <ExternalLink size={10} className="text-[#72706C]" />
                       </a>
                     </li>

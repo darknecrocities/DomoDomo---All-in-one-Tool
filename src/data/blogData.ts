@@ -13,6 +13,99 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'announcing-domolens-autozoom-screen-recorder-demo-creator',
+    title: 'Announcing DomoLens: The Auto-Zoom Screen Recorder & Studio Demo Creator Joins the Domo Ecosystem',
+    excerpt: 'DomoLens (https://domolens.vercel.app/) officially joins the Domo ecosystem as our flagship screen recording and studio demo suite. Capture desktop and mobile screens, automatically zoom in on clicks with cinematic camera motion, apply studio canvas framing, and export production-ready product demos without manual video editing.',
+    date: 'October 11, 2026',
+    readTime: '5 min read',
+    category: 'Ecosystem Announcements',
+    author: 'Arron Parejas',
+    keywords: 'domolens, auto zoom screen recorder, studio demo creator, automatic zoom video editor, cursor click zoom, mobile screen recorder, local first screen recording, domo ecosystem, domodomo',
+    content: `# Announcing DomoLens: The Auto-Zoom Screen Recorder & Studio Demo Creator Joins the Domo Ecosystem
+
+**Platform:** [https://domolens.vercel.app/](https://domolens.vercel.app/)  
+**Ecosystem Partner:** DomoLens × DomoDomo × DomoScope × DomoSkills × Codepyne.io × DomoNote  
+**Category:** Ecosystem Announcements  
+
+---
+
+We are thrilled to officially welcome **DomoLens** into the Domo developer ecosystem!
+
+Creating high-impact product demos, software tutorials, and feature showcases has traditionally demanded hours of manual keyframing in heavyweight timeline editors like Premiere Pro, After Effects, or DaVinci Resolve. Zooming in on buttons, tracking cursor movements, framing windows with pleasing paddings, and synchronizing tactile audio effects is tedious and repetitive.
+
+**[DomoLens](https://domolens.vercel.app/)** eliminates this entire friction loop: record your screen, and DomoLens automatically detects every click and keystroke, smoothly zooming into points of interest with physics-based camera motion, edge-boundary clamping, and studio canvas framing — ready to export in seconds.
+
+\`\`\`text
+DOMOLENS_
+Record Screen. Auto-Zoom on Clicks. Studio Canvas Framing. 100% Offline.
+Desktop & Mobile (USB / Wi-Fi). Non-Destructive Timeline. Instant Export.
+\`\`\`
+
+---
+
+## 🎥 What is DomoLens?
+
+**[DomoLens](https://domolens.vercel.app/)** is a modern, local-first screen recording and auto-framing suite designed for developers, founders, product managers, and educators. 
+
+Built with Tauri 2, React 19, and a high-performance Python sidecar engine, DomoLens captures full-resolution displays or mobile screens (via USB and Wi-Fi), clusters mouse and keyboard events into smooth camera paths with cubic easing, and renders polished, shareable MP4 or GIF videos with zero cloud latency.
+
+---
+
+## ⚡ Core Capabilities & Architectural Pillars
+
+### 1. 🔍 Click-Driven Auto-Zoom Physics
+DomoLens continuously monitors cursor events and clusters interactions into natural, focused focal points. With spring physics and cubic easing curves, the camera glides smoothly toward buttons, form inputs, and code lines without jarring jumps.
+
+### 2. 🛡️ Intelligent Boundary Clamping & Edge Protection
+When zooming into buttons near the display border or corners, traditional screen tools reveal ugly empty canvas margins. DomoLens employs boundary clamping algorithms that lock the camera within the active viewport, guaranteeing clean frames every millisecond.
+
+### 3. 🎨 Studio Canvas Looks & Framing
+Frame your application inside customizable canvas backdrops (Charcoal Slate, Warm Ember, Midnight, Sunset Mesh, Aurora Night) with rounded border radiuses, soft drop shadows, animated click ripples, and tactile click sound effects.
+
+### 4. 📱 Desktop & Mobile Capture (USB / Wi-Fi)
+Record desktop workflows directly, or connect mobile devices seamlessly over USB cable or local Wi-Fi. Create mobile app demo reels with the same auto-framing fidelity.
+
+### 5. ✂️ Non-Destructive Timeline Editor
+Need to fine-tune a section? The built-in timeline editor provides draggable zoom blocks, clip slicing, audio volume control, playhead scrubbing, and full undo/redo history before rendering.
+
+### 6. 🔒 100% Local-First Data Sovereignty
+Your screen recordings, audio tracks, and project files remain strictly on your local disk. Zero video frames or telemetry ever touch cloud servers.
+
+---
+
+## 🌐 The Expanding Domo Ecosystem
+
+With the arrival of DomoLens, the Domo developer ecosystem delivers an interconnected, local-first suite of developer tools:
+
+| Platform | Role in Ecosystem | Key Capabilities |
+| :--- | :--- | :--- |
+| **DomoDomo** | Developer OS & Toolkit | Offline utilities, API testing, conversion, AI playgrounds |
+| **DomoLens** | Demo Video Studio | Auto-zoom screen recording, studio canvas framing, tactile audio |
+| **DomoScope** | Code Intelligence | AST architecture graphs, database ERDs, security audits, MCP |
+| **DomoSkills** | Agent Skills Hub | 200+ verified agent capabilities, unified CLI package manager |
+| **Codepyne.io**| AI/ML Upskilling | Hands-on code sandboxes, autograd engines, fine-tuning |
+| **DomoNote** | AI Personal Secretary | 100% offline notes, natural language reminders, voice capture |
+
+---
+
+## 🚀 Get Started with DomoLens Today
+
+1. 🌐 **Open DomoLens Web:** [https://domolens.vercel.app/](https://domolens.vercel.app/)
+2. 💻 **Download the Desktop App:** Available for macOS, Windows, Linux, and Android companion.
+3. 🎬 **Record & Export:** Start your first auto-zoomed product demo in 30 seconds!
+
+---
+
+## 🔗 Explore the Full Domo Ecosystem
+
+- 🎥 **Record with DomoLens:** [https://domolens.vercel.app/](https://domolens.vercel.app/)
+- 🔬 **Inspect Repositories with DomoScope:** [https://domoscope.vercel.app/](https://domoscope.vercel.app/)
+- ⚡ **Supercharge AI Agents with DomoSkills:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)
+- 🐍 **Upskill with Codepyne.io:** [https://codepyne-io.vercel.app/](https://codepyne-io.vercel.app/)
+- 📒 **Start using DomoNote:** [https://domonote.vercel.app/](https://domonote.vercel.app/)
+`
+  },
+  {
     slug: 'announcing-domoscope-github-repository-inspection-visualization',
     title: 'Announcing DomoScope: Deep GitHub Repository Inspection, Architecture Visualization & Security Intelligence',
     excerpt: 'DomoScope (https://domoscope.vercel.app/) officially joins the Domo ecosystem. Inspect any GitHub repository with interactive AST architecture graphs, automatic database ERDs, API catalogs, static security audits, reverse-engineering blueprints, and native Model Context Protocol (MCP) server support for AI coding agents.',
@@ -118,6 +211,7 @@ DomoScope requires zero installations, no GitHub account linking, and zero API t
 
 ## 🔗 Explore the Full Domo Ecosystem
 
+- 🎥 **Record with DomoLens:** [https://domolens.vercel.app/](https://domolens.vercel.app/)
 - 🔬 **Inspect Repositories with DomoScope:** [https://domoscope.vercel.app/](https://domoscope.vercel.app/)
 - 🛠️ **Launch DomoDomo AI Hub:** [/ai-hub](/ai-hub)
 - 📦 **Explore DomoSkills:** [https://web-beta-six-81.vercel.app/](https://web-beta-six-81.vercel.app/)

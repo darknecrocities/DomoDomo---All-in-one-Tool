@@ -130,7 +130,21 @@ service cloud.firestore {
     }
 
     // =========================================================================
-    // 7. DEFAULT DENY
+    // 7. DOMOLENS LANDING COUNTERS (/domolenscounter/{visits|downloads})
+    // =========================================================================
+    match /domolenscounter/{counterId} {
+      allow read: if true;
+      allow delete: if false;
+      allow create: if counterId in ['visits', 'downloads']
+                    && request.resource.data.keys().hasOnly(['count'])
+                    && request.resource.data.count == 1;
+      allow update: if counterId in ['visits', 'downloads']
+                    && request.resource.data.keys().hasOnly(['count'])
+                    && request.resource.data.count == resource.data.count + 1;
+    }
+
+    // =========================================================================
+    // 8. DEFAULT DENY
     // Completely lock down any unknown or internal collections
     // =========================================================================
     match /{document=**} {

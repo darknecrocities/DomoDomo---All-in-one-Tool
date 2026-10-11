@@ -629,7 +629,17 @@ export const AboutApplication = ({ defaultTab = 'about' }: { defaultTab?: 'about
               <div className="flex flex-col gap-6">
                 {[
                   {
-                    version: "v2.8.0 (Latest)",
+                    version: "v2.9.0 (Latest)",
+                    date: "October 11, 2026",
+                    title: "DomoLens Auto-Zoom Screen Recording & Cinematic Demo Suite Ecosystem Integration",
+                    changes: [
+                      "DomoLens Ecosystem Partnership: Official integration with https://domolens.vercel.app/ — automatic click-driven auto-zoom screen recording, studio framing, tactile sound effects, and offline-first product demo creation for desktop and mobile devices.",
+                      "Explore Menu & Navigation Updates: Added DomoLens with Video camera icon to the Explore / Ecosystem navigation menu, mobile drawer, AI Hub Studio, and platform footer.",
+                      "Animated Ecosystem Showcase Carousel: Added DomoLens with monochrome floating logo, interactive animated popup modal card, and direct application launch buttons to the continuous looping carousel."
+                    ]
+                  },
+                  {
+                    version: "v2.8.0",
                     date: "October 1, 2026",
                     title: "DomoScope GitHub Inspection & Reverse-Engineering Platform Integration & Ecosystem Showcase Redesign",
                     changes: [

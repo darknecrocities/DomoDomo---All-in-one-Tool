@@ -10,7 +10,11 @@ import {
   Layers,
   Shield,
   Zap,
+  Video,
+  GitBranch,
+  NotebookPen,
 } from 'lucide-react';
+import { GiSnake } from 'react-icons/gi';
 import { useNavigate } from 'react-router-dom';
 
 export interface EcosystemApp {
@@ -20,6 +24,7 @@ export interface EcosystemApp {
   category: string;
   badge: string;
   logoSrc: string;
+  icon?: React.ComponentType<{ className?: string; size?: number }>;
   url: string;
   blogSlug: string;
   internalPath?: string;
@@ -39,6 +44,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     category: 'Reverse Engineer Platform',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/domoscope.png',
+    icon: GitBranch,
     url: 'https://domoscope.vercel.app/',
     blogSlug: 'announcing-domoscope-github-repository-inspection-visualization',
     shortDesc: 'Deep GitHub repository inspection — visual AST architecture graphs, automated database ERDs, API catalogs & security audits.',
@@ -67,12 +73,48 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     ]
   },
   {
+    id: 'domolens',
+    name: 'DomoLens',
+    tagline: 'Automatic Zoom Screen Recorder & Cinematic Studio Demo Suite',
+    category: 'Screen Recording & Demo Studio',
+    badge: 'Official Ecosystem Partner',
+    logoSrc: '/ecosystem-logos/domolens.png',
+    icon: Video,
+    url: 'https://domolens.vercel.app/',
+    blogSlug: 'announcing-domolens-autozoom-screen-recorder-demo-creator',
+    shortDesc: 'Automatic click-driven auto-zoom screen recording & studio framing suite. Turn raw workflow captures into cinematic product demos.',
+    description:
+      'DomoLens is a modern, local-first screen recording and auto-framing suite. It captures desktop and mobile screens (via USB or Wi-Fi), automatically zooms in on every click and keystroke with smooth, cinematic camera motion, applies studio-grade framing with customizable canvas backgrounds, and provides an interactive timeline editor for fine-tuning before export.',
+    whyRecommended: [
+      'Eliminate manual keyframing: automatically zooms in on clicks and typing with cubic easing and spring physics.',
+      'Studio-grade framing with custom backgrounds, rounded borders, drop shadows, and tactile click sounds.',
+      'Multi-device support: record desktop screens or mobile devices seamlessly via USB and Wi-Fi.',
+      '100% offline-first and private: all media processing and recordings stay strictly on your local device.',
+      'Flexible multi-format exports: render in 1080p Full HD, 4K Ultra HD, 720p Fast, or animated GIF in seconds.'
+    ],
+    features: [
+      'Automatic Click-Driven Auto-Zoom',
+      'Boundary Clamping & Edge Protection',
+      'Studio Framing & Canvas Looks',
+      'Tactile Sound Effects & Ripple Animations',
+      'Interactive Non-Destructive Timeline Editor',
+      'Desktop & Mobile Capture (USB / Wi-Fi)',
+      '100% Offline Local Processing'
+    ],
+    stats: [
+      { label: 'Ecosystem Role', value: 'Demo Video Studio' },
+      { label: 'Framing Mode', value: 'Auto-Zoom Physics' },
+      { label: 'Privacy', value: '100% Local / Zero Cloud' }
+    ]
+  },
+  {
     id: 'codepyne',
     name: 'Codepyne.io',
     tagline: 'Engineering & Data Science AI/ML Technical Upskilling Platform',
     category: 'Learning Platform',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/codepyne.png',
+    icon: GiSnake,
     url: 'https://codepyne-io.vercel.app/',
     blogSlug: 'announcing-codepyne-io-ai-machine-learning-upskilling-platform',
     shortDesc: 'Hands-on technical upskilling — learn by orchestrating, training & building real AI systems from scratch.',
@@ -105,6 +147,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     category: 'Skills Marketplace',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/domoskills.png',
+    icon: Sparkles,
     url: 'https://web-beta-six-81.vercel.app/',
     internalPath: '/tool/domoskills',
     blogSlug: 'announcing-domoskills-open-agent-skills-marketplace',
@@ -138,6 +181,7 @@ export const ECOSYSTEM_APPS: EcosystemApp[] = [
     category: 'AI Secretary',
     badge: 'Official Ecosystem Partner',
     logoSrc: '/ecosystem-logos/domonote.png',
+    icon: NotebookPen,
     url: 'https://domonote.vercel.app/',
     blogSlug: 'announcing-domonote-personal-ai-local-secretary',
     shortDesc: 'Your intelligent offline-first personal secretary — smart notes, AI reminders & voice capture with 0% cloud data leakage.',
@@ -223,7 +267,7 @@ export const EcosystemShowcase: React.FC = () => {
             <img
               src={app.logoSrc}
               alt={`${app.name} logo`}
-              className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter grayscale contrast-125 brightness-110 group-hover/card:contrast-140 group-hover/card:brightness-125 drop-shadow-[0_4px_12px_rgba(255,255,255,0.06)] group-hover/card:drop-shadow-[0_8px_24px_rgba(255,255,255,0.22)] group-hover/card:scale-110 transition-all duration-300 relative z-10"
+              className="w-12 h-12 sm:w-14 sm:h-14 object-contain rounded-xl filter grayscale contrast-125 brightness-110 group-hover/card:contrast-140 group-hover/card:brightness-125 drop-shadow-[0_4px_12px_rgba(255,255,255,0.06)] group-hover/card:drop-shadow-[0_8px_24px_rgba(255,255,255,0.22)] group-hover/card:scale-110 transition-all duration-300 relative z-10"
               loading="lazy"
             />
           </div>
@@ -236,10 +280,13 @@ export const EcosystemShowcase: React.FC = () => {
 
         {/* App Title & Tagline */}
         <h3 className="text-base sm:text-lg font-extrabold text-[#ECEBE9] group-hover/card:text-white transition-colors flex items-center gap-1.5">
+          {app.icon && (
+            <app.icon size={15} className="text-amber-300 shrink-0 group-hover/card:scale-110 transition-transform" />
+          )}
           <span>{app.name}</span>
           <ArrowUpRight
             size={14}
-            className="text-[#72706C] group-hover/card:text-white group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 transition-all"
+            className="text-[#72706C] group-hover/card:text-white group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5 transition-all ml-auto"
           />
         </h3>
 
@@ -356,7 +403,7 @@ export const EcosystemShowcase: React.FC = () => {
                 <img
                   src={selectedApp.logoSrc}
                   alt={`${selectedApp.name} logo`}
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain relative z-10 filter grayscale contrast-125 brightness-110 drop-shadow-[0_8px_24px_rgba(255,255,255,0.2)]"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-xl relative z-10 filter grayscale contrast-125 brightness-110 drop-shadow-[0_8px_24px_rgba(255,255,255,0.2)]"
                 />
               </div>
 
@@ -367,9 +414,12 @@ export const EcosystemShowcase: React.FC = () => {
                 </div>
                 <h3
                   id="ecosystem-modal-title"
-                  className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight"
+                  className="text-xl sm:text-2xl font-extrabold text-[#ECEBE9] tracking-tight flex items-center gap-2"
                 >
-                  {selectedApp.name}
+                  {selectedApp.icon && (
+                    <selectedApp.icon size={22} className="text-amber-300 shrink-0" />
+                  )}
+                  <span>{selectedApp.name}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-[#A3A09B] font-medium leading-snug">
                   {selectedApp.tagline}
