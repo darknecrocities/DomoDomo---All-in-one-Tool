@@ -59,6 +59,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Securely encrypts and decrypts files locally without sending them to a server.',
         howItWorks: '1. File read into ArrayBuffer. 2. Random 16-byte salt and 12-byte IV generated. 3. Content encrypted. 4. Salt and IV prepended to output Blob.',
         technicalSpecs: 'Produces highly secure .domoguard files that can only be decrypted with the correct password.'
+      },
+      {
+        id: 'secret-entropy-scanner',
+        name: 'Secret Entropy & Leak Scanner',
+        engine: 'Shannon Entropy Algorithm & 30+ Regex Pattern Matched Signatures',
+        details: 'Calculates Shannon information entropy across string buffers to detect raw passwords, high-entropy tokens, and secret credential patterns (AWS, GitHub, Slack, Private Keys, JWT).',
+        functionality: 'Detects high-entropy strings and credentials in logs and code with one-click redaction masks and severity filtering.',
+        howItWorks: '1. User pastes code or log content. 2. Computes Shannon entropy per token. 3. Regex scanners match 30+ credential signatures. 4. Highlights risks and redacts with one click.',
+        technicalSpecs: '100% client-side execution. Zero cloud telemetry. Entropy threshold configurable between 3.0 and 6.0 bits/char.'
       }
     ]
   },
@@ -767,6 +776,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Renders audio visualizations. Style selections (waves, bars, circular grids) and export options.',
         howItWorks: '1. Decodes audio tracks. 2. Attaches AnalyserNodes. 3. Updates frequency coordinates. 4. Draws visualizer blocks.',
         technicalSpecs: 'Updates visualizer grids synchronously.'
+      },
+      {
+        id: 'synth-sound-studio',
+        name: 'Web Audio Modular Synthesizer Studio',
+        engine: 'Web Audio API (OscillatorNode, BiquadFilterNode, GainNode, AnalyserNode)',
+        details: 'Modular additive synthesizer studio featuring 3 oscillators, ADSR amplitude envelopes, resonant lowpass/highpass filter cutoff, live oscilloscope visualization, and 16-bit uncompressed WAV file export.',
+        functionality: 'Design custom 8-bit, ambient, and bass sound effects with polyphonic virtual piano keyboard, preset sound loader, and audio download.',
+        howItWorks: '1. Configure oscillator waveforms (sine, square, sawtooth, triangle) and detune. 2. Adjust Attack/Decay/Sustain/Release envelope. 3. Play notes via mouse or keyboard. 4. Export synthesized buffer as a 16-bit WAV.',
+        technicalSpecs: 'Web Audio API pipeline running at 44.1 kHz sample rate. Custom binary RIFF/WAVE PCM encoder.'
       }
     ]
   },
@@ -1355,6 +1373,42 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: '1-click model deletion, deep JSON Modelfile inspector, instant local model aliasing without re-downloading, VRAM purge button (keep_alive: 0), and global context window, temperature, and top_p settings.',
         howItWorks: '1. Lists all installed models fetched from Ollama. 2. Inspects architecture metadata and parameter specs via /api/show. 3. Delete weights permanently with /api/delete or force GPU VRAM release.',
         technicalSpecs: 'Connects directly to local Ollama daemon REST management endpoints.'
+      },
+      {
+        id: 'regex-railroad',
+        name: 'Regex Railroad Diagram Visualizer',
+        engine: 'Recursive Regular Expression AST Lexer & SVG Layout Engine',
+        details: 'Parses JavaScript regular expressions into hierarchical abstract syntax trees and renders interactive, zoomable SVG railroad tracks.',
+        functionality: 'Visualizes regex branches, capture groups, quantifier loops, and character sets with interactive pan/zoom viewport controls and SVG/PNG download.',
+        howItWorks: '1. User enters regular expression pattern and flags. 2. AST lexer breaks pattern into nodes. 3. Layout engine computes SVG node dimensions and routing curves. 4. Interactive canvas renders with zoom and export.',
+        technicalSpecs: 'Full support for alternation, quantifiers, greedy/lazy modifiers, character classes, and non-capturing groups. 100% local rendering.'
+      },
+      {
+        id: 'cron-timeline',
+        name: 'Cron Schedule Timeline & Heatmap',
+        engine: 'Cron Syntax Evaluator & Time-Series Simulation Engine',
+        details: 'Visualizes standard 5-part cron expressions across a continuous 24-hour horizontal timeline bar and a 7-day weekly density heatmap.',
+        functionality: 'Simulates upcoming execution occurrences, displays interval frequency metrics, and exports schedule plans to iCalendar (.ics) and JSON.',
+        howItWorks: '1. Input standard cron string. 2. Evaluates time fields (minute, hour, dom, month, dow). 3. Computes next 25 run timestamps. 4. Renders hourly schedule timeline and calendar export.',
+        technicalSpecs: 'Standard 5-field cron parsing with support for lists, ranges, step values, and wildcards.'
+      },
+      {
+        id: 'semver-calculator',
+        name: 'SemVer 2.0.0 Calculator & Range Matrix',
+        engine: 'Semantic Versioning 2.0.0 Specification Parser',
+        details: 'Evaluates SemVer versions, calculates atomic Major/Minor/Patch increments, manages alpha/beta/rc prerelease tags, and evaluates range satisfaction rules.',
+        functionality: 'Calculates version bumps, provides visual diff comparison, and tests semantic ranges against comparison versions with instant satisfaction badges.',
+        howItWorks: '1. Enter base version and target range. 2. Inspect parsed SemVer components. 3. Click one-click bump options (Patch, Minor, Major). 4. Matrix tests satisfaction.',
+        technicalSpecs: 'Strict SemVer 2.0.0 compliance supporting carets (^), tildes (~), wildcards (*), and comparison operators.'
+      },
+      {
+        id: 'conventional-commit-builder',
+        name: 'Conventional Commits 1.0.0 Wizard',
+        engine: 'Conventional Commits 1.0.0 Specification Engine',
+        details: 'Guides developers through authoring structured, audit-ready Conventional Commit messages with real-time length checking, BREAKING CHANGE alerts, and Git command copying.',
+        functionality: 'Select standard commit types (feat, fix, docs, style, refactor, perf, test, build, ci, chore), define optional scope, author imperative descriptions, and append issue references.',
+        howItWorks: '1. Choose type and scope. 2. Type summary description (with 50/72 character limit badges). 3. Toggle breaking changes. 4. Copy raw commit message or full git commit CLI command.',
+        technicalSpecs: 'Strict Conventional Commits v1.0.0 alignment with Commitlint validation rules.'
       }
     ]
   },
@@ -1451,6 +1505,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Sanitizes JSON/CSV database records. Masks emails/phones, hashes keys, or maps to fake names and locations.',
         howItWorks: '1. Paste records. 2. Assign rule per field key. 3. Process records. 4. Download clean JSON.',
         technicalSpecs: '100% offline, ensuring no sensitive data is leaked or sent online.'
+      },
+      {
+        id: 'json-schema-validator',
+        name: 'JSON Schema Validator & Generator',
+        engine: 'Draft-07 JSON Schema Inference & Structural Validation Engine',
+        details: 'Infers Draft-07 compliant JSON Schema definitions automatically from sample JSON payloads and validates documents with precise line-referenced diagnostics.',
+        functionality: 'Generates JSON schemas with type detection, required property inference, and format constraints. Validates JSON instances against schemas with detailed error pointers.',
+        howItWorks: '1. Paste sample JSON data. 2. Auto-generate Draft-07 schema. 3. Edit schema constraints or validate target data instances. 4. Export schema or validation report.',
+        technicalSpecs: 'Supports JSON primitive types, arrays, nested objects, required fields, and Draft-07 validation keywords.'
       }
     ]
   },
@@ -1835,6 +1898,24 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Exports structured design tokens in W3C JSON and CSS custom property formats.',
         howItWorks: '1. Set brand name, primary color, and type ratio. 2. Choose JSON or CSS format. 3. Run Local AI token spec builder.',
         technicalSpecs: 'W3C Design Tokens JSON schema builder.'
+      },
+      {
+        id: 'css-clip-path-studio',
+        name: 'CSS Clip-Path & Polygon Studio',
+        engine: 'Vector Polygon Coordinates & CSS clip-path Engine',
+        details: 'Interactive visual polygon editor with draggable vertex handles, shape presets, zoom controls, and CSS / SVG path generation.',
+        functionality: 'Construct complex geometric masking shapes, customize vertex coordinates in percentages, and copy ready-to-use CSS clip-path or SVG polygon code.',
+        howItWorks: '1. Select a shape preset (Triangle, Hexagon, Star, Chevron, etc.) or add custom vertices. 2. Drag vertices visually across the canvas. 3. Adjust zoom. 4. Copy CSS or SVG polygon output.',
+        technicalSpecs: 'Zero external dependencies. Generates valid CSS clip-path: polygon(...) and SVG polygon points attributes.'
+      },
+      {
+        id: 'color-blindness-simulator',
+        name: 'Color Blindness & CVD Studio',
+        engine: 'Brettel, Viénot & Mollon (1997) LMS Spectral Color Transformation Matrices',
+        details: 'Simulates 8 distinct color vision deficiency (CVD) conditions across color swatches and user-uploaded images using clinical LMS spectral space matrices.',
+        functionality: 'Simulates Protanopia, Deuteranopia, Tritanopia, Protanomaly, Deuteranomaly, Tritanomaly, Achromatopsia, and Achromatomaly with side-by-side comparison and canvas export.',
+        howItWorks: '1. Pick a color palette or upload a design image. 2. Simulator converts sRGB to linear RGB, transforms coordinates via Brettel LMS matrices, and maps back to sRGB. 3. View multi-condition grid.',
+        technicalSpecs: 'Clinical 3x3 LMS matrix calculations executed client-side. Web Worker / Canvas ImageData manipulation for real-time image filtering.'
       }
     ]
   },
@@ -1931,6 +2012,15 @@ export const TOOLS_DOCS: Record<ToolCategory, { title: string; desc: string; lis
         functionality: 'Visual builder for OpenAPI 3.0 JSON/YAML specifications and response schemas.',
         howItWorks: '1. Define API title, version, and route path. 2. Select HTTP method. 3. Copy spec JSON or prompt Local AI.',
         technicalSpecs: 'OpenAPI 3.0 spec JSON builder.'
+      },
+      {
+        id: 'dns-zone-builder',
+        name: 'DNS Zone File Architect & BIND 9 Validator',
+        engine: 'RFC 1035 BIND 9 Zone File Parser & Validator',
+        details: 'RFC-compliant BIND 9 DNS zone file authoring, validation, TTL management, serial number auto-incrementation, and JSON conversion studio.',
+        functionality: 'Manage SOA, A, AAAA, CNAME, MX, TXT, NS, CAA, and SRV records with syntax validation, one-click serial increment, and zone file download.',
+        howItWorks: '1. Configure domain origin and default TTL. 2. Add or edit resource records. 3. Auto-increment SOA serial number (YYYYMMDDNN). 4. Validate zone syntax and export standard BIND zone file or JSON.',
+        technicalSpecs: 'Complies with RFC 1035 and RFC 2181 DNS master file formats. 100% offline.'
       }
     ]
   },
