@@ -279,6 +279,18 @@ import { MetaAnalysisAggregatorTool } from '../tools/investigation/MetaAnalysisA
 import { ProposalOptimizerTool } from '../tools/investigation/ProposalOptimizer';
 import { AIHubStudio } from '../pages/AIHubStudio';
 
+// Advanced Developer, Audio, Design & Network Suite Imports
+import { RegexRailroadTool } from '../tools/dev/RegexRailroad';
+import { CronTimelineTool } from '../tools/dev/CronTimeline';
+import { SynthSoundStudioTool } from '../tools/audio/SynthSoundStudio';
+import { CssClipPathStudioTool } from '../tools/design/CssClipPathStudio';
+import { ColorBlindnessSimulatorTool } from '../tools/design/ColorBlindnessSimulator';
+import { SemverCalculatorTool } from '../tools/dev/SemverCalculator';
+import { ConventionalCommitBuilderTool } from '../tools/dev/ConventionalCommitBuilder';
+import { JsonSchemaValidatorTool } from '../tools/data/JsonSchemaValidator';
+import { SecretEntropyScannerTool } from '../tools/security/SecretEntropyScanner';
+import { DnsZoneBuilderTool } from '../tools/network/DnsZoneBuilder';
+
 export const TOOLS: Tool[] = [
   // Photo Tools (10)
   { id: 'background-remover', name: 'Background Remover', categories: ['photo'], description: 'Remove background from image free online — no sign up required. Use chroma key, manual eraser, or trace lasso to isolate subjects with transparent PNG export.', icon: 'Image', seoTitle: 'Remove Background from Image Free Online | DomoDomo', keywords: 'remove background, background remover, remove bg, transparent background, background eraser online', run: async (i) => i, component: BackgroundRemoverTool },
@@ -559,7 +571,19 @@ export const TOOLS: Tool[] = [
   QualitativeTextCoderTool,
   MethodAdvisoryTool,
   MetaAnalysisAggregatorTool,
-  ProposalOptimizerTool
+  ProposalOptimizerTool,
+
+  // Advanced Developer, Audio, Design & Network Suite Tools (10)
+  { id: 'regex-railroad', name: 'Regex Railroad Diagram Visualizer', categories: ['dev'], description: 'Interactive SVG railroad diagram generator for regular expressions with zoomable pan canvas and SVG export.', icon: 'Code', seoTitle: 'Regex Railroad Diagram Generator — Visual Regex Parser | DomoDomo', keywords: 'regex railroad diagram, regular expression visualizer, regex parser, svg railroad diagram, regex syntax graph', run: async (i) => i, component: RegexRailroadTool },
+  { id: 'cron-timeline', name: 'Cron Schedule Timeline & Heatmap', categories: ['dev'], description: '24-hour visual cron schedule timeline, weekly execution heatmap, and iCal (.ics) / JSON schedule exporter.', icon: 'Clock', seoTitle: 'Cron Schedule Timeline & Heatmap Visualizer | DomoDomo', keywords: 'cron timeline, cron schedule visualizer, cron expression parser, cron calendar export, cron heatmap', run: async (i) => i, component: CronTimelineTool },
+  { id: 'synth-sound-studio', name: 'Web Audio Modular Synthesizer Studio', categories: ['audio'], description: 'Multi-oscillator additive synthesizer with ADSR envelopes, resonant filter cutoff, oscilloscope, and 16-bit WAV audio export.', icon: 'Music', seoTitle: 'Web Audio Modular Synth & Sound FX Studio | DomoDomo', keywords: 'web audio synth, modular synthesizer, audio oscillator, adsr envelope, wav sound generator, sound fx maker', run: async (i) => i, component: SynthSoundStudioTool },
+  { id: 'css-clip-path-studio', name: 'CSS Clip-Path & Polygon Studio', categories: ['design'], description: 'Interactive vector polygon editor with drag-and-drop handles, shape presets, zoom controls, and CSS / SVG path export.', icon: 'PenTool', seoTitle: 'CSS Clip-Path Maker & Vector Polygon Studio | DomoDomo', keywords: 'css clip path maker, polygon generator, css shapes editor, clip path svg export, vector polygon', run: async (i) => i, component: CssClipPathStudioTool },
+  { id: 'color-blindness-simulator', name: 'Color Blindness & CVD Studio', categories: ['design'], description: 'Clinical 8-condition color vision deficiency simulator using Brettel LMS spectral matrices for palettes and uploaded images.', icon: 'Eye', seoTitle: 'Color Blindness Simulator — 8-Condition CVD Accessibility | DomoDomo', keywords: 'color blindness simulator, cvd simulator, protanopia, deuteranopia, tritanopia, daltonism test, wcag accessibility', run: async (i) => i, component: ColorBlindnessSimulatorTool },
+  { id: 'semver-calculator', name: 'SemVer 2.0.0 Calculator & Range Matrix', categories: ['dev'], description: 'Semantic version bump calculator, prerelease identifier manager, diff analyzer, and npm range satisfaction evaluator.', icon: 'GitBranch', seoTitle: 'SemVer 2.0.0 Calculator & NPM Range Matrix | DomoDomo', keywords: 'semver calculator, semantic versioning, semver range validator, npm version bump, major minor patch', run: async (i) => i, component: SemverCalculatorTool },
+  { id: 'conventional-commit-builder', name: 'Conventional Commits 1.0.0 Wizard', categories: ['dev'], description: 'Standardized Conventional Commits builder with real-time Git linting, BREAKING CHANGE alerts, and shell command generator.', icon: 'Terminal', seoTitle: 'Conventional Commits Builder & Git Linter | DomoDomo', keywords: 'conventional commits, git commit message generator, commitlint, git commit wizard, semantic git', run: async (i) => i, component: ConventionalCommitBuilderTool },
+  { id: 'json-schema-validator', name: 'JSON Schema Validator & Generator', categories: ['data', 'dev'], description: 'Draft-07 JSON Schema inference generator and structural data validator with line-referenced diagnostic errors.', icon: 'CheckCircle2', seoTitle: 'JSON Schema Validator & Draft-07 Generator | DomoDomo', keywords: 'json schema validator, json schema generator, draft 07 validator, json validation tool, json schema infer', run: async (i) => i, component: JsonSchemaValidatorTool },
+  { id: 'secret-entropy-scanner', name: 'Secret Entropy & Leak Scanner', categories: ['security', 'dev'], description: 'Detect high-entropy passwords and 30+ credential patterns (AWS, GitHub, JWT, Private Keys) with one-click redaction.', icon: 'ShieldAlert', seoTitle: 'Secret Entropy Scanner — Shannon Entropy & API Key Auditor | DomoDomo', keywords: 'secret scanner, shannon entropy calculator, detect api keys, redact secrets, secret leak detector', run: async (i) => i, component: SecretEntropyScannerTool },
+  { id: 'dns-zone-builder', name: 'DNS Zone File Architect & BIND 9 Validator', categories: ['network', 'dev'], description: 'RFC-compliant BIND 9 DNS zone file authoring, validation, TTL management, serial auto-increment, and JSON converter.', icon: 'Globe', seoTitle: 'DNS Zone File Architect — RFC BIND 9 Builder & Validator | DomoDomo', keywords: 'dns zone builder, bind 9 zone file, dns records editor, zone file validator, soa record generator', run: async (i) => i, component: DnsZoneBuilderTool }
 ];
 
 export const getToolById = (id: string): Tool | undefined => {

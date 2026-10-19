@@ -32,6 +32,9 @@ jobs:
       - name: TypeScript Compile Check
         run: npx tsc -b
 
+      - name: Run Automated Unit Tests
+        run: npm test
+
   build_and_perf:
     name: Build & AI Performance Check
     runs-on: ubuntu-latest

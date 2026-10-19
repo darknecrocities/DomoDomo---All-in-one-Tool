@@ -13,6 +13,88 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'domodomo-v2-6-pdf-studio-overhaul-and-10-new-developer-tools',
+    title: 'DomoDomo v2.6: PDF Text Editor Overhaul and 10 Powerful New Developer, Audio & Security Tools',
+    excerpt: 'DomoDomo v2.6 brings a complete architectural overhaul to the PDF Text Editor with instant page rendering, zero canvas collisions, and zoom viewports, alongside 10 new client-side utilities spanning Web Audio synthesis, regex railroad tracks, CVD accessibility simulation, secret entropy scanning, and BIND 9 DNS zoning.',
+    date: 'October 20, 2026',
+    readTime: '6 min read',
+    category: 'Product Updates',
+    author: 'Arron Parejas',
+    keywords: 'domodomo v2.6, pdf text editor fix, pdf preview canvas, web audio synth, regex railroad diagram, cron timeline, semver calculator, conventional commits, json schema validator, secret entropy scanner, cvd color blindness simulator, dns zone builder',
+    content: `# DomoDomo v2.6: PDF Text Editor Overhaul and 10 Powerful New Developer, Audio & Security Tools
+
+**Release:** DomoDomo v2.6  
+**Date:** October 20, 2026  
+**Category:** Product Updates & Architecture  
+**Author:** Arron Parejas  
+
+---
+
+We are excited to ship **DomoDomo v2.6**, a major release bringing a comprehensive overhaul to our flagship **PDF Text Editor** and expanding the platform with **10 brand-new, 100% client-side utilities** across audio synthesis, regex visualization, developer workflows, data validation, cybersecurity, and design accessibility.
+
+\`\`\`text
+DOMODOMO v2.6: 242 LOCAL TOOLS
+Zero Cloud Uploads • 100% In-Browser Sandbox • Monochrome Panda Tech
+\`\`\`
+
+---
+
+## The PDF Text Editor Architecture Overhaul
+
+Community feedback highlighted that in earlier builds, PDF documents occasionally failed to render previews or suffered canvas flickers during initial upload. 
+
+In DomoDomo v2.6, we refactored the PDF Text Editor from the ground up:
+
+1. **Self-Contained Blob Worker**: We eliminated fragile external unpkg/CDN worker dependencies by instantiating PDF.js workers via an inline Blob URL containing standard module dispatchers.
+2. **Cancellation-Safe Render Pipeline**: In React 19 concurrent mode, rapid page switches could trigger overlapping \`page.render()\` operations on the same \`<canvas>\`, causing PDF.js to throw \`RenderingCancelledException\`. We implemented an \`activeRenderTaskRef\` lock that cleanly awaits and cancels prior render tasks before drawing new frames.
+3. **Responsive Canvas Viewport with Precision Zoom**: Added intuitive **Zoom In**, **Zoom Out**, **Reset Zoom**, and **Zoom % Display** controls, with automatic CSS scale transformations and high-DPI backing store scaling.
+4. **Drag-and-Drop Staging**: Users can now drag PDF files straight into the drop zone with automated mime-type validation and zero-dimension layout protection.
+5. **Architectural Decomposition**: Replaced the monolithic file with 7 focused modules (\`CanvasStage\`, \`TextInspectorPanel\`, \`pdfRenderer\`, \`pdfExport\`, \`editorActions\`, \`types\`), all strictly adhering to our $\\le 500$-line limit.
+
+---
+
+## 10 Brand-New Client-Side Utilities
+
+None of these new tools duplicate existing features, and all run with zero server latency:
+
+### 1. Regex Railroad Diagram Visualizer (\`dev\`)
+Parses JavaScript regular expressions into hierarchical ASTs and renders interactive, zoomable SVG railroad tracks. Pan, zoom, inspect quantifier loops and capture groups, and export clean SVGs or PNGs.
+
+### 2. Cron Schedule Timeline & Heatmap (\`dev\`)
+Visualizes 5-part cron syntax across a continuous 24-hour horizontal timeline bar and a 7-day weekly density heatmap. Computes next execution timestamps and exports to iCalendar (.ics) and JSON.
+
+### 3. Web Audio Modular Synthesizer Studio (\`audio\`)
+A 3-oscillator additive synthesizer built on the Web Audio API with ADSR amplitude envelopes, resonant lowpass/highpass filter cutoffs, a live oscilloscope, virtual piano keys, and 16-bit uncompressed WAV export.
+
+### 4. CSS Clip-Path & Polygon Studio (\`design\`)
+Interactive visual vector polygon editor with draggable vertex handles, shape presets, zoom controls, and instant CSS \`clip-path: polygon(...)\` and SVG polygon code export.
+
+### 5. Color Blindness & CVD Studio (\`design\`)
+A clinical 8-condition Color Vision Deficiency simulator based on the Brettel LMS spectral matrices (1997). Test color palettes or uploaded images side-by-side across Protanopia, Deuteranopia, Tritanopia, and monochromatic filters.
+
+### 6. SemVer 2.0.0 Calculator & Range Matrix (\`dev\`)
+Calculates atomic Major, Minor, and Patch version increments, handles prerelease/build metadata tags, and evaluates range satisfaction rules (\`^\`, \`~\`, wildcards) against target versions.
+
+### 7. Conventional Commits 1.0.0 Wizard (\`dev\`)
+Standardized commit message builder with real-time length checking (50/72 rule), BREAKING CHANGE alerts, and one-click shell command generation.
+
+### 8. JSON Schema Validator & Generator (\`data\`)
+Infers Draft-07 JSON Schema definitions automatically from sample JSON payloads and validates instances with line-referenced error diagnostics.
+
+### 9. Secret Entropy & Leak Scanner (\`security\`)
+Computes Shannon information entropy across string buffers to detect high-entropy passwords, tokens, and 30+ credential patterns (AWS, GitHub, Slack, Private Keys, JWT) with one-click redaction masks.
+
+### 10. DNS Zone File Architect & BIND 9 Validator (\`network\`)
+RFC 1035 / BIND 9 zone file authoring, validation, TTL management, serial auto-incrementation, and JSON conversion studio.
+
+---
+
+## Privacy & Performance Guarantees
+
+Every byte of text, audio, image, and PDF document processed in DomoDomo remains entirely inside your browser sandbox. Enjoy the new tools and keep building!
+`
+  },
+  {
     slug: 'announcing-domolens-autozoom-screen-recorder-demo-creator',
     title: 'Announcing DomoLens: The Auto-Zoom Screen Recorder & Studio Demo Creator Joins the Domo Ecosystem',
     excerpt: 'DomoLens (https://domolens.vercel.app/) officially joins the Domo ecosystem as our flagship screen recording and studio demo suite. Capture desktop and mobile screens, automatically zoom in on clicks with cinematic camera motion, apply studio canvas framing, and export production-ready product demos without manual video editing.',
